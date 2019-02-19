@@ -1,8 +1,7 @@
-/* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 
 export interface CodebasesSampleListProps {
-  codebases: string[],
+  codebases: Array<string>,
 }
 
 const CodebasesSampleList: React.SFC<CodebasesSampleListProps> = ({ codebases }: CodebasesSampleListProps) => {
@@ -12,6 +11,6 @@ const CodebasesSampleList: React.SFC<CodebasesSampleListProps> = ({ codebases }:
   return (
     <ul>{listItems}</ul>
   );
-};
+}
 
 export default CodebasesSampleList;
