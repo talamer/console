@@ -5,8 +5,9 @@ import { AsyncComponent } from '../../components/utils';
 const routes: RouteProps[] = [
   {
     path: '/devconsole/import',
-    component: () => (
+    render: (props) => (
       <AsyncComponent
+        {...props}
         loader={async() =>
           (await import('./pages/Import' /* webpackChunkName: "devconsole-import" */))
             .default
@@ -16,8 +17,9 @@ const routes: RouteProps[] = [
   },
   {
     path: '/devconsole/codebases',
-    component: () => (
+    render: (props) => (
       <AsyncComponent
+        {...props}
         loader={async() =>
           (await import('./pages/Codebases' /* webpackChunkName: "devconsole-codebases" */))
             .default
@@ -27,8 +29,9 @@ const routes: RouteProps[] = [
   },
   {
     path: '/devconsole/topology',
-    component: () => (
+    render: (props) => (
       <AsyncComponent
+        {...props}
         loader={async() =>
           (await import('./pages/Topology' /* webpackChunkName: "devconsole-topology" */))
             .default
@@ -38,8 +41,9 @@ const routes: RouteProps[] = [
   },
   {
     path: '/devconsole',
-    component: () => (
+    render: (props) => (
       <AsyncComponent
+        {...props}
         loader={async() =>
           (await import('./pages/Home' /* webpackChunkName: "devconsole-home" */))
             .default
