@@ -185,6 +185,7 @@ class App extends React.PureComponent {
 
                   <LazyRoute path="/overview/all-namespaces" exact loader={() => import('./cluster-overview' /* webpackChunkName: "cluster-overview" */).then(m => m.ClusterOverviewPage)} />
                   <LazyRoute path="/overview/ns/:ns" exact loader={() => import('./overview' /* webpackChunkName: "overview" */).then(m => m.OverviewPage)} />
+                  <LazyRoute path="/devconsole" exact loader={() => import('./devconsole' /* webpackChunkName: "devconsole" */).then(m => m.GettingsStartedPage)} />
                   <Route path="/overview" exact component={NamespaceRedirect} />
 
                   <LazyRoute path="/status/all-namespaces" exact loader={() => import('./cluster-overview' /* webpackChunkName: "cluster-overview" */).then(m => m.ClusterOverviewPage)} />

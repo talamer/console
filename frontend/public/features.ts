@@ -63,6 +63,7 @@ export enum FLAGS {
   CLUSTER_API = 'CLUSTER_API',
   CLUSTER_VERSION = 'CLUSTER_VERSION',
   MACHINE_CONFIG = 'MACHINE_CONFIG',
+  SHOW_DEV_CONSOLE = 'SHOW_DEV_CONSOLE',
 }
 
 export const DEFAULTS_ = _.mapValues(FLAGS, flag => flag === FLAGS.AUTH_ENABLED
@@ -190,6 +191,14 @@ const detectUser = dispatch => coFetchJSON('api/kubernetes/apis/user.openshift.i
     },
   );
 
+  const detectDevConsole = dispatch => {
+    if(process.env.NODE_ENV === 'development') {
+     setFlag(dispatch, FLAGS.SHOW_DEV_CONSOLE, true);
+     return;
+    }
+    setFlag(dispatch, FLAGS.SHOW_DEV_CONSOLE, false);
+  }
+
 export const featureActions = [
   detectOpenShift,
   detectCanCreateProject,
@@ -197,6 +206,7 @@ export const featureActions = [
   detectClusterVersion,
   detectUser,
   detectLoggingURL,
+  detectDevConsole,
 ];
 
 const projectListPath = `${k8sBasePath}/apis/project.openshift.io/v1/projects?limit=1`;
