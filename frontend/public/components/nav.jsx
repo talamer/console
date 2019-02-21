@@ -327,7 +327,6 @@ export const Navigation = ({ isNavOpen, onNavSelect }) => {
           <HrefLink href="/status" name="Status" activePath="/status/" disallowed={FLAGS.OPENSHIFT} />
           <HrefLink href="/search" name="Search" startsWith={searchStartsWith} />
           <ResourceNSLink resource="events" name="Events" />
-          <HrefLink href="/devconsole" name="Devconsole" activePath="/devconsole/" required={FLAGS.SHOW_DEV_CONSOLE} />
         </NavSection>
 
         <NavSection title="Catalog">
