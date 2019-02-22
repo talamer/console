@@ -37,7 +37,9 @@ const breakpointMD = 768;
 
 // Edge lacks URLSearchParams
 import 'url-search-params-polyfill';
-import DevConsoleRoutes from '../extend/devconsole/DevConsoleRoutes';
+
+// Extensions
+import devConsoleRoutes from '../extend/devconsole/routes';
 
 // Extensions
 import devConsoleRoutes from '../extend/devconsole/routes';
