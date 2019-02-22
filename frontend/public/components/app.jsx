@@ -36,7 +36,9 @@ const breakpointMD = 768;
 
 // Edge lacks URLSearchParams
 import 'url-search-params-polyfill';
-import DevConsoleRoutes from '../extend/devconsole/DevConsoleRoutes';
+
+// Extensions
+import devConsoleRoutes from '../extend/devconsole/routes';
 
 // React Router's proptypes are incorrect. See https://github.com/ReactTraining/react-router/pull/5393
 Route.propTypes.path = PropTypes.oneOfType([
@@ -285,7 +287,9 @@ class App extends React.PureComponent {
 
                   <Route path="/k8s/all-namespaces/:plural" exact component={ResourceListPage} />
                   <Route path="/k8s/all-namespaces/:plural/:name" component={ResourceDetailsPage} />
-                  <DevConsoleRoutes />
+
+                  {devConsoleRoutes.map(r => <Route key={r.path} {...r} />)}
+
                   <LazyRoute path="/error" exact loader={() => import('./error' /* webpackChunkName: "error" */).then(m => m.ErrorPage)} />
                   <Route path="/" exact component={DefaultPage} />
 
