@@ -176,7 +176,7 @@ class App extends React.PureComponent {
         />
         <Page
           header={<Masthead onNavToggle={this._onNavToggle} />}
-          sidebar={(this.props.location.pathname == "/devconsole") ? <DevConsoleNavigation isNavOpen={isNavOpen} onNavSelect={this._onNavSelect} /> : <Navigation isNavOpen={isNavOpen} onNavSelect={this._onNavSelect} />}
+          sidebar={((this.props.location.pathname).startsWith("/devconsole")) ? <DevConsoleNavigation isNavOpen={isNavOpen} onNavSelect={this._onNavSelect} /> : <Navigation isNavOpen={isNavOpen} onNavSelect={this._onNavSelect} />}
         >
           <PageSection variant={PageSectionVariants.light}>
             <div id="content">
