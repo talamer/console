@@ -4,7 +4,7 @@ import { FLAGS, connectToFlags, flagPending } from '../../../features';
 import { LoadingBox } from '../../../components/utils/status-box';
 
 
-const HomePage_: React.SFC<HomePageProps> = props => {
+const HomePage: React.SFC<HomePageProps> = props => {
   if (!props.flags[FLAGS.SHOW_DEV_CONSOLE]) {
     return <Redirect to='/' />;
   }
@@ -28,5 +28,5 @@ const HomePage_: React.SFC<HomePageProps> = props => {
 export type HomePageProps = {
     flags: {[_: string]: boolean},
 };
-const HomePage = connectToFlags(FLAGS.SHOW_DEV_CONSOLE)(HomePage_);
-export default HomePage;
+
+export default connectToFlags(FLAGS.SHOW_DEV_CONSOLE)(HomePage);
