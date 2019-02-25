@@ -40,6 +40,7 @@ import 'url-search-params-polyfill';
 
 // Extensions
 import devConsoleRoutes from '../extend/devconsole/routes';
+import PerspectiveSwitcher from '../extend/devconsole/shared/components/PerspectiveSwitcher';
 
 // Extensions
 import devConsoleRoutes from '../extend/devconsole/routes';
