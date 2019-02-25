@@ -1,81 +1,50 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet';
 import { CodeBaseList } from '../components/codebases/codebaselist';
-import { ColHead, ListHeader } from '../../../components/factory';
 
 
-class CodebasesPage extends React.Component<codebaseProps,codebaseState> {
-  constructor(props) {
-    super(props);
-    this.updateList();
-  }
-  mockList = [{ name:'Christian', namespace:"kube-dns", description: "lorem ipsum lorem ipsum lorem ipsum lorem ipsumlorem ipsum lorem ipsum lorem ipsum lorem ipsum", location:'https://www.redhat.com' }, 
-              { name:'Nimisha', namespace:"kube-proxy", description: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum", location:'https://www.redhat.com' },
-              { name:'Joshua', namespace:"kube-proxy", description: "lorem ipsum lorem ipsum lorem ipsum lorem ipsumlorem ipsum lorem ipsum lorem ipsum lorem ipsum", location:'https://www.redhat.com' },
-              { name:'Steve', namespace:"kube-dns", description: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum", location:'https://www.redhat.com' },
-              { name:'Adi', namespace:"kube-proxy", description: "lorem ipsum lorem lorem ipsum lorem ipsumipsum lorem ipsum lorem ipsum lorem ipsum", location:'https://www.redhat.com' },
-              { name:'Dholiak', namespace:"kube-proxy", description: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum", location:'https://www.redhat.com' },
-              { name:'Rohit', namespace:"myproject", description: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum", location:'https://www.redhat.com' },
-              { name:'Sahil', namespace:"kube-proxy", description: "lorem ipsum lorem ipsum lorem lorem ipsum lorem ipsum ipsum lorem ipsum lorem ipsum", location:'https://www.redhat.com' },
-              { name:'Vikram', namespace:"kube-proxy", description: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum", location:'https://www.redhat.com' },
-              { name:'Divyanshi', namespace:"myproject", description: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum", location:'https://www.redhat.com' },
-              { name:'Karthik', namespace:"openshift", description: "lorem ipsum lorem ipsum llorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum orem ipsum lorem ipsum lorem ipsum", location:'https://www.redhat.com' },
-              { name:'Debsmita', namespace:"openshift", description: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum", location:'https://www.redhat.com' },
-              { name:'Baiju', namespace:"openshift", description: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum", location:'https://www.redhat.com' },
-              { name:'Ibrahim', namespace:"openshift", description: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum", location:'https://www.redhat.com' },
-              { name:'Harpreet', namespace:"kube-dns", description: "lorem ipsum lorem ipsum lorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum  lorem ipsum lorem ipsum", location:'https://www.redhat.com' },
-              { name:'Serena', namespace:"kube-proxy", description: "lorem ipsum lorem ipsum lorem lorem ipsum lorem ipsum lorem ipsum lorem ipsum ipsum lorem ipsum lorem ipsum", location:'https://www.redhat.com' },
-              { name:'Shoubhik', namespace:"kube-proxy", description: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum", location:'https://www.redhat.com' },
-              { name:'Saravana', namespace:"myproject", description: "lorem ipsum lorem ipsum lorem lorem ipsum lorem ipsum lorem ipsum lorem ipsumipsum lorem ipsum lorem ipsum", location:'https://www.redhat.com' },
-              { name:'Anji', namespace:"kube-proxy", description: "lorem ipsum lorem ipsum lorem ipsum lorem lorem ipsum lorem ipsum lorem ipsum  ipsum lorem ipsum", location:'https://www.redhat.com' },
-              { name:'Vidhya', namespace:"kube-proxy", description: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum", location:'https://www.redhat.com' },
-              { name:'Karuna', namespace:"kube-proxy", description: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum", location:'https://www.redhat.com' },
-            ];
-  state ={
-    displayList:[],
-  }
-  namespace = this.props.namespace;  
-  ns = this.namespace?this.namespace:'all projects';
-  headingTitle = "View Codebases in " + this.ns;
-  updateList(){
-    if(this.ns == 'all projects'){
-      this.state.displayList = this.mockList;
-    }
-    else{
-      this.state.displayList = this.mockList.filter(item => item.namespace == this.ns);
-    }
-  }
-  render() {
+const CodebasesPage: React.SFC<CodebasesPageProps> = (props) => {
 
-
-    return(
+ const mockList = [{ name:'Christian', namespace:"kube-dns", buildType: "NodeJS", codebase:'https://www.github.com/openshift/console', port:3000 }, 
+              { name:'Nimisha', namespace:"kube-proxy", buildType: "React", codebase:'https://www.github.com/openshift/console', port:8080 },
+              { name:'Joshua', namespace:"kube-proxy", buildType: "Angular", codebase:'https://www.github.com/openshift/console', port:7001 },
+              { name:'Steve', namespace:"kube-dns", buildType: "GoLang", codebase:'https://www.github.com/openshift/console', port:3000 },
+              { name:'Adi', namespace:"kube-proxy", buildType: "Java", codebase:'https://www.github.com/openshift/console', port:6000 },
+              { name:'Debsmita', namespace:"myproject", buildType: "React", codebase:'https://www.github.com/openshift/console', port:3000 },
+              { name:'Rohit', namespace:"myproject", buildType: "Flutter", codebase:'https://www.github.com/openshift/console', port:8080 },
+              { name:'Sahil', namespace:"kube-proxy", buildType: "Flutter", codebase:'https://www.github.com/openshift/console', port:80 },
+              { name:'Vikram', namespace:"kube-proxy", buildType: "Angular", codebase:'https://www.github.com/openshift/console', port:4000 },
+              { name:'Divyanshi', namespace:"openshift", buildType: "NodeJS", codebase:'https://www.github.com/openshift/console', port:7001 },
+              { name:'Karthik', namespace:"myproject", buildType: "GoLang", codebase:'https://www.github.com/openshift/console', port:6000 },
+              { name:'Dholiak', namespace:"openshift", buildType: "Java", codebase:'https://www.github.com/openshift/console', port:7001 },
+              { name:'Baiju', namespace:"openshift", buildType: "Python", codebase:'https://www.github.com/openshift/console', port:8080 },
+              { name:'Ibrahim', namespace:"openshift", buildType: "Python", codebase:'https://www.github.com/openshift/console', port:7200 },
+              { name:'Harpreet', namespace:"kube-dns", buildType: "Angular", codebase:'https://www.github.com/openshift/console', port:3000 },
+              { name:'Serena', namespace:"kube-proxy", buildType: "GoLang", codebase:'https://www.github.com/openshift/console', port:80 },
+              { name:'Shoubhik', namespace:"kube-proxy", buildType: "NodeJS", codebase:'https://www.github.com/openshift/console', port:4001 },
+              { name:'Saravana', namespace:"myproject", buildType: "React", codebase:'https://www.github.com/openshift/console', port:8080 },
+              { name:'Anji', namespace:"kube-proxy", buildType: "Angular", codebase:'https://www.github.com/openshift/console', port:7001 },
+              { name:'Vidhya', namespace:"kube-proxy", buildType: "Flutter", codebase:'https://www.github.com/openshift/console', port:9000 },
+              { name:'Karuna', namespace:"kube-proxy", buildType: "React", codebase:'https://www.github.com/openshift/console', port:2001 },
+  ];
+    
+   return(      
       <React.Fragment>
-      <Helmet>
-        <title>Codebases</title>
-      </Helmet>
-      <div className="codeBaseContainer">
-        <h2 className="codeBaseMainTitle"> {this.headingTitle} </h2>
-        <div className="codeBaseHeader">
-          <ListHeader>
-            <ColHead className="col-lg-2 col-md-2 col-sm-4 col-xs-6" sortField="metadata.name">Codebase</ColHead>
-            <ColHead className="col-lg-2 col-md-2 col-sm-4 col-xs-6" sortField="metadata.namespace">Namespace</ColHead>
-            <ColHead className="col-lg-5 col-md-5 col-sm-4 hidden-xs" sortField="metadata.labels">Description</ColHead>
-            <ColHead className="col-lg-3 col-md-3 hidden-sm hidden-xs" sortField="spec.selector">Location</ColHead>
-          </ListHeader>
-          <CodeBaseList list={this.state.displayList}></CodeBaseList>
-        </div>
-      </div>
+        <Helmet>
+          <title>Codebases</title>
+        </Helmet>
+        <div className="codeBaseContainer">
+        <CodeBaseList list={mockList} namespace={props.namespace}></CodeBaseList>
+        </div>  
       </React.Fragment>
     )
-  }
-}
+ }
 
-export default CodebasesPage;
-type codebaseProps = {
-  namespace: string;
-};
-type codebaseState = {
-  displayList: Array<Object>;
-};
+ export default CodebasesPage;
+
+ interface CodebasesPageProps {
+  namespace: string,
+ }
+
 
 

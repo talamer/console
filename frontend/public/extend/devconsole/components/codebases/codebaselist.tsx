@@ -1,35 +1,65 @@
 import * as React from 'react';
 import { ResourceIcon } from '../../../../components/utils';
+import { ColHead, ListHeader } from '../../../../components/factory';
 
 export class CodeBaseList extends React.Component<codebaseListProps> {
   constructor(props) {
     super(props);
-    this.updateDisplay();
     console.log(this.display);
   }
-  display:Object = <h3 className = 'noCodebasesFound'> No codebases found. </h3>; 
-  updateDisplay = () => {
-    var list = this.props.list;
+
+  componentWillMount(){
+    if( this.props.namespace ) {
+      this.updateDisplay( this.props.list, this.props.namespace);
+    }
+    else
+      this.updateDisplay( this.props.list, 'all projects');
+  }
+
+  componentWillReceiveProps(NextProps){
+    if( NextProps.namespace!= this.props.namespace ) {
+      if( NextProps.namespace )
+        this.updateDisplay(NextProps.list, NextProps.namespace);
+      else
+        this.updateDisplay(NextProps.list, 'all projects');
+    }
+  }
+
+  display = <h3 className = 'noCodebasesFound'> No codebases found. </h3>; 
+
+  updateDisplay = (dataList, namespace) => {
+    if( namespace != 'all projects' )
+     var list = dataList.filter( item => item.namespace == namespace );
+    else
+     var list = dataList;
+
+    console.log("List Updatedisplay", list, namespace);
     if(list && list.length == 0){
         this.display = <h3 className = 'noCodebasesFound co-text-service'> No codebases found. </h3>;
     }
     else{ 
-        console.log("else",list,list.length)
         this.display = list.map((item,key)=>{
             return ( 
                 <div className="co-ip-row" key={key}>
                 <div className="row">
-                  <div className="col-lg-2 col-md-2 col-sm-4 col-xs-6 co-text-service">
+                  <div className="col-lg-2 col-md-2 col-sm-3 col-xs-4 co-text-service">
                     <p>{item.name || '-'}</p>
                   </div>
-                  <div className="col-lg-2 col-md-2 col-sm-4 col-xs-6 co-text-service">
-                    <p className="co-text-node"><ResourceIcon kind="Node" /><span>{item.namespace}</span></p>
+                  <div className="col-lg-2 col-md-2 col-sm-3 col-xs-4 co-text-service">
+                    <p className="co-text-node"><ResourceIcon kind="Node" />
+                      <span>
+                        { namespace == 'all projects' ? item.namespace : namespace }
+                      </span>
+                    </p>
                   </div>
-                  <div className="col-lg-5 col-md-5 col-sm-4 hidden-xs co-text-service">
-                    <p>{item.description}</p>
+                  <div className="col-lg-2 col-md-2 col-sm-3 col-xs-4 co-text-service">
+                    <p>{item.buildType}</p>
                   </div>
-                  <div className="col-lg-3 col-md-3 hidden-sm hidden-xs co-text-pod">
-                    <p><ResourceIcon kind="Pod" /><span>{item.location}</span></p>
+                  <div className="col-lg-4 col-md-4 hidden-sm hidden-xs co-text-service">
+                    <p>{item.codebase}</p>
+                  </div>
+                  <div className="col-lg-2 col-md-2 hidden-sm hidden-xs co-text-pod">
+                    <p><ResourceIcon kind="Pod" /><span>{item.port}</span></p>
                   </div>
                 </div>
               </div>
@@ -37,17 +67,28 @@ export class CodeBaseList extends React.Component<codebaseListProps> {
             });    
     }
   }
+
   render() {
     return(
-      <React.Fragment>
       <div className="codeBaseList">
+      <h2 className="codeBaseMainTitle"> View namespaces in {this.props.namespace ? this.props.namespace : 'all projects'} </h2>
+        <div className="codeBaseHeader">
+          <ListHeader>
+            <ColHead className="col-lg-2 col-md-2 col-sm-3 col-xs-4" sortField="metadata.name">App</ColHead>
+            <ColHead className="col-lg-2 col-md-2 col-sm-3 col-xs-4" sortField="metadata.namespace">Namespace</ColHead>
+            <ColHead className="col-lg-2 col-md-2 col-sm-3 col-xs-4" sortField="metadata.labels">Build Type</ColHead>
+            <ColHead className="col-lg-4 col-md-4 hidden-sm hidden-xs co-text-service" sortField="spec.selector">CodeBase</ColHead>
+            <ColHead className="col-lg-2 col-md-2 hidden-sm hidden-xs" sortField="spec.selector">Port</ColHead>
+          </ListHeader>          
+        </div>
         {this.display}
       </div>
-      </React.Fragment>
+        
     )
   }
 }
 
 type codebaseListProps = {
   list: Array<any>;
+  namespace: string;
 };
