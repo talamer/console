@@ -42,6 +42,7 @@ import 'url-search-params-polyfill';
 
 // Extensions
 import devConsoleRoutes from '../extend/devconsole/routes';
+import PerspectiveSwitcher from '../extend/devconsole/shared/components/PerspectiveSwitcher';
 
 // React Router's proptypes are incorrect. See https://github.com/ReactTraining/react-router/pull/5393
 Route.propTypes.path = PropTypes.oneOfType([
@@ -112,7 +113,7 @@ class App extends React.PureComponent {
     this.previousDesktopState = this._isDesktop();
 
     this.state = {
-      isNavOpen: this._isDesktop(),
+      isNavOpen: false,
     };
   }
 
@@ -170,13 +171,17 @@ class App extends React.PureComponent {
 
     return (
       <React.Fragment>
+        <PerspectiveSwitcher
+          isNavOpen={isNavOpen}
+          onNavToggle={this._onNavToggle}
+        />
         <Helmet
           titleTemplate={`%s · ${productName}`}
           defaultTitle={productName}
         />
         <Page
           header={<Masthead onNavToggle={this._onNavToggle} />}
-          sidebar={((this.props.location.pathname).startsWith("/devconsole")) ? <DevConsoleNavigation isNavOpen={isNavOpen} onNavSelect={this._onNavSelect} /> : <Navigation isNavOpen={isNavOpen} onNavSelect={this._onNavSelect} />}
+          sidebar={((this.props.location.pathname).startsWith("/devconsole")) ? <DevConsoleNavigation isNavOpen={true} onNavSelect={this._onNavSelect} /> : <Navigation isNavOpen={true} onNavSelect={this._onNavSelect} />}
         >
           <PageSection variant={PageSectionVariants.light}>
             <div id="content">
