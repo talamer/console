@@ -11,7 +11,7 @@ const HomePage: React.SFC<HomePageProps> = props => {
   if (flagPending(props.flags[FLAGS.SHOW_DEV_CONSOLE])) {
     return <LoadingBox />;
   }
-  return <div>
+  return (
     <div className="co-well">
       <h4>DevOps console Getting Started</h4>
       <p>
@@ -22,7 +22,7 @@ const HomePage: React.SFC<HomePageProps> = props => {
         DevOpsconsole is an alpha feature.
       </p>
     </div>
-  </div>;
+  )
 };
 
 export type HomePageProps = {
