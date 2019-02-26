@@ -421,5 +421,3 @@ Navigation.propTypes = {
   isNavOpen: PropTypes.bool,
   onNavSelect: PropTypes.func,
 };
-
-export { NavSection, HrefLink };
