@@ -1,16 +1,7 @@
-import { Redirect } from 'react-router-dom';
 import * as React from 'react';
-import { FLAGS, connectToFlags, flagPending } from '../../../features';
-import { LoadingBox } from '../../../components/utils/status-box';
 
 
-const HomePage: React.SFC<HomePageProps> = props => {
-  if (!props.flags[FLAGS.SHOW_DEV_CONSOLE]) {
-    return <Redirect to='/' />;
-  }
-  if (flagPending(props.flags[FLAGS.SHOW_DEV_CONSOLE])) {
-    return <LoadingBox />;
-  }
+const HomePage: React.SFC = () => {
   return (
     <div className="co-well">
       <h4>DevOps console Getting Started</h4>
@@ -25,8 +16,4 @@ const HomePage: React.SFC<HomePageProps> = props => {
   )
 };
 
-export type HomePageProps = {
-    flags: {[_: string]: boolean},
-};
-
-export default connectToFlags(FLAGS.SHOW_DEV_CONSOLE)(HomePage);
+export default HomePage;
