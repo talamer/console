@@ -5,7 +5,7 @@ import { ALL_NAMESPACES_KEY } from '../../const';
 import HomePage from './pages/Home';
 import ImportPage from './pages/Import';
 import TopologyPage from './pages/Topology';
-import CodebasesPage from './pages/Codebases';
+import ViewCodebase from './pages/ViewCodebase';
 
 
 
@@ -37,8 +37,8 @@ const DevConsoleRoutes: React.SFC = () => (
   <Switch>
     <Route path='/devconsole/import' component={ImportPage} />
 
-    <Route path="/devconsole/codebases/all-namespaces" exact component={NamespaceFromURL(CodebasesPage)} />
-    <Route path="/devconsole/codebases/ns/:ns" exact component={NamespaceFromURL(CodebasesPage)} />
+    <Route path="/devconsole/codebases/all-namespaces" exact component={NamespaceFromURL(ViewCodebase)} />
+    <Route path="/devconsole/codebases/ns/:ns" exact component={NamespaceFromURL(ViewCodebase)} />
     <Route path="/devconsole/codebases" exact component={NamespaceRedirect} />
 
     <Route path='/devconsole/topology' component={TopologyPage} />
