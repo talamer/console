@@ -166,10 +166,13 @@ class App extends React.PureComponent {
     }
   }
 
+  _sidebarNav() {
+    return ((this.props.location.pathname).startsWith("/devconsole")) ? <DevConsoleNavigation isNavOpen={true} onNavSelect={this._onNavSelect} /> : <Navigation isNavOpen={true} onNavSelect={this._onNavSelect} />;
+  }
+
   render() {
     const { isNavOpen } = this.state;
-    const SidebarNav = () => ((this.props.location.pathname).startsWith("/devconsole")) ? <DevConsoleNavigation isNavOpen={true} onNavSelect={this._onNavSelect} /> : <Navigation isNavOpen={true} onNavSelect={this._onNavSelect} />;
-
+    
     return (
       <React.Fragment>
         <PerspectiveSwitcher
@@ -182,7 +185,7 @@ class App extends React.PureComponent {
         />
         <Page
           header={<Masthead onNavToggle={this._onNavToggle} />}
-          sidebar={<SidebarNav />}
+          sidebar={this._sidebarNav()}
         >
           <PageSection variant={PageSectionVariants.light}>
             <div id="content">
