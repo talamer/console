@@ -1,9 +1,11 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { Nav, NavList, PageSidebar, NavItem } from '@patternfly/react-core';
 import { HrefLink, NavSection } from '../../../components/nav';
 
 interface DevConsoleNavigationProps {
   isNavOpen: boolean;
+  location: string;
   onNavSelect: () => void;
   onToggle: () => void;
 }
@@ -11,19 +13,23 @@ interface DevConsoleNavigationProps {
 const DevNavSection = NavSection as React.ComponentClass<any>;
 
 const PageNav = (props: DevConsoleNavigationProps) => {
+  const isActive = (path: string) => {
+    return props.location.endsWith(path);
+  };
+
   return (
     <Nav aria-label="Nav" onSelect={props.onNavSelect} onToggle={props.onToggle}>
       <NavList>
-        <NavItem to="/devconsole" itemId="itm-1">
+        <NavItem to="/devconsole" className={isActive('/devconsole') ? 'pf-m-current' : ''}>
           Home
         </NavItem>
-        <NavItem to="/devconsole/codebases" itemId="itm-2">
-          Codebase
+        <NavItem to="/devconsole/codebases" className={isActive('/codebases') ? 'pf-m-current' : ''}>
+          Codebases
         </NavItem>
-        <NavItem to="/devconsole/import" itemId="itm-1">
+        <NavItem to="/devconsole/import" className={isActive('/import') ? 'pf-m-current' : ''}>
           Import
         </NavItem>
-        <NavItem to="/devconsole/topology" itemId="itm-1">
+        <NavItem to="/devconsole/topology" className={isActive('/topology') ? 'pf-m-current' : ''}>
           Topology
         </NavItem>
         <DevNavSection title="Menu Item">
@@ -43,8 +49,16 @@ const PageNav = (props: DevConsoleNavigationProps) => {
   );
 };
 
-export const DevConsoleNavigation: React.FunctionComponent<DevConsoleNavigationProps> = (
+const DevConsoleNavigation: React.FunctionComponent<DevConsoleNavigationProps> = (
   props: DevConsoleNavigationProps,
 ) => {
   return <PageSidebar nav={<PageNav {...props} />} isNavOpen={props.isNavOpen} />;
 };
+
+const mapStateToProps = (state) => {
+  return {
+    location: state.UI.get('location'),
+  };
+};
+
+export default connect(mapStateToProps)(DevConsoleNavigation);
