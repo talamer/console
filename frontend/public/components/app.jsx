@@ -24,7 +24,7 @@ import { UIActions, getActiveNamespace } from '../ui/ui-actions';
 import { ClusterServiceVersionModel, SubscriptionModel, AlertmanagerModel } from '../models';
 import { getCachedResources, referenceForModel } from '../module/k8s';
 import k8sActions, { types } from '../module/k8s/k8s-actions';
-import DevConsoleNavigation from '../extend/devconsole/components/DevConsoleNav';
+import { DevConsoleNavigation } from '../extend/devconsole/components/DevConsoleNav';
 import '../vendor.scss';
 import '../style.scss';
 
