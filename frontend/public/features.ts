@@ -192,7 +192,7 @@ const detectUser = dispatch => coFetchJSON('api/kubernetes/apis/user.openshift.i
   );
 
   const detectDevConsole = dispatch => {
-    const devconsole_enabled = !!((process.env.DEVCONSOLE_ENABLED || false) && process.env.NODE_ENV === 'development');
+    const devconsole_enabled = !!(process.env.DEVCONSOLE_ENABLED && process.env.NODE_ENV === 'development');
     setFlag(dispatch, FLAGS.SHOW_DEV_CONSOLE, devconsole_enabled);
   }
 
