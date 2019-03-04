@@ -173,6 +173,19 @@ export const ServiceModel: K8sKind = {
   labelPlural: 'Services',
 };
 
+export const ComponentModel: K8sKind = {
+  apiGroup: 'devopsconsole.openshift.io',
+  apiVersion: 'v1alpha1',
+  label: 'Component',
+  path: 'components',
+  plural: 'components',
+  abbr: 'CM',
+  namespaced: true,
+  kind: 'Component',
+  id: 'component',
+  labelPlural: 'Components',
+};
+
 export const PodModel: K8sKind = {
   apiVersion: 'v1',
   label: 'Pod',
