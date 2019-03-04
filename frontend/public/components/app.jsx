@@ -167,7 +167,7 @@ class App extends React.PureComponent {
   }
 
   _sidebarNav() {
-    return ((this.props.location.pathname).startsWith('/devconsole')) ? <DevConsoleNavigation isNavOpen={true} onNavSelect={this._onNavSelect} /> : <Navigation isNavOpen={true} onNavSelect={this._onNavSelect} />;
+    return ((this.props.location.pathname).startsWith('/devops')) ? <DevConsoleNavigation isNavOpen={true} onNavSelect={this._onNavSelect} /> : <Navigation isNavOpen={true} onNavSelect={this._onNavSelect} />;
   }
 
   render() {

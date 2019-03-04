@@ -20,28 +20,28 @@ const PageNav = (props: DevConsoleNavigationProps) => {
   return (
     <Nav aria-label="Nav" onSelect={props.onNavSelect} onToggle={props.onToggle}>
       <NavList>
-        <NavItem to="/devconsole" className={isActive('/devconsole') ? 'pf-m-current' : ''}>
+        <NavItem to="/devops" className={isActive('/devops') ? 'pf-m-current' : ''}>
           Home
         </NavItem>
-        <NavItem to="/devconsole/codebases" className={isActive('/codebases') ? 'pf-m-current' : ''}>
+        <NavItem to="/devops/codebases" className={isActive('/codebases') ? 'pf-m-current' : ''}>
           Codebases
         </NavItem>
-        <NavItem to="/devconsole/import" className={isActive('/import') ? 'pf-m-current' : ''}>
+        <NavItem to="/devops/import" className={isActive('/import') ? 'pf-m-current' : ''}>
           Import
         </NavItem>
-        <NavItem to="/devconsole/topology" className={isActive('/topology') ? 'pf-m-current' : ''}>
+        <NavItem to="/devops/topology" className={isActive('/topology') ? 'pf-m-current' : ''}>
           Topology
         </NavItem>
         <DevNavSection title="Menu Item">
           <HrefLink
-            href="/devconsole/submenu_1"
+            href="/devops/submenu_1"
             name="Sub Menu 1"
-            activePath="/devconsole/submenu_1/"
+            activePath="/devops/submenu_1/"
           />
           <HrefLink
-            href="/devconsole/submenu_2"
+            href="/devops/submenu_2"
             name="Sub Menu 2"
-            activePath="/devconsole/submenu_2/"
+            activePath="/devops/submenu_2/"
           />
         </DevNavSection>
       </NavList>

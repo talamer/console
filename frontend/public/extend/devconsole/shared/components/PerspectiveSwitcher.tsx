@@ -18,7 +18,7 @@ const PerspectiveSwitcher: React.SFC<PerspectiveSwitcherProps> = (props: Perspec
     <ul>
       <li>
         <NavLink
-          to="/devconsole"
+          to="/devops"
           onClick={props.onNavToggle}
           activeClassName="devops-perspective-switcher__active-link"
         >
@@ -29,7 +29,7 @@ const PerspectiveSwitcher: React.SFC<PerspectiveSwitcherProps> = (props: Perspec
         <NavLink
           to="/k8s/cluster/projects"
           onClick={props.onNavToggle}
-          isActive={(match, { pathname }):boolean => !pathname.startsWith('/devconsole')}
+          isActive={(match, { pathname }):boolean => !pathname.startsWith('/devops')}
           activeClassName="devops-perspective-switcher__active-link"
         >
           Admin Console

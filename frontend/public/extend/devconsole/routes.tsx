@@ -4,7 +4,7 @@ import { AsyncComponent } from '../../components/utils';
 
 const routes: RouteProps[] = [
   {
-    path: '/devconsole/import',
+    path: '/devops/import',
     // eslint-disable-next-line react/display-name
     render: (props) => (
       <AsyncComponent
@@ -16,7 +16,7 @@ const routes: RouteProps[] = [
     ),
   },
   {
-    path: '/devconsole/codebases',
+    path: '/devops/codebases',
     // eslint-disable-next-line react/display-name
     render: (props) => (
       <AsyncComponent
@@ -28,7 +28,7 @@ const routes: RouteProps[] = [
     ),
   },
   {
-    path: '/devconsole/topology',
+    path: '/devops/topology',
     // eslint-disable-next-line react/display-name
     render: (props) => (
       <AsyncComponent
@@ -40,7 +40,7 @@ const routes: RouteProps[] = [
     ),
   },
   {
-    path: '/devconsole',
+    path: '/devops',
     // eslint-disable-next-line react/display-name
     render: (props) => (
       <AsyncComponent
