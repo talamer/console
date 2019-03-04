@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Nav, NavList, PageSidebar, NavItem } from '@patternfly/react-core';

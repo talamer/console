@@ -1,7 +1,8 @@
+/* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { Modal } from '@patternfly/react-core';
 import { NavLink } from 'react-router-dom';
-import './PerspectiveSwitcher.scss'
+import './PerspectiveSwitcher.scss';
 
 export interface PerspectiveSwitcherProps {
   isNavOpen: boolean,

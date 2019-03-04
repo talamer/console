@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { RouteProps } from 'react-router';
 import { AsyncComponent } from '../../components/utils';
