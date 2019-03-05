@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Nav, NavList, PageSidebar, NavItem } from '@patternfly/react-core';
+import { Nav, NavList, PageSidebar } from '@patternfly/react-core';
 import { HrefLink, NavSection } from '../../../components/nav';
 
 interface DevConsoleNavigationProps {
@@ -22,26 +21,30 @@ const PageNav = (props: DevConsoleNavigationProps) => {
   return (
     <Nav aria-label="Nav" onSelect={props.onNavSelect} onToggle={props.onToggle}>
       <NavList>
-        <NavItem className= {isActive('/devops')? 'pf-m-current' : ''}> 
-          <Link to="/devops">
-            Home
-          </Link>
-        </NavItem>
-        <NavItem className= {isActive('/codebases')? 'pf-m-current' : ''}>
-          <Link to="/devops/codebases" >
-            Codebases
-          </Link>
-        </NavItem>
-        <NavItem className={isActive('/import') ? 'pf-m-current' : ''}>
-          <Link to="/devops/import" >
-            Import
-          </Link>
-        </NavItem>
-        <NavItem className={isActive('/topology') ? 'pf-m-current' : ''}>
-          <Link to="/devops/topology">
-            Topology
-          </Link>
-        </NavItem>
+        <HrefLink
+          href="/devops"
+          name="Home"
+          activePath="/devops"
+          isActive={isActive('/devops')}
+        />
+        <HrefLink
+          href="/devops/codebases"
+          name="Codebases"
+          activePath="/devops/codebases"
+          isActive={isActive('/codebases')}
+        />
+        <HrefLink
+          href="/devops/import"
+          name="Import"
+          activePath="/devops/import"
+          isActive={isActive('/import')}
+        />
+        <HrefLink
+          href="/devops/topology"
+          name="Topology"
+          activePath="/devops/topology"
+          isActive={isActive('/topology')}
+        />
         <DevNavSection title="Menu Item">
           <HrefLink
             href="/devops/submenu_1"
