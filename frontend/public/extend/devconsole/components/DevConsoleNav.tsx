@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { Nav, NavList, PageSidebar, NavItem } from '@patternfly/react-core';
 import { HrefLink, NavSection } from '../../../components/nav';
 
@@ -21,17 +22,25 @@ const PageNav = (props: DevConsoleNavigationProps) => {
   return (
     <Nav aria-label="Nav" onSelect={props.onNavSelect} onToggle={props.onToggle}>
       <NavList>
-        <NavItem to="/devops" className={isActive('/devops') ? 'pf-m-current' : ''}>
-          Home
+        <NavItem className= {isActive('/devops')? 'pf-m-current' : ''}> 
+          <Link to="/devops">
+            Home
+          </Link>
         </NavItem>
-        <NavItem to="/devops/codebases" className={isActive('/codebases') ? 'pf-m-current' : ''}>
-          Codebases
+        <NavItem className= {isActive('/codebases')? 'pf-m-current' : ''}>
+          <Link to="/devops/codebases" >
+            Codebases
+          </Link>
         </NavItem>
-        <NavItem to="/devops/import" className={isActive('/import') ? 'pf-m-current' : ''}>
-          Import
+        <NavItem className={isActive('/import') ? 'pf-m-current' : ''}>
+          <Link to="/devops/import" >
+            Import
+          </Link>
         </NavItem>
-        <NavItem to="/devops/topology" className={isActive('/topology') ? 'pf-m-current' : ''}>
-          Topology
+        <NavItem className={isActive('/topology') ? 'pf-m-current' : ''}>
+          <Link to="/devops/topology">
+            Topology
+          </Link>
         </NavItem>
         <DevNavSection title="Menu Item">
           <HrefLink
