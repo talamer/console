@@ -25,7 +25,7 @@ const ComponentHeader = props => <ListHeader>
 
 const ComponentRow = ({obj: s}) => <ResourceRow obj={s}>
   <div className="col-lg-3 col-md-3 col-sm-4 col-xs-6 co-text-service">
-    <p>{s.metadata.name}</p> 
+    <ResourceLink kind="Component" name={s.metadata.name} title={s.metadata.name}/> 
   </div>
   <div className="col-lg-2 col-md-2 col-sm-4 hidden-xs">
     <ResourceLink kind="Namespace" name={s.metadata.namespace} title={s.metadata.namespace} />
@@ -33,16 +33,16 @@ const ComponentRow = ({obj: s}) => <ResourceRow obj={s}>
   <div className="col-lg-2 col-md-2 hidden-sm hidden-xs co-text-service">
     <p>{s.spec.buildtype}</p>
   </div>
-  <div className="col-lg-3 col-md-3 col-sm-4 col-xs-6 co-text-service">
-    <p>{s.spec.codebase}</p>
+  <div className="col-lg-3 col-md-3 col-sm-4 col-xs-6 co-text-pods">
+    <p><a href={s.spec.codebase} target="blank" >{s.spec.codebase}</a> <i class='fa fa-external-link' /></p>
   </div>
-  <div className="col-lg-2 col-md-2 hidden-sm hidden-xs co-text-pod">
+  <div className="col-lg-2 col-md-2 hidden-sm hidden-xs co-text-service">
     <p>{s.spec.listenport}</p>
   </div>
 </ResourceRow>;
 
-const ServiceAddress = ({s}) => {
-  const ServiceIPsRow = (name, desc, ips, note = null) => <div className="co-ip-row">
+const ComponentAddress = ({s}) => {
+  const ComponentIPsRow = (name, desc, ips, note = null) => <div className="co-ip-row">
     <div className="row">
       <div className="col-xs-6">
         <p className="ip-name">{name}</p>
@@ -52,16 +52,16 @@ const ServiceAddress = ({s}) => {
     </div>
   </div>;
 
-  const ServiceType = (type) => {
+  const ComponentType = (type) => {
     switch (type) {
       case 'NodePort':
-        return ServiceIPsRow('Node Port', 'Accessible outside the cluster', _.map(s.spec.ports, 'nodePort'), '(all nodes): ');
+        return ComponentIPsRow('Node Port', 'Accessible outside the cluster', _.map(s.spec.ports, 'nodePort'), '(all nodes): ');
       case 'LoadBalancer':
-        return ServiceIPsRow('External Load Balancer', 'Ingress point(s) of load balancer', _.map(s.status.loadBalancer.ingress, i => i.hostname || i.ip || '-'));
+        return ComponentIPsRow('External Load Balancer', 'Ingress point(s) of load balancer', _.map(s.status.loadBalancer.ingress, i => i.hostname || i.ip || '-'));
       case 'ExternalName':
-        return ServiceIPsRow('External Service Name', 'Location of the resource that backs the service', [s.spec.externalName]);
+        return ComponentIPsRow('External Service Name', 'Location of the resource that backs the service', [s.spec.externalName]);
       default:
-        return ServiceIPsRow('Cluster IP', 'Accessible within the cluster only', [s.spec.clusterIP]);
+        return ComponentIPsRow('Cluster IP', 'Accessible within the cluster only', [s.spec.clusterIP]);
     }
   };
 
@@ -71,13 +71,13 @@ const ServiceAddress = ({s}) => {
       <div className="col-xs-6">Location</div>
     </div>
     <div className="rows">
-      {ServiceType(s.spec.type)}
-      {s.spec.externalIPs && ServiceIPsRow('External IP', 'IP Address(es) accepting traffic for service', s.spec.externalIPs)}
+      {ComponentType(s.spec.type)}
+      {s.spec.externalIPs && ComponentIPsRow('External IP', 'IP Address(es) accepting traffic for service', s.spec.externalIPs)}
     </div>
   </div>;
 };
 
-const ServicePortMapping = ({ports}) => <div>
+const ComponentPortMapping = ({ports}) => <div>
   <div className="row co-ip-header">
     <div className="col-xs-3">Name</div>
     <div className="col-xs-3">Port</div>
@@ -111,22 +111,22 @@ const ServicePortMapping = ({ports}) => <div>
 const Details = ({obj: s}) => <div className="co-m-pane__body">
   <div className="row">
     <div className="col-sm-6">
-      <SectionHeading text="Service Overview" />
+      <SectionHeading text="Component Overview" />
       <ResourceSummary resource={s} showNodeSelector={false}>
         <dt>Session Affinity</dt>
         <dd>{s.spec.sessionAffinity || '-'}</dd>
       </ResourceSummary>
     </div>
     <div className="col-sm-6">
-      <SectionHeading text="Service Routing" />
+      <SectionHeading text="Component Routing" />
       <dl>
         <dt>Service Address</dt>
         <dd className="service-ips">
-          <ServiceAddress s={s} />
+          <ComponentAddress s={s} />
         </dd>
         <dt>Service Port Mapping</dt>
         <dd className="service-ips">
-          {s.spec.ports ? <ServicePortMapping ports={s.spec.ports} /> : '-'}
+          {s.spec.ports ? <ComponentPortMapping ports={s.spec.ports} /> : '-'}
         </dd>
       </dl>
     </div>

@@ -21,8 +21,8 @@ const routes: RouteProps[] = [
   {
     path: '/devops/codebases',
     // eslint-disable-next-line react/display-name
-    render: (props) => (
-      getCodebaseRedirection()
+    render: () => (  
+      getRedirection('/devconsole/codebases')
     ),
     exact:true
   },
@@ -34,7 +34,7 @@ const routes: RouteProps[] = [
           {...props}
           namespace = {getNamespace()}
           loader={async() =>
-            (await import('./pages/ViewCodebase' /* webpackChunkName: "devconsole-codebases" */)).default
+            (await import('./pages/ViewCodebase.jsx' /* webpackChunkName: "devconsole-codebases" */)).default
           }
         />
     ),
@@ -46,7 +46,7 @@ const routes: RouteProps[] = [
       <AsyncComponent
         {...props}
         loader={async() =>
-          (await import('./pages/ViewCodebase' /* webpackChunkName: "devconsole-codebases" */)).default
+          (await import('./pages/ViewCodebase.jsx' /* webpackChunkName: "devconsole-codebases" */)).default
         }
       />
     ),
@@ -76,17 +76,16 @@ const routes: RouteProps[] = [
     ),
   },
 ];
-const getCodebaseRedirection = () => {
+const getRedirection = (basePath) => {
   var namespace = getNamespace();
   if(namespace){
-    var path =  "/devconsole/codebases/ns/" + namespace 
+    var path =  basePath + "/ns/" + namespace 
     return <Redirect to = {path} />
   } 
     return <Redirect to = "/devconsole/codebases/all-namespaces" />
 
 }
 const getNamespace = () => {
-  console.log(getActiveNamespace());
   var activeNamespace = getActiveNamespace();
   return activeNamespace != ALL_NAMESPACES_KEY? activeNamespace : ''
 }
