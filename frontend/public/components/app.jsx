@@ -366,11 +366,11 @@ if ('serviceWorker' in navigator) {
       .catch(e => console.warn('Error unregistering service workers', e));
   }
 }
-
+const AppComponent = connectToFlags(FLAGS.SHOW_DEV_CONSOLE)(App);
 render((
   <Provider store={store}>
     <Router history={history} basename={window.SERVER_FLAGS.basePath}>
-      <Route path="/" component={connectToFlags(FLAGS.SHOW_DEV_CONSOLE)(App)} />
+      <Route path="/" component={AppComponent} />
     </Router>
   </Provider>
 ), document.getElementById('app'));
