@@ -171,7 +171,7 @@ class App extends React.PureComponent {
   }
 
   render() {
-    const { isNavOpen, devconsoleEnabled } = this.state;
+    const { isNavOpen } = this.state;
     const devconsoleEnabled = this.props.flags.SHOW_DEV_CONSOLE;
 
     return (
