@@ -191,9 +191,16 @@ const detectUser = dispatch => coFetchJSON('api/kubernetes/apis/user.openshift.i
     },
   );
 
+const devopsConsolePath = `${k8sBasePath}/apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions/gitsources.devopsconsole.openshift.io`;
 const detectDevConsole = dispatch => {
   const devconsoleEnabled = !!(process.env.DEVCONSOLE_ENABLED && process.env.NODE_ENV === 'development');
-  setFlag(dispatch, FLAGS.SHOW_DEV_CONSOLE, devconsoleEnabled);
+  coFetchJSON(devopsConsolePath)
+  .then(
+    res => {console.log(res); setFlag(dispatch, FLAGS.SHOW_DEV_CONSOLE, res && devconsoleEnabled)},
+    err => _.get(err, 'response.status') === 404
+      ? setFlag(dispatch, FLAGS.SHOW_DEV_CONSOLE, false)
+      : handleError(err, FLAGS.SHOW_DEV_CONSOLE, dispatch, detectDevConsole)
+  )
 };
 
 export const featureActions = [
