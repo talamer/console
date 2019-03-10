@@ -1,0 +1,10 @@
+apiVersion: devopsconsole.openshift.io/v1alpha1
+kind: Component
+metadata:
+  name: nimisha
+spec:
+  # Add fields here
+  app: "openshiftio"
+  buildtype: "react"
+  codebase: "https://github.com/sbose78/nodejs-rest-http-crud"
+  listenport: 9000

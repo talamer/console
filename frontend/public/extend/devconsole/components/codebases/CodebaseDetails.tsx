@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { SectionHeading, ResourceSummary } from '../../../../components/utils';
 
-const ComponentDetails = ({obj: s}) => <div className="co-m-pane__body">
+const CodebaseDetails = ({obj: s}) => <div className="co-m-pane__body">
   <div className="row">
     <div className="col-sm-6">
       <SectionHeading text="Component Overview" />
@@ -26,4 +26,4 @@ const ComponentDetails = ({obj: s}) => <div className="co-m-pane__body">
   </div>
 </div>;
 
-export {ComponentDetails};
+export default CodebaseDetails;
