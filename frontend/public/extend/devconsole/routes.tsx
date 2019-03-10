@@ -22,31 +22,31 @@ const routes: RouteProps[] = [
     path: '/devops/codebases',
     // eslint-disable-next-line react/display-name
     render: () => (  
-      getRedirection('/devconsole/codebases')
+      getRedirection('/devops/codebases')
     ),
     exact:true
   },
   {
-    path: '/devconsole/codebases/ns/:ns',
+    path: '/devops/codebases/ns/:ns',
     // eslint-disable-next-line react/display-name
     render: (props) => (
         <AsyncComponent
           {...props}
           namespace = {getNamespace()}
           loader={async() =>
-            (await import('./pages/ViewCodebase.jsx' /* webpackChunkName: "devconsole-codebases" */)).default
+            (await import('./pages/Codebases' /* webpackChunkName: "devconsole-codebases" */)).default
           }
         />
     ),
   },
   {
-    path: '/devconsole/codebases/all-namespaces',
+    path: '/devops/codebases/all-namespaces',
     // eslint-disable-next-line react/display-name
     render: (props) => (
       <AsyncComponent
         {...props}
         loader={async() =>
-          (await import('./pages/ViewCodebase.jsx' /* webpackChunkName: "devconsole-codebases" */)).default
+          (await import('./pages/Codebases' /* webpackChunkName: "devconsole-codebases" */)).default
         }
       />
     ),
@@ -82,7 +82,7 @@ const getRedirection = (basePath) => {
     var path =  basePath + "/ns/" + namespace 
     return <Redirect to = {path} />
   } 
-    return <Redirect to = "/devconsole/codebases/all-namespaces" />
+    return <Redirect to ={ basePath + "/all-namespaces"} />
 
 }
 const getNamespace = () => {
