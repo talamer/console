@@ -1,0 +1,10 @@
+apiVersion: devopsconsole.openshift.io/v1alpha1
+kind: Component
+metadata:
+  name: joshua
+spec:
+  # Add fields here
+  app: "kube-dns"
+  buildtype: "angular"
+  codebase: "https://github.com/sbose78/nodejs-rest-http-crud"
+  listenport: 4200

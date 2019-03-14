@@ -1,0 +1,10 @@
+apiVersion: devopsconsole.openshift.io/v1alpha1
+kind: Component
+metadata:
+  name: dimo
+spec:
+  # Add fields here
+  app: "kube-dns"
+  buildtype: "nodejs"
+  codebase: "https://github.com/sbose78/nodejs-rest-http-crud"
+  listenport: 8080
