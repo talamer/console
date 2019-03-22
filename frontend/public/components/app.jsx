@@ -14,6 +14,7 @@ import { analyticsSvc } from '../module/analytics';
 import { ClusterSettingsPage } from './cluster-settings/cluster-settings';
 import { GlobalNotifications } from './global-notifications';
 import { Masthead } from './masthead';
+import { ImportFlow } from './import-flow/import-flow';
 import { NamespaceBar } from './namespace';
 import { Navigation } from './nav';
 import { SearchPage } from './search';
@@ -199,6 +200,7 @@ class App extends React.PureComponent {
                   <LazyRoute path="/overview/all-namespaces" exact loader={() => import('./cluster-overview' /* webpackChunkName: "cluster-overview" */).then(m => m.ClusterOverviewPage)} />
                   <LazyRoute path="/overview/ns/:ns" exact loader={() => import('./overview' /* webpackChunkName: "overview" */).then(m => m.OverviewPage)} />
                   <Route path="/overview" exact component={NamespaceRedirect} />
+                  <Route path="/import" exact component={ImportFlow} />
 
                   <LazyRoute path="/status/all-namespaces" exact loader={() => import('./cluster-overview' /* webpackChunkName: "cluster-overview" */).then(m => m.ClusterOverviewPage)} />
                   <LazyRoute path="/status/ns/:ns" exact loader={() => import('./cluster-overview' /* webpackChunkName: "cluster-overview" */).then(m => m.ClusterOverviewPage)} />

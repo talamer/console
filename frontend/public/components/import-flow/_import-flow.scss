@@ -1,0 +1,48 @@
+.catalog-item-header-pf-icon {
+  display: none;
+}
+.catalog-item-header-pf-text {
+  margin-left: 0px;
+}
+.image {
+  &__item{
+    height: 150px !important;
+    width: 150px !important;
+  }
+}
+.import {
+  &__catalog {
+    margin: 0 auto;
+    max-width: 715px;
+    justify-content: center;
+    border: 1px solid #bbb;
+  }
+  &__filter {
+    width: 100%;
+    padding: 5px 40px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #bbb;
+    .form-control {
+      width: 250px;
+      float: right;
+    }
+  }
+  &__auth {
+    padding: 20px 60px;
+  }
+  &__option {
+    .btn-link {
+      font-size: 24px;
+      color: #000;
+    }
+    .expand-collapse-pf-separator {
+      margin-top: 24px;
+    }
+  }
+  &.form-control {
+    max-width: 600px;
+  }
+  &.form-group {
+    margin-bottom: 40px;
+  }
+}
