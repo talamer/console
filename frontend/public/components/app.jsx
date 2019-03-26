@@ -8,7 +8,7 @@ import * as PropTypes from 'prop-types';
 
 import store from '../redux';
 import { productName } from '../branding';
-import { ALL_NAMESPACES_KEY } from '../const';
+import { ALL_NAMESPACES_KEY, LAST_PERSPECTIVE_LOCAL_STORAGE_KEY } from '../const';
 import { connectToFlags, featureActions, flagPending, FLAGS } from '../features';
 import { analyticsSvc } from '../module/analytics';
 import { GlobalNotifications } from './global-notifications';
@@ -19,7 +19,7 @@ import { SearchPage } from './search';
 import { ResourceDetailsPage, ResourceListPage } from './resource-list';
 import { history, AsyncComponent, Loading } from './utils';
 import { namespacedPrefixes } from './utils/link';
-import { UIActions, getActiveNamespace } from '../ui/ui-actions';
+import { UIActions, getActiveNamespace, getActivePerspective } from '../ui/ui-actions';
 import { ClusterServiceVersionModel, SubscriptionModel, AlertmanagerModel } from '../models';
 import { getCachedResources, referenceForModel } from '../module/k8s';
 import k8sActions, { types } from '../module/k8s/k8s-actions';
@@ -87,12 +87,17 @@ const NamespaceRedirect = ({location: {pathname}}) => {
 // The default page component lets us connect to flags without connecting the entire App.
 const DefaultPage = connectToFlags(FLAGS.OPENSHIFT)(({ flags }) => {
   const openshiftFlag = flags[FLAGS.OPENSHIFT];
+  const lastViewedPerspective = localStorage.getItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY);
   if (flagPending(openshiftFlag)) {
     return <Loading />;
   }
 
   if (openshiftFlag) {
-    return <Redirect to="/k8s/cluster/projects" />;
+    return lastViewedPerspective && lastViewedPerspective !== 'admin' ? (
+      <Redirect to={lastViewedPerspective} />
+    ) : (
+      <Redirect to="/k8s/cluster/projects" />
+    );
   }
 
   const statusPage = appendActiveNamespace('/status');
@@ -166,7 +171,12 @@ class App extends React.PureComponent {
   }
 
   _sidebarNav() {
-    return ((this.props.location.pathname).startsWith('/devops')) ? <DevConsoleNavigation isNavOpen={true} onNavSelect={this._onNavSelect} /> : <Navigation isNavOpen={true} onNavSelect={this._onNavSelect} />;
+    switch (getActivePerspective()) {
+      case 'dev':
+        return <DevConsoleNavigation isNavOpen={true} onNavSelect={this._onNavSelect} />;
+      default:
+        return <Navigation isNavOpen={true} onNavSelect={this._onNavSelect} />;
+    }
   }
 
   render() {

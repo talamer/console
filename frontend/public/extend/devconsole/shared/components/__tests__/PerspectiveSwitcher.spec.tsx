@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import * as React from 'react';
 import { shallow, ShallowWrapper } from 'enzyme';
-import PerspectiveSwitcher from '../PerspectiveSwitcher';
+import { PerspectiveSwitcher } from '../PerspectiveSwitcher';
 import { Modal } from '@patternfly/react-core';
 
 describe('PerspectiveSwitcher', () => {
@@ -11,7 +11,9 @@ describe('PerspectiveSwitcher', () => {
     switcherWrapper = shallow(
       <PerspectiveSwitcher
         isNavOpen={false}
+        activePerspective="dev"
         onNavToggle={() => {}}
+        onChangePerspective={() => {}}
       />
     );
     expect(switcherWrapper.find(Modal).length).toEqual(1);
@@ -22,7 +24,9 @@ describe('PerspectiveSwitcher', () => {
     switcherWrapper = shallow(
       <PerspectiveSwitcher
         isNavOpen={true}
+        activePerspective="admin"
         onNavToggle={() => {}}
+        onChangePerspective={() => {}}
       />
     );
     expect(switcherWrapper.find(Modal).prop('isOpen')).toEqual(true);

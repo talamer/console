@@ -1,12 +1,19 @@
 import * as _ from 'lodash-es';
-import { ALL_NAMESPACES_KEY } from '../public/const';
+import { ALL_NAMESPACES_KEY, LAST_PERSPECTIVE_LOCAL_STORAGE_KEY } from '../public/const';
 import '../__mocks__/localStorage';
 
 import store from '../public/redux';
-import { UIActions, getActiveNamespace, formatNamespaceRoute, formatNamespacedRouteForResource } from '../public/ui/ui-actions';
+import {
+  UIActions,
+  getActiveNamespace,
+  getActivePerspective,
+  formatNamespaceRoute,
+  formatNamespacedRouteForResource,
+} from '../public/ui/ui-actions';
 import * as router from '../public/components/utils/router';
 
 const setActiveNamespace = ns => store.dispatch(UIActions.setActiveNamespace(ns));
+const setActivePerspective = perspective => store.dispatch(UIActions.setActivePerspective(perspective));
 const getNamespacedRoute = path => formatNamespaceRoute(getActiveNamespace(), path);
 
 describe('ui-actions', () => {
@@ -103,6 +110,21 @@ describe('ui-actions', () => {
       setActiveNamespace(ALL_NAMESPACES_KEY);
       expect(getNamespacedRoute('/k8s/ns/foo/pods')).toEqual('/k8s/all-namespaces/pods');
       expect(getNamespacedRoute('/k8s/ns/foo/pods/WACKY_SUFFIX')).toEqual('/k8s/all-namespaces/pods');
+    });
+  });
+
+  describe('setActivePerspective', () => {
+    it('should set active perspective in store', () => {
+      setActivePerspective('test1');
+      expect(getActivePerspective()).toEqual('test1');
+      setActivePerspective('test2');
+      expect(getActivePerspective()).toEqual('test2');
+    });
+
+    it('sets active perspective in localStorage', () => {
+      setActivePerspective('test');
+      expect(getActivePerspective()).toEqual('test');
+      expect(localStorage.getItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY)).toEqual('test');
     });
   });
 });
