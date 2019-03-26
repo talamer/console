@@ -5,18 +5,24 @@ import { NavLink } from 'react-router-dom';
 import './PerspectiveSwitcher.scss';
 import * as openshiftIconImg from '../../../../imgs/openshift-favicon.png';
 import { UIActions } from '../../../../ui/ui-actions';
-import { connect } from 'react-redux';
+import { connect, Dispatch } from 'react-redux';
 
 export interface PerspectiveSwitcherProps {
   isNavOpen: boolean;
-  activePerspective: string;
   onNavToggle: (MouseEvent) => void;
+}
+
+interface StateProps {
+  activePerspective: string;
+}
+
+interface DispatchProps {
   onChangePerspective: (string) => void;
 }
 
-export const PerspectiveSwitcher: React.FunctionComponent<PerspectiveSwitcherProps> = (
-  props: PerspectiveSwitcherProps,
-) => (
+type Props = StateProps & DispatchProps & PerspectiveSwitcherProps;
+
+export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props) => (
   <Modal
     isLarge
     title=""
@@ -28,7 +34,7 @@ export const PerspectiveSwitcher: React.FunctionComponent<PerspectiveSwitcherPro
       <ul className="pf-c-nav__simple-list">
         <li className="pf-c-nav__item">
           <NavLink
-            to="/k8s/cluster/projects"
+            to="/"
             onClick={(e) => {
               props.onChangePerspective('admin');
               props.onNavToggle(e);
@@ -68,13 +74,13 @@ export const PerspectiveSwitcher: React.FunctionComponent<PerspectiveSwitcherPro
   </Modal>
 );
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state): StateProps => {
   return {
     activePerspective: state.UI.get('activePerspective'),
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
     onChangePerspective: (perspective) => {
       dispatch(UIActions.setActivePerspective(perspective));

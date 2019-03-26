@@ -53,20 +53,13 @@ export default (state, action) => {
       return state.set('activeNamespace', action.value);
 
     case types.setActivePerspective:
-      if (!action.value) {
-        // eslint-disable-next-line no-console
-        console.warn('setActivePerspective: Not setting to falsy!');
-        return state;
-      }
       return state.set('activePerspective', action.value);
 
     case types.setCurrentLocation: {
       state = state.set('location', action.location);
       const ns = getNamespace(action.location);
       const perspective = getPerspective(action.location);
-      if (!_.isUndefined(perspective)) {
-        state = state.set('activePerspective', perspective);
-      }
+      state = state.set('activePerspective', perspective);
 
       if (_.isUndefined(ns)) {
         return state;
