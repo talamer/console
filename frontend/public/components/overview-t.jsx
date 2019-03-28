@@ -4,7 +4,7 @@ import { NavTitle, Firehose } from './utils';
 import { AppTopology } from './app-topology/app-topology';
 import {namespaceProptype} from "../propTypes";
 
-export const Overview = ({namespace, ...props}) => {
+export const OverviewT = ({namespace, ...props}) => {
   if (namespace) {
     const resources = [
       {
@@ -44,7 +44,7 @@ export const Overview = ({namespace, ...props}) => {
         <Helmet>
           <title>Overview</title>
         </Helmet>
-        <NavTitle detail={true} title={`Overview of ${namespace}`}/>
+        {/* <NavTitle detail={true} title={`Overview of ${namespace}`}/> */}
         <Firehose resources={resources} className="app-topology-container">
           <AppTopology namespace={namespace} {...props} />
         </Firehose>
@@ -57,14 +57,14 @@ export const Overview = ({namespace, ...props}) => {
       <Helmet>
         <title>Overview</title>
       </Helmet>
-      <NavTitle detail={true} title="Cluster Overview"/>
+    {/*<NavTitle detail={true} title="Cluster Overview"/>*/}
     </div>
   );
 };
 
-Overview.defaultProps = {
+OverviewT.defaultProps = {
 };
 
-Overview.propTypes = {
+OverviewT.propTypes = {
   namespace: namespaceProptype
 };

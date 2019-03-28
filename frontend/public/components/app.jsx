@@ -17,7 +17,7 @@ import { ContainersDetailsPage } from './container';
 import { CreateYAML, EditYAMLPage } from './create-yaml';
 import { ErrorPage, ErrorPage404 } from './error';
 import { EventStreamPage } from './events';
-import { Overview } from './overview';
+import { OverviewT } from './overview-t';
 import { GlobalNotifications } from './global-notifications';
 import { Masthead } from './masthead';
 import { NamespaceBar } from './namespace';
@@ -205,6 +205,7 @@ class App extends React.PureComponent {
                   <LazyRoute path="/overview/all-namespaces" exact loader={() => import('./cluster-overview' /* webpackChunkName: "cluster-overview" */).then(m => m.ClusterOverviewPage)} />
                   <LazyRoute path="/overview/ns/:ns" exact loader={() => import('./overview' /* webpackChunkName: "overview" */).then(m => m.OverviewPage)} />
                   <Route path="/overview" exact component={NamespaceRedirect} />
+                  <Route path="/topology/ns/:ns" exact component={NamespaceFromURL(OverviewT)} />
 
                   <LazyRoute path="/status/all-namespaces" exact loader={() => import('./cluster-overview' /* webpackChunkName: "cluster-overview" */).then(m => m.ClusterOverviewPage)} />
                   <LazyRoute path="/status/ns/:ns" exact loader={() => import('./cluster-overview' /* webpackChunkName: "cluster-overview" */).then(m => m.ClusterOverviewPage)} />
