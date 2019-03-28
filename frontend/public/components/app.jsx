@@ -195,7 +195,7 @@ class App extends React.PureComponent {
           defaultTitle={productName}
         />
         <Page
-          header={<Masthead onNavToggle={this._onNavToggle} />}
+          header={<Masthead activePerspective={getActivePerspective()} onNavToggle={this._onNavToggle} />}
           sidebar={this._sidebarNav()}
         >
           <PageSection variant={PageSectionVariants.light}>

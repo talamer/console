@@ -48,9 +48,9 @@ export const getBrandingDetails = () => {
   return { logoImg, logoAlt, productTitle };
 };
 
-export const Masthead = ({ onNavToggle }) => {
+export const Masthead = ({ activePerspective, onNavToggle }) => {
   const details = getBrandingDetails();
-  const defaultRoute = '/';
+  const defaultRoute = activePerspective !== 'admin' ? `/${activePerspective}` : '/';
   const logoProps = {
     href: defaultRoute,
     // use onClick to prevent browser reload
