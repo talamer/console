@@ -17,7 +17,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
-  onChangePerspective: (string) => void;
+  onPerspectiveChange(string): void;
 }
 
 type Props = StateProps & DispatchProps & PerspectiveSwitcherProps;
@@ -36,7 +36,7 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
           <NavLink
             to="/"
             onClick={(e) => {
-              props.onChangePerspective('admin');
+              props.onPerspectiveChange('admin');
               props.onNavToggle(e);
             }}
             className="pf-c-nav__link"
@@ -45,7 +45,7 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
           >
             <img
               src={openshiftIconImg}
-              alt="Admin Console"
+              alt="Administrator"
               className="devops-perspective-switcher__openshift-logo"
             />{' '}
             Administrator
@@ -55,7 +55,7 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
           <NavLink
             to="/dev"
             onClick={(e) => {
-              props.onChangePerspective('dev');
+              props.onPerspectiveChange('dev');
               props.onNavToggle(e);
             }}
             className="pf-c-nav__link"
@@ -63,7 +63,7 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
           >
             <img
               src={openshiftIconImg}
-              alt="Dev Console"
+              alt="Developer"
               className="devops-perspective-switcher__openshift-logo"
             />{' '}
             Developer
@@ -82,7 +82,7 @@ const mapStateToProps = (state): StateProps => {
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
-    onChangePerspective: (perspective) => {
+    onPerspectiveChange: (perspective) => {
       dispatch(UIActions.setActivePerspective(perspective));
     },
   };
