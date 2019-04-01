@@ -1,13 +1,14 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
-import { Modal } from '@patternfly/react-core';
-import { NavLink } from 'react-router-dom';
-import './PerspectiveSwitcher.scss';
 import * as openshiftIconImg from '../../../../imgs/openshift-favicon.png';
 import { connectToFlags, flagPending, FLAGS } from '../../../../features';
 import { UIActions } from '../../../../ui/ui-actions';
 import { connect, Dispatch } from 'react-redux';
 import { getActivePerspective } from '../../../../ui/ui-selectors';
+import MegaMenu from '../../shared/components/MegaMenu/MegaMenu';
+import MegaMenuItem from './MegaMenu/MegaMenuItem';
+import MegaMenuSection from './MegaMenu/MegaMenuSection';
+import MegaMenuNav from './MegaMenu/MegaMenuNav';
 
 export interface PerspectiveSwitcherProps {
   isNavOpen: boolean;
@@ -31,65 +32,37 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
       return null;
     }
     return (
-      <li className="pf-c-nav__item">
-        <NavLink
-          to="/dev"
-          onClick={(e) => {
-            props.onPerspectiveChange('dev');
-            props.onNavToggle(e);
-          }}
-          className="pf-c-nav__link"
-          activeClassName="pf-m-current"
-        >
-          <img
-            src={openshiftIconImg}
-            alt="Developer"
-            className="devops-perspective-switcher__openshift-logo"
-          />{' '}
-          Developer
-        </NavLink>
-      </li>
+      <MegaMenuItem to="/dev" title="Developer" icon={openshiftIconImg}
+        onClick={(e) => {
+          props.onPerspectiveChange('dev');
+          props.onNavToggle(e);
+        }}
+      />
     );
   };
 
   if (flagPending(props.flags[FLAGS.SHOW_DEV_CONSOLE]) || !props.flags[FLAGS.SHOW_DEV_CONSOLE]) {
     return null;
   }
+  
   return (
-    <Modal
-      isLarge
-      title=""
-      isOpen={props.isNavOpen}
-      onClose={props.onNavToggle}
-      className="devops-perspective-switcher"
-    >
-      <nav className="pf-c-nav">
-        <ul className="pf-c-nav__simple-list">
-          <li className="pf-c-nav__item">
-            <NavLink
-              to="/"
-              onClick={(e) => {
-                props.onPerspectiveChange('admin');
-                props.onNavToggle(e);
-              }}
-              className="pf-c-nav__link"
-              isActive={() => props.activePerspective === 'admin'}
-              activeClassName="pf-m-current"
-            >
-              <img
-                src={openshiftIconImg}
-                alt="Administrator"
-                className="devops-perspective-switcher__openshift-logo"
-              />{' '}
-              Administrator
-            </NavLink>
-          </li>
+    <MegaMenu isNavOpen={props.isNavOpen}>
+      <MegaMenuNav onSelect={props.onNavToggle}>
+        <MegaMenuSection title="Example">
+          <MegaMenuItem to="https://cloud.openshift.com" title="Multi-Cluster Manager" icon={openshiftIconImg} externalLink/>
+          <MegaMenuItem to="/" title="Administrator" icon={openshiftIconImg} 
+            isActive={() => props.activePerspective === 'admin'} 
+            onClick={(e) => {
+              props.onPerspectiveChange('admin');
+              props.onNavToggle(e);
+            }}
+          />
           {devconsoleItem()}
-        </ul>
-      </nav>
-    </Modal>
+        </MegaMenuSection>
+      </MegaMenuNav>
+    </MegaMenu>
   );
-};
+}
 
 const mapStateToProps = (state): StateProps => {
   return {
