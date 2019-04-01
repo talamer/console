@@ -193,11 +193,6 @@ const detectUser = dispatch => coFetchJSON('api/kubernetes/apis/user.openshift.i
 
 const devopsConsolePath = `${k8sBasePath}/apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions/gitsources.devopsconsole.openshift.io`;
 const detectDevConsole = dispatch => {
-  const devconsoleEnabled = !!(process.env.DEVCONSOLE_ENABLED && process.env.NODE_ENV === 'development');
-  if(!devconsoleEnabled) {
-    setFlag(dispatch, FLAGS.SHOW_DEV_CONSOLE, false);
-    return;
-  }
   coFetchJSON(devopsConsolePath)
   .then(
     res => setFlag(dispatch, FLAGS.SHOW_DEV_CONSOLE, true),
