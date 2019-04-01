@@ -3,7 +3,7 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import { Cog, detailsPage, navFactory, NavTitle } from '../utils';
+import { Kebab, detailsPage, navFactory, PageHeading } from '../utils';
 import { EnvironmentPage } from '../environment';
 import { DeploymentConfigsDetails, DeploymentConfigMenuActions } from '../deployment-config';
 import { RouteDetails } from '../routes';
@@ -131,7 +131,7 @@ export class AppTopologyDetails extends React.Component {
     if (item.kind === 'DeploymentConfig') {
       menuActions = DeploymentConfigMenuActions;
     } else if (item.kind === 'Route') {
-      menuActions = Cog.factory.common;
+      menuActions = Kebab.factory.common;
     }
 
     return (
@@ -139,7 +139,7 @@ export class AppTopologyDetails extends React.Component {
         <div className='details-header'>
           <a className="details-header-button details-toggle-collapse" onClick={this.onCollapseClick} />
           <a className="details-header-button details-close" onClick={onClose} />
-          <NavTitle detail={true} obj={{data: item}} title={itemName} menuActions={menuActions} kind={item.kind} />
+          <PageHeading detail={true} obj={{data: item}} title={itemName} menuActions={menuActions} kind={item.kind} />
         </div>
         {!detailsCollapsed && this.renderDetails()}
       </div>

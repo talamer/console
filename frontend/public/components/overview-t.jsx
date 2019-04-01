@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet';
-import { NavTitle, Firehose } from './utils';
+import { PageHeading, Firehose } from './utils';
 import { AppTopology } from './app-topology/app-topology';
 import {namespaceProptype} from "../propTypes";
 
@@ -44,7 +44,7 @@ export const OverviewT = ({namespace, ...props}) => {
         <Helmet>
           <title>Overview</title>
         </Helmet>
-        {/* <NavTitle detail={true} title={`Overview of ${namespace}`}/> */}
+        <PageHeading detail={true} title={`Overview of ${namespace}`}/>
         <Firehose resources={resources} className="app-topology-container">
           <AppTopology namespace={namespace} {...props} />
         </Firehose>
@@ -57,7 +57,7 @@ export const OverviewT = ({namespace, ...props}) => {
       <Helmet>
         <title>Overview</title>
       </Helmet>
-    {/*<NavTitle detail={true} title="Cluster Overview"/>*/}
+    {/*<PageHeading detail={true} title="Cluster Overview"/>*/}
     </div>
   );
 };

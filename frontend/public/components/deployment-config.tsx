@@ -71,6 +71,9 @@ export const menuActions = [
   ...common,
 ];
 
+export const DeploymentConfigMenuActions = menuActions;
+
+
 export const DeploymentConfigDetailsList = ({dc}) => {
   const reason = _.get(dc, 'status.details.message');
   const timeout = _.get(dc, 'spec.strategy.rollingParams.timeoutSeconds');

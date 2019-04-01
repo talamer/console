@@ -262,6 +262,7 @@ $app-topology-transition-delay: 0.25s;
     flex-direction: row;
     margin-top: -7px;
     max-height: 84px;
+    position: relative;
 
     .app-topology-node-label {
       margin-top: 10px;
@@ -280,6 +281,10 @@ $app-topology-transition-delay: 0.25s;
       .main-svg {
         background: transparent !important;
       }
+    }
+    .app-topology-graph-wrapper {
+      position: absolute;
+      top: 0;
     }
   }
 

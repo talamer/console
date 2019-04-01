@@ -111,13 +111,15 @@ export class AppTopologyPodDonut extends React.Component {
     const chartClasses = classNames('app-topology-pod-donut', 'donut-chart-pf', { mini: mini });
 
     return (
-      <Donut
-        className={chartClasses}
-        insideText={`${podCount} ${podCount === 1 ? 'Pod' : 'Pods'}`}
-        colors={colors}
-        layout={layout}
-        data={data}
-      />
+      <div className="app-topology-graph-wrapper">
+        <Donut
+          className={chartClasses}
+          insideText={`${podCount} ${podCount === 1 ? 'Pod' : 'Pods'}`}
+          colors={colors}
+          layout={layout}
+          data={data}
+        />
+      </div>
     );
   };
 }
