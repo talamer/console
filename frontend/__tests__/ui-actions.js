@@ -4,9 +4,9 @@ import '../__mocks__/localStorage';
 
 import store from '../public/redux';
 import {
+  types as UIActionTypes,
   UIActions,
   getActiveNamespace,
-  getActivePerspective,
   formatNamespaceRoute,
   formatNamespacedRouteForResource,
 } from '../public/ui/ui-actions';
@@ -114,16 +114,15 @@ describe('ui-actions', () => {
   });
 
   describe('setActivePerspective', () => {
-    it('should set active perspective in store', () => {
-      setActivePerspective('test1');
-      expect(getActivePerspective()).toEqual('test1');
-      setActivePerspective('test2');
-      expect(getActivePerspective()).toEqual('test2');
+    it('should create setActivePerspective action', () => {
+      expect(UIActions.setActivePerspective('test')).toEqual({
+        type: UIActionTypes.setActivePerspective,
+        value: 'test',
+      });
     });
 
     it('sets active perspective in localStorage', () => {
       setActivePerspective('test');
-      expect(getActivePerspective()).toEqual('test');
       expect(localStorage.getItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY)).toEqual('test');
     });
   });
