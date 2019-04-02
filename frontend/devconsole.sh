@@ -3,7 +3,7 @@
 DEVCONSOLE_OPERATORS_INSTALLED=$(oc get pods --all-namespaces --output=json | jq '[.items | .[].metadata.name  | contains("devops")] | any')
 DEVCONSOLE_CRDS_INSTALLED=$(oc get crds --output=json | jq '[.items | .[].metadata.name  | contains("gitsources.devopsconsole.openshift.io")] | any')
 
-if  $DEVCONSOLE_OPERATORS_INSTALLED && $DEVCONSOLE_CRDS_INSTALLED 
+if  $DEVCONSOLE_OPERATORS_INSTALLED && $DEVCONSOLE_CRDS_INSTALLED
 then
    echo -e "\n\033[0;32m \xE2\x9C\x94 Devconsole Operator and crds are already installed \033[0m\n"
 else

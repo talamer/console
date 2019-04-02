@@ -88,7 +88,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   };
 };
 
-export default connect(
+export default connect<StateProps, DispatchProps, PerspectiveSwitcherProps>(
   mapStateToProps,
   mapDispatchToProps,
 )(PerspectiveSwitcher);
