@@ -2,7 +2,6 @@
 import * as React from 'react';
 import { Modal } from '@patternfly/react-core';
 import { NavLink } from 'react-router-dom';
-import * as _ from 'lodash';
 import './PerspectiveSwitcher.scss';
 import * as openshiftIconImg from '../../../../imgs/openshift-favicon.png';
 import { connectToFlags, FLAGS, flagPending } from '../../../../features';
@@ -16,8 +15,10 @@ export interface PerspectiveSwitcherProps {
 class PerspectiveSwitcher extends React.Component<PerspectiveSwitcherProps> {
   
   devconsoleItem() {
-    if (this.props.flags[FLAGS.SHOW_DEV_CONSOLE]) {
-      return (
+    if (!this.props.flags[FLAGS.SHOW_DEV_CONSOLE]) {
+      return null;
+    }
+    return (
       <li className="pf-c-nav__item">
         <NavLink
           to="/devops"
@@ -28,8 +29,7 @@ class PerspectiveSwitcher extends React.Component<PerspectiveSwitcherProps> {
           <img src={openshiftIconImg} alt="DevOps Console" className="devops-perspective-switcher__openshift-logo"/>  DevOps Console
         </NavLink>
       </li>
-      );
-    }
+    );
   }
   render() {
     const devConsoleEnabled = this.props.flags[FLAGS.SHOW_DEV_CONSOLE];
