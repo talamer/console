@@ -2,7 +2,7 @@ import * as _ from 'lodash-es';
 import * as React from 'react';
 import { render } from 'react-dom';
 import { Helmet } from 'react-helmet';
-import { Provider } from 'react-redux';
+import { Provider, connect } from 'react-redux';
 import { Redirect, Route, Router, Switch } from 'react-router-dom';
 import * as PropTypes from 'prop-types';
 
@@ -19,7 +19,8 @@ import { SearchPage } from './search';
 import { ResourceDetailsPage, ResourceListPage } from './resource-list';
 import { history, AsyncComponent, Loading } from './utils';
 import { namespacedPrefixes } from './utils/link';
-import { UIActions, getActiveNamespace, getActivePerspective } from '../ui/ui-actions';
+import { UIActions, getActiveNamespace } from '../ui/ui-actions';
+import { getActivePerspective } from '../ui/ui-selectors';
 import { ClusterServiceVersionModel, SubscriptionModel, AlertmanagerModel } from '../models';
 import { getCachedResources, referenceForModel } from '../module/k8s';
 import k8sActions, { types } from '../module/k8s/k8s-actions';
@@ -84,26 +85,34 @@ const NamespaceRedirect = ({location: {pathname}}) => {
   return <Redirect to={to} />;
 };
 
+const mapPerspectiveStateToProps = (state) => {
+  return {
+    activePerspective: getActivePerspective(state),
+  };
+};
+
 // The default page component lets us connect to flags without connecting the entire App.
-const DefaultPage = connectToFlags(FLAGS.OPENSHIFT)(({ flags }) => {
-  const openshiftFlag = flags[FLAGS.OPENSHIFT];
-  const lastViewedPerspective = localStorage.getItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY);
-  if (flagPending(openshiftFlag)) {
-    return <Loading />;
-  }
+const DefaultPage = connect(mapPerspectiveStateToProps)(
+  connectToFlags(FLAGS.OPENSHIFT)(({ flags }) => {
+    const openshiftFlag = flags[FLAGS.OPENSHIFT];
+    const lastViewedPerspective = localStorage.getItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY);
+    if (flagPending(openshiftFlag)) {
+      return <Loading />;
+    }
 
-  if (openshiftFlag) {
-    // TODO - We should be using the link utility to create these links with perspective.
-    return lastViewedPerspective && lastViewedPerspective !== 'admin' ? (
-      <Redirect to={`/${lastViewedPerspective}`} />
-    ) : (
-      <Redirect to="/k8s/cluster/projects" />
-    );
-  }
+    if (openshiftFlag) {
+      // TODO - We should be using the link utility to create these links with perspective.
+      return lastViewedPerspective && lastViewedPerspective !== 'admin' ? (
+        <Redirect to={`/${lastViewedPerspective}`} />
+      ) : (
+        <Redirect to="/k8s/cluster/projects" />
+      );
+    }
 
-  const statusPage = appendActiveNamespace('/status');
-  return <Redirect to={statusPage} />;
-});
+    const statusPage = appendActiveNamespace('/status');
+    return <Redirect to={statusPage} />;
+  })
+);
 
 const LazyRoute = (props) => <Route {...props} render={(componentProps) => <AsyncComponent loader={props.loader} kind={props.kind} {...componentProps} />} />;
 
@@ -172,7 +181,7 @@ class App extends React.PureComponent {
   }
 
   _sidebarNav() {
-    switch (getActivePerspective()) {
+    switch (this.props.activePerspective) {
       case 'dev':
         return <DevConsoleNavigation isNavOpen={true} onNavSelect={this._onNavSelect} />;
       default:
@@ -182,6 +191,7 @@ class App extends React.PureComponent {
 
   render() {
     const { isNavOpen } = this.state;
+    const defaultRoute = this.props.activePerspective !== 'admin' ? `/${this.props.activePerspective}` : '/';
     const devconsoleEnabled = this.props.flags.SHOW_DEV_CONSOLE;
 
     return (
@@ -195,7 +205,7 @@ class App extends React.PureComponent {
           defaultTitle={productName}
         />
         <Page
-          header={<Masthead activePerspective={getActivePerspective()} onNavToggle={this._onNavToggle} />}
+          header={<Masthead defaultRoute={defaultRoute} onNavToggle={this._onNavToggle} />}
           sidebar={this._sidebarNav()}
         >
           <PageSection variant={PageSectionVariants.light}>
@@ -380,7 +390,10 @@ if ('serviceWorker' in navigator) {
       .catch(e => console.warn('Error unregistering service workers', e));
   }
 }
-const AppComponent = connectToFlags(FLAGS.SHOW_DEV_CONSOLE)(App);
+const AppComponent = connect(mapPerspectiveStateToProps)(
+  connectToFlags(FLAGS.SHOW_DEV_CONSOLE)(App)
+);
+
 render((
   <Provider store={store}>
     <Router history={history} basename={window.SERVER_FLAGS.basePath}>

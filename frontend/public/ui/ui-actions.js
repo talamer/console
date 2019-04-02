@@ -27,8 +27,6 @@ allModels().forEach((v, k) => {
 
 export const getActiveNamespace = () => store.getState().UI.get('activeNamespace');
 
-export const getActivePerspective = () => store.getState().UI.get('activePerspective');
-
 export const formatNamespacedRouteForResource = (resource, activeNamespace=getActiveNamespace()) => {
   return activeNamespace === ALL_NAMESPACES_KEY
     ? `/k8s/all-namespaces/${resource}`
@@ -123,11 +121,9 @@ export const UIActions = {
   },
 
   [types.setActivePerspective]: (perspective) => {
-    if (perspective !== getActivePerspective()) {
-      // remember the most recently-viewed perspective, which is automatically
-      // selected when returning to the console
-      localStorage.setItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY, perspective);
-    }
+    // remember the most recently-viewed perspective, which is automatically
+    // selected when returning to the console
+    localStorage.setItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY, perspective);
 
     return {
       type: types.setActivePerspective,

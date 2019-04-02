@@ -6,6 +6,7 @@ import './PerspectiveSwitcher.scss';
 import * as openshiftIconImg from '../../../../imgs/openshift-favicon.png';
 import { UIActions } from '../../../../ui/ui-actions';
 import { connect, Dispatch } from 'react-redux';
+import { getActivePerspective } from '../../../../ui/ui-selectors';
 
 export interface PerspectiveSwitcherProps {
   isNavOpen: boolean;
@@ -76,7 +77,7 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
 
 const mapStateToProps = (state): StateProps => {
   return {
-    activePerspective: state.UI.get('activePerspective'),
+    activePerspective: getActivePerspective(state),
   };
 };
 
