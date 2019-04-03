@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { NavItem } from '@patternfly/react-core';
 import { NavLink } from 'react-router-dom';
-import './MegaMenu.scss';
+import './MegaMenuItem.scss';
 
 interface MegaMenuItemProps {
   to: string;
@@ -14,7 +14,7 @@ interface MegaMenuItemProps {
 
 function MegaMenuItem(props: MegaMenuItemProps) {
   return (
-    <NavItem className="odc-mega-menu__item">
+    <NavItem className="odc-mega-menu-item">
       <NavLink
         to={props.to}
         onClick={props.onClick}
@@ -24,9 +24,9 @@ function MegaMenuItem(props: MegaMenuItemProps) {
         <img 
           src={props.icon} 
           alt={props.title} 
-          className="odc-mega-menu__item-icon"/>  
+          className="odc-mega-menu-item__icon"/>  
           {props.title}
-        {props.externalLink ? <i className="fa fa-external-link odc-mega-menu__external-link"></i> : ""}
+        {props.externalLink ? <i className="fa fa-external-link odc-mega-menu-item__external-link"></i> : ""}
       </NavLink>
     </NavItem>
   );
