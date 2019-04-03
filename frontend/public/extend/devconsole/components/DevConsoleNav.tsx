@@ -22,39 +22,39 @@ export const PageNav = (props: DevConsoleNavigationProps) => {
     <Nav aria-label="Nav" onSelect={props.onNavSelect} onToggle={props.onToggle}>
       <NavList>
         <HrefLink
-          href="/devops"
+          href="/dev"
           name="Home"
-          activePath="/devops"
-          isActive={isActive('/devops')}
+          activePath="/dev"
+          isActive={isActive('/dev')}
         />
         <HrefLink
-          href="/devops/codebases"
+          href="/dev/codebases"
           name="Codebases"
-          activePath="/devops/codebases"
+          activePath="/dev/codebases"
           isActive={isActive('/codebases')}
         />
         <HrefLink
-          href="/devops/import"
+          href="/dev/import"
           name="Import"
-          activePath="/devops/import"
+          activePath="/dev/import"
           isActive={isActive('/import')}
         />
         <HrefLink
-          href="/devops/topology"
+          href="/dev/topology"
           name="Topology"
-          activePath="/devops/topology"
+          activePath="/dev/topology"
           isActive={isActive('/topology')}
         />
         <DevNavSection title="Menu Item">
           <HrefLink
-            href="/devops/submenu_1"
+            href="/dev/submenu_1"
             name="Sub Menu 1"
-            activePath="/devops/submenu_1/"
+            activePath="/dev/submenu_1/"
           />
           <HrefLink
-            href="/devops/submenu_2"
+            href="/dev/submenu_2"
             name="Sub Menu 2"
-            activePath="/devops/submenu_2/"
+            activePath="/dev/submenu_2/"
           />
         </DevNavSection>
       </NavList>
