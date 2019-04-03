@@ -6,7 +6,7 @@
     height: calc(100vh - 76px);
     width: 400px;
     z-index: 9999;
-    background: #ededed;
+    background: #ededed; //temporary
     transition: left 500ms linear;
   }
 
@@ -17,36 +17,8 @@
     height: calc(100vh - 76px);
     width: 400px;
     z-index: 9999;
-    background: white;
+    background: #ededed; //temporary
     transition: left 1s linear;
-  }
-
-  &__item-icon {
-    width: 20px;
-    height: 20px;
-    padding: 2px;
-    margin-right: 8px;
-    float: left;
-  }
-
-  &__external-link {
-    float: right;
-    opacity: 0;
-  }
-
-  &__item {
-    &:hover {
-      .odc-mega-menu__external-link {
-        opacity: 1;
-      }
-    }
-  }
-
-  &__group-separator {
-    border-bottom-color: lightgrey;
-    border-bottom-style: solid;
-    border-bottom-width: thin;
-    padding-bottom: 10px;
   }
 }
 

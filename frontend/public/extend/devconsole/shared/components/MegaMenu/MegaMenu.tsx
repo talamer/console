@@ -2,7 +2,6 @@ import * as React from 'react';
 import './MegaMenu.scss';
 
 interface MegaMenuProps {
-  className?: string,
   children: React.ReactNode
   isNavOpen: boolean
 }

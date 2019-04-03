@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import * as openshiftIconImg from '../../../../imgs/openshift-favicon.png';
-import MegaMenu from '../../shared/components/MegaMenu/MegaMenu';
+import MegaMenu from './MegaMenu/MegaMenu';
 import MegaMenuItem from './MegaMenu/MegaMenuItem';
 import MegaMenuSection from './MegaMenu/MegaMenuSection';
 import MegaMenuNav from './MegaMenu/MegaMenuNav';
@@ -15,10 +15,10 @@ function PerspectiveSwitcher(props: PerspectiveSwitcherProps) {
   return (
     <MegaMenu isNavOpen={props.isNavOpen}>
       <MegaMenuNav onSelect={props.onNavToggle}>
-        <MegaMenuSection title="Example">
+        <MegaMenuSection>
           <MegaMenuItem to="https://cloud.openshift.com" title="Multi-Cluster Manager" icon={openshiftIconImg} externalLink/>
-          <MegaMenuItem to="/devops" title="Dev Console" icon={openshiftIconImg}/>
-          <MegaMenuItem to="/k8s/cluster/projects" title="Admin Console" icon={openshiftIconImg}/>
+          <MegaMenuItem to="/k8s/cluster/projects" title="Administrator" icon={openshiftIconImg}/>
+          <MegaMenuItem to="/devops" title="Developer" icon={openshiftIconImg}/>
         </MegaMenuSection>
       </MegaMenuNav>
     </MegaMenu>
