@@ -12,9 +12,9 @@ interface MegaMenuItemProps {
   isActive?: () => boolean;
 }
 
-function MegaMenuItem(props: MegaMenuItemProps) {
-  return (
-    <NavItem className="odc-mega-menu-item">
+
+const MegaMenuItem: React.FunctionComponent<MegaMenuItemProps> = (props: MegaMenuItemProps) => (
+  <NavItem className="odc-mega-menu-item">
       <NavLink
         to={props.to}
         onClick={props.onClick}
@@ -29,7 +29,6 @@ function MegaMenuItem(props: MegaMenuItemProps) {
         {props.externalLink ? <i className="fa fa-external-link odc-mega-menu-item__external-link"></i> : ""}
       </NavLink>
     </NavItem>
-  );
-}
+);
 
 export default MegaMenuItem;
