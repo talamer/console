@@ -11,18 +11,16 @@ export interface PerspectiveSwitcherProps {
   onNavToggle: (MouseEvent) => void,
 }
 
-function PerspectiveSwitcher(props: PerspectiveSwitcherProps) {
-  return (
-    <MegaMenu isNavOpen={props.isNavOpen}>
-      <MegaMenuNav onSelect={props.onNavToggle}>
-        <MegaMenuSection>
-          <MegaMenuItem to="https://cloud.openshift.com" title="Multi-Cluster Manager" icon={openshiftIconImg} externalLink/>
-          <MegaMenuItem to="/k8s/cluster/projects" title="Administrator" icon={openshiftIconImg}/>
-          <MegaMenuItem to="/devops" title="Developer" icon={openshiftIconImg}/>
-        </MegaMenuSection>
-      </MegaMenuNav>
-    </MegaMenu>
-  );
-}
+const PerspectiveSwitcher: React.FunctionComponent<PerspectiveSwitcherProps> = (props: PerspectiveSwitcherProps) => (
+  <MegaMenu isNavOpen={props.isNavOpen}>
+    <MegaMenuNav onSelect={props.onNavToggle}>
+      <MegaMenuSection>
+        <MegaMenuItem to="https://cloud.openshift.com" title="Multi-Cluster Manager" icon={openshiftIconImg} externalLink/>
+        <MegaMenuItem to="/k8s/cluster/projects" title="Administrator" icon={openshiftIconImg}/>
+        <MegaMenuItem to="/devops" title="Developer" icon={openshiftIconImg}/>
+      </MegaMenuSection>
+    </MegaMenuNav>
+  </MegaMenu>
+);
 
 export default PerspectiveSwitcher;

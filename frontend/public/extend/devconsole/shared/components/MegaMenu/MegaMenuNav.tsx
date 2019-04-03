@@ -7,15 +7,13 @@ interface MegaMenuNavProps {
   children: any
 }
 
-function MegaMenuNav(props: MegaMenuNavProps) {
-  return (
-    <Nav 
-      onSelect={props.onSelect}
-      aria-label="Mega Menu Nav"
-      onToggle={props.onToggle}>
-      {props.children}
-    </Nav>
-  )
-}
+const MegaMenuNav: React.FunctionComponent<MegaMenuNavProps> = (props: MegaMenuNavProps) => (
+  <Nav 
+    onSelect={props.onSelect}
+    aria-label="Mega Menu Nav"
+    onToggle={props.onToggle}>
+    {props.children}
+  </Nav>
+);
 
 export default MegaMenuNav;

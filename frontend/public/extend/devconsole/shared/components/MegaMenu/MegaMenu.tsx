@@ -6,13 +6,11 @@ interface MegaMenuProps {
   isNavOpen: boolean
 }
 
-function MegaMenu(props: MegaMenuProps) {
-  return (
-    <div
-      className={props.isNavOpen ? "odc-mega-menu__expanded" : "odc-mega-menu__collapsed"}>
-      {props.children}
-    </div>
-  );
-}
+const MegaMenu: React.FunctionComponent<MegaMenuProps> = (props: MegaMenuProps) => (
+  <div
+    className={props.isNavOpen ? "odc-mega-menu__expanded" : "odc-mega-menu__collapsed"}>
+    {props.children}
+  </div>
+);
 
 export default MegaMenu;
