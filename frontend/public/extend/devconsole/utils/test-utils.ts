@@ -1,4 +1,5 @@
-import { Store } from "react-redux";
+/* eslint-disable no-undef */
+import { Store } from 'react-redux';
 
 interface StoreProps<S> {
   store?: Store<S>;
