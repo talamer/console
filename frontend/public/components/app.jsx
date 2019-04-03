@@ -27,10 +27,10 @@ import k8sActions, { types } from '../module/k8s/k8s-actions';
 import DevConsoleNavigation from '../extend/devconsole/components/DevConsoleNav';
 import '../vendor.scss';
 import '../style.scss';
+import ConsolePage from '../extend/devconsole/shared/components/ConsolePage';
 
 //PF4 Imports
 import {
-  Page,
   PageSection,
   PageSectionVariants,
 } from '@patternfly/react-core';
@@ -199,17 +199,14 @@ class App extends React.PureComponent {
 
     return (
       <React.Fragment>
-        <PerspectiveSwitcher
-          isNavOpen={!isNavOpen}
-          onNavToggle={this._onNavToggle}
-        />
         <Helmet
           titleTemplate={`%s · ${productName}`}
           defaultTitle={productName}
         />
-        <Page
+        <ConsolePage
           header={<Masthead defaultRoute={defaultRoute} onNavToggle={this._onNavToggle} />}
           sidebar={this._sidebarNav()}
+          megaMenu={<PerspectiveSwitcher isNavOpen={!isNavOpen} onNavToggle={this._onNavToggle} />}
         >
           <PageSection variant={PageSectionVariants.light}>
             <div id="content">
@@ -327,7 +324,7 @@ class App extends React.PureComponent {
               </div>
             </div>
           </PageSection>
-        </Page>
+        </ConsolePage>
       </React.Fragment>
     );
   }

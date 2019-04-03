@@ -1,12 +1,12 @@
 .odc-mega-menu {
   &__expanded {
-    position: fixed;
-    left: 0%;
-    top: 76px;
-    height: calc(100vh - 76px);
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
     width: 400px;
-    z-index: 9999;
-    background: #ededed; //temporary
+    z-index: 200;
+    background: white;
     transition: left 500ms linear;
   }
 
@@ -18,7 +18,7 @@
     width: 400px;
     z-index: 9999;
     background: #ededed; //temporary
-    transition: left 1s linear;
+    transition: left 500ms linear;
   }
 }
 
