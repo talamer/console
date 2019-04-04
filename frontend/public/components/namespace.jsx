@@ -18,6 +18,7 @@ import { NAMESPACE_LOCAL_STORAGE_KEY, ALL_NAMESPACES_KEY } from '../const';
 import { FLAGS, featureReducerName, flagPending, setFlag, connectToFlags } from '../features';
 import { openshiftHelpBase } from './utils/documentation';
 import { createProjectMessageStateToProps } from '../ui/ui-reducers';
+import { pathWithPerspective } from './utils/perspective';
 
 const getModel = useProjects => useProjects ? ProjectModel : NamespaceModel;
 const getDisplayName = obj => _.get(obj, ['metadata', 'annotations', 'openshift.io/display-name']);
@@ -86,7 +87,7 @@ const ProjectRow = ({obj: project}) => {
     <div className="col-md-3 col-sm-6 col-xs-8">
       <span className="co-resource-item">
         <ResourceIcon kind="Project" />
-        <Link to={`/overview/ns/${name}`} title={displayName} className="co-resource-item__resource-name">{project.metadata.name}</Link>
+        <Link to={pathWithPerspective(`/overview/ns/${name}`)} title={displayName} className="co-resource-item__resource-name">{project.metadata.name}</Link>
       </span>
     </div>
     <div className="col-md-3 col-sm-3 col-xs-4">
@@ -216,7 +217,7 @@ export const NamespaceSummary = ({ns}) => {
         <dd><PullSecret namespace={ns} /></dd>
         <dt>Network Policies</dt>
         <dd>
-          <Link to={`/k8s/ns/${ns.metadata.name}/networkpolicies`}>Network Policies</Link>
+          <Link to={pathWithPerspective(`/k8s/ns/${ns.metadata.name}/networkpolicies`)}>Network Policies</Link>
         </dd>
       </dl>
     </div>

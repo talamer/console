@@ -7,6 +7,7 @@ import { ResourceIcon } from './index';
 import { modelFor, referenceForModel } from '../../module/k8s';
 import { connectToModel } from '../../kinds';
 import { connectToFlags, FLAGS } from '../../features';
+import { pathWithPerspective } from './perspective';
 
 const unknownKinds = new Set();
 
@@ -33,7 +34,7 @@ export const resourcePathFromModel = (model, name, namespace) => {
     url += `/${name}`;
   }
 
-  return url;
+  return pathWithPerspective(url);
 };
 
 export const resourceListPathFromModel = (model, namespace) => resourcePathFromModel(model, null, namespace);

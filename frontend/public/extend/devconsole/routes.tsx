@@ -5,25 +5,13 @@ import { AsyncComponent } from '../../components/utils';
 
 const routes: RouteProps[] = [
   {
-    path: '/dev/import',
+    path: '/dev/add',
     // eslint-disable-next-line react/display-name
     render: (props) => (
       <AsyncComponent
         {...props}
         loader={async() =>
           (await import('./pages/Import' /* webpackChunkName: "devconsole-import" */)).default
-        }
-      />
-    ),
-  },
-  {
-    path: '/dev/codebases',
-    // eslint-disable-next-line react/display-name
-    render: (props) => (
-      <AsyncComponent
-        {...props}
-        loader={async() =>
-          (await import('./pages/Codebases' /* webpackChunkName: "devconsole-codebases" */)).default
         }
       />
     ),

@@ -20,6 +20,7 @@ import {
   kindObj,
   PageHeading,
 } from '../utils';
+import { pathWithPerspective } from '../utils/perspective';
 
 export const CompactExpandButtons = ({expand = false, onExpandChange = _.noop}) => <div className="btn-group btn-group-sm" data-toggle="buttons">
   <label className={classNames('btn compaction-btn', expand ? 'btn-default' : 'btn-primary')}>
@@ -180,7 +181,7 @@ export const FireMan_ = connect(null, {filterList: k8sActions.filterList})(
       let createLink;
       if (canCreate) {
         if (createProps.to) {
-          createLink = <Link className="co-m-primary-action" {...createProps} tabIndex={-1}>
+          createLink = <Link className="co-m-primary-action" {...createProps} to={pathWithPerspective(createProps.to)} tabIndex={-1}>
             <button className="btn btn-primary" id="yaml-create" tabIndex={-1}>{createButtonText}</button>
           </Link>;
         } else if (createProps.items) {

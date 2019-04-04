@@ -31,6 +31,7 @@ export const matchesPath = (resourcePath, prefix) => resourcePath === prefix || 
 export const matchesModel = (resourcePath, model) => model && matchesPath(resourcePath, referenceForModel(model));
 
 import { Nav, NavExpandable, NavItem, NavList, PageSidebar } from '@patternfly/react-core';
+import { pathWithPerspective } from './utils/perspective';
 
 const stripNS = href => {
   href = stripBasePath(href);
@@ -93,7 +94,7 @@ NavLink.propTypes = {
   disallowed: PropTypes.string,
 };
 
-class ResourceNSLink extends NavLink {
+export class ResourceNSLink extends NavLink {
   static isActive(props, resourcePath, activeNamespace) {
     const href = stripNS(formatNamespacedRouteForResource(props.resource, activeNamespace));
     return matchesPath(resourcePath, href) || matchesModel(resourcePath, props.model);
@@ -101,7 +102,7 @@ class ResourceNSLink extends NavLink {
 
   get to() {
     const { resource, activeNamespace } = this.props;
-    return formatNamespacedRouteForResource(resource, activeNamespace);
+    return pathWithPerspective(formatNamespacedRouteForResource(resource, activeNamespace));
   }
 }
 
@@ -113,13 +114,13 @@ ResourceNSLink.propTypes = {
   activeNamespace: PropTypes.string,
 };
 
-class ResourceClusterLink extends NavLink {
+export class ResourceClusterLink extends NavLink {
   static isActive(props, resourcePath) {
     return resourcePath === props.resource || _.startsWith(resourcePath, `${props.resource}/`) || matchesModel(resourcePath, props.model);
   }
 
   get to() {
-    return `/k8s/cluster/${this.props.resource}`;
+    return pathWithPerspective(`/k8s/cluster/${this.props.resource}`);
   }
 }
 
