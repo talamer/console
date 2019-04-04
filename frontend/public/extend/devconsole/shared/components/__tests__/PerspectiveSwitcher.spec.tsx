@@ -17,7 +17,7 @@ describe('PerspectiveSwitcher', () => {
         isNavOpen={false}
         activePerspective="dev"
         onNavToggle={() => {}}
-        flags={{SHOW_DEV_CONSOLE: true}}
+        flags={{ SHOW_DEV_CONSOLE: true }}
         onPerspectiveChange={() => {}}
       />,
     );
@@ -31,7 +31,7 @@ describe('PerspectiveSwitcher', () => {
         isNavOpen={true}
         activePerspective="admin"
         onNavToggle={() => {}}
-        flags={{SHOW_DEV_CONSOLE: true}}
+        flags={{ SHOW_DEV_CONSOLE: true }}
         onPerspectiveChange={() => {}}
       />,
     );
@@ -44,7 +44,7 @@ describe('PerspectiveSwitcher', () => {
         isNavOpen={true}
         activePerspective="admin"
         onNavToggle={() => {}}
-        flags={{SHOW_DEV_CONSOLE: false}}
+        flags={{ SHOW_DEV_CONSOLE: false }}
         onPerspectiveChange={() => {}}
       />,
     );
@@ -63,7 +63,12 @@ describe('ConnectedPerspectiveSwitcher', () => {
       }),
     });
     const connectedSwitcherWrapper = shallow(
-      <ConnectedComponent store={store} isNavOpen={true} onNavToggle={() => {}} />,
+      <ConnectedComponent
+        store={store}
+        flags={{ SHOW_DEV_CONSOLE: true }}
+        isNavOpen={true}
+        onNavToggle={() => {}}
+      />,
     );
     expect(connectedSwitcherWrapper.props().activePerspective).toBe('dev');
   });
@@ -75,7 +80,12 @@ describe('ConnectedPerspectiveSwitcher', () => {
       }),
     });
     const connectedSwitcherWrapper = shallow(
-      <ConnectedComponent store={store} isNavOpen={true} onNavToggle={() => {}} />,
+      <ConnectedComponent
+        store={store}
+        flags={{ SHOW_DEV_CONSOLE: true }}
+        isNavOpen={true}
+        onNavToggle={() => {}}
+      />,
     );
 
     expect(store.getActions()).toEqual([]);
@@ -83,4 +93,3 @@ describe('ConnectedPerspectiveSwitcher', () => {
     expect(store.getActions()).toEqual([UIActions.setActivePerspective('admin')]);
   });
 });
-
