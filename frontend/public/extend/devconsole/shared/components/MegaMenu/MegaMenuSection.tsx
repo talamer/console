@@ -1,14 +1,15 @@
+/* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { NavGroup } from '@patternfly/react-core';
 import './MegaMenuSection.scss';
 
 interface MegaMenuSectionProps {
-  title?: string,
-  children: React.ReactNode
+  title?: string;
+  children: React.ReactNode;
 }
 
 const MegaMenuSection: React.FunctionComponent<MegaMenuSectionProps> = (props: MegaMenuSectionProps) => (
-  <NavGroup 
+  <NavGroup
     title={props.title}
     className="odc-mega-menu-section__separator">
     {props.children}

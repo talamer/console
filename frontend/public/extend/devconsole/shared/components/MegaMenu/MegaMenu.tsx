@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import './MegaMenu.scss';
 
@@ -9,10 +10,10 @@ interface MegaMenuProps {
 const MegaMenu: React.FunctionComponent<MegaMenuProps> = (props: MegaMenuProps) => (
   <React.Fragment>
     <div
-      className={props.isNavOpen ? "odc-mega-menu__expanded" : "odc-mega-menu__collapsed"}>
+      className={`odc-mega-menu ${props.isNavOpen ? 'is-open' : ''}`}>
       {props.children}
     </div>
-    {props.isNavOpen ? <div className="odc-ps__backdrop"/> : ''}
+    {props.isNavOpen ? <div className="odc-ps__backdrop" /> : ''}
   </React.Fragment>
 );
 

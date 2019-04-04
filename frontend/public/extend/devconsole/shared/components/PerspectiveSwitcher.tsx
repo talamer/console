@@ -10,6 +10,7 @@ import MegaMenu from './MegaMenu/MegaMenu';
 import MegaMenuItem from './MegaMenu/MegaMenuItem';
 import MegaMenuSection from './MegaMenu/MegaMenuSection';
 import MegaMenuNav from './MegaMenu/MegaMenuNav';
+import { CodeIcon, CogsIcon } from '@patternfly/react-icons';
 
 export interface PerspectiveSwitcherProps {
   isNavOpen: boolean;
@@ -33,7 +34,7 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
       return null;
     }
     return (
-      <MegaMenuItem to="/dev" title="Developer" icon={openshiftIconImg}
+      <MegaMenuItem to="/dev" title="Developer" icon={<CodeIcon />}
         onClick={(e) => {
           props.onPerspectiveChange('dev');
           props.onNavToggle(e);
@@ -45,7 +46,7 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
   if (flagPending(props.flags[FLAGS.SHOW_DEV_CONSOLE]) || !props.flags[FLAGS.SHOW_DEV_CONSOLE]) {
     return null;
   }
-  
+
   return (
     <MegaMenu isNavOpen={props.isNavOpen}>
       <MegaMenuNav onSelect={props.onNavToggle}>
@@ -59,7 +60,7 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
           <MegaMenuItem
             to="/"
             title="Administrator"
-            icon={openshiftIconImg}
+            icon={<CogsIcon />}
             isActive={() => props.activePerspective === 'admin'}
             onClick={(e) => {
               props.onPerspectiveChange('admin');
@@ -71,7 +72,7 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
       </MegaMenuNav>
     </MegaMenu>
   );
-}
+};
 
 const mapStateToProps = (state): StateProps => {
   return {

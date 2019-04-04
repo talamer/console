@@ -1,24 +1,15 @@
 .odc-mega-menu {
-  &__expanded {
-    position: absolute;
+  position: absolute;
+  left: -100%;
+  top: 0;
+  height: 100%;
+  width: 25%;
+  z-index: 200;
+  background: white;
+  transition: left 300ms ease-in-out;
+  
+  &.is-open {
     left: 0;
-    top: 0;
-    height: 100%;
-    width: 400px;
-    z-index: 200;
-    background: white;
-    transition: left 500ms linear;
-  }
-
-  &__collapsed {
-    position: fixed;
-    left: -100%;
-    top: 76px;
-    height: calc(100vh - 76px);
-    width: 400px;
-    z-index: 9999;
-    background: #ededed; //temporary
-    transition: left 500ms linear;
   }
 }
 
