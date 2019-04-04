@@ -25,33 +25,36 @@ interface DispatchProps {
 
 type Props = StateProps & DispatchProps & PerspectiveSwitcherProps;
 
-const devconsoleItem = (props) => {
-  if (!props.flags[FLAGS.SHOW_DEV_CONSOLE]) {
-    return null;
-  }
-  return (
-    <li className="pf-c-nav__item">
-      <NavLink
-        to="/dev"
-        onClick={(e) => {
-          props.onPerspectiveChange('dev');
-          props.onNavToggle(e);
-        }}
-        className="pf-c-nav__link"
-        activeClassName="pf-m-current"
-      >
-        <img
-          src={openshiftIconImg}
-          alt="Developer"
-          className="devops-perspective-switcher__openshift-logo"
-        />{' '}
-        Developer
-      </NavLink>
-    </li>
-  );
-}
+
 
 export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props) => {
+
+  const devconsoleItem = () => {
+    if (!props.flags[FLAGS.SHOW_DEV_CONSOLE]) {
+      return null;
+    }
+    return (
+      <li className="pf-c-nav__item">
+        <NavLink
+          to="/dev"
+          onClick={(e) => {
+            props.onPerspectiveChange('dev');
+            props.onNavToggle(e);
+          }}
+          className="pf-c-nav__link"
+          activeClassName="pf-m-current"
+        >
+          <img
+            src={openshiftIconImg}
+            alt="Developer"
+            className="devops-perspective-switcher__openshift-logo"
+          />{' '}
+          Developer
+        </NavLink>
+      </li>
+    );
+  }
+  
   if (flagPending(props.flags[FLAGS.SHOW_DEV_CONSOLE]) || !props.flags[FLAGS.SHOW_DEV_CONSOLE]) {
     return null;
   }

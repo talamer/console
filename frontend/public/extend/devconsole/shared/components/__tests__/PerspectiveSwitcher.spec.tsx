@@ -17,6 +17,7 @@ describe('PerspectiveSwitcher', () => {
         isNavOpen={false}
         activePerspective="dev"
         onNavToggle={() => {}}
+        flags={{SHOW_DEV_CONSOLE: true}}
         onPerspectiveChange={() => {}}
       />,
     );
@@ -30,10 +31,24 @@ describe('PerspectiveSwitcher', () => {
         isNavOpen={true}
         activePerspective="admin"
         onNavToggle={() => {}}
+        flags={{SHOW_DEV_CONSOLE: true}}
         onPerspectiveChange={() => {}}
       />,
     );
     expect(switcherWrapper.find(Modal).prop('isOpen')).toEqual(true);
+  });
+
+  it('should not be available when dev console is disabled', () => {
+    switcherWrapper = shallow(
+      <PerspectiveSwitcher
+        isNavOpen={true}
+        activePerspective="admin"
+        onNavToggle={() => {}}
+        flags={{SHOW_DEV_CONSOLE: false}}
+        onPerspectiveChange={() => {}}
+      />,
+    );
+    expect(switcherWrapper.find(Modal).exists()).toBeFalsy();
   });
 });
 
