@@ -20,6 +20,10 @@ const basePathPattern = new RegExp(`^/?${window.SERVER_FLAGS.basePath}`);
 
 export const namespacedPrefixes = ['/search', '/status', '/k8s', '/overview', '/catalog', '/provisionedservices', '/operators', '/operatormanagement', '/operatorhub'];
 
+export const legalPerspectiveNames = ['admin', 'dev'];
+
+export const defaultPerspective = 'admin';
+
 export const stripBasePath = path => path.replace(basePathPattern, '/');
 
 export const getNSPrefix = path => {
@@ -46,6 +50,15 @@ export const getNamespace = path => {
 
   const match = ns.match(legalNamePattern);
   return match && match.length > 0 && match[0];
+};
+
+export const getPerspective = (path) => {
+  path = stripBasePath(path);
+  const perspective = path.split('/').filter(x => x)[0];
+  if (perspective && legalPerspectiveNames.includes(perspective)) {
+    return perspective;
+  }
+  return defaultPerspective;
 };
 
 export const ExternalLink = ({href, text, additionalClassName=''}) => <a className={classNames('co-external-link', additionalClassName)} href={href} target="_blank" rel="noopener noreferrer">{text}</a>;

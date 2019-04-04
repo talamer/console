@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "rm -rf ./public/dist/ && ts-node -O '{\"module\":\"commonjs\"}' ./node_modules/.bin/webpack --mode development --watch --progress",
-    "devconsole": "rm -rf ./public/dist/ && ts-node -O '{\"module\":\"commonjs\"}' ./node_modules/.bin/webpack --mode development --config webpack.devconsole.config.ts --env.devconsole=true --watch --progress",
+    "devconsole": "sh devconsole.sh && yarn dev",
     "build": "rm -rf ./public/dist && NODE_ENV=production ts-node -O '{\"module\":\"commonjs\"}' ./node_modules/.bin/webpack --mode=production",
     "coverage": "jest --coverage .",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx --color .",
@@ -143,6 +143,7 @@
     "protractor-fail-fast": "3.x",
     "protractor-jasmine2-screenshot-reporter": "0.5.x",
     "react-test-renderer": "16.x",
+    "redux-mock-store": "^1.5.3",
     "resolve-url-loader": "2.x",
     "sass-loader": "6.x",
     "thread-loader": "1.x",
