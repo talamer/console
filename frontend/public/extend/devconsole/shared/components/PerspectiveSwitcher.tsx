@@ -11,7 +11,7 @@ import { getActivePerspective } from '../../../../ui/ui-selectors';
 
 export interface PerspectiveSwitcherProps {
   isNavOpen: boolean;
-  flags: {[_: string]: boolean},
+  flags: { [_: string]: boolean };
   onNavToggle: (MouseEvent) => void;
 }
 
@@ -25,10 +25,7 @@ interface DispatchProps {
 
 type Props = StateProps & DispatchProps & PerspectiveSwitcherProps;
 
-
-
 export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props) => {
-
   const devconsoleItem = () => {
     if (!props.flags[FLAGS.SHOW_DEV_CONSOLE]) {
       return null;
@@ -53,44 +50,44 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
         </NavLink>
       </li>
     );
-  }
-  
+  };
+
   if (flagPending(props.flags[FLAGS.SHOW_DEV_CONSOLE]) || !props.flags[FLAGS.SHOW_DEV_CONSOLE]) {
     return null;
   }
-  return ( 
+  return (
     <Modal
-    isLarge
-    title=""
-    isOpen={props.isNavOpen}
-    onClose={props.onNavToggle}
-    className="devops-perspective-switcher"
+      isLarge
+      title=""
+      isOpen={props.isNavOpen}
+      onClose={props.onNavToggle}
+      className="devops-perspective-switcher"
     >
-    <nav className="pf-c-nav">
-      <ul className="pf-c-nav__simple-list">
-        <li className="pf-c-nav__item">
-          <NavLink
-            to="/"
-            onClick={(e) => {
-              props.onPerspectiveChange('admin');
-              props.onNavToggle(e);
-            }}
-            className="pf-c-nav__link"
-            isActive={() => props.activePerspective === 'admin'}
-            activeClassName="pf-m-current"
-          >
-            <img
-              src={openshiftIconImg}
-              alt="Administrator"
-              className="devops-perspective-switcher__openshift-logo"
-            />{' '}
-            Administrator
-          </NavLink>
-        </li>
-        {devconsoleItem()}
-      </ul>
-    </nav>
-  </Modal>
+      <nav className="pf-c-nav">
+        <ul className="pf-c-nav__simple-list">
+          <li className="pf-c-nav__item">
+            <NavLink
+              to="/"
+              onClick={(e) => {
+                props.onPerspectiveChange('admin');
+                props.onNavToggle(e);
+              }}
+              className="pf-c-nav__link"
+              isActive={() => props.activePerspective === 'admin'}
+              activeClassName="pf-m-current"
+            >
+              <img
+                src={openshiftIconImg}
+                alt="Administrator"
+                className="devops-perspective-switcher__openshift-logo"
+              />{' '}
+              Administrator
+            </NavLink>
+          </li>
+          {devconsoleItem()}
+        </ul>
+      </nav>
+    </Modal>
   );
 };
 
@@ -112,4 +109,3 @@ export default connect<StateProps, DispatchProps, PerspectiveSwitcherProps>(
   mapStateToProps,
   mapDispatchToProps,
 )(connectToFlags(FLAGS.SHOW_DEV_CONSOLE)(PerspectiveSwitcher));
-

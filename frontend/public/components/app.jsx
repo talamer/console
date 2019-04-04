@@ -181,7 +181,7 @@ class App extends React.PureComponent {
   }
 
   _sidebarNav() {
-    if(!this.props.flags.SHOW_DEV_CONSOLE) {
+    if (!this.props.flags.SHOW_DEV_CONSOLE) {
       return <Navigation isNavOpen={this.state.isNavOpen} onNavSelect={this._onNavSelect} />;
     }
     switch (this.props.activePerspective) {
