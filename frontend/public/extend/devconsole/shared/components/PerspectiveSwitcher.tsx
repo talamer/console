@@ -1,16 +1,15 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
+import { connect, Dispatch } from 'react-redux';
+import { CodeIcon, CogsIcon } from '@patternfly/react-icons';
 import * as openshiftIconImg from '../../../../imgs/openshift-favicon.png';
 import { connectToFlags, flagPending, FLAGS } from '../../../../features';
 import { UIActions } from '../../../../ui/ui-actions';
-import { connect, Dispatch } from 'react-redux';
 import { getActivePerspective } from '../../../../ui/ui-selectors';
-import './PerspectiveSwitcher.scss';
 import MegaMenu from './MegaMenu/MegaMenu';
 import MegaMenuItem from './MegaMenu/MegaMenuItem';
 import MegaMenuSection from './MegaMenu/MegaMenuSection';
 import MegaMenuNav from './MegaMenu/MegaMenuNav';
-import { CodeIcon, CogsIcon } from '@patternfly/react-icons';
 
 export interface PerspectiveSwitcherProps {
   isNavOpen: boolean;
@@ -18,11 +17,11 @@ export interface PerspectiveSwitcherProps {
   onNavToggle: (MouseEvent) => void;
 }
 
-interface StateProps {
+export interface StateProps {
   activePerspective: string;
 }
 
-interface DispatchProps {
+export interface DispatchProps {
   onPerspectiveChange(string): void;
 }
 
@@ -34,7 +33,10 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
       return null;
     }
     return (
-      <MegaMenuItem to="/dev" title="Developer" icon={<CodeIcon />}
+      <MegaMenuItem
+        to="/dev"
+        title="Developer"
+        icon={<CodeIcon />}
         onClick={(e) => {
           props.onPerspectiveChange('dev');
           props.onNavToggle(e);

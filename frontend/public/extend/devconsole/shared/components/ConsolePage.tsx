@@ -2,7 +2,7 @@
 import * as React from 'react';
 import './ConsolePage.scss';
 
-interface ConsolePageProps {
+export interface ConsolePageProps {
   children: React.ReactNode;
   header: React.ReactNode;
   sidebar: React.ReactNode;
@@ -14,11 +14,9 @@ const ConsolePage: React.FunctionComponent<ConsolePageProps> = (props: ConsolePa
     <div className="pf-c-page">
       {props.header}
       <main role="main" className="pf-c-page__main">
-        <div className="console-page">
+        <div className="openshift-console-page">
           {props.sidebar}
-          <div className="console-page__section">
-            {props.children}
-          </div>
+          <div className="openshift-console-page__section">{props.children}</div>
           {props.megaMenu}
         </div>
       </main>
