@@ -50,9 +50,17 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
     <MegaMenu isNavOpen={props.isNavOpen}>
       <MegaMenuNav onSelect={props.onNavToggle}>
         <MegaMenuSection>
-          <MegaMenuItem to="https://cloud.openshift.com" title="Multi-Cluster Manager" icon={openshiftIconImg} externalLink/>
-          <MegaMenuItem to="/" title="Administrator" icon={openshiftIconImg} 
-            isActive={() => props.activePerspective === 'admin'} 
+          <MegaMenuItem
+            to="https://cloud.openshift.com"
+            title="Multi-Cluster Manager"
+            icon={openshiftIconImg}
+            externalLink
+          />
+          <MegaMenuItem
+            to="/"
+            title="Administrator"
+            icon={openshiftIconImg}
+            isActive={() => props.activePerspective === 'admin'}
             onClick={(e) => {
               props.onPerspectiveChange('admin');
               props.onNavToggle(e);

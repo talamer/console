@@ -7,10 +7,13 @@ interface MegaMenuProps {
 }
 
 const MegaMenu: React.FunctionComponent<MegaMenuProps> = (props: MegaMenuProps) => (
-  <div
-    className={props.isNavOpen ? "odc-mega-menu__expanded" : "odc-mega-menu__collapsed"}>
-    {props.children}
-  </div>
+  <React.Fragment>
+    <div
+      className={props.isNavOpen ? "odc-mega-menu__expanded" : "odc-mega-menu__collapsed"}>
+      {props.children}
+    </div>
+    {props.isNavOpen ? <div className="odc-ps__backdrop"/> : ''}
+  </React.Fragment>
 );
 
 export default MegaMenu;
