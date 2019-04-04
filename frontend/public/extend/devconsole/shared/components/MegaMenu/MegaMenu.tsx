@@ -1,7 +1,9 @@
+/* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
+import { Backdrop } from '@patternfly/react-core';
 import './MegaMenu.scss';
 
-interface MegaMenuProps {
+export interface MegaMenuProps {
   children: React.ReactNode;
   isNavOpen: boolean;
   onNavToggle: (MouseEvent) => void;
@@ -38,13 +40,13 @@ export default class MegaMenu extends React.Component<MegaMenuProps> {
   render() {
     return (
       <React.Fragment>
+        {this.props.isNavOpen && <Backdrop className="backdrop" />}
         <div
           ref={(node) => (this.node = node)}
-          className={this.props.isNavOpen ? 'odc-mega-menu__expanded' : 'odc-mega-menu__collapsed'}
+          className={`odc-mega-menu ${this.props.isNavOpen ? 'is-open' : ''}`}
         >
           {this.props.children}
         </div>
-        {this.props.isNavOpen ? <div className="odc-ps__backdrop" /> : ''}
       </React.Fragment>
     );
   }

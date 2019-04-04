@@ -1,24 +1,21 @@
 .odc-mega-menu {
-  &__expanded {
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 400px;
-    z-index: 200;
-    background: white;
-    transition: left 500ms linear;
-  }
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 290px;
+  max-width: 80%;
+  z-index: var(--pf-global--ZIndex--2xl);
+  background: var(--pf-global--BackgroundColor--light-100);
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
 
-  &__collapsed {
-    position: fixed;
-    left: -100%;
-    top: 76px;
-    height: calc(100vh - 76px);
-    width: 400px;
-    z-index: 9999;
-    background: #ededed; //temporary
-    transition: left 500ms linear;
+  &.is-open {
+    transform: translateX(0);
   }
 }
 
+.backdrop {
+  position: absolute !important;
+}

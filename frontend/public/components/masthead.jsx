@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import { Brand, PageHeader } from '@patternfly/react-core';
+
 import { MastheadToolbar } from './masthead-toolbar';
 import { history } from './utils';
 import okdLogoImg from '../imgs/okd-logo.svg';
@@ -47,22 +48,30 @@ export const getBrandingDetails = () => {
   return { logoImg, logoAlt, productTitle };
 };
 
-export const Masthead = ({ isPerspectiveSwitcherActive, defaultRoute, isNavOpen, onNavToggle }) => {
+export const Masthead = ({
+  isPerspectiveSwitcherActive,
+  defaultRoute,
+  isNavOpen,
+  onNavToggle
+}) => {
   const details = getBrandingDetails();
-  const defaultRoute = '/';
+  const defaultRoute = "/";
   const logoProps = {
     href: defaultRoute,
     // use onClick to prevent browser reload
     onClick: e => {
       e.preventDefault();
       history.push(defaultRoute);
-    },
+    }
   };
 
   return (
     <PageHeader
-      className = {[(isPerspectiveSwitcherActive ? 'nav-toggle__hover' : ''),(isPerspectiveSwitcherActive && isNavOpen) ? 'nav-toggle__active' : '']} 
-      logo={<Brand src={details.logoImg} alt={details.logoAlt}/>}
+      className={[
+        isPerspectiveSwitcherActive ? 'nav-toggle__hover' : '',
+        isPerspectiveSwitcherActive && isNavOpen ? 'nav-toggle__active' : ''
+      ]}
+      logo={<Brand src={details.logoImg} alt={details.logoAlt} />}
       logoProps={logoProps}
       toolbar={<MastheadToolbar />}
       showNavToggle
@@ -76,5 +85,5 @@ Masthead.propTypes = {
   defaultRoute: PropTypes.string,
   isNavOpen: PropTypes.bool,
   onNavToggle: PropTypes.func,
-  isPerspectiveSwitcherActive: PropTypes.bool,
+  isPerspectiveSwitcherActive: PropTypes.bool
 };

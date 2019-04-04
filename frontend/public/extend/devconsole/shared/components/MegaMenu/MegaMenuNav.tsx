@@ -1,17 +1,14 @@
+/* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { Nav } from '@patternfly/react-core';
 
-interface MegaMenuNavProps {
-  onSelect: (MouseEvent) => void,
-  onToggle?: () => void 
-  children: any
+export interface MegaMenuNavProps {
+  onSelect: (MouseEvent) => void;
+  children: any;
 }
 
 const MegaMenuNav: React.FunctionComponent<MegaMenuNavProps> = (props: MegaMenuNavProps) => (
-  <Nav 
-    onSelect={props.onSelect}
-    aria-label="Mega Menu Nav"
-    onToggle={props.onToggle}>
+  <Nav onSelect={props.onSelect} aria-label="Applications">
     {props.children}
   </Nav>
 );

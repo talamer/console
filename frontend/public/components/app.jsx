@@ -25,10 +25,9 @@ import { ClusterServiceVersionModel, SubscriptionModel, AlertmanagerModel } from
 import { getCachedResources, referenceForModel } from '../module/k8s';
 import k8sActions, { types } from '../module/k8s/k8s-actions';
 import DevConsoleNavigation from '../extend/devconsole/components/DevConsoleNav';
+import ConsolePage from '../extend/devconsole/shared/components/ConsolePage';
 import '../vendor.scss';
 import '../style.scss';
-import ConsolePage from '../extend/devconsole/shared/components/ConsolePage';
-
 //PF4 Imports
 import {
   PageSection,
