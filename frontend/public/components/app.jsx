@@ -127,7 +127,7 @@ class App extends React.PureComponent {
     this.previousDesktopState = this._isDesktop();
 
     this.state = {
-      isNavOpen: false,
+      isNavOpen: this._isDesktop(),
     };
   }
 
@@ -174,13 +174,16 @@ class App extends React.PureComponent {
 
   _onResize() {
     const isDesktop = this._isDesktop();
-    if (this.previousDesktopState !== isDesktop) {
+    if (!this.props.flags.SHOW_DEV_CONSOLE && this.previousDesktopState !== isDesktop) {
       this.setState({isNavOpen: isDesktop});
       this.previousDesktopState = isDesktop;
     }
   }
 
   _sidebarNav() {
+    if (!this.props.flags.SHOW_DEV_CONSOLE) {
+      return <Navigation isNavOpen={this.state.isNavOpen} onNavSelect={this._onNavSelect} />;
+    }
     switch (this.props.activePerspective) {
       case 'dev':
         return <DevConsoleNavigation isNavOpen={true} onNavSelect={this._onNavSelect} />;
@@ -201,9 +204,9 @@ class App extends React.PureComponent {
           defaultTitle={productName}
         />
         <ConsolePage
-          header={<Masthead defaultRoute={defaultRoute} isNavOpen={isNavOpen} onNavToggle={this._onNavToggle} />}
+          header={<Masthead isPerspectiveSwitcherActive={this.props.flags.SHOW_DEV_CONSOLE} defaultRoute={defaultRoute} isNavOpen={!isNavOpen} onNavToggle={this._onNavToggle} />}
           sidebar={this._sidebarNav()}
-          megaMenu={<PerspectiveSwitcher isNavOpen={isNavOpen} onNavToggle={this._onNavToggle} />}
+          megaMenu={<PerspectiveSwitcher isNavOpen={!isNavOpen} onNavToggle={this._onNavToggle} />}
         >
           <PageSection variant={PageSectionVariants.light}>
             <div id="content">

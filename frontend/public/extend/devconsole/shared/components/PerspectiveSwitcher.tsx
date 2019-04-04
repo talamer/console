@@ -1,86 +1,78 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import * as openshiftIconImg from '../../../../imgs/openshift-favicon.png';
-import './PerspectiveSwitcher.scss';
+import { connectToFlags, flagPending, FLAGS } from '../../../../features';
 import { UIActions } from '../../../../ui/ui-actions';
 import { connect, Dispatch } from 'react-redux';
 import { getActivePerspective } from '../../../../ui/ui-selectors';
+import './PerspectiveSwitcher.scss';
 import MegaMenu from './MegaMenu/MegaMenu';
 import MegaMenuItem from './MegaMenu/MegaMenuItem';
 import MegaMenuSection from './MegaMenu/MegaMenuSection';
 import MegaMenuNav from './MegaMenu/MegaMenuNav';
+import { CodeIcon, CogsIcon } from '@patternfly/react-icons';
 
 export interface PerspectiveSwitcherProps {
   isNavOpen: boolean;
-  onNavToggle: (MouseEvent: MouseEvent) => void;
+  flags: { [_: string]: boolean };
+  onNavToggle: (MouseEvent) => void;
 }
 
 interface StateProps {
   activePerspective: string;
 }
 
- interface DispatchProps {
+interface DispatchProps {
   onPerspectiveChange(string): void;
 }
 
- type Props = StateProps & DispatchProps & PerspectiveSwitcherProps;
+type Props = StateProps & DispatchProps & PerspectiveSwitcherProps;
 
-export class PerspectiveSwitcher extends React.Component<Props> {
-  constructor(props: Props) {
-    super(props);
-    this._handleClickOutside = this._handleClickOutside.bind(this);
-  }
-
-  public node: any;
-  public navToggleButton: HTMLElement;
-
-  public _handleClickOutside = (event: MouseEvent) => {
-    if (
-      this.props.isNavOpen &&
-      this.node &&
-      !this.node.contains(event.target) &&
-      !(event.target as HTMLElement).className.includes('pf-c-button')
-    ) {
-      this.props.onNavToggle(event);
+export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props) => {
+  const devconsoleItem = () => {
+    if (!props.flags[FLAGS.SHOW_DEV_CONSOLE]) {
+      return null;
     }
+    return (
+      <MegaMenuItem to="/dev" title="Developer" icon={<CodeIcon />}
+        onClick={(e) => {
+          props.onPerspectiveChange('dev');
+          props.onNavToggle(e);
+        }}
+      />
+    );
   };
 
-  componentWillMount() {
-    document.addEventListener('mousedown', this._handleClickOutside);
+  if (flagPending(props.flags[FLAGS.SHOW_DEV_CONSOLE]) || !props.flags[FLAGS.SHOW_DEV_CONSOLE]) {
+    return null;
   }
 
-  componentWillUnmount() {
-    document.removeEventListener('mousedown', this._handleClickOutside);
-  }
-
-  render() {
-    return (
-      <React.Fragment>
-        {this.props.isNavOpen ? <div className="odc-ps__backdrop" /> : ''}
-        <div className="mega-menu-wrapper" ref={(node) => (this.node = node)}>
-          <MegaMenu isNavOpen={this.props.isNavOpen}>
-            <MegaMenuNav onSelect={this.props.onNavToggle}>
-              <MegaMenuSection>
-                <MegaMenuItem
-                  to="https://cloud.openshift.com"
-                  title="Multi-Cluster Manager"
-                  icon={openshiftIconImg}
-                  externalLink
-                />
-                <MegaMenuItem
-                  to="/k8s/cluster/projects"
-                  title="Administrator"
-                  icon={openshiftIconImg}
-                />
-                <MegaMenuItem to="/devops" title="Developer" icon={openshiftIconImg} />
-              </MegaMenuSection>
-            </MegaMenuNav>
-          </MegaMenu>
-        </div>
-      </React.Fragment>
-    );
-  }
-}
+  return (
+    <MegaMenu isNavOpen={props.isNavOpen} onNavToggle={props.onNavToggle}>
+      <MegaMenuNav onSelect={props.onNavToggle}>
+        <MegaMenuSection>
+          <MegaMenuItem
+            to="https://cloud.openshift.com"
+            title="Multi-Cluster Manager"
+            icon={openshiftIconImg}
+            externalLink
+          />
+          <MegaMenuItem
+            to="/"
+            title="Administrator"
+            icon={<CogsIcon />}
+            isActive={() => props.activePerspective === 'admin'}
+            onClick={(e) => {
+              props.onPerspectiveChange('admin');
+              props.onNavToggle(e);
+            }}
+          />
+          {devconsoleItem()}
+        </MegaMenuSection>
+      </MegaMenuNav>
+    </MegaMenu>
+  );
+};
 
 const mapStateToProps = (state): StateProps => {
   return {
@@ -88,7 +80,7 @@ const mapStateToProps = (state): StateProps => {
   };
 };
 
- const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
     onPerspectiveChange: (perspective) => {
       dispatch(UIActions.setActivePerspective(perspective));
@@ -96,7 +88,7 @@ const mapStateToProps = (state): StateProps => {
   };
 };
 
- export default connect<StateProps, DispatchProps, PerspectiveSwitcherProps>(
+export default connect<StateProps, DispatchProps, PerspectiveSwitcherProps>(
   mapStateToProps,
   mapDispatchToProps,
-)(PerspectiveSwitcher);
+)(connectToFlags(FLAGS.SHOW_DEV_CONSOLE)(PerspectiveSwitcher));

@@ -17,6 +17,7 @@ describe('PerspectiveSwitcher', () => {
         isNavOpen={false}
         activePerspective="dev"
         onNavToggle={() => {}}
+        flags={{ SHOW_DEV_CONSOLE: true }}
         onPerspectiveChange={() => {}}
       />,
     );
@@ -30,10 +31,24 @@ describe('PerspectiveSwitcher', () => {
         isNavOpen={true}
         activePerspective="admin"
         onNavToggle={() => {}}
+        flags={{ SHOW_DEV_CONSOLE: true }}
         onPerspectiveChange={() => {}}
       />,
     );
     expect(switcherWrapper.find(Modal).prop('isOpen')).toEqual(true);
+  });
+
+  it('should not be available when dev console is disabled', () => {
+    switcherWrapper = shallow(
+      <PerspectiveSwitcher
+        isNavOpen={true}
+        activePerspective="admin"
+        onNavToggle={() => {}}
+        flags={{ SHOW_DEV_CONSOLE: false }}
+        onPerspectiveChange={() => {}}
+      />,
+    );
+    expect(switcherWrapper.find(Modal).exists()).toBeFalsy();
   });
 });
 
@@ -48,7 +63,12 @@ describe('ConnectedPerspectiveSwitcher', () => {
       }),
     });
     const connectedSwitcherWrapper = shallow(
-      <ConnectedComponent store={store} isNavOpen={true} onNavToggle={() => {}} />,
+      <ConnectedComponent
+        store={store}
+        flags={{ SHOW_DEV_CONSOLE: true }}
+        isNavOpen={true}
+        onNavToggle={() => {}}
+      />,
     );
     expect(connectedSwitcherWrapper.props().activePerspective).toBe('dev');
   });
@@ -60,7 +80,12 @@ describe('ConnectedPerspectiveSwitcher', () => {
       }),
     });
     const connectedSwitcherWrapper = shallow(
-      <ConnectedComponent store={store} isNavOpen={true} onNavToggle={() => {}} />,
+      <ConnectedComponent
+        store={store}
+        flags={{ SHOW_DEV_CONSOLE: true }}
+        isNavOpen={true}
+        onNavToggle={() => {}}
+      />,
     );
 
     expect(store.getActions()).toEqual([]);
@@ -68,4 +93,3 @@ describe('ConnectedPerspectiveSwitcher', () => {
     expect(store.getActions()).toEqual([UIActions.setActivePerspective('admin')]);
   });
 });
-
