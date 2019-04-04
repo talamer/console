@@ -130,7 +130,7 @@ class App extends React.PureComponent {
     this.previousDesktopState = this._isDesktop();
 
     this.state = {
-      isNavOpen: false,
+      isNavOpen: this._isDesktop(),
     };
   }
 
@@ -177,13 +177,16 @@ class App extends React.PureComponent {
 
   _onResize() {
     const isDesktop = this._isDesktop();
-    if (this.previousDesktopState !== isDesktop) {
+    if (!this.props.flags.SHOW_DEV_CONSOLE && this.previousDesktopState !== isDesktop) {
       this.setState({isNavOpen: isDesktop});
       this.previousDesktopState = isDesktop;
     }
   }
 
   _sidebarNav() {
+    if(!this.props.flags.SHOW_DEV_CONSOLE) {
+      return <Navigation isNavOpen={this.state.isNavOpen} onNavSelect={this._onNavSelect} />;
+    }
     switch (this.props.activePerspective) {
       case 'dev':
         return <DevConsoleNavigation isNavOpen={true} onNavSelect={this._onNavSelect} />;
@@ -201,7 +204,7 @@ class App extends React.PureComponent {
     return (
       <React.Fragment>
         <PerspectiveSwitcher
-          isNavOpen={isNavOpen}
+          isNavOpen={!isNavOpen}
           onNavToggle={this._onNavToggle}
         />
         <Helmet

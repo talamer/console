@@ -4,12 +4,14 @@ import { Modal } from '@patternfly/react-core';
 import { NavLink } from 'react-router-dom';
 import './PerspectiveSwitcher.scss';
 import * as openshiftIconImg from '../../../../imgs/openshift-favicon.png';
+import { connectToFlags, flagPending, FLAGS } from '../../../../features';
 import { UIActions } from '../../../../ui/ui-actions';
 import { connect, Dispatch } from 'react-redux';
 import { getActivePerspective } from '../../../../ui/ui-selectors';
 
 export interface PerspectiveSwitcherProps {
   isNavOpen: boolean;
+  flags: {[_: string]: boolean},
   onNavToggle: (MouseEvent) => void;
 }
 
@@ -23,14 +25,47 @@ interface DispatchProps {
 
 type Props = StateProps & DispatchProps & PerspectiveSwitcherProps;
 
-export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props) => (
-  <Modal
+
+
+export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props) => {
+
+  const devconsoleItem = () => {
+    if (!props.flags[FLAGS.SHOW_DEV_CONSOLE]) {
+      return null;
+    }
+    return (
+      <li className="pf-c-nav__item">
+        <NavLink
+          to="/dev"
+          onClick={(e) => {
+            props.onPerspectiveChange('dev');
+            props.onNavToggle(e);
+          }}
+          className="pf-c-nav__link"
+          activeClassName="pf-m-current"
+        >
+          <img
+            src={openshiftIconImg}
+            alt="Developer"
+            className="devops-perspective-switcher__openshift-logo"
+          />{' '}
+          Developer
+        </NavLink>
+      </li>
+    );
+  }
+  
+  if (flagPending(props.flags[FLAGS.SHOW_DEV_CONSOLE]) || !props.flags[FLAGS.SHOW_DEV_CONSOLE]) {
+    return null;
+  }
+  return ( 
+    <Modal
     isLarge
     title=""
     isOpen={props.isNavOpen}
     onClose={props.onNavToggle}
     className="devops-perspective-switcher"
-  >
+    >
     <nav className="pf-c-nav">
       <ul className="pf-c-nav__simple-list">
         <li className="pf-c-nav__item">
@@ -52,28 +87,12 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
             Administrator
           </NavLink>
         </li>
-        <li className="pf-c-nav__item">
-          <NavLink
-            to="/dev"
-            onClick={(e) => {
-              props.onPerspectiveChange('dev');
-              props.onNavToggle(e);
-            }}
-            className="pf-c-nav__link"
-            activeClassName="pf-m-current"
-          >
-            <img
-              src={openshiftIconImg}
-              alt="Developer"
-              className="devops-perspective-switcher__openshift-logo"
-            />{' '}
-            Developer
-          </NavLink>
-        </li>
+        {devconsoleItem()}
       </ul>
     </nav>
   </Modal>
-);
+  );
+};
 
 const mapStateToProps = (state): StateProps => {
   return {
@@ -92,4 +111,5 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
 export default connect<StateProps, DispatchProps, PerspectiveSwitcherProps>(
   mapStateToProps,
   mapDispatchToProps,
-)(PerspectiveSwitcher);
+)(connectToFlags(FLAGS.SHOW_DEV_CONSOLE)(PerspectiveSwitcher));
+
