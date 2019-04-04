@@ -87,7 +87,7 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
             Administrator
           </NavLink>
         </li>
-        {devconsoleItem(props)}
+        {devconsoleItem()}
       </ul>
     </nav>
   </Modal>
