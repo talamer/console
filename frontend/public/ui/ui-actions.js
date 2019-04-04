@@ -2,7 +2,11 @@ import { Base64 } from 'js-base64';
 
 import store from '../redux';
 import { history } from '../components/utils/router';
-import { ALL_NAMESPACES_KEY, LAST_NAMESPACE_NAME_LOCAL_STORAGE_KEY } from '../const';
+import {
+  ALL_NAMESPACES_KEY,
+  LAST_NAMESPACE_NAME_LOCAL_STORAGE_KEY,
+  LAST_PERSPECTIVE_LOCAL_STORAGE_KEY,
+} from '../const';
 import { getNSPrefix } from '../components/utils/link';
 import { allModels } from '../module/k8s/k8s-models';
 
@@ -72,6 +76,7 @@ export const types = {
   selectOverviewItem: 'selectOverviewItem',
   selectOverviewView: 'selectOverviewView',
   setActiveNamespace: 'setActiveNamespace',
+  setActivePerspective: 'setActivePerspective',
   setCreateProjectMessage: 'setCreateProjectMessage',
   setClusterID: 'setClusterID',
   setCurrentLocation: 'setCurrentLocation',
@@ -112,6 +117,17 @@ export const UIActions = {
     return {
       type: types.setActiveNamespace,
       value: namespace,
+    };
+  },
+
+  [types.setActivePerspective]: (perspective) => {
+    // remember the most recently-viewed perspective, which is automatically
+    // selected when returning to the console
+    localStorage.setItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY, perspective);
+
+    return {
+      type: types.setActivePerspective,
+      value: perspective,
     };
   },
 

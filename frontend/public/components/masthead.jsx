@@ -48,7 +48,7 @@ export const getBrandingDetails = () => {
   return { logoImg, logoAlt, productTitle };
 };
 
-export const Masthead = ({ onNavToggle }) => {
+export const Masthead = ({ defaultRoute, isNavOpen, onNavToggle }) => {
   const details = getBrandingDetails();
   const defaultRoute = '/';
   const logoProps = {
@@ -61,16 +61,19 @@ export const Masthead = ({ onNavToggle }) => {
   };
 
   return (
-    <PageHeader
+    <PageHeader  className = {(isNavOpen) ? 'nav-toggle__active' : ''}
       logo={<Brand src={details.logoImg} alt={details.logoAlt} />}
       logoProps={logoProps}
       toolbar={<MastheadToolbar />}
       showNavToggle
+      isNavOpen={isNavOpen}
       onNavToggle={onNavToggle}
     />
   );
 };
 
 Masthead.propTypes = {
+  defaultRoute: PropTypes.string,
+  isNavOpen: PropTypes.bool,
   onNavToggle: PropTypes.func,
 };

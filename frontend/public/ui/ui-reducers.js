@@ -2,9 +2,9 @@ import * as _ from 'lodash-es';
 import { Map as ImmutableMap } from 'immutable';
 
 import { types } from './ui-actions';
-import { ALL_NAMESPACES_KEY, LAST_NAMESPACE_NAME_LOCAL_STORAGE_KEY, NAMESPACE_LOCAL_STORAGE_KEY } from '../const';
+import { ALL_NAMESPACES_KEY, LAST_NAMESPACE_NAME_LOCAL_STORAGE_KEY, NAMESPACE_LOCAL_STORAGE_KEY, LAST_PERSPECTIVE_LOCAL_STORAGE_KEY } from '../const';
 import { AlertStates, isSilenced, SilenceStates } from '../monitoring';
-import { legalNamePattern, getNamespace } from '../components/utils/link';
+import { legalNamePattern, getNamespace, getPerspective, defaultPerspective } from '../components/utils/link';
 
 export default (state, action) => {
   if (!state) {
@@ -20,10 +20,16 @@ export default (state, action) => {
       }
     }
 
+    let activePerspective = getPerspective(pathname);
+    if (!activePerspective) {
+      activePerspective = localStorage.getItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY);
+    }
+
     return ImmutableMap({
       activeNavSectionId: 'workloads',
       location: pathname,
       activeNamespace: activeNamespace || 'default',
+      activePerspective: activePerspective || defaultPerspective,
       createProjectMessage: '',
       overview: new ImmutableMap({
         metrics: {},
@@ -46,14 +52,21 @@ export default (state, action) => {
       }
       return state.set('activeNamespace', action.value);
 
+    case types.setActivePerspective:
+      return state.set('activePerspective', action.value);
+
     case types.setCurrentLocation: {
       state = state.set('location', action.location);
       const ns = getNamespace(action.location);
+      const perspective = getPerspective(action.location);
+      state = state.set('activePerspective', perspective);
+
       if (_.isUndefined(ns)) {
         return state;
       }
       return state.set('activeNamespace', ns);
     }
+
     case types.startImpersonate:
       return state.set('impersonate', {kind: action.kind, name: action.name, subprotocols: action.subprotocols});
 
