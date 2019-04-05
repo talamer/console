@@ -2,14 +2,14 @@ apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
   creationTimestamp: null
-  name: pipelines.devopsconsole.openshift.io
+  name: mockpipelines.devopsconsole.openshift.io
 spec:
   group: devopsconsole.openshift.io
   names:
-    kind: Pipeline
-    listKind: PipelineList
-    plural: pipelines
-    singular: pipeline
+    kind: MockPipeline
+    listKind: MockPipelineList
+    plural: mockpipelines
+    singular: mockpipeline
   scope: Namespaced
   subresources:
     status: {}

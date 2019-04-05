@@ -1,5 +1,5 @@
 apiVersion: devopsconsole.openshift.io/v1alpha1
-kind: Pipeline
+kind: MockPipeline
 metadata:
   name: pipeline-1
 spec:
@@ -10,7 +10,7 @@ spec:
   listenport: 9000
 ---
 apiVersion: devopsconsole.openshift.io/v1alpha1
-kind: Pipeline
+kind: MockPipeline
 metadata:
   name: pipeline-2
 spec:
@@ -21,7 +21,7 @@ spec:
   listenport: 9000
 ---
 apiVersion: devopsconsole.openshift.io/v1alpha1
-kind: Pipeline
+kind: MockPipeline
 metadata:
   name: pipeline-3
 spec:
