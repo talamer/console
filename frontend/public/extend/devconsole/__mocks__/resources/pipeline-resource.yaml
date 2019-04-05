@@ -1,0 +1,32 @@
+apiVersion: devopsconsole.openshift.io/v1alpha1
+kind: Pipeline
+metadata:
+  name: pipeline-1
+spec:
+  # Add fields here
+  app: "myproject"
+  buildtype: "react"
+  codebase: "https://github.com/sbose78/nodejs-rest-http-crud"
+  listenport: 9000
+---
+apiVersion: devopsconsole.openshift.io/v1alpha1
+kind: Pipeline
+metadata:
+  name: pipeline-2
+spec:
+  # Add fields here
+  app: "myproject"
+  buildtype: "react"
+  codebase: "https://github.com/sbose78/nodejs-rest-http-crud"
+  listenport: 9000
+---
+apiVersion: devopsconsole.openshift.io/v1alpha1
+kind: Pipeline
+metadata:
+  name: pipeline-3
+spec:
+  # Add fields here
+  app: "myproject"
+  buildtype: "react"
+  codebase: "https://github.com/sbose78/nodejs-rest-http-crud"
+  listenport: 9000

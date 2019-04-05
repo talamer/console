@@ -14,3 +14,10 @@ else
    oc create -f http://operator-hub-shbose-preview1-stage.b542.starter-us-east-2a.openshiftapps.com/install/devopsconsole.v0.1.0.yaml
 
 fi
+
+MOCKS_DIR=($PWD/public/extend/devconsole/__mocks__)
+if [ -n "$(ls -A $MOCKS_DIR 2>/dev/null)" ]
+then
+  echo -e "Adding mock crds...\n"
+  oc apply -f $MOCKS_DIR --recursive || true
+fi
