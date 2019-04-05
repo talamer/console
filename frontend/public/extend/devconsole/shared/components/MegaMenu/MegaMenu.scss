@@ -20,17 +20,19 @@
   position: absolute !important;
 }
 
-.nav-toggle {
+.odc-mega-menu-toggle {
   &__active {
-    .pf-c-button {
-      background-color: var(--pf-global--disabled-color--100);
+    .pf-c-button.pf-m-plain {
+      background-color: var(--pf-global--BackgroundColor--light-100);
       border-radius: 25px;
+      color: var(--pf-global--BackgroundColor--dark-100);
     }
   }
   &__hover {
     .pf-c-button:hover {
-      background-color: var(--pf-global--disabled-color--100);
+      background-color: var(--pf-global--BackgroundColor--light-100);
       border-radius: 25px;
+      color: var(--pf-global--BackgroundColor--dark-100);
     }
   }
 }
