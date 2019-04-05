@@ -60,15 +60,15 @@ export const PageNav = (props: DevConsoleNavigationProps) => {
           <ResourceNSLink resource="imagestreams" name={ImageStreamModel.labelPlural} startsWith={['imagestreams', 'imagestreamtags']} />
         </DevNavSection>
         <DevNavSection title="Pipelines">
-          <HrefLink href="/dev/pipelines" name="Piplines" activePath="/pipelines/" />
-          <HrefLink href="/dev/pipelines/run" name="Pipline Runs" activePath="/pipelines/run" />
+          <HrefLink href="/dev/pipelines" name="Piplines" activePath="/dev/pipelines/" />
+          <HrefLink href="/dev/pipelines/run" name="Pipline Runs" activePath="/dev/pipelines/run" />
         </DevNavSection>
         <DevNavSection title="Advanced">
           <ResourceClusterLink resource="projects" name="Projects" required={FLAGS.OPENSHIFT} />
-          <HrefLink href="/dev/overview" name="Status" activePath="/overview/" required={FLAGS.OPENSHIFT} />
-          <HrefLink href="/dev/status" name="Status" activePath="/status/" disallowed={FLAGS.OPENSHIFT} />
+          <HrefLink href="/dev/overview" name="Status" activePath="/dev/overview/" required={FLAGS.OPENSHIFT} />
+          <HrefLink href="/dev/status" name="Status" activePath="/dev/status/" disallowed={FLAGS.OPENSHIFT} />
           <ResourceNSLink resource="events" name="Events" />
-          <HrefLink href="/dev/search" name="Search" startsWith={['search']} />
+          <HrefLink href="/dev/search" name="Search" activePath="/dev/search" />
         </DevNavSection>
       </NavList>
     </Nav>

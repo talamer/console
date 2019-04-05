@@ -27,7 +27,7 @@ import { referenceForModel } from '../module/k8s';
 
 import { stripBasePath } from './utils';
 
-export const matchesPath = (resourcePath, prefix) => resourcePath === prefix || _.startsWith(resourcePath, `${prefix}/`);
+export const matchesPath = (resourcePath, prefix) => resourcePath === prefix || _.startsWith(resourcePath, `${prefix}/`) || resourcePath.includes(prefix);
 export const matchesModel = (resourcePath, model) => model && matchesPath(resourcePath, referenceForModel(model));
 
 import { Nav, NavExpandable, NavItem, NavList, PageSidebar } from '@patternfly/react-core';
@@ -116,7 +116,7 @@ ResourceNSLink.propTypes = {
 
 export class ResourceClusterLink extends NavLink {
   static isActive(props, resourcePath) {
-    return resourcePath === props.resource || _.startsWith(resourcePath, `${props.resource}/`) || matchesModel(resourcePath, props.model);
+    return resourcePath === props.resource || _.startsWith(resourcePath, `${props.resource}/`) || matchesModel(resourcePath, props.model) || resourcePath.includes(props.resource);
   }
 
   get to() {
