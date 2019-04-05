@@ -15,14 +15,13 @@ export default class MegaMenu extends React.Component<MegaMenuProps> {
     this._handleClickOutside = this._handleClickOutside.bind(this);
   }
 
-  public node: any;
-  public navToggleButton: HTMLElement;
+  node: HTMLElement;
 
-  public _handleClickOutside = (event: MouseEvent) => {
+  _handleClickOutside = (event: MouseEvent) => {
     if (
       this.props.isNavOpen &&
       this.node &&
-      !this.node.contains(event.target) &&
+      !this.node.contains(event.target as HTMLElement) &&
       !(event.target as HTMLElement).className.includes('pf-c-button')
     ) {
       this.props.onNavToggle(event);

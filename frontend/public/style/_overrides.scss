@@ -301,21 +301,6 @@ tags-input .autocomplete .suggestion-item em {
   }
 }
 
-.nav-toggle {
-  &__active {
-    .pf-c-button {
-      background-color: grey !important ;
-      border-radius: 25px !important ;
-    }
-  }
-  &__hover {
-    .pf-c-button:hover {
-      background-color: grey ;
-      border-radius: 25px ;
-    }
-  }
-}
-
 .pf-c-page__sidebar {
   --pf-c-page__sidebar--BackgroundColor: #{$color-pf-black-900};
   --pf-c-page__sidebar--PaddingBottom: 0;

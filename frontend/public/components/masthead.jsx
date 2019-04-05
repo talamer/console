@@ -55,7 +55,6 @@ export const Masthead = ({
   onNavToggle
 }) => {
   const details = getBrandingDetails();
-  const defaultRoute = "/";
   const logoProps = {
     href: defaultRoute,
     // use onClick to prevent browser reload
