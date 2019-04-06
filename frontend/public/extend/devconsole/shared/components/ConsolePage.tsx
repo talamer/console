@@ -14,9 +14,9 @@ const ConsolePage: React.FunctionComponent<ConsolePageProps> = (props: ConsolePa
     <div className="pf-c-page">
       {props.header}
       <main role="main" className="pf-c-page__main">
-        <div className="openshift-console-page">
+        <div className="odc-console-page">
           <div style={{ display: 'flex' }}>{props.sidebar}</div>
-          <div className="openshift-console-page__section">{props.children}</div>
+          <div className="odc-console-page__section">{props.children}</div>
           {props.megaMenu}
         </div>
       </main>
