@@ -16,23 +16,15 @@
   }
 }
 
-.backdrop {
-  position: absolute !important;
-}
-
 .odc-mega-menu-toggle {
-  &__active {
-    .pf-c-button.pf-m-plain {
+  &.is-active #nav-toggle {
       background-color: var(--pf-global--BackgroundColor--light-100);
       border-radius: 25px;
       color: var(--pf-global--BackgroundColor--dark-100);
     }
-  }
-  &__hover {
-    .pf-c-button:hover {
+    & #nav-toggle:hover {
       background-color: var(--pf-global--BackgroundColor--light-100);
       border-radius: 25px;
       color: var(--pf-global--BackgroundColor--dark-100);
     }
-  }
 }
