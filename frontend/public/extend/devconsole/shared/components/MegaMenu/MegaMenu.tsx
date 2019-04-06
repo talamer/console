@@ -4,12 +4,12 @@ import { Backdrop } from '@patternfly/react-core';
 import './MegaMenu.scss';
 
 export interface MegaMenuProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   isNavOpen: boolean;
   onClose: () => void;
 }
 
-export default class MegaMenu extends React.Component<MegaMenuProps> {
+export default class MegaMenu extends React.PureComponent<MegaMenuProps> {
   private node: HTMLElement;
 
   private _handleClickOutside = (event: MouseEvent) => {
@@ -24,6 +24,10 @@ export default class MegaMenu extends React.Component<MegaMenuProps> {
     } else {
       document.removeEventListener('click', this._handleClickOutside);
     }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this._handleClickOutside);
   }
 
   render() {

@@ -18,13 +18,13 @@
 
 .odc-mega-menu-toggle {
   &.is-active #nav-toggle {
-      background-color: var(--pf-global--BackgroundColor--light-100);
-      border-radius: 25px;
-      color: var(--pf-global--BackgroundColor--dark-100);
-    }
-    & #nav-toggle:hover {
-      background-color: var(--pf-global--BackgroundColor--light-100);
-      border-radius: 25px;
-      color: var(--pf-global--BackgroundColor--dark-100);
-    }
+    background-color: var(--pf-global--BackgroundColor--light-100);
+    border-radius: 25px;
+    color: var(--pf-global--BackgroundColor--dark-100);
+  }
+  & #nav-toggle:hover {
+    background-color: var(--pf-global--BackgroundColor--light-100);
+    border-radius: 25px;
+    color: var(--pf-global--BackgroundColor--dark-100);
+  }
 }

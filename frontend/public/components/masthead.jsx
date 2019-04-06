@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import { Brand, PageHeader } from '@patternfly/react-core';
-
+import cx from 'classnames';
 import { MastheadToolbar } from './masthead-toolbar';
 import { history } from './utils';
 import okdLogoImg from '../imgs/okd-logo.svg';
