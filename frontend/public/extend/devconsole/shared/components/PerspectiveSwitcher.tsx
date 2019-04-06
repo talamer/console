@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { CodeIcon, CogsIcon } from '@patternfly/react-icons';
+import { CodeIcon, CogIcon } from '@patternfly/react-icons';
 import * as openshiftIconImg from '../../../../imgs/openshift-favicon.png';
 import { connectToFlags, flagPending, FLAGS } from '../../../../features';
 import { UIActions } from '../../../../ui/ui-actions';
@@ -62,7 +62,7 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
           <MegaMenuItem
             to="/"
             title="Administrator"
-            icon={<CogsIcon />}
+            icon={<CogIcon />}
             isActive={() => props.activePerspective === 'admin'}
             onClick={(e) => {
               props.onPerspectiveChange('admin');
