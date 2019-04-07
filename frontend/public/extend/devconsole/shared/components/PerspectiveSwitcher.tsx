@@ -17,11 +17,11 @@ export interface PerspectiveSwitcherProps {
   onClose: () => void;
 }
 
-export interface StateProps {
+interface StateProps {
   activePerspective: string;
 }
 
-export interface DispatchProps {
+interface DispatchProps {
   onPerspectiveChange(string): void;
 }
 

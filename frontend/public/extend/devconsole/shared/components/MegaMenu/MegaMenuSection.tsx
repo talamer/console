@@ -11,7 +11,7 @@ export interface MegaMenuSectionProps {
 const MegaMenuSection: React.FunctionComponent<MegaMenuSectionProps> = (
   props: MegaMenuSectionProps,
 ) => (
-  <NavGroup title={props.title ? props.title : ''} className="odc-mega-menu-section__separator">
+  <NavGroup title={props.title || ''} className="odc-mega-menu-section__separator">
     {props.children}
   </NavGroup>
 );

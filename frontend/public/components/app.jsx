@@ -219,7 +219,7 @@ class App extends React.PureComponent {
         <ConsolePage
           header={
             <Masthead
-              isPerspectiveSwitcherActive={this.props.flags.SHOW_DEV_CONSOLE}
+              isPerspectiveSwitcherActive={devconsoleEnabled}
               defaultRoute={defaultRoute}
               isNavOpen={isPerspectiveSwitcherOpen}
               onNavToggle={this._onNavToggle}

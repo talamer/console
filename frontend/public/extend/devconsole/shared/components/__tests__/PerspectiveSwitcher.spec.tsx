@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import * as React from 'react';
-import { shallow, ShallowWrapper } from 'enzyme';
+import { shallow } from 'enzyme';
 import configureMockStore from 'redux-mock-store';
 import { Map as ImmutableMap } from 'immutable';
 import { UIActions } from '../../../../../ui/ui-actions';
@@ -9,10 +9,8 @@ import { getStoreTypedComponent } from '../../../utils/test-utils';
 import MegaMenu from '../MegaMenu/MegaMenu';
 
 describe('PerspectiveSwitcher', () => {
-  let switcherWrapper: ShallowWrapper<any> = null;
-
   it('renders perspective switcher menu', () => {
-    switcherWrapper = shallow(
+    const switcherWrapper = shallow(
       <PerspectiveSwitcher
         isNavOpen={false}
         activePerspective="dev"
@@ -25,7 +23,7 @@ describe('PerspectiveSwitcher', () => {
   });
 
   it('should not be available when dev console is disabled', () => {
-    switcherWrapper = shallow(
+    const switcherWrapper = shallow(
       <PerspectiveSwitcher
         isNavOpen={true}
         activePerspective="admin"
