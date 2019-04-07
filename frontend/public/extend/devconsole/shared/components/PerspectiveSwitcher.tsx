@@ -14,7 +14,7 @@ import MegaMenuNav from './MegaMenu/MegaMenuNav';
 export interface PerspectiveSwitcherProps {
   isNavOpen: boolean;
   flags: { [_: string]: boolean };
-  onNavToggle: (MouseEvent) => void;
+  onClose: () => void;
 }
 
 interface StateProps {
@@ -39,7 +39,7 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
         icon={<CodeIcon />}
         onClick={(e) => {
           props.onPerspectiveChange('dev');
-          props.onNavToggle(e);
+          props.onClose();
         }}
       />
     );
@@ -50,8 +50,8 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
   }
 
   return (
-    <MegaMenu isNavOpen={props.isNavOpen}>
-      <MegaMenuNav onSelect={props.onNavToggle}>
+    <MegaMenu isNavOpen={props.isNavOpen} onClose={props.onClose}>
+      <MegaMenuNav onSelect={props.onClose}>
         <MegaMenuSection>
           <MegaMenuItem
             to="https://cloud.openshift.com"
@@ -66,7 +66,7 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
             isActive={() => props.activePerspective === 'admin'}
             onClick={(e) => {
               props.onPerspectiveChange('admin');
-              props.onNavToggle(e);
+              props.onClose();
             }}
           />
           {devconsoleItem()}

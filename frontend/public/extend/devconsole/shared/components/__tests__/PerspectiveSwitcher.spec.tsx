@@ -14,7 +14,7 @@ describe('PerspectiveSwitcher', () => {
       <PerspectiveSwitcher
         isNavOpen={false}
         activePerspective="dev"
-        onNavToggle={() => {}}
+        onClose={() => {}}
         flags={{ SHOW_DEV_CONSOLE: true }}
         onPerspectiveChange={() => {}}
       />,
@@ -27,7 +27,7 @@ describe('PerspectiveSwitcher', () => {
       <PerspectiveSwitcher
         isNavOpen={true}
         activePerspective="admin"
-        onNavToggle={() => {}}
+        onClose={() => {}}
         flags={{ SHOW_DEV_CONSOLE: false }}
         onPerspectiveChange={() => {}}
       />,
@@ -51,7 +51,7 @@ describe('ConnectedPerspectiveSwitcher', () => {
         store={store}
         flags={{ SHOW_DEV_CONSOLE: true }}
         isNavOpen={true}
-        onNavToggle={() => {}}
+        onClose={() => {}}
       />,
     );
     expect(connectedSwitcherWrapper.props().activePerspective).toBe('dev');
@@ -68,7 +68,7 @@ describe('ConnectedPerspectiveSwitcher', () => {
         store={store}
         flags={{ SHOW_DEV_CONSOLE: true }}
         isNavOpen={true}
-        onNavToggle={() => {}}
+        onClose={() => {}}
       />,
     );
 
