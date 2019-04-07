@@ -24,7 +24,7 @@ import {
 } from '../models';
 import { referenceForModel } from '../module/k8s';
 
-import { stripBasePath } from './utils';
+import { stripBasePath, stripPerspectivePath } from './utils/link';
 
 export const matchesPath = (resourcePath, prefix) => resourcePath === prefix || _.startsWith(resourcePath, `${prefix}/`);
 export const matchesModel = (resourcePath, model) => model && matchesPath(resourcePath, referenceForModel(model));
@@ -35,11 +35,6 @@ import PerspectiveLink from '../extend/devconsole/shared/components/PerspectiveL
 const stripNS = href => {
   href = stripBasePath(href);
   return href.replace(/^\/?k8s\//, '').replace(/^\/?(cluster|all-namespaces|ns\/[^/]*)/, '').replace(/^\//, '');
-};
-
-const stripPS = href => {
-  href = stripBasePath(href);
-  return href.replace(/^admin|dev\//, '');
 };
 
 const ExternalLink = ({href, name}) => <NavItem isActive={false}>
@@ -198,7 +193,7 @@ export const NavSection = connect(navSectionStateToProps)(
         return stripBasePath(location).startsWith(this.props.activePath);
       }
 
-      const resourcePath = location ? stripNS(stripPS(location)) : '';
+      const resourcePath = location ? stripNS(stripPerspectivePath(location)) : '';
 
       //current bug? - we should be checking if children is a single item or .filter is undefined
       return children.filter(c => {

@@ -11,14 +11,17 @@ export type PerspectiveLinkProps = StateProps & LinkProps;
 
 export const PerspectiveLink: React.FunctionComponent<PerspectiveLinkProps> = (
   props: PerspectiveLinkProps,
-) => (
-  <Link
-    {...props}
-    to={props.activePerspective !== 'admin' ? `/${props.activePerspective}${props.to}` : props.to}
-  >
-    {props.children}
-  </Link>
-);
+) => {
+  const { activePerspective, to, ...linkProps } = props;
+  return (
+    <Link
+      {...linkProps}
+      to={activePerspective !== 'admin' ? `/${activePerspective}${to}` : to}
+    >
+      {props.children}
+    </Link>
+  );
+};
 
 const mapStateToProps = (state): StateProps => {
   return {
@@ -26,4 +29,7 @@ const mapStateToProps = (state): StateProps => {
   };
 };
 
-export default connect<StateProps, {}, LinkProps>(mapStateToProps)(PerspectiveLink);
+export default connect<StateProps, {}, LinkProps>(
+  mapStateToProps,
+  () => ({}),
+)(PerspectiveLink);

@@ -22,6 +22,8 @@ export const defaultPerspective = 'admin';
 
 const basePathPattern = new RegExp(`^/?${window.SERVER_FLAGS.basePath}`);
 
+const perspectivePathPattern = new RegExp(`^${legalPerspectiveNames.join('|')}/`);
+
 export const defaultNamespacedPrefixes = [
   '/search',
   '/status',
@@ -44,6 +46,8 @@ export const namespacedPrefixes = legalPerspectiveNames.reduce((acc, perspective
 }, []);
 
 export const stripBasePath = path => path.replace(basePathPattern, '/');
+
+export const stripPerspectivePath = path => path.replace(perspectivePathPattern, '');
 
 export const getNSPrefix = path => {
   path = stripBasePath(path);
