@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import * as _ from 'lodash-es';
 import * as PropTypes from 'prop-types';
 
@@ -27,15 +26,20 @@ import { referenceForModel } from '../module/k8s';
 
 import { stripBasePath } from './utils';
 
-export const matchesPath = (resourcePath, prefix) => resourcePath === prefix || _.startsWith(resourcePath, `${prefix}/`) || resourcePath.includes(prefix);
+export const matchesPath = (resourcePath, prefix) => resourcePath === prefix || _.startsWith(resourcePath, `${prefix}/`);
 export const matchesModel = (resourcePath, model) => model && matchesPath(resourcePath, referenceForModel(model));
 
 import { Nav, NavExpandable, NavItem, NavList, PageSidebar } from '@patternfly/react-core';
-import { pathWithPerspective } from './utils/perspective';
+import PerspectiveLink from '../extend/devconsole/shared/components/PerspectiveLink';
 
 const stripNS = href => {
   href = stripBasePath(href);
   return href.replace(/^\/?k8s\//, '').replace(/^\/?(cluster|all-namespaces|ns\/[^/]*)/, '').replace(/^\//, '');
+};
+
+const stripPS = href => {
+  href = stripBasePath(href);
+  return href.replace(/^admin|dev\//, '');
 };
 
 const ExternalLink = ({href, name}) => <NavItem isActive={false}>
@@ -72,13 +76,13 @@ class NavLink extends React.PureComponent {
 
     return (
       <NavItem isActive={isActive} isSeparated={showSeparator}>
-        <Link
+        <PerspectiveLink
           id={id}
           to={this.to}
           onClick={onClick}
         >
           {name}
-        </Link>
+        </PerspectiveLink>
       </NavItem>
     );
   }
@@ -102,7 +106,7 @@ export class ResourceNSLink extends NavLink {
 
   get to() {
     const { resource, activeNamespace } = this.props;
-    return pathWithPerspective(formatNamespacedRouteForResource(resource, activeNamespace));
+    return formatNamespacedRouteForResource(resource, activeNamespace);
   }
 }
 
@@ -116,11 +120,11 @@ ResourceNSLink.propTypes = {
 
 export class ResourceClusterLink extends NavLink {
   static isActive(props, resourcePath) {
-    return resourcePath === props.resource || _.startsWith(resourcePath, `${props.resource}/`) || matchesModel(resourcePath, props.model) || resourcePath.includes(props.resource);
+    return resourcePath === props.resource || _.startsWith(resourcePath, `${props.resource}/`) || matchesModel(resourcePath, props.model);
   }
 
   get to() {
-    return pathWithPerspective(`/k8s/cluster/${this.props.resource}`);
+    return `/k8s/cluster/${this.props.resource}`;
   }
 }
 
@@ -194,7 +198,7 @@ export const NavSection = connect(navSectionStateToProps)(
         return stripBasePath(location).startsWith(this.props.activePath);
       }
 
-      const resourcePath = location ? stripNS(location) : '';
+      const resourcePath = location ? stripNS(stripPS(location)) : '';
 
       //current bug? - we should be checking if children is a single item or .filter is undefined
       return children.filter(c => {

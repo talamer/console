@@ -7,20 +7,18 @@ interface StateProps {
   activePerspective: string;
 }
 
-type PerspectiveLinkProps = StateProps & LinkProps;
+export type PerspectiveLinkProps = StateProps & LinkProps;
 
 export const PerspectiveLink: React.FunctionComponent<PerspectiveLinkProps> = (
   props: PerspectiveLinkProps,
-) => {
-  const _pathWithPerspective = (activePerspective, path) => {
-    return activePerspective !== 'admin' ? `/${activePerspective}${path}` : path;
-  };
-  return (
-    <Link {...props} to={_pathWithPerspective(props.activePerspective, props.to)}>
-      {props.children}
-    </Link>
-  );
-};
+) => (
+  <Link
+    {...props}
+    to={props.activePerspective !== 'admin' ? `/${props.activePerspective}${props.to}` : props.to}
+  >
+    {props.children}
+  </Link>
+);
 
 const mapStateToProps = (state): StateProps => {
   return {

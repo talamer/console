@@ -34,7 +34,7 @@ export const resourcePathFromModel = (model, name, namespace) => {
     url += `/${name}`;
   }
 
-  return pathWithPerspective(url);
+  return pathWithPerspective(url); // FIXME - Remove use of global redux store.
 };
 
 export const resourceListPathFromModel = (model, namespace) => resourcePathFromModel(model, null, namespace);

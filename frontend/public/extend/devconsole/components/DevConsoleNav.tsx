@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Nav, NavList, PageSidebar } from '@patternfly/react-core';
 import { HrefLink, NavSection, ResourceClusterLink, ResourceNSLink } from '../../../components/nav';
 import { FLAGS } from '../../../features';
-import { BuildConfigModel, BuildModel, ImageStreamModel, ClusterServiceVersionModel } from '../../../models';
+import { BuildModel } from '../../../models';
 
 interface DevConsoleNavigationProps {
   isNavOpen: boolean;
@@ -24,51 +24,25 @@ export const PageNav = (props: DevConsoleNavigationProps) => {
     <Nav aria-label="Nav" onSelect={props.onNavSelect} onToggle={props.onToggle}>
       <NavList>
         <HrefLink
-          href="/dev/add"
+          href="/add"
           name="+Add"
           activePath="/dev/add"
           isActive={isActive('/add')}
         />
         <HrefLink
-          href="/dev/topology"
+          href="/topology"
           name="Topology"
           activePath="/dev/topology"
           isActive={isActive('/topology')}
         />
-        <DevNavSection title="Catalog">
-          <HrefLink href="/dev/catalog" name="Developer Catalog" activePath="/dev/catalog/" />
-          <ResourceNSLink
-            model={ClusterServiceVersionModel}
-            resource={ClusterServiceVersionModel.plural}
-            name="Installed Operators"
-            separatorConditions={[
-              [FLAGS.CAN_LIST_PACKAGE_MANIFEST, FLAGS.CAN_LIST_OPERATOR_GROUP, FLAGS.OPERATOR_HUB],
-              [FLAGS.CAN_LIST_PACKAGE_MANIFEST, FLAGS.CAN_LIST_OPERATOR_GROUP],
-              FLAGS.SERVICE_CATALOG,
-            ]}
-          />
-          <HrefLink
-            required={[FLAGS.CAN_LIST_PACKAGE_MANIFEST, FLAGS.CAN_LIST_OPERATOR_GROUP, FLAGS.OPERATOR_HUB]}
-            href="/dev/operatorhub"
-            name="OperatorHub"
-            activePath="/dev/operatorhub/"
-          />
-        </DevNavSection>
-        <DevNavSection title="Builds">
-          <ResourceNSLink resource="buildconfigs" name={BuildConfigModel.labelPlural} />
-          <ResourceNSLink resource="builds" name={BuildModel.labelPlural} />
-          <ResourceNSLink resource="imagestreams" name={ImageStreamModel.labelPlural} startsWith={['imagestreams', 'imagestreamtags']} />
-        </DevNavSection>
-        <DevNavSection title="Pipelines">
-          <HrefLink href="/dev/pipelines" name="Piplines" activePath="/dev/pipelines/" />
-          <HrefLink href="/dev/pipelines/run" name="Pipline Runs" activePath="/dev/pipelines/run" />
-        </DevNavSection>
+        <ResourceNSLink resource="buildconfigs" name={BuildModel.labelPlural} isActive={isActive('/buildconfigs')} />
+        <HrefLink href="/pipelines" name="Piplines" activePath="/pipelines" isActive={isActive('/pipelines')} />
         <DevNavSection title="Advanced">
           <ResourceClusterLink resource="projects" name="Projects" required={FLAGS.OPENSHIFT} />
-          <HrefLink href="/dev/overview" name="Status" activePath="/dev/overview/" required={FLAGS.OPENSHIFT} />
-          <HrefLink href="/dev/status" name="Status" activePath="/dev/status/" disallowed={FLAGS.OPENSHIFT} />
-          <ResourceNSLink resource="events" name="Events" />
-          <HrefLink href="/dev/search" name="Search" activePath="/dev/search" />
+          <HrefLink href="/overview" name="Status" activePath="/overview" required={FLAGS.OPENSHIFT} />
+          <HrefLink href="/status" name="Status" activePath="/status" disallowed={FLAGS.OPENSHIFT} />
+          <ResourceNSLink resource="events" name="Events"/>
+          <HrefLink href="/search" name="Search" activePath="/search" />
         </DevNavSection>
       </NavList>
     </Nav>
