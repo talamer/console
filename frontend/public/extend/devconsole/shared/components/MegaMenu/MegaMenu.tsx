@@ -18,6 +18,12 @@ export default class MegaMenu extends React.PureComponent<MegaMenuProps> {
     }
   };
 
+  componentDidMount() {
+    if (this.props.isNavOpen) {
+      document.addEventListener('click', this._handleClickOutside);
+    }
+  }
+
   componentDidUpdate() {
     if (this.props.isNavOpen) {
       document.addEventListener('click', this._handleClickOutside);
