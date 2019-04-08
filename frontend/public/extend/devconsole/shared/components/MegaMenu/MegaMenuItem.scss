@@ -1,0 +1,23 @@
+.odc-mega-menu-item {
+  &.pf-c-nav__link {
+    display: flex !important;
+    flex-flow: row nowrap;
+    &:hover {
+      .odc-mega-menu-item__external-link {
+        opacity: 1;
+      }
+    }
+  }
+
+  &__icon {
+    width: 20px;
+    height: 20px;
+    padding: 2px;
+    margin-right: 8px;
+  }
+
+  &__external-link {
+    margin-left: auto;
+    opacity: 0;
+  }
+}

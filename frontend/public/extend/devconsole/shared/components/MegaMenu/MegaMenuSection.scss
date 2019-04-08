@@ -1,0 +1,8 @@
+.odc-mega-menu-section {
+  &__separator {
+    border-bottom-color: var(--pf-global--BorderColor--light);
+    border-bottom-style: solid;
+    border-bottom-width: thin;
+    padding-bottom: var(--pf-global--spacer--md);
+  }
+}

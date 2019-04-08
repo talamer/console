@@ -24,12 +24,11 @@ import { ClusterServiceVersionModel, SubscriptionModel, AlertmanagerModel } from
 import { getCachedResources, referenceForModel } from '../module/k8s';
 import k8sActions, { types } from '../module/k8s/k8s-actions';
 import DevConsoleNavigation from '../extend/devconsole/components/DevConsoleNav';
+import ConsolePage from '../extend/devconsole/shared/components/ConsolePage';
 import '../vendor.scss';
 import '../style.scss';
-
 //PF4 Imports
 import {
-  Page,
   PageSection,
   PageSectionVariants,
 } from '@patternfly/react-core';
@@ -127,10 +126,12 @@ class App extends React.PureComponent {
     this._onNavSelect = this._onNavSelect.bind(this);
     this._isDesktop = this._isDesktop.bind(this);
     this._onResize = this._onResize.bind(this);
+    this._onPerspectiveSwitcherClose = this._onPerspectiveSwitcherClose.bind(this);
     this.previousDesktopState = this._isDesktop();
 
     this.state = {
       isNavOpen: this._isDesktop(),
+      isPerspectiveSwitcherOpen : false,
     };
   }
 
@@ -163,57 +164,79 @@ class App extends React.PureComponent {
   _onNavToggle() {
     this.setState(prevState => {
       return {
-        isNavOpen: !prevState.isNavOpen,
+        isNavOpen: this.props.flags.SHOW_DEV_CONSOLE
+          ? prevState.isNavOpen
+          : !prevState.isNavOpen,
+        isPerspectiveSwitcherOpen: this.props.flags.SHOW_DEV_CONSOLE
+          ? !prevState.isPerspectiveSwitcherOpen
+          : false,
       };
     });
+  }
+
+  _onPerspectiveSwitcherClose() {
+    this.setState({ isPerspectiveSwitcherOpen: false });
   }
 
   _onNavSelect() {
     //close nav on mobile nav selects
     if (!this._isDesktop()) {
-      this.setState({isNavOpen: false});
+      this.setState({ isNavOpen: false });
     }
   }
 
   _onResize() {
     const isDesktop = this._isDesktop();
-    if (!this.props.flags.SHOW_DEV_CONSOLE && this.previousDesktopState !== isDesktop) {
-      this.setState({isNavOpen: isDesktop});
+    if (this.previousDesktopState !== isDesktop) {
+      this.setState({ isNavOpen: isDesktop });
       this.previousDesktopState = isDesktop;
     }
   }
 
   _sidebarNav() {
-    if (!this.props.flags.SHOW_DEV_CONSOLE) {
-      return <Navigation isNavOpen={this.state.isNavOpen} onNavSelect={this._onNavSelect} />;
+    if (
+      this.props.flags.SHOW_DEV_CONSOLE &&
+      this.props.activePerspective === 'dev'
+    ) {
+      return <DevConsoleNavigation isNavOpen={true} />;
     }
-    switch (this.props.activePerspective) {
-      case 'dev':
-        return <DevConsoleNavigation isNavOpen={true} onNavSelect={this._onNavSelect} />;
-      default:
-        return <Navigation isNavOpen={true} onNavSelect={this._onNavSelect} />;
-    }
+    return (
+      <Navigation
+        isNavOpen={this.state.isNavOpen}
+        onNavSelect={this._onNavSelect}
+      />
+    );
   }
 
   render() {
     const { isNavOpen } = this.state;
     const { productName } = getBrandingDetails();
+    const { isPerspectiveSwitcherOpen } = this.state;
     const defaultRoute = this.props.activePerspective !== 'admin' ? `/${this.props.activePerspective}` : '/';
     const devconsoleEnabled = this.props.flags.SHOW_DEV_CONSOLE;
 
     return (
       <React.Fragment>
-        <PerspectiveSwitcher
-          isNavOpen={!isNavOpen}
-          onNavToggle={this._onNavToggle}
-        />
         <Helmet
           titleTemplate={`%s · ${productName}`}
           defaultTitle={productName}
         />
-        <Page
-          header={<Masthead defaultRoute={defaultRoute} onNavToggle={this._onNavToggle} />}
+        <ConsolePage
+          header={
+            <Masthead
+              isPerspectiveSwitcherActive={devconsoleEnabled}
+              defaultRoute={defaultRoute}
+              isNavOpen={isPerspectiveSwitcherOpen}
+              onNavToggle={this._onNavToggle}
+            />
+          }
           sidebar={this._sidebarNav()}
+          megaMenu={
+            <PerspectiveSwitcher
+              isNavOpen={isPerspectiveSwitcherOpen}
+              onClose={this._onPerspectiveSwitcherClose}
+            />
+          }
         >
           <PageSection variant={PageSectionVariants.light}>
             <div id="content">
@@ -337,7 +360,7 @@ class App extends React.PureComponent {
               </div>
             </div>
           </PageSection>
-        </Page>
+        </ConsolePage>
       </React.Fragment>
     );
   }
