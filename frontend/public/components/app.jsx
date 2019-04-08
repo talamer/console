@@ -219,7 +219,6 @@ class App extends React.PureComponent {
           titleTemplate={`%s · ${productName}`}
           defaultTitle={productName}
         />
-<<<<<<< HEAD
         <ConsolePage
           header={
             <Masthead
@@ -229,10 +228,6 @@ class App extends React.PureComponent {
               onNavToggle={this._onNavToggle}
             />
           }
-=======
-        <Page
-          header={<Masthead defaultRoute={this._prependActivePerspective('/')} onNavToggle={this._onNavToggle} />}
->>>>>>> Add shared routes, nav items and views to dev console
           sidebar={this._sidebarNav()}
           megaMenu={
             <PerspectiveSwitcher

@@ -41,7 +41,7 @@ export const PageNav = (props: DevConsoleNavigationProps) => {
           <ResourceClusterLink resource="projects" name="Projects" required={FLAGS.OPENSHIFT} />
           <HrefLink href="/overview" name="Status" activePath="/overview" required={FLAGS.OPENSHIFT} />
           <HrefLink href="/status" name="Status" activePath="/status" disallowed={FLAGS.OPENSHIFT} />
-          <ResourceNSLink resource="events" name="Events"/>
+          <ResourceNSLink resource="events" name="Events" />
           <HrefLink href="/search" name="Search" activePath="/search" />
         </DevNavSection>
       </NavList>

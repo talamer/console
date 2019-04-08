@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { LinkProps, Link } from 'react-router-dom';
 import { getActivePerspective } from '../../../../ui/ui-selectors';
