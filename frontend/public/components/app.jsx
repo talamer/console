@@ -42,6 +42,7 @@ import 'url-search-params-polyfill';
 // Extensions
 import devConsoleRoutes from '../extend/devconsole/routes';
 import PerspectiveSwitcher from '../extend/devconsole/shared/components/PerspectiveSwitcher';
+import { pathWithPerspective } from './utils/perspective';
 
 // React Router's proptypes are incorrect. See https://github.com/ReactTraining/react-router/pull/5393
 Route.propTypes.path = PropTypes.oneOfType([
@@ -206,7 +207,7 @@ class App extends React.PureComponent {
   }
 
   _prependActivePerspective(path) {
-    return this.props.activePerspective !== 'admin' ? `/${this.props.activePerspective}${path}` : path;
+    return pathWithPerspective(this.props.activePerspective, path);
   }
 
   render() {

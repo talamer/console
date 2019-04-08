@@ -18,6 +18,8 @@ import { FLAGS, featureReducerName, flagPending, setFlag, connectToFlags } from 
 import { openshiftHelpBase } from './utils/documentation';
 import { createProjectMessageStateToProps } from '../ui/ui-reducers';
 import PerspectiveLink from '../extend/devconsole/shared/components/PerspectiveLink';
+import { getActivePerspective } from '../ui/ui-selectors';
+import { pathWithPerspective } from './utils/perspective';
 
 const getModel = useProjects => useProjects ? ProjectModel : NamespaceModel;
 const getDisplayName = obj => _.get(obj, ['metadata', 'annotations', 'openshift.io/display-name']);
@@ -240,10 +242,11 @@ const autocompleteFilter = (text, item) => fuzzy(text, item);
 const defaultBookmarks = {};
 
 const namespaceBarDropdownStateToProps = state => {
-  const activeNamespace = state.UI.get('activeNamespace');
-  const canListNS = state[featureReducerName].get(FLAGS.CAN_LIST_NS);
-
-  return { activeNamespace, canListNS };
+  return {
+    activeNamespace: state.UI.get('activeNamespace'),
+    activePerspective: getActivePerspective(state),
+    canListNS: state[featureReducerName].get(FLAGS.CAN_LIST_NS),
+  };
 };
 
 class NamespaceBarDropdowns_ extends React.Component {
@@ -257,7 +260,7 @@ class NamespaceBarDropdowns_ extends React.Component {
   }
 
   render() {
-    const { activeNamespace, dispatch, canListNS, useProjects } = this.props;
+    const { activeNamespace, activePerspective, dispatch, canListNS, useProjects } = this.props;
     if (flagPending(canListNS)) {
       return null;
     }
@@ -285,15 +288,15 @@ class NamespaceBarDropdowns_ extends React.Component {
     const addActions = [
       {
         label: 'Browse Catalog',
-        href: '/catalog',
+        href: pathWithPerspective(activePerspective, '/catalog'),
       },
       {
         label: 'Deploy Image',
-        href: `/deploy-image?preselected-ns=${activeNamespace}`,
+        href: pathWithPerspective(activePerspective, `/deploy-image?preselected-ns=${activeNamespace}`),
       },
       {
         label: 'Import YAML',
-        href: formatNamespacedRouteForResource('import', activeNamespace),
+        href: pathWithPerspective(activePerspective, formatNamespacedRouteForResource('import', activeNamespace)),
       },
     ];
 

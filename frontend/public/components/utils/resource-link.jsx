@@ -7,7 +7,7 @@ import { ResourceIcon } from './index';
 import { modelFor, referenceForModel } from '../../module/k8s';
 import { connectToModel } from '../../kinds';
 import { connectToFlags, FLAGS } from '../../features';
-import { pathWithPerspective } from './perspective';
+import { pathWithPerspectiveFromStore } from './perspective';
 
 const unknownKinds = new Set();
 
@@ -34,7 +34,7 @@ export const resourcePathFromModel = (model, name, namespace) => {
     url += `/${name}`;
   }
 
-  return pathWithPerspective(url); // FIXME - Remove use of global redux store.
+  return pathWithPerspectiveFromStore(url); // FIXME - Remove use of global redux store.
 };
 
 export const resourceListPathFromModel = (model, namespace) => resourcePathFromModel(model, null, namespace);

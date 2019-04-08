@@ -3,6 +3,7 @@ import * as React from 'react';
 import { LinkProps, Link } from 'react-router-dom';
 import { getActivePerspective } from '../../../../ui/ui-selectors';
 import { connect } from 'react-redux';
+import { pathWithPerspective } from '../../../../components/utils/perspective';
 
 interface StateProps {
   activePerspective: string;
@@ -15,10 +16,7 @@ export const PerspectiveLink: React.FunctionComponent<PerspectiveLinkProps> = (
 ) => {
   const { activePerspective, to, ...linkProps } = props;
   return (
-    <Link
-      {...linkProps}
-      to={activePerspective !== 'admin' ? `/${activePerspective}${to}` : to}
-    >
+    <Link {...linkProps} to={pathWithPerspective(activePerspective, to)}>
       {props.children}
     </Link>
   );
