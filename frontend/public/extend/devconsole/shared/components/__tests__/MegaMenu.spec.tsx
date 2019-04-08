@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import { shallow, mount } from 'enzyme';
 import { Backdrop } from '@patternfly/react-core';
 import MegaMenu from '../MegaMenu/MegaMenu';
@@ -27,7 +26,9 @@ describe('MegaMenu', () => {
   });
 
   it('should close the switcher when clicked outside', () => {
-    const map = {};
+    const map: any = {};
+
+    const div = document.createElement('div');
 
     document.addEventListener = (event, cb) => {
       map[event] = cb;
@@ -39,17 +40,18 @@ describe('MegaMenu', () => {
         <MegaMenu isNavOpen={true} onClose={onClose} />
         <div className="test-class" />
       </div>,
-      { attachTo: document.body },
+      { attachTo: div },
     );
 
     menuWrapper.find('.test-class').simulate('click');
 
-    map['click']({ target: ReactDOM.findDOMNode(menuWrapper.find('.test-class').instance()) });
+    map.click({ target: menuWrapper.find('.test-class').instance() });
     expect(onClose).toHaveBeenCalled();
   });
 
   it('should not close switcher when clicked on it', () => {
-    const map = {};
+    const map: any = {};
+    const div = document.createElement('div');
 
     document.addEventListener = (event, cb) => {
       map[event] = cb;
@@ -57,12 +59,12 @@ describe('MegaMenu', () => {
 
     const onClose = jest.fn();
     const menuWrapper = mount(<MegaMenu isNavOpen={true} onClose={onClose} />, {
-      attachTo: document.body,
+      attachTo: div,
     });
 
     menuWrapper.find('.odc-mega-menu').simulate('click');
 
-    map['click']({ target: ReactDOM.findDOMNode(menuWrapper.find('.odc-mega-menu').instance()) });
+    map.click({ target: menuWrapper.find('.odc-mega-menu').instance() });
     expect(onClose).not.toHaveBeenCalled();
   });
 });

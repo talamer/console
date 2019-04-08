@@ -52,7 +52,7 @@ export const Masthead = ({
   isPerspectiveSwitcherActive,
   defaultRoute,
   isNavOpen,
-  onNavToggle
+  onNavToggle,
 }) => {
   const details = getBrandingDetails();
   const logoProps = {
@@ -61,16 +61,16 @@ export const Masthead = ({
     onClick: e => {
       e.preventDefault();
       history.push(defaultRoute);
-    }
+    },
   };
 
   return (
     <PageHeader
-    className={
-      cx({
-        'odc-mega-menu-toggle': isPerspectiveSwitcherActive,
-        'is-active': isPerspectiveSwitcherActive && isNavOpen
-      })}
+      className={
+        cx({
+          'odc-mega-menu-toggle': isPerspectiveSwitcherActive,
+          'is-active': isPerspectiveSwitcherActive && isNavOpen,
+        })}
       logo={<Brand src={details.logoImg} alt={details.logoAlt} />}
       logoProps={logoProps}
       toolbar={<MastheadToolbar />}
@@ -84,5 +84,5 @@ Masthead.propTypes = {
   defaultRoute: PropTypes.string,
   isNavOpen: PropTypes.bool,
   onNavToggle: PropTypes.func,
-  isPerspectiveSwitcherActive: PropTypes.bool
+  isPerspectiveSwitcherActive: PropTypes.bool,
 };

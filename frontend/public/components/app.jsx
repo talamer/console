@@ -206,7 +206,7 @@ class App extends React.PureComponent {
   }
 
   render() {
-    const { isNavOpen, isPerspectiveSwitcherOpen } = this.state;
+    const { isPerspectiveSwitcherOpen } = this.state;
     const defaultRoute = this.props.activePerspective !== 'admin' ? `/${this.props.activePerspective}` : '/';
     const devconsoleEnabled = this.props.flags.SHOW_DEV_CONSOLE;
 
