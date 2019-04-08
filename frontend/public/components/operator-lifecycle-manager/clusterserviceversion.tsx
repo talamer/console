@@ -1,7 +1,7 @@
 /* eslint-disable no-undef, no-unused-vars */
 
 import * as React from 'react';
-import { Link, match as RouterMatch } from 'react-router-dom';
+import { match as RouterMatch } from 'react-router-dom';
 import * as _ from 'lodash-es';
 import { connect } from 'react-redux';
 import { Alert } from 'patternfly-react';
@@ -144,9 +144,9 @@ export const CRDCard: React.SFC<CRDCardProps> = (props) => {
       <p>{crd.description}</p>
     </div>
     { canCreate && <div className="co-crd-card__footer">
-      <Link className="co-crd-card__link" to={createRoute}>
+      <PerspectiveLink className="co-crd-card__link" to={createRoute}>
         <span className="pficon pficon-add-circle-o" aria-hidden="true"></span> Create New
-      </Link>
+      </PerspectiveLink>
     </div> }
   </div>;
 };
