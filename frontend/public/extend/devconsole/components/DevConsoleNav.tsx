@@ -2,7 +2,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Nav, NavList, PageSidebar } from '@patternfly/react-core';
-import { HrefLink, NavSection } from '../../../components/nav';
+import { HrefLink, NavSection, ResourceClusterLink, ResourceNSLink } from '../../../components/nav';
+import { FLAGS } from '../../../features';
+import { BuildModel } from '../../../models';
 
 interface DevConsoleNavigationProps {
   isNavOpen: boolean;
@@ -22,40 +24,25 @@ export const PageNav = (props: DevConsoleNavigationProps) => {
     <Nav aria-label="Nav" onSelect={props.onNavSelect} onToggle={props.onToggle}>
       <NavList>
         <HrefLink
-          href="/dev"
-          name="Home"
-          activePath="/dev"
-          isActive={isActive('/dev')}
+          href="/add"
+          name="+Add"
+          activePath="/dev/add"
+          isActive={isActive('/add')}
         />
         <HrefLink
-          href="/dev/codebases"
-          name="Codebases"
-          activePath="/dev/codebases"
-          isActive={isActive('/codebases')}
-        />
-        <HrefLink
-          href="/dev/import"
-          name="Import"
-          activePath="/dev/import"
-          isActive={isActive('/import')}
-        />
-        <HrefLink
-          href="/dev/topology"
+          href="/topology"
           name="Topology"
           activePath="/dev/topology"
           isActive={isActive('/topology')}
         />
-        <DevNavSection title="Menu Item">
-          <HrefLink
-            href="/dev/submenu_1"
-            name="Sub Menu 1"
-            activePath="/dev/submenu_1/"
-          />
-          <HrefLink
-            href="/dev/submenu_2"
-            name="Sub Menu 2"
-            activePath="/dev/submenu_2/"
-          />
+        <ResourceNSLink resource="buildconfigs" name={BuildModel.labelPlural} isActive={isActive('/buildconfigs')} />
+        <HrefLink href="/pipelines" name="Piplines" activePath="/pipelines" isActive={isActive('/pipelines')} />
+        <DevNavSection title="Advanced">
+          <ResourceClusterLink resource="projects" name="Projects" required={FLAGS.OPENSHIFT} />
+          <HrefLink href="/overview" name="Status" activePath="/overview" required={FLAGS.OPENSHIFT} />
+          <HrefLink href="/status" name="Status" activePath="/status" disallowed={FLAGS.OPENSHIFT} />
+          <ResourceNSLink resource="events" name="Events" />
+          <HrefLink href="/search" name="Search" activePath="/search" />
         </DevNavSection>
       </NavList>
     </Nav>

@@ -16,15 +16,38 @@ import { ALL_NAMESPACES_KEY } from '../../const';
 
 export const legalNamePattern = /[a-z0-9](?:[-a-z0-9]*[a-z0-9])?/;
 
-const basePathPattern = new RegExp(`^/?${window.SERVER_FLAGS.basePath}`);
-
-export const namespacedPrefixes = ['/search', '/status', '/k8s', '/overview', '/catalog', '/provisionedservices', '/operators', '/operatormanagement', '/operatorhub'];
-
 export const legalPerspectiveNames = ['admin', 'dev'];
 
 export const defaultPerspective = 'admin';
 
+const basePathPattern = new RegExp(`^/?${window.SERVER_FLAGS.basePath}`);
+
+const perspectivePathPattern = new RegExp(`^${legalPerspectiveNames.join('|')}/`);
+
+export const defaultNamespacedPrefixes = [
+  '/search',
+  '/status',
+  '/k8s',
+  '/overview',
+  '/catalog',
+  '/provisionedservices',
+  '/operators',
+  '/operatormanagement',
+  '/operatorhub',
+];
+
+
+// For the namespace dropdown to work on different perspectives we need to have prefixes with legal perspectives names as well.
+export const namespacedPrefixes = legalPerspectiveNames.reduce((acc, perspective) => {
+  if (perspective !== 'admin') {
+    return [...acc, ...defaultNamespacedPrefixes.map(prefix => `/${perspective}${prefix}`)];
+  }
+  return [...acc, ...defaultNamespacedPrefixes];
+}, []);
+
 export const stripBasePath = path => path.replace(basePathPattern, '/');
+
+export const stripPerspectivePath = path => path.replace(perspectivePathPattern, '');
 
 export const getNSPrefix = path => {
   path = stripBasePath(path);

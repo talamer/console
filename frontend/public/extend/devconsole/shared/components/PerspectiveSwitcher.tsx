@@ -37,9 +37,8 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
         to="/dev"
         title="Developer"
         icon={<CodeIcon />}
-        onClick={(e) => {
+        onClick={() => {
           props.onPerspectiveChange('dev');
-          props.onClose();
         }}
       />
     );
@@ -64,9 +63,8 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
             title="Administrator"
             icon={<CogIcon />}
             isActive={() => props.activePerspective === 'admin'}
-            onClick={(e) => {
+            onClick={() => {
               props.onPerspectiveChange('admin');
-              props.onClose();
             }}
           />
           {devconsoleItem()}

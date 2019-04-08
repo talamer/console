@@ -15,10 +15,9 @@ export interface MegaMenuItemProps {
 }
 
 const MegaMenuItem: React.FunctionComponent<MegaMenuItemProps> = (props: MegaMenuItemProps) => (
-  <NavItem className="odc-mega-menu-item">
+  <NavItem className="odc-mega-menu-item" onClick={props.onClick}>
     <NavLink
       to={props.to}
-      onClick={props.onClick}
       isActive={props.isActive}
       activeClassName="pf-m-current"
       target={props.externalLink ? '_blank' : ''}
