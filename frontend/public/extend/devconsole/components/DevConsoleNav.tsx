@@ -36,7 +36,7 @@ export const PageNav = (props: DevConsoleNavigationProps) => {
           isActive={isActive('/topology')}
         />
         <ResourceNSLink resource="buildconfigs" name={BuildModel.labelPlural} isActive={isActive('/buildconfigs')} />
-        <HrefLink href="/pipelines" name="Piplines" activePath="/pipelines" isActive={isActive('/pipelines')} />
+        <HrefLink href="/pipelines" name="Pipelines" activePath="/pipelines" isActive={isActive('/pipelines')} />
         <DevNavSection title="Advanced">
           <ResourceClusterLink resource="projects" name="Projects" required={FLAGS.OPENSHIFT} />
           <HrefLink href="/overview" name="Status" activePath="/overview" required={FLAGS.OPENSHIFT} />

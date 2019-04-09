@@ -6,7 +6,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
 import { Toolbar, EmptyState } from 'patternfly-react';
 
 import { coFetchJSON } from '../../co-fetch';
@@ -50,7 +49,7 @@ import { overviewMenuActions, OverviewNamespaceDashboard } from './namespace-ove
 import { ProjectOverview } from './project-overview';
 import { ResourceOverviewPage } from './resource-overview-page';
 import { OverviewViewOption, OverviewSpecialGroup } from './constants';
-
+import PerspectiveLink from '../../extend/devconsole/shared/components/PerspectiveLink';
 
 // List of container status waiting reason values that we should call out as errors in project status rows.
 const CONTAINER_WAITING_STATE_ERROR_REASONS = ['CrashLoopBackOff', 'ErrImagePull', 'ImagePullBackOff'];
@@ -304,9 +303,9 @@ const isReservedNamespace = (ns: string) => ns === 'default' || ns === 'openshif
 
 const OverviewItemReadiness: React.SFC<OverviewItemReadinessProps> = ({desired = 0, ready = 0, resource}) => {
   const href = `${resourceObjPath(resource, resource.kind)}/pods`;
-  return <Link to={href}>
+  return <PerspectiveLink to={href}>
     {ready} of {desired} pods
-  </Link>;
+  </PerspectiveLink>;
 };
 
 const overviewEmptyStateToProps = ({UI}) => ({
@@ -325,17 +324,17 @@ const OverviewEmptyState = connect(overviewEmptyStateToProps)(({activeNamespace,
         Add content to your project from the catalog of web frameworks, databases, and other components. You may also deploy an existing image or create resources using YAML definitions.
       </EmptyState.Info>
       <EmptyState.Action>
-        <Link to="/catalog" className="btn btn-primary">
+        <PerspectiveLink to="/catalog" className="btn btn-primary">
           Browse Catalog
-        </Link>
+        </PerspectiveLink>
       </EmptyState.Action>
       <EmptyState.Action secondary>
-        <Link className="btn btn-default" to={`/deploy-image?preselected-ns=${activeNamespace}`}>
+        <PerspectiveLink className="btn btn-default" to={`/deploy-image?preselected-ns=${activeNamespace}`}>
           Deploy Image
-        </Link>
-        <Link className="btn btn-default" to={formatNamespacedRouteForResource('import', activeNamespace)}>
+        </PerspectiveLink>
+        <PerspectiveLink className="btn btn-default" to={formatNamespacedRouteForResource('import', activeNamespace)}>
           Import YAML
-        </Link>
+        </PerspectiveLink>
       </EmptyState.Action>
     </EmptyState>;
   }
