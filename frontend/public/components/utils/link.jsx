@@ -55,7 +55,7 @@ export const getNSPrefix = path => {
 };
 
 export const getNamespace = path => {
-  path = stripBasePath(path);
+  path = stripPerspectivePath(stripBasePath(path));
   const split = path.split('/').filter(x => x);
 
   if (split[1] === 'all-namespaces') {

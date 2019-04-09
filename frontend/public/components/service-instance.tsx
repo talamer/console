@@ -1,7 +1,7 @@
 /* eslint-disable no-undef, no-unused-vars */
 import * as React from 'react';
 import * as _ from 'lodash-es';
-import { Link, withRouter, RouteComponentProps, match } from 'react-router-dom';
+import { withRouter, RouteComponentProps, match } from 'react-router-dom';
 
 import { k8sList, K8sResourceKind, planExternalName, serviceCatalogStatus, referenceForModel } from '../module/k8s';
 import { ColHead, DetailsPage, List, ListHeader, ListPage } from './factory';
@@ -23,9 +23,11 @@ import { Conditions } from './conditions';
 import { ServiceCatalogParameters, ServiceCatalogParametersSecrets } from './service-catalog-parameters';
 import { ServiceBindingsPage } from './service-binding';
 import { ServiceBindingModel, ServiceInstanceModel, ClusterServiceClassModel } from '../models';
+import PerspectiveLink from '../extend/devconsole/shared/components/PerspectiveLink';
+import { pathWithPerspectiveFromStore } from './utils/perspective';
 
 const goToCreateBindingPage = (serviceInstance: K8sResourceKind) => {
-  history.push(`/k8s/ns/${serviceInstance.metadata.namespace}/serviceinstances/${serviceInstance.metadata.name}/create-binding`);
+  history.push(pathWithPerspectiveFromStore(`/k8s/ns/${serviceInstance.metadata.namespace}/serviceinstances/${serviceInstance.metadata.name}/create-binding`));
 };
 
 const createBinding = (kindObj, serviceInstance) => {
@@ -85,7 +87,7 @@ class ServiceInstanceMessage_ extends React.Component<ServiceInstanceMessageProp
         <i className="pficon pficon-warning-triangle-o" aria-hidden="true" />
         This service instance is marked for deletion, but still has bindings.
         You must delete the bindings before the instance will be deleted.&nbsp;&nbsp;
-        <Link to={`${basePath}/servicebindings`}>View Service Bindings</Link>
+        <PerspectiveLink to={`${basePath}/servicebindings`}>View Service Bindings</PerspectiveLink>
       </p>;
     }
 

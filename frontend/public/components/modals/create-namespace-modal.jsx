@@ -6,6 +6,8 @@ import { NamespaceModel, ProjectRequestModel, NetworkPolicyModel } from '../../m
 import { createModalLauncher, ModalTitle, ModalBody, ModalSubmitFooter } from '../factory/modal';
 import { Dropdown, history, PromiseComponent, resourceObjPath, SelectorInput } from '../utils';
 import { FLAGS, setFlag } from '../../features';
+import { getActivePerspective } from '../../ui/ui-selectors';
+import { pathWithPerspective } from '../utils/perspective';
 
 const allow = 'allow';
 const deny = 'deny';
@@ -18,11 +20,17 @@ const defaultDeny = {
   },
 };
 
+const mapStateToProps = state => {
+  return {
+    activePerspective: getActivePerspective(state),
+  };
+};
+
 const mapDispatchToProps = dispatch => ({
   hideStartGuide: () => setFlag(dispatch, FLAGS.SHOW_OPENSHIFT_START_GUIDE, false),
 });
 
-const CreateNamespaceModal = connect(null, mapDispatchToProps)(class CreateNamespaceModal extends PromiseComponent {
+const CreateNamespaceModal = connect(mapStateToProps, mapDispatchToProps)(class CreateNamespaceModal extends PromiseComponent {
   constructor(props) {
     super(props);
     this.state.np = allow;
@@ -69,7 +77,7 @@ const CreateNamespaceModal = connect(null, mapDispatchToProps)(class CreateNames
 
   _submit(event) {
     event.preventDefault();
-    const { createProject, close } = this.props;
+    const { activePerspective, createProject, close } = this.props;
 
     let promise = createProject ? this.createProject() : this.createNamespace();
     if (this.state.np === deny) {
@@ -84,9 +92,9 @@ const CreateNamespaceModal = connect(null, mapDispatchToProps)(class CreateNames
       close();
       if (createProject) {
         // Redirect to the overview instead of the project details page.
-        history.push(`/overview/ns/${obj.metadata.name}`);
+        history.push(pathWithPerspective(activePerspective, `/overview/ns/${obj.metadata.name}`));
       } else {
-        history.push(resourceObjPath(obj, referenceFor(obj)));
+        history.push(pathWithPerspective(activePerspective, resourceObjPath(obj, referenceFor(obj))));
       }
     });
   }

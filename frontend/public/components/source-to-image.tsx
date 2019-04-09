@@ -3,7 +3,7 @@
 import * as React from 'react';
 import * as _ from 'lodash-es';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import { LoadingBox, LoadError } from './utils/status-box';
 import { Dropdown, Firehose, history, MsgBox, NsDropdown, ResourceName, ExternalLink } from './utils';
@@ -12,6 +12,9 @@ import { ContainerPort, k8sCreate, k8sGet, K8sResourceKind } from '../module/k8s
 import { ImageStreamIcon } from './catalog/catalog-item-icon';
 import { getAnnotationTags, getBuilderTagsSortedByVersion } from './image-stream';
 import { ButtonBar } from './utils/button-bar';
+import PerspectiveLink from '../extend/devconsole/shared/components/PerspectiveLink';
+import { getActivePerspective } from '../ui/ui-selectors';
+import { pathWithPerspective } from './utils/perspective';
 
 const getSampleRepo = tag => _.get(tag, 'annotations.sampleRepo');
 const getSampleRef = tag => _.get(tag, 'annotations.sampleRef');
@@ -84,7 +87,14 @@ const ImageStreamInfo: React.SFC<ImageStreamInfoProps> = ({imageStream, tag}) =>
   </div>;
 };
 
-class BuildSource extends React.Component<BuildSourceProps, BuildSourceState> {
+
+const mapBuildSourceStateToProps = state => {
+  return {
+    activePerspective: getActivePerspective(state),
+  };
+};
+
+const BuildSource = connect(mapBuildSourceStateToProps)(class BuildSource extends React.Component<BuildSourceStateProps & BuildSourceProps, BuildSourceState> {
   constructor(props) {
     super(props);
 
@@ -363,6 +373,7 @@ class BuildSource extends React.Component<BuildSourceProps, BuildSourceState> {
 
   save = (event: React.FormEvent<EventTarget>) => {
     event.preventDefault();
+    const { activePerspective } = this.props;
     const { namespace, selectedTag, name, repository, createRoute, ports } = this.state;
     if (!name || !selectedTag || !namespace || !repository) {
       this.setState({error: 'Please complete all fields.'});
@@ -388,7 +399,7 @@ class BuildSource extends React.Component<BuildSourceProps, BuildSourceState> {
     Promise.all(requests).then(() => {
       this.setState({inProgress: false});
       if (!this.state.error) {
-        history.push(`/overview/ns/${this.state.namespace}`);
+        history.push(pathWithPerspective(activePerspective, `/overview/ns/${this.state.namespace}`));
       }
     }).catch(() => this.setState({inProgress: false}));
   };
@@ -457,7 +468,7 @@ class BuildSource extends React.Component<BuildSourceProps, BuildSourceState> {
             </div>}
             <div className="help-block">
               For private Git repositories,
-              create a <Link to={`/k8s/ns/${this.state.namespace || 'default'}/secrets/new/source`}>source secret</Link>.
+              create a <PerspectiveLink to={`/k8s/ns/${this.state.namespace || 'default'}/secrets/new/source`}>source secret</PerspectiveLink>.
             </div>
           </div>
           {!_.isEmpty(ports) && <div className="form-group">
@@ -477,7 +488,7 @@ class BuildSource extends React.Component<BuildSourceProps, BuildSourceState> {
       </div>
     </div>;
   }
-}
+});
 
 export const SourceToImagePage = (props) => {
   const title = 'Create Source-to-Image Application';
@@ -525,3 +536,7 @@ export type BuildSourceState = {
   inProgress: boolean,
   error?: any,
 };
+
+interface BuildSourceStateProps {
+  activePerspective: string,
+}
