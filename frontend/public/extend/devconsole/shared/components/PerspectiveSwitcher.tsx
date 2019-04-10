@@ -34,7 +34,7 @@ export const PerspectiveSwitcher: React.FunctionComponent<Props> = (props: Props
     }
     return (
       <MegaMenuItem
-        to="/dev"
+        to="/"
         title="Developer"
         icon={<CodeIcon />}
         onClick={() => {

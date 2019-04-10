@@ -103,7 +103,7 @@ const DefaultPage = connect(mapPerspectiveStateToProps)(
     if (openshiftFlag) {
       // TODO - We should be using the link utility to create these links with perspective.
       return lastViewedPerspective && lastViewedPerspective !== 'admin' ? (
-        <Redirect to={`/${lastViewedPerspective}`} />
+        <Redirect to={`/${lastViewedPerspective}/topology`} />
       ) : (
         <Redirect to="/k8s/cluster/projects" />
       );
