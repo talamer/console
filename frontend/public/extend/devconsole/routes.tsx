@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
-import { RouteProps } from 'react-router';
+import { RouteProps, Redirect } from 'react-router';
 import { AsyncComponent } from '../../components/utils';
 
 const routes: RouteProps[] = [
@@ -27,6 +27,11 @@ const routes: RouteProps[] = [
         }
       />
     ),
+  },
+  {
+    path: '/dev',
+    // eslint-disable-next-line react/display-name
+    render: () => <Redirect to="/dev/topology" />,
   },
 ];
 
