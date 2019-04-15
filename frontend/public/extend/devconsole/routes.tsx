@@ -30,6 +30,7 @@ const routes: RouteProps[] = [
   },
   {
     path: '/dev',
+    exact: true,
     // eslint-disable-next-line react/display-name
     render: () => <Redirect to="/dev/topology" />,
   },
