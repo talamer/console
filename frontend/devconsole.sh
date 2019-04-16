@@ -13,8 +13,8 @@ else
       echo -e "\n Installing DevConsole Operator... \n"
       echo -e "\n Installing Catalog Source... \n"
       oc apply -f ./public/extend/devconsole/shared/yamls/catalog_source3.yaml
-      echo -e "\n Waiting for 15s for catalog source to get installed before creating subscription \n"
-      sleep 15s
+      echo -e "\n Waiting for 1 minute for catalog source to get installed before creating subscription \n"
+      sleep 60s
       echo -e "\n Creating Subscription... \n"
       oc apply -f ./public/extend/devconsole/shared/yamls/subscription3.yaml
       ;;
@@ -23,8 +23,8 @@ else
       echo -e "\n Installing DevConsole Operator... \n"
       echo -e "\n Installing Catalog Source... \n"
       oc apply -f ./public/extend/devconsole/shared/yamls/catalog_source4.yaml
-      echo -e "\n Waiting for 15s for catalog source to get installed before creating subscription \n"
-      sleep 15s
+      echo -e "\n Waiting for 1 minute for catalog source to get installed before creating subscription \n"
+      sleep 60s
       echo -e "\n Creating Subscription... \n"
       oc apply -f ./public/extend/devconsole/shared/yamls/subscription4.yaml
       ;;
