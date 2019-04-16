@@ -1,21 +1,21 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 import * as classNames from 'classnames';
 import * as _ from 'lodash-es';
 import { K8sResourceKindReference, kindForReference } from '../../module/k8s';
+import PerspectiveLink from '../../extend/devconsole/shared/components/PerspectiveLink';
 
 const Label: React.SFC<LabelProps> = ({kind, name, value, expand}) => {
   const href = `/search?kind=${kind}&q=${value ? encodeURIComponent(`${name}=${value}`) : name}`;
   const klass = classNames('co-m-label', {'co-m-label--expand': expand});
 
   return (
-    <Link className={`co-text-${kindForReference(kind.toLowerCase())}`} to={href} tabIndex={-1}>
+    <PerspectiveLink className={`co-text-${kindForReference(kind.toLowerCase())}`} to={href} tabIndex={-1}>
       <div className={klass}>
         <span className="co-m-label__key">{name}</span>
         {value && <span className="co-m-label__eq">=</span>}
         {value && <span className="co-m-label__value">{value}</span>}
       </div>
-    </Link>
+    </PerspectiveLink>
   );
 };
 

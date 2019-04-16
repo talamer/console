@@ -1,8 +1,8 @@
 import * as _ from 'lodash-es';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 
 import { selectorToString } from '../../module/k8s/selector';
+import PerspectiveLink from '../../extend/devconsole/shared/components/PerspectiveLink';
 
 const Requirement = ({kind, requirements, namespace=''}) => {
   // Strip off any trailing '=' characters for valueless selectors
@@ -18,10 +18,10 @@ const Requirement = ({kind, requirements, namespace=''}) => {
 
   return (
     <div className="co-m-requirement">
-      <Link className={`co-m-requirement__link co-text-${kind.toLowerCase()}`} to={to} tabIndex={-1}>
+      <PerspectiveLink className={`co-m-requirement__link co-text-${kind.toLowerCase()}`} to={to} tabIndex={-1}>
         <i className="co-m-requirement__icon fa fa-search" aria-hidden="true"></i>
         <span className="co-m-requirement__label">{requirementAsString.replace(/,/g, ', ')}</span>
-      </Link>
+      </PerspectiveLink>
     </div>
   );
 };

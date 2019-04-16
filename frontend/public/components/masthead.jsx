@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import { Brand, PageHeader } from '@patternfly/react-core';
-
+import cx from 'classnames';
 import { MastheadToolbar } from './masthead-toolbar';
 import { history } from './utils';
 import okdLogoImg from '../imgs/okd-logo.svg';
@@ -48,7 +48,12 @@ export const getBrandingDetails = () => {
   return { logoImg, logoAlt, productTitle };
 };
 
-export const Masthead = ({ defaultRoute, onNavToggle }) => {
+export const Masthead = ({
+  isPerspectiveSwitcherActive,
+  defaultRoute,
+  isNavOpen,
+  onNavToggle,
+}) => {
   const details = getBrandingDetails();
   const logoProps = {
     href: defaultRoute,
@@ -61,6 +66,11 @@ export const Masthead = ({ defaultRoute, onNavToggle }) => {
 
   return (
     <PageHeader
+      className={
+        cx({
+          'odc-mega-menu-toggle': isPerspectiveSwitcherActive,
+          'is-active': isPerspectiveSwitcherActive && isNavOpen,
+        })}
       logo={<Brand src={details.logoImg} alt={details.logoAlt} />}
       logoProps={logoProps}
       toolbar={<MastheadToolbar />}
@@ -72,5 +82,7 @@ export const Masthead = ({ defaultRoute, onNavToggle }) => {
 
 Masthead.propTypes = {
   defaultRoute: PropTypes.string,
+  isNavOpen: PropTypes.bool,
   onNavToggle: PropTypes.func,
+  isPerspectiveSwitcherActive: PropTypes.bool,
 };

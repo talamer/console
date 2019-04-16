@@ -3,7 +3,7 @@ import * as classNames from 'classnames';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import PerspectiveLink from '../../extend/devconsole/shared/components/PerspectiveLink';
 
 import k8sActions from '../../module/k8s/k8s-actions';
 import { CheckBoxes, storagePrefix } from '../row-filter';
@@ -180,9 +180,9 @@ export const FireMan_ = connect(null, {filterList: k8sActions.filterList})(
       let createLink;
       if (canCreate) {
         if (createProps.to) {
-          createLink = <Link className="co-m-primary-action" {...createProps} tabIndex={-1}>
+          createLink = <PerspectiveLink className="co-m-primary-action" {...createProps} tabIndex={-1}>
             <button className="btn btn-primary" id="yaml-create" tabIndex={-1}>{createButtonText}</button>
-          </Link>;
+          </PerspectiveLink>;
         } else if (createProps.items) {
           createLink = <div className="co-m-primary-action">
             <Dropdown buttonClassName="btn-primary" id="item-create" title={createButtonText} noSelection={true} items={createProps.items} onChange={(name) => history.push(createProps.createLink(name))} />

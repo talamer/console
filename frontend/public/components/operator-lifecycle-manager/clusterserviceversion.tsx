@@ -1,7 +1,7 @@
 /* eslint-disable no-undef, no-unused-vars */
 
 import * as React from 'react';
-import { Link, match as RouterMatch } from 'react-router-dom';
+import { match as RouterMatch } from 'react-router-dom';
 import * as _ from 'lodash-es';
 import { connect } from 'react-redux';
 import { Alert } from 'patternfly-react';
@@ -40,6 +40,7 @@ import {
   ExternalLink,
 } from '../utils';
 import { operatorGroupFor, operatorNamespaceFor } from './operator-group';
+import PerspectiveLink from '../../extend/devconsole/shared/components/PerspectiveLink';
 
 export const ClusterServiceVersionHeader: React.SFC = () => <ListHeader>
   <ColHead className="col-lg-3 col-md-4 col-sm-4 col-xs-6" sortField="metadata.name">Name</ColHead>
@@ -60,9 +61,9 @@ export const ClusterServiceVersionRow = withFallback<ClusterServiceVersionRowPro
 
   return <div className="row co-resource-list__item">
     <div className="col-lg-3 col-md-4 col-sm-4 col-xs-6" style={{display: 'flex', alignItems: 'center'}}>
-      <Link to={route}>
+      <PerspectiveLink to={route}>
         <ClusterServiceVersionLogo icon={_.get(obj, 'spec.icon', [])[0]} displayName={obj.spec.displayName} version={obj.spec.version} provider={obj.spec.provider} />
-      </Link>
+      </PerspectiveLink>
     </div>
     <div className="col-lg-2 col-md-2 col-sm-4 col-xs-6">
       <ResourceLink kind="Namespace" title={obj.metadata.namespace} name={obj.metadata.namespace} />
@@ -74,9 +75,9 @@ export const ClusterServiceVersionRow = withFallback<ClusterServiceVersionRowPro
     <div className="col-lg-2 col-md-3 col-sm-4 hidden-xs">{obj.metadata.deletionTimestamp ? 'Disabling' : installStatus}</div>
     <div className="col-lg-3 col-md-3 hidden-sm hidden-xs">
       { _.take(providedAPIsFor(obj), 4).map((desc, i) => <div key={i}>
-        <Link to={`${route}/${referenceForProvidedAPI(desc)}`} title={desc.name}>{desc.displayName}</Link>
+        <PerspectiveLink to={`${route}/${referenceForProvidedAPI(desc)}`} title={desc.name}>{desc.displayName}</PerspectiveLink>
       </div>)}
-      { providedAPIsFor(obj).length > 4 && <Link to={`${route}/instances`} title={`View ${providedAPIsFor(obj).length - 4} more...`}>{`View ${providedAPIsFor(obj).length - 4} more...`}</Link>}
+      { providedAPIsFor(obj).length > 4 && <PerspectiveLink to={`${route}/instances`} title={`View ${providedAPIsFor(obj).length - 4} more...`}>{`View ${providedAPIsFor(obj).length - 4} more...`}</PerspectiveLink>}
     </div>
     <div className="dropdown-kebab-pf">
       <ResourceKebab resource={obj} kind={referenceFor(obj)} actions={menuActions} />
@@ -143,9 +144,9 @@ export const CRDCard: React.SFC<CRDCardProps> = (props) => {
       <p>{crd.description}</p>
     </div>
     { canCreate && <div className="co-crd-card__footer">
-      <Link className="co-crd-card__link" to={createRoute}>
+      <PerspectiveLink className="co-crd-card__link" to={createRoute}>
         <span className="pficon pficon-add-circle-o" aria-hidden="true"></span> Create New
-      </Link>
+      </PerspectiveLink>
     </div> }
   </div>;
 };

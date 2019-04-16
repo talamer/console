@@ -2,7 +2,6 @@
 import * as React from 'react';
 import * as _ from 'lodash-es';
 import * as PropTypes from 'prop-types';
-import {Link} from 'react-router-dom';
 import {Modal} from 'patternfly-react';
 import {CatalogItemHeader, PropertiesSidePanel, PropertyItem} from 'patternfly-react-extensions';
 
@@ -11,6 +10,7 @@ import {ClusterServicePlanModel} from '../../models';
 import {SourceToImageResourceDetails} from '../source-to-image';
 import {k8sGet} from '../../module/k8s';
 import {Timestamp, ExternalLink} from '../utils';
+import PerspectiveLink from '../../extend/devconsole/shared/components/PerspectiveLink';
 
 export class CatalogTileDetails extends React.Component {
   state = {
@@ -73,7 +73,7 @@ export class CatalogTileDetails extends React.Component {
             <div className="modal-body-inner-shadow-covers">
               <div className="co-catalog-page__overlay-body">
                 <PropertiesSidePanel>
-                  <Link className="btn btn-primary co-catalog-page__overlay-create" to={href} role="button" title={this.props.item.createLabel} onClick={closeOverlay}>{this.props.item.createLabel}</Link>
+                  <PerspectiveLink className="btn btn-primary co-catalog-page__overlay-create" to={href} role="button" title={this.props.item.createLabel} onClick={closeOverlay}>{this.props.item.createLabel}</PerspectiveLink>
                   {tileProvider && <PropertyItem label="Provider" value={tileProvider} />}
                   {supportUrl && <PropertyItem label="Support" value={supportUrlLink} />}
                   {creationTimestamp && <PropertyItem label="Created At" value={<Timestamp timestamp={creationTimestamp} />} />}

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 
 import {
   ColHead,
@@ -24,6 +23,7 @@ import {
 } from './utils';
 import { ResourceEventStream } from './events';
 import { MountedVolumes } from './mounted-vol';
+import PerspectiveLink from '../extend/devconsole/shared/components/PerspectiveLink';
 
 export const menuActions = [Kebab.factory.AddStorage, Kebab.factory.EditEnvironment, ...Kebab.factory.common];
 
@@ -46,9 +46,9 @@ const DaemonSetRow = ({obj: daemonset}) => <ResourceRow obj={daemonset}>
     <LabelList kind="DaemonSet" labels={daemonset.metadata.labels} />
   </div>
   <div className="col-lg-2 col-md-2 hidden-sm hidden-xs">
-    <Link to={`/k8s/ns/${daemonset.metadata.namespace}/daemonsets/${daemonset.metadata.name}/pods`} title="pods">
+    <PerspectiveLink to={`/k8s/ns/${daemonset.metadata.namespace}/daemonsets/${daemonset.metadata.name}/pods`} title="pods">
       {daemonset.status.currentNumberScheduled} of {daemonset.status.desiredNumberScheduled} pods
-    </Link>
+    </PerspectiveLink>
   </div>
   <div className="col-lg-3 hidden-md hidden-sm hidden-xs">
     <Selector selector={daemonset.spec.selector} namespace={daemonset.metadata.namespace} />

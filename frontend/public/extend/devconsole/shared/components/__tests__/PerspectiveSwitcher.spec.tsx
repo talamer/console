@@ -1,54 +1,38 @@
 /* eslint-disable no-unused-vars */
 import * as React from 'react';
-import { shallow, ShallowWrapper } from 'enzyme';
-import { Modal } from '@patternfly/react-core';
+import { shallow } from 'enzyme';
 import configureMockStore from 'redux-mock-store';
 import { Map as ImmutableMap } from 'immutable';
 import { UIActions } from '../../../../../ui/ui-actions';
 import ConnectedPerspectiveSwitcher, { PerspectiveSwitcher } from '../PerspectiveSwitcher';
 import { getStoreTypedComponent } from '../../../utils/test-utils';
+import MegaMenu from '../MegaMenu/MegaMenu';
 
 describe('PerspectiveSwitcher', () => {
-  let switcherWrapper: ShallowWrapper<any> = null;
-
-  it('renders perspective switcher menu and it should be closed initially', () => {
-    switcherWrapper = shallow(
+  it('renders perspective switcher menu', () => {
+    const switcherWrapper = shallow(
       <PerspectiveSwitcher
         isNavOpen={false}
         activePerspective="dev"
-        onNavToggle={() => {}}
+        onClose={() => {}}
         flags={{ SHOW_DEV_CONSOLE: true }}
         onPerspectiveChange={() => {}}
       />,
     );
-    expect(switcherWrapper.find(Modal).length).toEqual(1);
-    expect(switcherWrapper.find(Modal).prop('isOpen')).toEqual(false);
-  });
-
-  it('should be open when is isNavOpen is set to true', () => {
-    switcherWrapper = shallow(
-      <PerspectiveSwitcher
-        isNavOpen={true}
-        activePerspective="admin"
-        onNavToggle={() => {}}
-        flags={{ SHOW_DEV_CONSOLE: true }}
-        onPerspectiveChange={() => {}}
-      />,
-    );
-    expect(switcherWrapper.find(Modal).prop('isOpen')).toEqual(true);
+    expect(switcherWrapper.find(MegaMenu).length).toEqual(1);
   });
 
   it('should not be available when dev console is disabled', () => {
-    switcherWrapper = shallow(
+    const switcherWrapper = shallow(
       <PerspectiveSwitcher
         isNavOpen={true}
         activePerspective="admin"
-        onNavToggle={() => {}}
+        onClose={() => {}}
         flags={{ SHOW_DEV_CONSOLE: false }}
         onPerspectiveChange={() => {}}
       />,
     );
-    expect(switcherWrapper.find(Modal).exists()).toBeFalsy();
+    expect(switcherWrapper.find(MegaMenu).exists()).toBeFalsy();
   });
 });
 
@@ -67,7 +51,7 @@ describe('ConnectedPerspectiveSwitcher', () => {
         store={store}
         flags={{ SHOW_DEV_CONSOLE: true }}
         isNavOpen={true}
-        onNavToggle={() => {}}
+        onClose={() => {}}
       />,
     );
     expect(connectedSwitcherWrapper.props().activePerspective).toBe('dev');
@@ -84,7 +68,7 @@ describe('ConnectedPerspectiveSwitcher', () => {
         store={store}
         flags={{ SHOW_DEV_CONSOLE: true }}
         isNavOpen={true}
-        onNavToggle={() => {}}
+        onClose={() => {}}
       />,
     );
 

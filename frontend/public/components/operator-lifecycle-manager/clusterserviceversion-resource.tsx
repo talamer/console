@@ -1,7 +1,7 @@
 /* eslint-disable no-undef, no-unused-vars */
 
 import * as React from 'react';
-import { Link, match } from 'react-router-dom';
+import { match } from 'react-router-dom';
 import * as _ from 'lodash-es';
 import { connect } from 'react-redux';
 
@@ -16,6 +16,7 @@ import { ResourceLink, ResourceSummary, StatusBox, navFactory, Timestamp, LabelL
 import { connectToModel } from '../../kinds';
 import { kindForReference, K8sResourceKind, OwnerReference, K8sKind, referenceFor, GroupVersionKind, referenceForModel } from '../../module/k8s';
 import { ClusterServiceVersionModel } from '../../models';
+import PerspectiveLink from '../../extend/devconsole/shared/components/PerspectiveLink';
 
 export const ClusterServiceVersionResourceHeader: React.SFC<ClusterServiceVersionResourceHeaderProps> = (props) => <ListHeader>
   <ColHead {...props} className="col-xs-6 col-sm-4 col-md-3 col-lg-2" sortField="metadata.name">Name</ColHead>
@@ -33,7 +34,7 @@ export const ClusterServiceVersionResourceLink: React.SFC<ClusterServiceVersionR
 
   return <span className="co-resource-item">
     <ResourceIcon kind={referenceFor(props.obj)} />
-    <Link to={`/k8s/ns/${namespace}/${ClusterServiceVersionModel.plural}/${appName}/${referenceFor(props.obj)}/${name}`} className="co-resource-item__resource-name">{name}</Link>
+    <PerspectiveLink to={`/k8s/ns/${namespace}/${ClusterServiceVersionModel.plural}/${appName}/${referenceFor(props.obj)}/${name}`} className="co-resource-item__resource-name">{name}</PerspectiveLink>
   </span>;
 };
 

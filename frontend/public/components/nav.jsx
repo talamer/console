@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import * as _ from 'lodash-es';
 import * as PropTypes from 'prop-types';
 
@@ -25,12 +24,13 @@ import {
 } from '../models';
 import { referenceForModel } from '../module/k8s';
 
-import { stripBasePath } from './utils';
+import { stripBasePath, stripPerspectivePath } from './utils/link';
 
 export const matchesPath = (resourcePath, prefix) => resourcePath === prefix || _.startsWith(resourcePath, `${prefix}/`);
 export const matchesModel = (resourcePath, model) => model && matchesPath(resourcePath, referenceForModel(model));
 
 import { Nav, NavExpandable, NavItem, NavList, PageSidebar } from '@patternfly/react-core';
+import PerspectiveLink from '../extend/devconsole/shared/components/PerspectiveLink';
 
 const stripNS = href => {
   href = stripBasePath(href);
@@ -71,13 +71,13 @@ class NavLink extends React.PureComponent {
 
     return (
       <NavItem isActive={isActive} isSeparated={showSeparator}>
-        <Link
+        <PerspectiveLink
           id={id}
           to={this.to}
           onClick={onClick}
         >
           {name}
-        </Link>
+        </PerspectiveLink>
       </NavItem>
     );
   }
@@ -93,7 +93,7 @@ NavLink.propTypes = {
   disallowed: PropTypes.string,
 };
 
-class ResourceNSLink extends NavLink {
+export class ResourceNSLink extends NavLink {
   static isActive(props, resourcePath, activeNamespace) {
     const href = stripNS(formatNamespacedRouteForResource(props.resource, activeNamespace));
     return matchesPath(resourcePath, href) || matchesModel(resourcePath, props.model);
@@ -113,7 +113,7 @@ ResourceNSLink.propTypes = {
   activeNamespace: PropTypes.string,
 };
 
-class ResourceClusterLink extends NavLink {
+export class ResourceClusterLink extends NavLink {
   static isActive(props, resourcePath) {
     return resourcePath === props.resource || _.startsWith(resourcePath, `${props.resource}/`) || matchesModel(resourcePath, props.model);
   }
@@ -193,7 +193,7 @@ export const NavSection = connect(navSectionStateToProps)(
         return stripBasePath(location).startsWith(this.props.activePath);
       }
 
-      const resourcePath = location ? stripNS(location) : '';
+      const resourcePath = location ? stripNS(stripPerspectivePath(location)) : '';
 
       //current bug? - we should be checking if children is a single item or .filter is undefined
       return children.filter(c => {

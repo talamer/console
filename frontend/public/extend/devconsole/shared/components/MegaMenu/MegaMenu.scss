@@ -1,0 +1,30 @@
+.odc-mega-menu {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 290px;
+  max-width: 80%;
+  z-index: var(--pf-global--ZIndex--2xl);
+  background: var(--pf-global--BackgroundColor--light-100);
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+
+  &.is-open {
+    transform: translateX(0);
+  }
+}
+
+.odc-mega-menu-toggle {
+  &.is-active #nav-toggle {
+    background-color: var(--pf-global--BackgroundColor--light-100);
+    border-radius: 25px;
+    color: var(--pf-global--BackgroundColor--dark-100);
+  }
+  & #nav-toggle:hover {
+    background-color: var(--pf-global--BackgroundColor--light-100);
+    border-radius: 25px;
+    color: var(--pf-global--BackgroundColor--dark-100);
+  }
+}

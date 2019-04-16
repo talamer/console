@@ -1,30 +1,18 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
-import { RouteProps } from 'react-router';
+import { RouteProps, Redirect } from 'react-router';
 import { AsyncComponent } from '../../components/utils';
 import { namespaceBar } from 'integration-tests/views/namespace.view';
 
 const routes: RouteProps[] = [
   {
-    path: '/dev/import',
+    path: '/dev/add',
     // eslint-disable-next-line react/display-name
     render: (props) => (
       <AsyncComponent
         {...props}
         loader={async() =>
           (await import('./pages/Import' /* webpackChunkName: "devconsole-import" */)).default
-        }
-      />
-    ),
-  },
-  {
-    path: '/dev/codebases',
-    // eslint-disable-next-line react/display-name
-    render: (props) => (
-      <AsyncComponent
-        {...props}
-        loader={async() =>
-          (await import('./pages/Codebases' /* webpackChunkName: "devconsole-codebases" */)).default
         }
       />
     ),
@@ -43,15 +31,9 @@ const routes: RouteProps[] = [
   },
   {
     path: '/dev',
+    exact: true,
     // eslint-disable-next-line react/display-name
-    render: (props) => (
-      <AsyncComponent
-        {...props}
-        loader={async() =>
-          (await import('./pages/Home' /* webpackChunkName: "devconsole-home" */)).default
-        }
-      />
-    ),
+    render: () => <Redirect to="/dev/topology" />,
   },
 ];
 // Ensure a *const* function wrapper for each namespaced Component so that react router doesn't recreate them

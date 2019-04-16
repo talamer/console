@@ -2,7 +2,6 @@ import * as _ from 'lodash-es';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Tooltip } from './utils/tooltip';
-import { Link } from 'react-router-dom';
 import * as fuzzy from 'fuzzysearch';
 
 import { NamespaceModel, ProjectModel, SecretModel } from '../models';
@@ -18,6 +17,9 @@ import { NAMESPACE_LOCAL_STORAGE_KEY, ALL_NAMESPACES_KEY } from '../const';
 import { FLAGS, featureReducerName, flagPending, setFlag, connectToFlags } from '../features';
 import { openshiftHelpBase } from './utils/documentation';
 import { createProjectMessageStateToProps } from '../ui/ui-reducers';
+import PerspectiveLink from '../extend/devconsole/shared/components/PerspectiveLink';
+import { getActivePerspective } from '../ui/ui-selectors';
+import { pathWithPerspective } from './utils/perspective';
 
 const getModel = useProjects => useProjects ? ProjectModel : NamespaceModel;
 const getDisplayName = obj => _.get(obj, ['metadata', 'annotations', 'openshift.io/display-name']);
@@ -86,7 +88,7 @@ const ProjectRow = ({obj: project}) => {
     <div className="col-md-3 col-sm-6 col-xs-8">
       <span className="co-resource-item">
         <ResourceIcon kind="Project" />
-        <Link to={`/overview/ns/${name}`} title={displayName} className="co-resource-item__resource-name">{project.metadata.name}</Link>
+        <PerspectiveLink to={`/overview/ns/${name}`} title={displayName} className="co-resource-item__resource-name">{project.metadata.name}</PerspectiveLink>
       </span>
     </div>
     <div className="col-md-3 col-sm-3 col-xs-4">
@@ -216,7 +218,7 @@ export const NamespaceSummary = ({ns}) => {
         <dd><PullSecret namespace={ns} /></dd>
         <dt>Network Policies</dt>
         <dd>
-          <Link to={`/k8s/ns/${ns.metadata.name}/networkpolicies`}>Network Policies</Link>
+          <PerspectiveLink to={`/k8s/ns/${ns.metadata.name}/networkpolicies`}>Network Policies</PerspectiveLink>
         </dd>
       </dl>
     </div>
@@ -240,10 +242,11 @@ const autocompleteFilter = (text, item) => fuzzy(text, item);
 const defaultBookmarks = {};
 
 const namespaceBarDropdownStateToProps = state => {
-  const activeNamespace = state.UI.get('activeNamespace');
-  const canListNS = state[featureReducerName].get(FLAGS.CAN_LIST_NS);
-
-  return { activeNamespace, canListNS };
+  return {
+    activeNamespace: state.UI.get('activeNamespace'),
+    activePerspective: getActivePerspective(state),
+    canListNS: state[featureReducerName].get(FLAGS.CAN_LIST_NS),
+  };
 };
 
 class NamespaceBarDropdowns_ extends React.Component {
@@ -257,7 +260,7 @@ class NamespaceBarDropdowns_ extends React.Component {
   }
 
   render() {
-    const { activeNamespace, dispatch, canListNS, useProjects } = this.props;
+    const { activeNamespace, activePerspective, dispatch, canListNS, useProjects } = this.props;
     if (flagPending(canListNS)) {
       return null;
     }
@@ -285,15 +288,15 @@ class NamespaceBarDropdowns_ extends React.Component {
     const addActions = [
       {
         label: 'Browse Catalog',
-        href: '/catalog',
+        href: pathWithPerspective(activePerspective, '/catalog'),
       },
       {
         label: 'Deploy Image',
-        href: `/deploy-image?preselected-ns=${activeNamespace}`,
+        href: pathWithPerspective(activePerspective, `/deploy-image?preselected-ns=${activeNamespace}`),
       },
       {
         label: 'Import YAML',
-        href: formatNamespacedRouteForResource('import', activeNamespace),
+        href: pathWithPerspective(activePerspective, formatNamespacedRouteForResource('import', activeNamespace)),
       },
     ];
 

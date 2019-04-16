@@ -1,0 +1,11 @@
+.odc-console-page {
+  display: flex;
+  height: 100%;
+  flex-direction: row;
+  position: relative;
+
+  &__section {
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+}
