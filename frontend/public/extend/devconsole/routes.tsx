@@ -2,7 +2,6 @@
 import * as React from 'react';
 import { RouteProps, Redirect } from 'react-router';
 import { AsyncComponent } from '../../components/utils';
-import { namespaceBar } from 'integration-tests/views/namespace.view';
 
 const routes: RouteProps[] = [
   {
@@ -24,7 +23,7 @@ const routes: RouteProps[] = [
       <AsyncComponent
         {...props}
         loader={async() =>
-          NamespaceFromURL((await import('./pages/Topology' /* webpackChunkName: "devconsole-topology" */)).default)
+          (await import('./pages/Topology' /* webpackChunkName: "devconsole-topology" */)).default
         }
       />
     ),
@@ -36,16 +35,5 @@ const routes: RouteProps[] = [
     render: () => <Redirect to="/dev/topology" />,
   },
 ];
-// Ensure a *const* function wrapper for each namespaced Component so that react router doesn't recreate them
-const Memoized = new Map();
-function NamespaceFromURL(Component) {
-  let C = Memoized.get(Component);
-  if (!C) {
-    C = function NamespaceInjector(props) {
-      return <Component namespace={props.match.params.ns} {...props} />;
-    };
-    Memoized.set(Component, C);
-  }
-  return C;
-}
+
 export default routes;
