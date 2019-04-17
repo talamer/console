@@ -20,6 +20,7 @@ class DevPipelinesPage extends React.Component<DevPipelinesPageProps> {
   shouldComponentUpdate(nextProps) {
     return !_.isEqual(nextProps, this.props);
   }
+
   render() {
     return(
     <ListPage
@@ -27,6 +28,7 @@ class DevPipelinesPage extends React.Component<DevPipelinesPageProps> {
       kind="Pipeline"
       ListComponent={DevPipelineList}
       rowFilters={filters}
+      namespace={this.props.namespace}
     />
     );
   }
@@ -34,5 +36,6 @@ class DevPipelinesPage extends React.Component<DevPipelinesPageProps> {
 
 interface DevPipelinesPageProps{
   canCreate: boolean;
+  namespace: string;
 }
 export default DevPipelinesPage;
