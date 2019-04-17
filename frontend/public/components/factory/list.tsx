@@ -465,7 +465,6 @@ export const List = connect(stateToProps, {sortList: UIActions.sortList})(
     render() {
       const {currentSortField, currentSortFunc, currentSortOrder, expand, Header, label, listId, mock, Row, sortList} = this.props;
       const componentProps: any = _.pick(this.props, ['data', 'filters', 'selected', 'match', 'kindObj']);
-      console.log("listdata",this.props.data);
       const ListRows = this.props.virtualize ? VirtualRows : Rows;
       const children = <React.Fragment>
         <Header

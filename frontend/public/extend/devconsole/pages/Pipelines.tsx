@@ -36,6 +36,6 @@ class DevPipelinesPage extends React.Component<DevPipelinesPageProps> {
 
 interface DevPipelinesPageProps{
   canCreate: boolean;
-  namespace: string;
+  namespace: string
 }
 export default DevPipelinesPage;

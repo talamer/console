@@ -21,4 +21,3 @@ const DevPipelineRow = ({obj: pipeline}) => {
   };
 
 export default DevPipelineRow;
-
