@@ -25,6 +25,7 @@ import {
   silenceState,
   silenceStateOrder,
 } from '../../monitoring';
+import DevpipelineFilterReducer from '../../extend/devconsole/components/Pipelines/PipelineFilterReducer'
 import {
   containerLinuxUpdateOperator,
   EmptyBox,
@@ -103,6 +104,15 @@ const listFilters = {
 
     const status = nodeStatus(node);
     return statuses.selected.has(status) || !_.includes(statuses.all, status);
+  },
+
+  'pipeline-status': (phases, pipeline) => {
+    if (!phases || !phases.selected || !phases.selected.size) {
+      return true;
+    }
+
+    const status = DevpipelineFilterReducer(pipeline);
+    return phases.selected.has(status) || !_.includes(phases.all, status);
   },
 
   'clusterserviceversion-resource-kind': (filters, resource) => {
@@ -455,6 +465,7 @@ export const List = connect(stateToProps, {sortList: UIActions.sortList})(
     render() {
       const {currentSortField, currentSortFunc, currentSortOrder, expand, Header, label, listId, mock, Row, sortList} = this.props;
       const componentProps: any = _.pick(this.props, ['data', 'filters', 'selected', 'match', 'kindObj']);
+      console.log("listdata",this.props.data);
       const ListRows = this.props.virtualize ? VirtualRows : Rows;
       const children = <React.Fragment>
         <Header
