@@ -194,7 +194,7 @@ const detectUser = dispatch => coFetchJSON('api/kubernetes/apis/user.openshift.i
     },
   );
 
-const devopsConsolePath = `${k8sBasePath}/apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions/gitsources.devopsconsole.openshift.io`;
+const devopsConsolePath = `${k8sBasePath}/apis/devconsole.openshift.io`;
 const detectDevConsole = dispatch => {
   coFetchJSON(devopsConsolePath)
     .then(

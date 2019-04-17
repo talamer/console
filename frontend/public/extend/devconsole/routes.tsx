@@ -65,15 +65,9 @@ const routes: RouteProps[] = [
   },
   {
     path: '/dev',
+    exact: true,
     // eslint-disable-next-line react/display-name
-    render: (props) => (
-      <AsyncComponent
-        {...props}
-        loader={async() =>
-          (await import('./pages/Home' /* webpackChunkName: "devconsole-home" */)).default
-        }
-      />
-    ),
+    render: () => <Redirect to="/dev/topology" />,
   },
 ];
 const getRedirection = (basePath) => {
