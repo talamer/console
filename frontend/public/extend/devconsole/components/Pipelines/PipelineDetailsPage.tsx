@@ -14,7 +14,7 @@ import DevPipelineRuns from './PipelineRuns';
 const DevPipelineDetailsPage = props => <DetailsPage
   {...props}
   breadcrumbsFor={obj => breadcrumbsForOwnerRefs(obj).concat({
-    name: 'Pipeline/' + obj.metadata.name.charAt(0).toUpperCase(),
+    name: 'Pipeline/' + obj.metadata.name.charAt(0).toUpperCase() + obj.metadata.name.slice(1),
     path: 'dev/k8s/pipeline',
   })}
     pages={[
