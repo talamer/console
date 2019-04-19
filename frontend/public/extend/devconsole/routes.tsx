@@ -17,7 +17,7 @@ const routes: RouteProps[] = [
     ),
   },
   {
-    path: '/dev/topology',
+    path: '/dev/topology/ns/:ns',
     // eslint-disable-next-line react/display-name
     render: (props) => (
       <AsyncComponent
