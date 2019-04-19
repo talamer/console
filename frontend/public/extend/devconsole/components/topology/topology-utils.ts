@@ -1,7 +1,13 @@
 /* eslint-disable no-unused-vars, no-undef */
-import * as _ from 'lodash';
+import * as _ from 'lodash-es';
 import { LabelSelector } from '../../../../module/k8s/label-selector';
-import { TopologyDataResources, ResourceProps, TopologyDataModel } from './topology-types';
+import {
+  TopologyDataResources,
+  ResourceProps,
+  TopologyDataModel,
+  TopologyDataObject,
+  WorkloadData,
+} from './topology-types';
 
 export class TransformTopologyData {
   private _topologyData: TopologyDataModel = {
@@ -43,12 +49,12 @@ export class TransformTopologyData {
    * Tranforms the k8s resources objects into topology data
    * @param targetDeployment
    */
-  transformDataBy(targetDeployment = 'deployments') {
+  transformDataBy(targetDeployment = 'deployments'): TransformTopologyData {
     if (!this._deploymentKindMap[targetDeployment]) {
       throw new Error(`Invalid target deployment resource: (${targetDeployment})`);
     }
     if (_.isEmpty(this.resources[targetDeployment].data)) {
-      return;
+      return this;
     }
     const targetDeploymentsKind = this._deploymentKindMap[targetDeployment].dcKind;
 
@@ -77,16 +83,14 @@ export class TransformTopologyData {
           _.get(deploymentConfig, 'metadata.name'),
 
         type: 'workload',
-        resources: _(nodeResources)
-          .map((resource) => {
-            resource.name = _.get(resource, 'metadata.name');
-            return resource;
-          })
-          .value(),
+        resources: _.map(nodeResources, (resource) => {
+          resource.name = _.get(resource, 'metadata.name');
+          return resource;
+        }),
         data: {
-          url: 'dummy_url',
-          editUrl: 'dummy_edit_url',
-          builderImage: deploymentsLabels['app.kubernetes.io/name'] || 'default',
+          // url: 'dummy_url',
+          // editUrl: 'dummy_edit_url',
+          builderImage: deploymentsLabels['app.kubernetes.io/name'],
           donutStatus: {
             pods: _.map(dcPods, (pod) =>
               _.merge(_.pick(pod, 'metadata', 'status'), {
@@ -97,9 +101,11 @@ export class TransformTopologyData {
             ),
           },
         },
-      };
+      } as TopologyDataObject<WorkloadData>;
     });
+    return this;
   }
+
   /**
    * get the route information from the service
    * @param service

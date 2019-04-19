@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { TransitionMotion, Motion, spring } from 'react-motion';
 import { pie, arc } from 'd3';
+import { Pod } from '../topology-types';
 
 export const podColor = {
   Running: '#00b9e4',
@@ -20,12 +21,12 @@ export const podColor = {
 type WorkloadNodeProps = {
   x?: number;
   y?: number;
-  data: any;
+  pods: Pod[];
   innerRadius: number;
   outerRadius: number;
 };
 
-export default class WorkloadNode extends React.PureComponent<WorkloadNodeProps, {}> {
+export default class WorkloadNode extends React.PureComponent<WorkloadNodeProps> {
   willLeave = ({ style }) => {
     return {
       ...style,
@@ -40,15 +41,15 @@ export default class WorkloadNode extends React.PureComponent<WorkloadNodeProps,
     };
   };
 
-  chooseColor = (d, i) => {
+  chooseColor = (d) => {
     return { fill: podColor[d.status.phase] };
   };
 
   render() {
-    const { data, innerRadius, outerRadius, x = 0, y = 0 } = this.props;
+    const { pods, innerRadius, outerRadius, x = 0, y = 0 } = this.props;
     const pieFunc = pie().sort(null);
 
-    const podData = data.map(() => 100 / data.length);
+    const podData = pods.map(() => 100 / pods.length);
 
     const arcFunc = arc()
       .outerRadius(outerRadius)
@@ -59,13 +60,13 @@ export default class WorkloadNode extends React.PureComponent<WorkloadNodeProps,
 
     const motionStyles = pieData.map((d, i) => ({
       key: `${i}`,
-      data: { ...d, index: i, podData: this.props.data[i] },
+      data: { ...d, index: i, podData: this.props.pods[i] },
       style: d,
     }));
 
     const defaultStyles = pieData.map((d, i) => ({
       key: `${i}`,
-      data: { ...d, index: i, podData: this.props.data[i] },
+      data: { ...d, index: i, podData: this.props.pods[i] },
       style: { ...d, endAngle: d.startAngle },
     }));
 
@@ -95,10 +96,7 @@ export default class WorkloadNode extends React.PureComponent<WorkloadNodeProps,
                   }}
                 >
                   {(interStyle) => (
-                    <path
-                      d={arcFunc(interStyle)}
-                      style={this.chooseColor(c.data.podData, c.data.index)}
-                    />
+                    <path d={arcFunc(interStyle)} style={this.chooseColor(c.data.podData)} />
                   )}
                 </Motion>
               ))}

@@ -1,0 +1,25 @@
+.odc-default-node {
+  cursor: default;
+  fill: #fff;
+
+  &__selection {
+    fill: none;
+    stroke: #61bbff;
+    stroke-opacity: 1;
+    stroke-width: 4px;
+  }
+
+  &__label {
+    pointer-events: none;
+    fill: var(--pf-global--Color--100);
+    font-size: 22px;
+
+    &.is-selected {
+      fill: #61bbff;
+    }
+  }
+
+  &__icon {
+    fill: #333333;
+  }
+}

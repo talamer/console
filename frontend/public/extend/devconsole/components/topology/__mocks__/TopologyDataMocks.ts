@@ -1,4 +1,7 @@
-export const resources = {
+/* eslint-disable no-unused-vars, no-undef */
+import { TopologyDataModel, TopologyDataResources } from '../topology-types';
+
+export const resources: TopologyDataResources = {
   replicationControllers: { data: [] },
   pods: { data: [] },
   deploymentConfigs: { data: [] },
@@ -6,10 +9,9 @@ export const resources = {
   routes: { data: [] },
   deployments: { data: [] },
   replicasets: { data: [] },
-  namespace: '',
 };
 
-export const topologyData = {
+export const topologyData: TopologyDataModel = {
   graph: { nodes: [], edges: [], groups: [] },
   topology: {},
 };

@@ -25,17 +25,25 @@ const routes: RouteProps[] = [
     // eslint-disable-next-line react/display-name
     render: (props) => <NamespaceRedirect {...props} />,
   },
+  ...(() =>
+    ['/dev/topology/all-namespaces', '/dev/topology/ns/:ns'].map((path) => ({
+      path,
+      exact: true,
+      // eslint-disable-next-line react/display-name
+      render: (props) => (
+        <AsyncComponent
+          {...props}
+          loader={async() =>
+            (await import('./pages/Topology' /* webpackChunkName: "devconsole-topology" */)).default
+          }
+        />
+      ),
+    })))(),
   {
-    path: '/dev/topology/ns/:ns',
+    path: '/dev/topology',
+    exact: true,
     // eslint-disable-next-line react/display-name
-    render: (props) => (
-      <AsyncComponent
-        {...props}
-        loader={async() =>
-          (await import('./pages/Topology' /* webpackChunkName: "devconsole-topology" */)).default
-        }
-      />
-    ),
+    render: (props) => <NamespaceRedirect {...props} />,
   },
   {
     path: '/dev',
