@@ -17,6 +17,8 @@ const DevNavSection = NavSection as React.ComponentClass<any>;
 
 export const PageNav = (props: DevConsoleNavigationProps) => {
   const isActive = (path: string) => {
+    if( path == '/pipelines')
+      return props.location.includes('pipelines'); 
     return props.location.endsWith(path);
   };
 
@@ -36,7 +38,7 @@ export const PageNav = (props: DevConsoleNavigationProps) => {
           isActive={isActive('/topology')}
         />
         <ResourceNSLink resource="buildconfigs" name={BuildModel.labelPlural} isActive={isActive('/buildconfigs')} />
-        <HrefLink href="/pipelines" name="Pipelines" activePath="/pipelines" isActive={isActive('/pipelines')} />
+        <HrefLink href="/k8s/pipelines" name="Pipelines" activePath="/k8s/pipelines" isActive={isActive('/pipelines')} />
         <DevNavSection title="Advanced">
           <ResourceClusterLink resource="projects" name="Projects" required={FLAGS.OPENSHIFT} />
           <HrefLink href="/overview" name="Status" activePath="/overview" required={FLAGS.OPENSHIFT} />

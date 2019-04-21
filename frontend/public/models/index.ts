@@ -206,9 +206,9 @@ export const PipelinerunModel: K8sKind = {
   plural: 'pipelineruns',
   abbr: 'PLR',
   namespaced: true,
-  kind: 'Pipelinerun',
-  id: 'pipelinerun',
-  labelPlural: 'Pipelineruns',
+  kind: 'PipelineRun',
+  id: 'pipelineRun',
+  labelPlural: 'PipelineRuns',
 };
 
 export const ContainerModel: K8sKind = {

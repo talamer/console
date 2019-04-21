@@ -25,7 +25,7 @@ import {
   silenceState,
   silenceStateOrder,
 } from '../../monitoring';
-import DevpipelineFilterReducer from '../../extend/devconsole/components/Pipelines/PipelineFilterReducer'
+import DevpipelineFilterReducer from '../../extend/devconsole/utils/Pipelines/PipelineFilterReducer'
 import {
   containerLinuxUpdateOperator,
   EmptyBox,

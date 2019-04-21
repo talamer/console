@@ -1,9 +1,9 @@
 import * as React from 'react';
 import DevPipelineList from './PipelineList';
-import DevpipelineFilterReducer from './PipelineFilterReducer';
+//mport DevpipelineFilterReducer from './PipelineFilterReducer';
 import {  ListPage } from '../../../../components/factory';
 
-const filters = [{
+/*const filters = [{
   type: 'pipeline-status',
   selected: [ 'Running'],
   reducer: DevpipelineFilterReducer,
@@ -12,7 +12,11 @@ const filters = [{
     { id: 'Failed', title: 'Failed' },
     { id: 'Complete', title: 'Complete' },
   ],
-}];
+}];*/
+const selector = {
+  'pipeline' :'pipeline-a' 
+
+};
 
 const DevPipelineRuns = ({obj}) => <div className="co-m-pane__body">
   <div className="row">
@@ -20,9 +24,9 @@ const DevPipelineRuns = ({obj}) => <div className="co-m-pane__body">
       <div className="panel-body">
       <ListPage
       canCreate={false}
-      kind="Pipelinerun"
+      kind="PipelineRun"
       ListComponent={DevPipelineList}
-      rowFilters={filters}
+      selector={selector}
     />
       </div>
     </div>
