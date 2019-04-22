@@ -1,9 +1,14 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
-import * as _ from 'lodash-es';
+import { match as RMatch } from 'react-router';
 import ODCEmptyState from '../shared/components/EmptyState/EmptyState';
 import { Firehose, StatusBox } from '../../../components/utils';
 import { K8sResourceKind } from '../../../module/k8s/index';
+
+type FirehoseList = {
+  data?: K8sResourceKind[];
+  [key: string]: any;
+};
 
 export interface TopologyPageContentProps {
   deploymentConfigs?: FirehoseList;
@@ -12,7 +17,9 @@ export interface TopologyPageContentProps {
 }
 
 export interface TopologyPageProps {
-  match: any;
+  match: RMatch<{
+    ns?: string;
+  }>;
 }
 
 export const TopologyPageContent: React.FunctionComponent<TopologyPageContentProps> = (
@@ -32,7 +39,7 @@ export const TopologyPageContent: React.FunctionComponent<TopologyPageContentPro
 };
 
 const TopologyPage: React.FunctionComponent<TopologyPageProps> = (props: TopologyPageProps) => {
-  const namespace = _.get(props.match, 'param-ns');
+  const namespace = props.match.params.ns;
   const resources = [
     {
       isList: true,
@@ -49,8 +56,3 @@ const TopologyPage: React.FunctionComponent<TopologyPageProps> = (props: Topolog
 };
 
 export default TopologyPage;
-
-type FirehoseList = {
-  data?: K8sResourceKind[];
-  [key: string]: any;
-};

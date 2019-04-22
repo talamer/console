@@ -1,14 +1,17 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
-import { Title, EmptyState, EmptyStateBody } from '@patternfly/react-core';
+import {
+  Title,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateSecondaryActions,
+} from '@patternfly/react-core';
 import { connect } from 'react-redux';
-import { getActiveNamespace, getActivePerspective } from '../../../../../ui/ui-selectors';
-import { PerspectiveLink } from '../PerspectiveLink';
+import PerspectiveLink from '../PerspectiveLink';
 import { formatNamespacedRouteForResource } from '../../../../../ui/ui-actions';
 import './EmptyState.scss';
 
 interface StateProps {
-  activePerspective: string;
   activeNamespace: string;
 }
 
@@ -21,43 +24,32 @@ const ODCEmptyState: React.FunctionComponent<ODCEmptyStateProps> = (props: ODCEm
       Add content to your project from the catalog of web frameworks, databases, and other
       components. You may also deploy an existing image or create resources using YAML definitions.
     </EmptyStateBody>
-    <div
-      style={{
-        display: 'flex',
-        flexFlow: 'row nowrap',
-        justifyContent: 'space-evenly',
-        margin: '32px',
-      }}
-    >
-      <PerspectiveLink
-        className="btn btn-primary"
-        activePerspective={props.activePerspective}
-        to="/catalog"
-      >
+    <EmptyStateSecondaryActions>
+      <PerspectiveLink className="pf-c-button pf-m-primary" to="/catalog">
         Browse Catalog
       </PerspectiveLink>
       <PerspectiveLink
-        className="btn btn-primary"
-        activePerspective={props.activePerspective}
+        className="pf-c-button pf-m-primary"
         to={`/deploy-image?preselected-ns=${props.activeNamespace}`}
       >
         Deploy Image
       </PerspectiveLink>
       <PerspectiveLink
-        className="btn btn-primary"
-        activePerspective={props.activePerspective}
+        className="pf-c-button pf-m-primary"
         to={formatNamespacedRouteForResource('import', props.activeNamespace)}
       >
         Import YAML
       </PerspectiveLink>
-    </div>
+      <PerspectiveLink className="pf-c-button pf-m-primary" to="/catalog?category=databases">
+        Add Database
+      </PerspectiveLink>
+    </EmptyStateSecondaryActions>
   </EmptyState>
 );
 
 const mapStateToProps = (state): StateProps => {
   return {
-    activePerspective: getActivePerspective(state),
-    activeNamespace: getActiveNamespace(state),
+    activeNamespace: state.UI.get('activeNamespace'),
   };
 };
 
