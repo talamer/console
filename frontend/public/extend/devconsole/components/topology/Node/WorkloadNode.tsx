@@ -2,18 +2,28 @@ import * as React from 'react';
 import { TransitionMotion, Motion, spring } from 'react-motion';
 import { pie, arc } from 'd3';
 
-// TODO Uncomment this when podColors are available
-// import { podColor } from '';
+export const podColor = {
+  Running: "#00b9e4",
+  Empty: "#ffffff",
+  "Not Ready": "#beedf9",
+  Warning: "#f39d3c",
+  Failed: "#d9534f",
+  Pulling: "#d1d1d1",
+  Pending: "#ededed",
+  Succceeded: "#3f9c35",
+  Terminating: "#00659c",
+  Unknown: "#f9d67a"
+};
 
-export default class DonutMotion extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      innerRadius: props.radius - 1.5,
-      outerRadius: props.radius + 1.5,
-      style: props.style,
-    };
-  }
+type WorkloadNodeProps = {
+  height: number;
+  width: number;
+  data: any;
+  radius: number;
+  strokeWidth: number;
+};
+
+export default class WorkloadNode extends React.PureComponent<WorkloadNodeProps, {}>  {
 
   willLeave = ({ style }) => {
     return {
@@ -35,7 +45,7 @@ export default class DonutMotion extends React.PureComponent {
   };
 
   render() {
-    const { height, width, data, radius, style, strokeWidth } = this.props;
+    const { height, width, data, radius, strokeWidth } = this.props;
     const innerRadius = radius - strokeWidth / 2;
     const outerRadius = radius + strokeWidth / 2;
     const pieFunc = pie().sort(null);
