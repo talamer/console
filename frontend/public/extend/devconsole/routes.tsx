@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { RouteProps, Redirect } from 'react-router';
 import { AsyncComponent } from '../../components/utils';
+
 const routes: RouteProps[] = [
   {
     path: '/dev/add',

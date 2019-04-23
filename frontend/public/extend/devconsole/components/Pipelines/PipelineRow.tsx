@@ -7,7 +7,6 @@ import {
 } from '../../../../components/utils';
 
 const PipelineRow = ({obj: pipeline}) => {
-
   return <ResourceRow obj={pipeline}>
     <div className="col-lg-3 col-md-3 col-sm-4 col-xs-6">
       <ResourceLink kind="Pipeline" name={pipeline.metadata.name} namespace={pipeline.metadata.namespace} title={pipeline.metadata.uid} />
