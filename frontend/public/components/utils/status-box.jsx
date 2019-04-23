@@ -51,7 +51,7 @@ const Data = ({EmptyMsg, label, data, children}) => {
       {EmptyMsg ? <EmptyMsg /> : <EmptyBox label={label} />}
     </div>;
   }
-  return <div className="loading-box loading-box__loaded">{children}</div>;
+  return <React.Fragment>{children}</React.Fragment>;
 };
 
 /** @type {React.SFC<{label?: string, loadError?: string | Object, loaded?: boolean, data?: any, EmptyMsg?: React.ComponentType}>} */
