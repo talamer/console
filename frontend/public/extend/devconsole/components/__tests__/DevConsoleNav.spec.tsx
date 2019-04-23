@@ -8,6 +8,7 @@ function shallowSetup() {
   const props = {
     location: '/devops',
     isNavOpen: true,
+    activeNamespace: '',
     onNavSelect: () => {},
     onToggle: () => {},
   };

@@ -9,6 +9,7 @@ import { BuildModel } from '../../../models';
 interface DevConsoleNavigationProps {
   isNavOpen: boolean;
   location: string;
+  activeNamespace: string;
   onNavSelect: () => void;
   onToggle: () => void;
 }
@@ -58,6 +59,7 @@ export const DevConsoleNavigation: React.FunctionComponent<DevConsoleNavigationP
 const mapStateToProps = (state) => {
   return {
     location: state.UI.get('location'),
+    activeNamespace: state.UI.get('activeNamespace'),
   };
 };
 

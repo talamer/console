@@ -74,7 +74,7 @@ _.each(namespacedPrefixes, p => {
   namespacedRoutes.push(`${p}/all-namespaces`);
 });
 
-const appendActiveNamespace = pathname => {
+export const appendActiveNamespace = pathname => {
   const basePath = pathname.replace(/\/$/, '');
   const activeNamespace = getActiveNamespace();
   return activeNamespace === ALL_NAMESPACES_KEY ? `${basePath}/all-namespaces` : `${basePath}/ns/${activeNamespace}`;
