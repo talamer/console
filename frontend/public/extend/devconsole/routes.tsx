@@ -2,21 +2,7 @@
 import * as React from 'react';
 import { RouteProps, Redirect } from 'react-router';
 import { AsyncComponent } from '../../components/utils';
-import { appendActiveNamespace } from '../../components/app';
-
-interface RedirectToNamespaceProps {
-  location: {
-    pathname?: string;
-    search?: string;
-  };
-}
-
-const RedirectToNamespace: React.FunctionComponent<RedirectToNamespaceProps> = (
-  props: RedirectToNamespaceProps,
-) => {
-  const to = appendActiveNamespace(props.location.pathname) + props.location.search;
-  return <Redirect to={to} />;
-};
+import { NamespaceRedirect } from '../../components/app';
 
 const routes: RouteProps[] = [
   ...(() =>
@@ -37,7 +23,7 @@ const routes: RouteProps[] = [
     path: '/dev/add',
     exact: true,
     // eslint-disable-next-line react/display-name
-    render: (props) => <RedirectToNamespace location={props.location} />,
+    render: (props) => <NamespaceRedirect {...props} />,
   },
   {
     path: '/dev/topology',

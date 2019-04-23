@@ -74,13 +74,13 @@ _.each(namespacedPrefixes, p => {
   namespacedRoutes.push(`${p}/all-namespaces`);
 });
 
-export const appendActiveNamespace = pathname => {
+const appendActiveNamespace = pathname => {
   const basePath = pathname.replace(/\/$/, '');
   const activeNamespace = getActiveNamespace();
   return activeNamespace === ALL_NAMESPACES_KEY ? `${basePath}/all-namespaces` : `${basePath}/ns/${activeNamespace}`;
 };
 
-const NamespaceRedirect = ({location: {pathname}}) => {
+export const NamespaceRedirect = ({location: {pathname}}) => {
   const to = appendActiveNamespace(pathname) + location.search;
   return <Redirect to={to} />;
 };
