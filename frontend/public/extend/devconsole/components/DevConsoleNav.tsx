@@ -42,20 +42,23 @@ export const PageNav = (props: DevConsoleNavigationProps) => {
   return (
     <Nav aria-label="Nav" onSelect={props.onNavSelect} onToggle={props.onToggle}>
       <NavList>
-        <HrefLink
-          href="/add"
-          name="+Add"
-          activePath="/dev/add"
-          isActive={isActive(['add'],'',[''])}
-        />
+        <HrefLink href="/add" name="+Add" activePath="/dev/add" isActive={isActive(['add'],'',[''])} />  
         <HrefLink
           href="/topology"
           name="Topology"
           activePath="/dev/topology"
           isActive={isActive(['topology'],'',[''])}
         />
-        <ResourceNSLink resource="buildconfigs" name={BuildModel.labelPlural} isActive={isActive(['buildconfigs'],'',[''])} />
-        <ResourceNSLink resource="pipelines" name={PipelineModel.labelPlural} isActive={isActive(['pipeline'],'any',[''])} />
+        <ResourceNSLink
+          resource="buildconfigs"
+          name={BuildModel.labelPlural}
+          isActive={isActive(['buildconfigs'],'',[''])}
+        />
+        <ResourceNSLink
+          resource="pipelines"
+          name={PipelineModel.labelPlural}
+          isActive={isActive(['pipeline'],'any',[''])}
+        />
         <DevNavSection title="Advanced">
           <ResourceClusterLink resource="projects" name="Projects" required={FLAGS.OPENSHIFT} />
           <HrefLink href="/overview" name="Status" activePath="/overview" required={FLAGS.OPENSHIFT} />

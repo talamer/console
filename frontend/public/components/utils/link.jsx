@@ -34,7 +34,7 @@ export const defaultNamespacedPrefixes = [
   '/operators',
   '/operatormanagement',
   '/operatorhub',
-  '/dev/k8s/pipelines',
+  '/add',
 ];
 
 
