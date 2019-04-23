@@ -85,6 +85,7 @@ class TopologyDataController extends React.Component<TopologyDataProps, Topology
       !_.isEqual(this.props.routes, nextProps.routes) ||
       !_.isEqual(this.state.topologyGraphData, nextState.topologyGraphData) ||
       !_.isEqual(this.props.namespace, nextProps.namespace);
+      console.log("ShouldUpdate", sholudUpdate);
     return sholudUpdate;
   }
   componentDidUpdate(prevProps, prevState) {
@@ -264,11 +265,11 @@ class TopologyDataController extends React.Component<TopologyDataProps, Topology
           topologyGraphData.graphData.groups.push({
             id: this.generateUUID(),
             name: label,
-            nodes: [currentNode],
+            nodes: [currentNode.id],
           });
         } else {
           const gIndex = _.findIndex(topologyGraphData.graphData.groups, { name: label });
-          topologyGraphData.graphData.groups[gIndex].nodes.push(currentNode);
+          topologyGraphData.graphData.groups[gIndex].nodes.push(currentNode.id);
         }
       });
     }
