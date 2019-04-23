@@ -80,7 +80,7 @@ const appendActiveNamespace = pathname => {
   return activeNamespace === ALL_NAMESPACES_KEY ? `${basePath}/all-namespaces` : `${basePath}/ns/${activeNamespace}`;
 };
 
-const NamespaceRedirect = ({location: {pathname}}) => {
+export const NamespaceRedirect = ({location: {pathname}}) => {
   const to = appendActiveNamespace(pathname) + location.search;
   return <Redirect to={to} />;
 };
