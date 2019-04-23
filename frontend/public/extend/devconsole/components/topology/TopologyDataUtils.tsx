@@ -23,10 +23,10 @@ export class TransformTopologyData {
 
   constructor(public resources: TopologyDataResources) {
     this._allServices = _.keyBy(this.resources.services.data, 'metadata.name');
-    this._selectorsByService = this._getSelectorsByService();
+    this._selectorsByService = this.getSelectorsByService();
   }
 
-  private _getSelectorsByService() {
+  private getSelectorsByService() {
     const allServices = _.keyBy(this.resources.services.data, 'metadata.name');
     const selectorsByService = _.mapValues(allServices, (service) => {
       return new LabelSelector(service.spec.selector);
@@ -101,7 +101,7 @@ export class TransformTopologyData {
    * get the route information from the service
    * @param service
    */
-  getRoute(service: ResourceProps): ResourceProps {
+  private getRoute(service: ResourceProps): ResourceProps {
     // get the route
     const route = {
       kind: 'Route',
@@ -120,7 +120,7 @@ export class TransformTopologyData {
    * fetches the service from the deploymentconfig
    * @param deploymentConfig
    */
-  getService(deploymentConfig: ResourceProps): ResourceProps {
+  private getService(deploymentConfig: ResourceProps): ResourceProps {
     const service = {
       kind: 'Service',
       metadata: [],
@@ -139,7 +139,7 @@ export class TransformTopologyData {
    * Get all the pods from a replication controller or a replicaset.
    * @param replicationController
    */
-  getPods(replicationController: ResourceProps) {
+  private getPods(replicationController: ResourceProps) {
     return _.filter(this.resources.pods.data, (pod) => {
       return _.some(_.get(pod, 'metadata.ownerReferences'), {
         uid: _.get(replicationController, 'metadata.uid'),
@@ -152,7 +152,7 @@ export class TransformTopologyData {
    * @param deploymentConfig
    * @param targetDeployment 'deployments' || 'deploymentConfigs'
    */
-  getReplicationController(
+  private getReplicationController(
     deploymentConfig: ResourceProps,
     targetDeployment: string,
   ): ResourceProps {
@@ -179,7 +179,7 @@ export class TransformTopologyData {
    * create graph data from the deploymentconfig.
    * @param deploymentConfig
    */
-  createGraphData(deploymentConfig) {
+  private createGraphData(deploymentConfig) {
     // Current Node data
     const { metadata } = deploymentConfig;
     const currentNode = {
@@ -249,7 +249,7 @@ export class TransformTopologyData {
   /**
    * sort the deployement version
    */
-  sortByDeploymentVersion = (replicationControllers: ResourceProps[], descending: boolean) => {
+  private sortByDeploymentVersion = (replicationControllers: ResourceProps[], descending: boolean) => {
     const version = 'openshift.io/deployment-config.latest-version';
     const compareDeployments = (left, right) => {
       const leftVersion = parseInt(_.get(left, version), 10);

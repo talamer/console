@@ -21,20 +21,6 @@ export interface TopologyDataResources {
   replicasets: Resource;
 }
 
-export interface TopologyDataProps {
-  namespace: string;
-  loaded?: boolean;
-  resources?: TopologyDataResources;
-  replicationControllers?: Resource;
-  pods?: Resource;
-  deploymentConfigs?: Resource;
-  routes?: Resource;
-  deployments?: Resource;
-  services?: Resource;
-  replicasets?: Resource;
-  render: (props) => {};
-}
-
 export interface Node {
   id: string;
   type: string;

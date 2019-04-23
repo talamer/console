@@ -1,12 +1,22 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
-import { TopologyDataProps, TopologyDataModel } from './topology-types';
+import { TopologyDataResources, Resource, TopologyDataModel } from './topology-types';
 import { TransformTopologyData } from './TopologyDataUtils';
 
+export interface TopologyDataProps {
+  namespace: string;
+  loaded?: boolean;
+  resources?: TopologyDataResources;
+  replicationControllers?: Resource;
+  pods?: Resource;
+  deploymentConfigs?: Resource;
+  routes?: Resource;
+  deployments?: Resource;
+  services?: Resource;
+  replicasets?: Resource;
+  render: (props) => {};
+}
 class TopologyDataController extends React.Component<TopologyDataProps> {
-  constructor(props) {
-    super(props);
-  }
   shouldComponentUpdate(nextProps) {
     return this.props.namespace !== nextProps.namespace || nextProps.loaded;
   }
