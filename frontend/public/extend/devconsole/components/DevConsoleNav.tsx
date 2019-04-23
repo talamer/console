@@ -23,24 +23,38 @@ export const PageNav = (props: DevConsoleNavigationProps) => {
   return (
     <Nav aria-label="Nav" onSelect={props.onNavSelect} onToggle={props.onToggle}>
       <NavList>
-        <HrefLink
-          href="/add"
-          name="+Add"
-          activePath="/dev/add"
-          isActive={isActive('/add')}
-        />
+        <HrefLink href="/add" name="+Add" activePath="/dev/add" isActive={isActive('/add')} />
         <HrefLink
           href="/topology"
           name="Topology"
           activePath="/dev/topology"
           isActive={isActive('/topology')}
         />
-        <ResourceNSLink resource="buildconfigs" name={BuildModel.labelPlural} isActive={isActive('/buildconfigs')} />
-        <HrefLink href="/pipelines" name="Pipelines" activePath="/pipelines" isActive={isActive('/pipelines')} />
+        <ResourceNSLink
+          resource="buildconfigs"
+          name={BuildModel.labelPlural}
+          isActive={isActive('/buildconfigs')}
+        />
+        <HrefLink
+          href="/pipelines"
+          name="Pipelines"
+          activePath="/pipelines"
+          isActive={isActive('/pipelines')}
+        />
         <DevNavSection title="Advanced">
           <ResourceClusterLink resource="projects" name="Projects" required={FLAGS.OPENSHIFT} />
-          <HrefLink href="/overview" name="Status" activePath="/overview" required={FLAGS.OPENSHIFT} />
-          <HrefLink href="/status" name="Status" activePath="/status" disallowed={FLAGS.OPENSHIFT} />
+          <HrefLink
+            href="/overview"
+            name="Status"
+            activePath="/overview"
+            required={FLAGS.OPENSHIFT}
+          />
+          <HrefLink
+            href="/status"
+            name="Status"
+            activePath="/status"
+            disallowed={FLAGS.OPENSHIFT}
+          />
           <ResourceNSLink resource="events" name="Events" />
           <HrefLink href="/search" name="Search" activePath="/search" />
         </DevNavSection>

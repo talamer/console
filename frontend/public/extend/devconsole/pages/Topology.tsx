@@ -1,14 +1,58 @@
+/* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
+import { match as RMatch } from 'react-router';
+import ODCEmptyState from '../shared/components/EmptyState/EmptyState';
+import { Firehose, StatusBox } from '../../../components/utils';
+import { K8sResourceKind } from '../../../module/k8s/index';
 
-const TopologyPage: React.SFC = () => (
-  <div className="co-well">
-    <h4>Developer console Getting Started</h4>
-    <p>
-      Developer console is an internal feature and enabled only in development. See our documention
-      for instructions on how to enable the devconsole.
-    </p>
-    <p>Developer console is an alpha feature.</p>
-  </div>
-);
+type FirehoseList = {
+  data?: K8sResourceKind[];
+  [key: string]: any;
+};
+
+export interface TopologyPageContentProps {
+  deploymentConfigs?: FirehoseList;
+  loaded?: boolean;
+  loadError?: string;
+}
+
+export interface TopologyPageProps {
+  match: RMatch<{
+    ns?: string;
+  }>;
+}
+
+export const TopologyPageContent: React.FunctionComponent<TopologyPageContentProps> = (
+  props: TopologyPageContentProps,
+) => {
+  return (
+    <StatusBox
+      data={props.deploymentConfigs.data}
+      label="Topology"
+      loaded={props.loaded}
+      loadError={props.loadError}
+      EmptyMsg={ODCEmptyState}
+    >
+      <h1>This is Topology View</h1>
+    </StatusBox>
+  );
+};
+
+const TopologyPage: React.FunctionComponent<TopologyPageProps> = (props: TopologyPageProps) => {
+  const namespace = props.match.params.ns;
+  const resources = [
+    {
+      isList: true,
+      kind: 'DeploymentConfig',
+      namespace,
+      prop: 'deploymentConfigs',
+    },
+  ];
+  return (
+    <Firehose resources={resources} forceUpdate>
+      <TopologyPageContent />
+    </Firehose>
+  );
+};
 
 export default TopologyPage;
