@@ -1,36 +1,40 @@
+/* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
-import DevPipelineList from './PipelineList';
-//mport DevpipelineFilterReducer from './PipelineFilterReducer';
-import {  ListPage } from '../../../../components/factory';
+import PipelineRunsList from '../PipelineRuns/PipelineRunList';
+import { pipelineRunFilterReducer } from '../../utils/pipeline-filter-reducer';
+import { ListPage } from '../../../../components/factory';
 
-/*const filters = [{
-  type: 'pipeline-status',
-  selected: [ 'Running'],
-  reducer: DevpipelineFilterReducer,
+const filters = [{
+  type: 'pipelinerun-status',
+  selected: [ 'Succeeded'],
+  reducer: pipelineRunFilterReducer,
   items: [
-    { id: 'Running', title: 'Running' },
+    { id: 'Succeeded', title: 'Complete' },
     { id: 'Failed', title: 'Failed' },
-    { id: 'Complete', title: 'Complete' },
+    { id: 'Running', title: 'Running' },
   ],
-}];*/
-const selector = {
-  'pipeline' :'pipeline-a' 
+}];
 
-};
+interface PipelineRunsProps{
+  pipeline: string;
+  obj:any;
+}
 
-const DevPipelineRuns = ({obj}) => <div className="co-m-pane__body">
-  <div className="row">
-    <div className="col-xs-12">
-      <div className="panel-body">
-      <ListPage
+class PipelineRuns extends React.Component<PipelineRunsProps> {
+  render() {
+    const selector = {
+      'pipeline' : this.props.obj.metadata.name,
+    };
+    return (<ListPage
+      showTitle={false}
       canCreate={false}
       kind="PipelineRun"
-      ListComponent={DevPipelineList}
       selector={selector}
+      ListComponent={PipelineRunsList}
+      rowFilters={filters}
     />
-      </div>
-    </div>
-  </div>
-</div>;
+    );
+  }
+}
 
-export default DevPipelineRuns;
+export default PipelineRuns;

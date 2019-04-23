@@ -25,7 +25,7 @@ import {
   silenceState,
   silenceStateOrder,
 } from '../../monitoring';
-import DevpipelineFilterReducer from '../../extend/devconsole/utils/Pipelines/PipelineFilterReducer'
+import { pipelineFilterReducer, pipelineRunFilterReducer } from '../../extend/devconsole/utils/pipeline-filter-reducer';
 import {
   containerLinuxUpdateOperator,
   EmptyBox,
@@ -111,7 +111,16 @@ const listFilters = {
       return true;
     }
 
-    const status = DevpipelineFilterReducer(pipeline);
+    const status = pipelineFilterReducer(pipeline);
+    return phases.selected.has(status) || !_.includes(phases.all, status);
+  },
+
+  'pipelinerun-status': (phases, pipeline) => {
+    if (!phases || !phases.selected || !phases.selected.size) {
+      return true;
+    }
+
+    const status = pipelineRunFilterReducer(pipeline);
     return phases.selected.has(status) || !_.includes(phases.all, status);
   },
 

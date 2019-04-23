@@ -1,14 +1,15 @@
+/* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import * as _ from 'lodash-es';
-import DevPipelineList from '../components/Pipelines/PipelineList';
-import DevpipelineFilterReducer from '../components/Pipelines/PipelineFilterReducer';
-import {  ListPage } from '../../../components/factory';
+import PipelineList from '../components/Pipelines/PipelineList';
+import { pipelineFilterReducer } from '../utils/pipeline-filter-reducer';
+import { ListPage } from '../../../components/factory';
 
 
 const filters = [{
   type: 'pipeline-status',
-  selected: [ 'Running'],
-  reducer: DevpipelineFilterReducer,
+  selected: [ 'Running', 'Failed', 'Complete'],
+  reducer: pipelineFilterReducer,
   items: [
     { id: 'Running', title: 'Running' },
     { id: 'Failed', title: 'Failed' },
@@ -16,26 +17,27 @@ const filters = [{
   ],
 }];
 
-class DevPipelinesPage extends React.Component<DevPipelinesPageProps> {
+interface PipelinesPageProps{
+  canCreate: boolean;
+  namespace: string
+}
+
+class PipelinesPage extends React.Component<PipelinesPageProps> {
   shouldComponentUpdate(nextProps) {
     return !_.isEqual(nextProps, this.props);
   }
 
   render() {
-    return(
-    <ListPage
-      canCreate={false}
-      kind="Pipeline"
-      ListComponent={DevPipelineList}
-      rowFilters={filters}
-      namespace={this.props.namespace}
-    />
+    return (
+      <ListPage
+        canCreate={false}
+        kind="Pipeline"
+        ListComponent={PipelineList}
+        rowFilters={filters}
+        namespace={this.props.namespace}
+      />
     );
   }
 }
 
-interface DevPipelinesPageProps{
-  canCreate: boolean;
-  namespace: string
-}
-export default DevPipelinesPage;
+export default PipelinesPage;

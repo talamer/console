@@ -196,4 +196,52 @@ spec:
     name: pipeline-b
   trigger:
     type: manual
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  name: pipeline-run-c-1
+  labels:
+    pipeline: pipeline-c
+spec:
+  pipelineRef:
+    name: pipeline-c
+  trigger:
+    type: manual
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  name: pipeline-run-c-2
+  labels:
+    pipeline: pipeline-c
+spec:
+  pipelineRef:
+    name: pipeline-c
+  trigger:
+    type: manual
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  name: tekton-pipeline-structure-1
+  labels:
+    pipeline: tekton-pipeline-structure
+spec:
+  pipelineRef:
+    name: pipeline-c
+  trigger:
+    type: manual
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  name: tekton-pipeline-structure-2
+  labels:
+    pipeline: tekton-pipeline-structure
+spec:
+  pipelineRef:
+    name: tekton-pipeline-structure
+  trigger:
+    type: manual
 

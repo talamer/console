@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Nav, NavList, PageSidebar } from '@patternfly/react-core';
 import { HrefLink, NavSection, ResourceClusterLink, ResourceNSLink } from '../../../components/nav';
 import { FLAGS } from '../../../features';
-import { BuildModel } from '../../../models';
+import { BuildModel, PipelineModel } from '../../../models';
 
 interface DevConsoleNavigationProps {
   isNavOpen: boolean;
@@ -16,10 +16,27 @@ interface DevConsoleNavigationProps {
 const DevNavSection = NavSection as React.ComponentClass<any>;
 
 export const PageNav = (props: DevConsoleNavigationProps) => {
-  const isActive = (path: string) => {
-    if( path == '/pipelines')
-      return props.location.includes('pipelines'); 
-    return props.location.endsWith(path);
+  //Generic implementation of isActive functionality
+  const isActive = (includes: [string], position:string, excludes:[string]) => {
+    if (includes.length < 1 || includes[0] === '') {
+      return false;
+    }
+    let includeFlag = false;
+    switch (position) {
+      case 'any' : includes.map( keyword => includeFlag = includeFlag || props.location.includes(keyword));
+        break;
+      case 'start': includes.map( keyword => includeFlag = includeFlag || props.location.startsWith(keyword));
+        break;
+      default : includes.map( keyword => includeFlag = includeFlag || props.location.endsWith(keyword));
+        break;
+    }
+    //Example call for exclude isActive(['pipeline'],'',['pipelinerun'])
+    if (excludes.length <1 || excludes[0] === '') {
+      return includeFlag;
+    }
+    const excludeFlag = true;
+    excludes.map( keyword => excludeFlag && !props.location.includes(keyword));
+    return includeFlag && !excludeFlag;
   };
 
   return (
@@ -29,16 +46,16 @@ export const PageNav = (props: DevConsoleNavigationProps) => {
           href="/add"
           name="+Add"
           activePath="/dev/add"
-          isActive={isActive('/add')}
+          isActive={isActive(['add'],'',[''])}
         />
         <HrefLink
           href="/topology"
           name="Topology"
           activePath="/dev/topology"
-          isActive={isActive('/topology')}
+          isActive={isActive(['topology'],'',[''])}
         />
-        <ResourceNSLink resource="buildconfigs" name={BuildModel.labelPlural} isActive={isActive('/buildconfigs')} />
-        <HrefLink href="/k8s/pipelines" name="Pipelines" activePath="/k8s/pipelines" isActive={isActive('/pipelines')} />
+        <ResourceNSLink resource="buildconfigs" name={BuildModel.labelPlural} isActive={isActive(['buildconfigs'],'',[''])} />
+        <ResourceNSLink resource="pipelines" name={PipelineModel.labelPlural} isActive={isActive(['pipeline'],'any',[''])} />
         <DevNavSection title="Advanced">
           <ResourceClusterLink resource="projects" name="Projects" required={FLAGS.OPENSHIFT} />
           <HrefLink href="/overview" name="Status" activePath="/overview" required={FLAGS.OPENSHIFT} />
