@@ -25,6 +25,12 @@ const ODCEmptyState: React.FunctionComponent<ODCEmptyStateProps> = (props: ODCEm
       components. You may also deploy an existing image or create resources using YAML definitions.
     </EmptyStateBody>
     <EmptyStateSecondaryActions>
+      <PerspectiveLink
+        className="pf-c-button pf-m-primary"
+        to={formatNamespacedRouteForResource('git-import', props.activeNamespace)}
+      >
+        Import from Git
+      </PerspectiveLink>
       <PerspectiveLink className="pf-c-button pf-m-primary" to="/catalog">
         Browse Catalog
       </PerspectiveLink>
