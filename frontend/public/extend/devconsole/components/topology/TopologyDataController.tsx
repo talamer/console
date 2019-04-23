@@ -192,7 +192,7 @@ class TopologyDataController extends React.Component<TopologyDataProps> {
         data: {
           url: 'dummy_url',
           editUrl: 'dummy_edit_url',
-          builderImage: deploymentsLabels['app.kubernetes.io/name'],
+          builderImage: deploymentsLabels['app.kubernetes.io/name'] || 'default',
           donutStatus: {
             pods: _.map(dcPods, (pod) =>
               _.merge(_.pick(pod, 'metadata', 'status'), {
