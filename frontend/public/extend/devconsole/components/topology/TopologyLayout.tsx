@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { TopologyDataModelProps } from '../topology/TopologyDataController';
+import { TopologyDataModel } from '../topology/TopologyDataController';
 
 export interface TopologyLayoutProps {
-  topologyGraphData: TopologyDataModelProps;
+  topologyGraphData: TopologyDataModel;
 }
 
 const TopologyLayout: React.SFC<any> = (props: any) => {

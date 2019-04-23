@@ -52,7 +52,7 @@ export interface Group {
   name: string;
   nodes: object;
 }
-export interface TopologyDataModelProps {
+export interface TopologyDataModel {
   graphData: {
     nodes: Array<Node>;
     edges: Array<Edge>;
@@ -61,50 +61,33 @@ export interface TopologyDataModelProps {
   topologyData: Object;
 }
 
-export interface TopologyDataState {
-  topologyGraphData: TopologyDataModelProps;
-}
+class TopologyDataController extends React.Component<TopologyDataProps> {
 
-class TopologyDataController extends React.Component<TopologyDataProps, TopologyDataState> {
   constructor(props) {
     super(props);
-    this.state = {
-      topologyGraphData: {
-        graphData: { nodes: [], edges: [], groups: [] },
-        topologyData: {},
-      },
-    };
   }
-  shouldComponentUpdate(nextProps, nextState) {
-    const sholudUpdate =
+  shouldComponentUpdate(nextProps) {
+    const shouldUpdate =
       !_.isEqual(this.props.deployments, nextProps.deployments) ||
       !_.isEqual(this.props.deploymentConfigs, nextProps.deploymentConfigs) ||
       !_.isEqual(this.props.services, nextProps.services) ||
       !_.isEqual(this.props.replicationControllers, nextProps.replicationControllers) ||
       !_.isEqual(this.props.replicasets, nextProps.replicasets) ||
       !_.isEqual(this.props.routes, nextProps.routes) ||
-      !_.isEqual(this.state.topologyGraphData, nextState.topologyGraphData) ||
       !_.isEqual(this.props.namespace, nextProps.namespace);
-      console.log("ShouldUpdate", sholudUpdate);
-    return sholudUpdate;
+    return shouldUpdate && nextProps.loaded;
   }
-  componentDidUpdate(prevProps, prevState) {
-    if (!_.isEqual(this.props.resources, prevProps.resources) && this.props.loaded === true) {
-      this.transformTopologyData();
-    }
-  }
-
   /**
-   * transforms the different configs
+   * Transform the props into the topology data model
    */
-  transformTopologyData() {
-    if (!this.props.loaded) {
-      return false;
-    }
+  transformTopologyData(): TopologyDataModel {
     const topologyGraphData = {
       graphData: { nodes: [], edges: [], groups: [] },
       topologyData: {},
     };
+    if (!this.props.loaded) {
+      return topologyGraphData;
+    }
 
     const allServices = _.keyBy(this.props.services.data, 'metadata.name');
     const selectorsByService = _.mapValues(allServices, (service) => {
@@ -118,8 +101,8 @@ class TopologyDataController extends React.Component<TopologyDataProps, Topology
       target: 'Deployment',
       controller: 'ReplicaSet',
     });
-    this.setState({ topologyGraphData });
     console.log('Final', topologyGraphData);
+    return topologyGraphData;
   }
   /**
    * Transforms the resource objects into topology graph data
@@ -195,11 +178,10 @@ class TopologyDataController extends React.Component<TopologyDataProps, Topology
       // populate the graph Data
       this.createGraphData(topologyGraphData, deploymentConfig);
       // add the lookup object
-      const deploymentsLabels = _.find(_.get(deploymentConfig, 'metadata.labels'));
+      const deploymentsLabels = _.get(deploymentConfig, 'metadata.labels');
       topologyGraphData.topologyData[dcUID] = {
         id: dcUID,
-        name:
-          deploymentsLabels['app.kubernetes.io/name'] || _.get(deploymentConfig, 'metadata.name'),
+        name: _.get(deploymentConfig, 'metadata.name'),
         type: 'workload',
         resources: _(nodeResources)
           .map((resource) => {
@@ -209,8 +191,9 @@ class TopologyDataController extends React.Component<TopologyDataProps, Topology
           .value(),
         data: {
           url: 'dummy_url',
-          edit_url: 'dummy_edit_url',
-          donut_status: {
+          editUrl: 'dummy_edit_url',
+          builderImage: deploymentsLabels['app.kubernetes.io/name'],
+          donutStatus: {
             pods: _.map(dcPods, (pod) =>
               _.merge(_.pick(pod, 'metadata', 'status'), {
                 id: _.get(pod, 'metadata.uid'),
@@ -233,7 +216,7 @@ class TopologyDataController extends React.Component<TopologyDataProps, Topology
     const currentNode = {
       id: metadata.uid,
       type: 'node',
-      name: metadata.labels['app.kubernetes.io/name'] || metadata.name,
+      name: metadata.name,
     };
 
     if (!_.some(topologyGraphData.graphData.nodes, { id: currentNode.id })) {
@@ -241,10 +224,15 @@ class TopologyDataController extends React.Component<TopologyDataProps, Topology
       topologyGraphData.graphData.nodes.push(currentNode);
       const labels = _.get(deploymentConfig, 'metadata.labels');
       const edges = _.get(deploymentConfig, 'metadata.annotations');
-      const totalDeployments = _.cloneDeep(_.concat(this.props.deploymentConfigs.data ,this.props.deployments.data));
+      const totalDeployments = _.cloneDeep(
+        _.concat(this.props.deploymentConfigs.data, this.props.deployments.data),
+      );
       // // find and add the edges
-      if (_.has(edges, "app.openshift.io/connects-to")) {
-        let targetNode = _.get(_.find(totalDeployments, ['metadata.name', edges["app.openshift.io/connects-to"]]), 'metadata.uid');
+      if (_.has(edges, 'app.openshift.io/connects-to')) {
+        const targetNode = _.get(
+          _.find(totalDeployments, ['metadata.name', edges['app.openshift.io/connects-to']]),
+          'metadata.uid',
+        );
         if (targetNode) {
           topologyGraphData.graphData.edges.push({
             source: currentNode.id,
@@ -329,7 +317,7 @@ class TopologyDataController extends React.Component<TopologyDataProps, Topology
   render() {
     return (
       <React.Fragment>
-        {this.props.render({ topologyGraphData: this.state.topologyGraphData })}
+        {this.props.render({ topologyGraphData: this.transformTopologyData() })}
       </React.Fragment>
     );
   }
