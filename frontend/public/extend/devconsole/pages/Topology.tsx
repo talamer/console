@@ -4,6 +4,8 @@ import { match as RMatch } from 'react-router';
 import ODCEmptyState from '../shared/components/EmptyState/EmptyState';
 import { Firehose, StatusBox } from '../../../components/utils';
 import { K8sResourceKind } from '../../../module/k8s/index';
+import TopologyDataController from '../components/topology/TopologyDataController';
+import TopologyLayout from '../components/topology/TopologyLayout';
 
 type FirehoseList = {
   data?: K8sResourceKind[];
@@ -47,10 +49,50 @@ const TopologyPage: React.FunctionComponent<TopologyPageProps> = (props: Topolog
       namespace,
       prop: 'deploymentConfigs',
     },
+    {
+      isList: true,
+      kind: 'Deployment',
+      namespace,
+      prop: 'deployments',
+    },
+    {
+      isList: true,
+      kind: 'Pod',
+      namespace,
+      prop: 'pods',
+    },
+    {
+      isList: true,
+      kind: 'ReplicationController',
+      namespace,
+      prop: 'replicationControllers',
+    },
+
+    {
+      isList: true,
+      kind: 'Route',
+      namespace,
+      prop: 'routes',
+    },
+    {
+      isList: true,
+      kind: 'Service',
+      namespace,
+      prop: 'services',
+    },
+    {
+      isList: true,
+      kind: 'ReplicaSet',
+      namespace,
+      prop: 'replicasets',
+    },
   ];
   return (
     <Firehose resources={resources} forceUpdate>
-      <TopologyPageContent />
+    <TopologyDataController
+        namespace={namespace}
+        render={(props) => <TopologyLayout {...props} />}
+      />
     </Firehose>
   );
 };
