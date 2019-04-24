@@ -45,9 +45,9 @@ export default class WorkloadNode extends React.PureComponent<WorkloadNodeProps,
   };
 
   render() {
-    const { height, width, data, radius, strokeWidth } = this.props;
-    const innerRadius = radius - strokeWidth / 2;
-    const outerRadius = radius + strokeWidth / 2;
+    const { data, radius, strokeWidth } = this.props;
+    const innerRadius = radius - (strokeWidth * .75);
+    const outerRadius = radius + (strokeWidth * .35);
     const pieFunc = pie().sort(null);
 
     const podData = data.map(() => 100 / data.length);
@@ -71,7 +71,7 @@ export default class WorkloadNode extends React.PureComponent<WorkloadNodeProps,
       style: { ...d, endAngle: d.startAngle },
     }));
 
-    const centerTransform = `translate(${width / 2}, ${height / 2})`;
+    const centerTransform = `translate(0, 0)`;
 
     return (
       <g className="donut" transform={centerTransform}>
