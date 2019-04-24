@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-interface BaseNodeProps {
+type BaseNodeProps = {
   x?: number;
   y?: number;
   baseOuterRadius: number;
@@ -9,7 +9,7 @@ interface BaseNodeProps {
   onSelect?: Function;
   icon?: string;
   label?: string;
-}
+};
 
 const BaseNode: React.SFC<BaseNodeProps> = ({
   x = 0,
@@ -18,7 +18,7 @@ const BaseNode: React.SFC<BaseNodeProps> = ({
   baseInnerRadius,
   selected,
   icon,
-  label
+  label,
 }) => {
   return (
     <g transform={`translate(${x}, ${y})`}>
@@ -40,10 +40,9 @@ const BaseNode: React.SFC<BaseNodeProps> = ({
           />
         </pattern>
       </defs>
-      <circle className="base-circle" cx={0} cy={0} r={baseOuterRadius} fill="#fff" />
-      <circle className="donut-hole" cx={0} cy={0} r={baseInnerRadius} fill="url(#image)" />
+      <circle cx={0} cy={0} r={baseOuterRadius} fill="#fff" />
+      <circle  cx={0} cy={0} r={baseInnerRadius} fill="url(#image)" />
       <text
-        className="label"
         textAnchor="middle"
         style={{ fontSize: baseOuterRadius * 0.25 }}
         y={baseOuterRadius + baseOuterRadius * 0.25}
@@ -53,7 +52,6 @@ const BaseNode: React.SFC<BaseNodeProps> = ({
       </text>
       {selected && (
         <circle
-          className="selected"
           cx={0}
           cy={0}
           r={baseOuterRadius + baseOuterRadius * 0.03}

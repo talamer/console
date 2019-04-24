@@ -62,15 +62,15 @@ class NodeWrapper extends React.Component<props, state> {
       return labels[COMPONENT];
     } else if (labels[NAME] && labels[NAME]) {
       return labels[NAME];
-    } else {
-      return dcData[0].metadata.name;
     }
+    return dcData[0].metadata.name;
+
   };
 
   render() {
     const { selected, x, y, onSelect } = this.props;
     return (
-      <g className="node-wrapper" transform={`translate(${x},${y})`}>
+      <g transform={`translate(${x},${y})`}>
         <BaseNode
           baseOuterRadius={this.radius}
           baseInnerRadius={this.innerCircleRadius}
@@ -91,7 +91,6 @@ class NodeWrapper extends React.Component<props, state> {
         >
           <g transform={`translate(-${this.decoratorRadius / 2}, -${this.decoratorRadius / 2})`}>
             <PenIcon
-              className="odc-node-wrapper__pen-con"
               style={{ fontSize: this.decoratorRadius }}
             />
           </g>

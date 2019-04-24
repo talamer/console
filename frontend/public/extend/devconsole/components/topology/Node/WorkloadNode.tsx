@@ -3,16 +3,16 @@ import { TransitionMotion, Motion, spring } from 'react-motion';
 import { pie, arc } from 'd3';
 
 export const podColor = {
-  Running: "#00b9e4",
-  Empty: "#ffffff",
-  "Not Ready": "#beedf9",
-  Warning: "#f39d3c",
-  Failed: "#d9534f",
-  Pulling: "#d1d1d1",
-  Pending: "#ededed",
-  Succceeded: "#3f9c35",
-  Terminating: "#00659c",
-  Unknown: "#f9d67a"
+  Running: '#00b9e4',
+  Empty: '#ffffff',
+  'Not Ready': '#beedf9',
+  Warning: '#f39d3c',
+  Failed: '#d9534f',
+  Pulling: '#d1d1d1',
+  Pending: '#ededed',
+  Succceeded: '#3f9c35',
+  Terminating: '#00659c',
+  Unknown: '#f9d67a',
 };
 
 type WorkloadNodeProps = {
@@ -23,7 +23,7 @@ type WorkloadNodeProps = {
   outerRadius: number;
 };
 
-export default class WorkloadNode extends React.PureComponent<WorkloadNodeProps, {}>  {
+export default class WorkloadNode extends React.PureComponent<WorkloadNodeProps, {}> {
 
   willLeave = ({ style }) => {
     return {
@@ -57,13 +57,13 @@ export default class WorkloadNode extends React.PureComponent<WorkloadNodeProps,
     const pieData = pieFunc(podData);
 
     const motionStyles = pieData.map((d, i) => ({
-      key: i + '',
+      key: `${i }`,
       data: { ...d, index: i, podData: this.props.data[i] },
       style: d,
     }));
 
     const defaultStyles = pieData.map((d, i) => ({
-      key: i + '',
+      key: `${i }`,
       data: { ...d, index: i, podData: this.props.data[i] },
       style: { ...d, endAngle: d.startAngle },
     }));
@@ -71,7 +71,7 @@ export default class WorkloadNode extends React.PureComponent<WorkloadNodeProps,
     const centerTransform = `translate(${x}, ${y})`;
 
     return (
-      <g className="donut" transform={centerTransform}>
+      <g transform={centerTransform}>
         <TransitionMotion
           defaultStyles={defaultStyles}
           styles={motionStyles}
@@ -79,7 +79,7 @@ export default class WorkloadNode extends React.PureComponent<WorkloadNodeProps,
           willLeave={this.willLeave}
         >
           {(interStyles) => (
-            <g className="slices">
+            <g>
               {interStyles.map((c) => (
                 <Motion
                   defaultStyle={{
