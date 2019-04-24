@@ -18,9 +18,9 @@ const Decorator: React.SFC<DecoratorTypes> = ({radius, onClick}) => {
       <g>
         <circle
           className="che-link"
-          cx={radius * 2}
-          cy={radius * 2 + 6}
-          r={3.5}
+          cx={radius - radius * .20}
+          cy={radius - radius * .20}
+          r={radius * .30}
           fill="#fff"
           filter="url(#dropshadow)"
           onClick={onClick}
