@@ -26,7 +26,7 @@ const routes: RouteProps[] = [
     render: (props) => <NamespaceRedirect {...props} />,
   },
   {
-    path: '/dev/topology',
+    path: '/dev/topology/ns/:ns',
     // eslint-disable-next-line react/display-name
     render: (props) => (
       <AsyncComponent
