@@ -16,7 +16,6 @@ const filters = [{
 }];
 
 interface PipelineRunsProps{
-  pipeline: string;
   obj:any;
 }
 

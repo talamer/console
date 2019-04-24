@@ -18,7 +18,6 @@ const filters = [{
 }];
 
 interface PipelinesPageProps{
-  canCreate: boolean;
   namespace: string
 }
 
