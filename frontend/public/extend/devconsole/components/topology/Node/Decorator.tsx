@@ -2,7 +2,7 @@ import * as React from "react";
 
 interface DecoratorTypes {
   radius: number;
-  onClick: any;
+  onClick?: any;
 }
 
 const Decorator: React.SFC<DecoratorTypes> = ({radius, onClick}) => {
@@ -10,6 +10,8 @@ const Decorator: React.SFC<DecoratorTypes> = ({radius, onClick}) => {
     <g className="decorator">
       <defs>
         <filter id="dropshadow">
+        {/*
+          // @ts-ignore */}
           <feDropShadow dx=".2" dy=".2" stdDeviation=".3" />
         </filter>
       </defs>
