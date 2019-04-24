@@ -5,8 +5,8 @@ import * as React from 'react';
 type BaseNodeProps = {
   x?: number;
   y?: number;
-  baseOuterRadius: number;
-  baseInnerRadius: number;
+  outerRadius: number;
+  innerRadius: number;
   selected: boolean;
   onSelect?: Function;
   icon?: string;
@@ -16,13 +16,12 @@ type BaseNodeProps = {
 const BaseNode: React.SFC<BaseNodeProps> = ({
   x = 0,
   y = 0,
-  baseOuterRadius,
-  baseInnerRadius,
+  outerRadius,
+  innerRadius,
   selected,
   icon,
   label,
-}: BaseNodeProps) => {
-  return (
+}: BaseNodeProps) => (
     <g transform={`translate(${x}, ${y})`}>
       <defs>
         <pattern
@@ -31,23 +30,23 @@ const BaseNode: React.SFC<BaseNodeProps> = ({
           y="0"
           height="100%"
           width="100%"
-          viewBox={`0 0 ${baseInnerRadius} ${baseInnerRadius}`}
+          viewBox={`0 0 ${innerRadius} ${innerRadius}`}
         >
           <image
             x="0"
             y="0"
-            width={baseInnerRadius}
-            height={baseInnerRadius}
+            width={innerRadius}
+            height={innerRadius}
             xlinkHref={icon ? `/static/assets/${icon}.svg` : '/static/assets/openshift.svg'}
           />
         </pattern>
       </defs>
-      <circle cx={0} cy={0} r={baseOuterRadius} fill="#fff" />
-      <circle cx={0} cy={0} r={baseInnerRadius} fill="url(#image)" />
+      <circle cx={0} cy={0} r={outerRadius} fill="#fff" />
+      <circle cx={0} cy={0} r={innerRadius} fill="url(#image)" />
       <text
         textAnchor="middle"
-        style={{ fontSize: baseOuterRadius * 0.25 }}
-        y={baseOuterRadius + baseOuterRadius * 0.25}
+        style={{ fontSize: outerRadius * 0.25 }}
+        y={outerRadius + outerRadius * 0.25}
         x={0}
       >
         {label ? label : 'DeploymentConfig'}
@@ -56,14 +55,13 @@ const BaseNode: React.SFC<BaseNodeProps> = ({
         <circle
           cx={0}
           cy={0}
-          r={baseOuterRadius + baseOuterRadius * 0.03}
+          r={outerRadius + outerRadius * 0.03}
           fill="transparent"
           stroke="#77BAFF"
-          strokeWidth={baseOuterRadius * 0.06}
+          strokeWidth={outerRadius * 0.06}
         />
       )}
     </g>
   );
-};
 
 export default BaseNode;
