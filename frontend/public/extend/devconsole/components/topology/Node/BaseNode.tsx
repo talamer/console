@@ -13,7 +13,7 @@ type BaseNodeProps = {
   label?: string;
 };
 
-const BaseNode: React.SFC<BaseNodeProps> = ({
+const BaseNode: React.FunctionComponent<BaseNodeProps> = ({
   x = 0,
   y = 0,
   outerRadius,

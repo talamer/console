@@ -9,7 +9,7 @@ type DecoratorTypes = {
   onClick?: any;
 };
 
-const Decorator: React.SFC<DecoratorTypes> = ({ x, y, radius, onClick, children }) => (
+const Decorator: React.FunctionComponent<DecoratorTypes> = ({ x, y, radius, onClick, children }) => (
     <g transform={`translate(${x}, ${y})`}>
       <defs>
         <filter id="dropshadow">
