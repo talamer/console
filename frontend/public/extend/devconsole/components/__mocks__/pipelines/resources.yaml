@@ -1,0 +1,246 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: task-1
+spec:
+  steps:
+    - name: task-1
+      image: ubuntu
+      command:
+        - echo
+      args:
+        - "hello world"
+---
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: task-2
+spec:
+  steps:
+    - name: task-2
+      image: ubuntu
+      command:
+        - echo
+      args:
+        - "hello world2"
+---
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: task-3
+spec:
+  steps:
+    - name: task-3
+      image: ubuntu
+      command:
+        - echo
+      args:
+        - "hello world 3"
+---
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: pipeline-a
+  namespace: myproject
+spec:
+  resources:
+    - name: pipeline-a
+      type: git
+    - name: web-image
+      type: image
+  tasks:
+    - name: task-1
+      taskRef:
+        name: task-1
+    - name: task-2
+      taskRef:
+        name: task-2
+  runs:
+    - name: pipeline-run-a-1
+      status: Complete
+      lastrun: 2019-04-11T17:08:12Z
+      trigger: manual  
+    - name: pipeline-run-a-2
+      status: Failed
+      lastrun: 2019-04-11T17:08:12Z
+---
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: pipeline-b
+  namespace: myproject
+spec:
+  resources:
+    - name: pipeline-b
+      type: git
+    - name: web-image
+      type: image
+  tasks:
+    - name: task-3
+      taskRef:
+        name: task-3
+    - name: task-2
+      taskRef:
+        name: task-2
+  runs:
+    - name: pipeline-run-b-1
+      status: Complete
+      lastrun: 2019-04-11T17:08:12Z
+      trigger: manual  
+---
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: pipeline-c
+  namespace: myproject
+spec:
+  resources:
+    - name: pipeline-c
+      type: git
+    - name: web-image
+      type: image
+  tasks:
+    - name: task-1
+      taskRef:
+        name: task-1
+  runs:
+    - name: pipeline-run-c-1
+      status: Complete
+      lastrun: 2019-04-11T17:08:12Z
+      trigger: manual  
+    - name: pipeline-run-c-2
+      status: Failed
+      lastrun: 2019-04-11T17:08:12Z
+    - name: pipeline-run-c-2
+      status: Running
+      lastrun: 2019-04-11T17:08:12Z
+---    
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: tekton-pipeline-structure
+  namespace: tekton-pipelines
+spec:
+  resources:
+    - name: source-repo
+      type: git
+    - name: web-image
+      type: image
+  tasks:
+    - name: build-skaffold-web
+      taskRef:
+        name: build-docker-image-from-git-source
+      params:
+        - name: pathToDockerFile
+          value: Dockerfile
+        - name: pathToContext
+          value: /workspace/examples/microservices/leeroy-web #configure: may change according to your source
+      resources:
+        inputs:
+          - name: workspace
+            resource: source-repo
+        outputs:
+          - name: image
+            resource: web-image
+    - name: deploy-web
+      taskRef:
+        name: deploy-using-kubectl
+      resources:
+        inputs:
+          - name: workspace
+            resource: source-repo
+          - name: image
+            resource: web-image
+            from:
+              - build-skaffold-web
+      params:
+        - name: path
+          value: /workspace/examples/microservices/leeroy-web/kubernetes/deployment.yaml #configure: may change according to your source
+        - name: yqArg
+          value: "-d1"
+        - name: yamlPathToImage
+          value: "spec.template.spec.containers[0].image"
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  name: pipeline-run-a-1
+  labels:
+    pipeline: pipeline-a
+spec:
+  pipelineRef:
+    name: pipeline-a
+  trigger:
+    type: manual
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  name: pipeline-run-a-2
+  labels:
+    pipeline: pipeline-a
+spec:
+  pipelineRef:
+    name: pipeline-a
+  trigger:
+    type: manual
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  name: pipeline-run-b-1
+  labels:
+    pipeline: pipeline-b
+spec:
+  pipelineRef:
+    name: pipeline-b
+  trigger:
+    type: manual
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  name: pipeline-run-c-1
+  labels:
+    pipeline: pipeline-c
+spec:
+  pipelineRef:
+    name: pipeline-c
+  trigger:
+    type: manual
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  name: pipeline-run-c-2
+  labels:
+    pipeline: pipeline-c
+spec:
+  pipelineRef:
+    name: pipeline-c
+  trigger:
+    type: manual
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  name: tekton-pipeline-structure-1
+  labels:
+    pipeline: tekton-pipeline-structure
+spec:
+  pipelineRef:
+    name: pipeline-c
+  trigger:
+    type: manual
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  name: tekton-pipeline-structure-2
+  labels:
+    pipeline: tekton-pipeline-structure
+spec:
+  pipelineRef:
+    name: tekton-pipeline-structure
+  trigger:
+    type: manual

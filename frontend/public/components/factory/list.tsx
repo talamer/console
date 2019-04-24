@@ -50,6 +50,7 @@ import {
   getClusterOperatorStatus,
   getClusterOperatorVersion,
 } from '../../module/k8s';
+import { pipelineFilterReducer, pipelineRunFilterReducer } from '../../extend/devconsole/utils/pipeline-filter-reducer';
 
 const fuzzyCaseInsensitive = (a, b) => fuzzy(_.toLower(a), _.toLower(b));
 
@@ -103,6 +104,24 @@ const listFilters = {
 
     const status = nodeStatus(node);
     return statuses.selected.has(status) || !_.includes(statuses.all, status);
+  },
+
+  'pipeline-status': (phases, pipeline) => {
+    if (!phases || !phases.selected || !phases.selected.size) {
+      return true;
+    }
+
+    const status = pipelineFilterReducer(pipeline);
+    return phases.selected.has(status) || !_.includes(phases.all, status);
+  },
+
+  'pipelinerun-status': (phases, pipeline) => {
+    if (!phases || !phases.selected || !phases.selected.size) {
+      return true;
+    }
+
+    const status = pipelineRunFilterReducer(pipeline);
+    return phases.selected.has(status) || !_.includes(phases.all, status);
   },
 
   'clusterserviceversion-resource-kind': (filters, resource) => {
