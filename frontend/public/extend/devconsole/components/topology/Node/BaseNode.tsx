@@ -19,7 +19,7 @@ const BaseNode: React.SFC<BaseNodeProps> = ({
   icon
 }) => {
   return (
-    <g transform={`translate(${width / 2}, ${height / 2})`}>
+    <g transform={`translate(0, 0)`}>
       <defs>
         <pattern
           id="image"
@@ -35,25 +35,25 @@ const BaseNode: React.SFC<BaseNodeProps> = ({
             y="0"
             width={radius * 2 - strokeWidth}
             height={radius * 2 - strokeWidth}
-            href={icon ? `../../../../../imgs/logos/${icon}.svg`: "../../../../../imgs/openshift-logo.svg"}
+            xlinkHref={icon ? `/static/assets/${icon}.svg`: "/static/assets/openshift-logo.svg"}
           />
         </pattern>
       </defs>
       <circle
-        className="donut-hole"
-        cx={0}
-        cy={0}
-        r={radius - 1.5 / 2 - strokeWidth / 2}
-        fill="url(#image)"
-      />
-      <circle
-        className="donut-ring"
+        className="base-circle"
         cx={0}
         cy={0}
         r={radius}
-        fill="transparent"
+        fill="#fff"
         stroke="#fff"
-        strokeWidth={strokeWidth + 1}
+        strokeWidth={strokeWidth + strokeWidth * .33}
+      />
+      <circle
+        className="donut-hole"
+        cx={0}
+        cy={0}
+        r={radius - (strokeWidth * .75)}
+        fill="url(#image)"
       />
       <text className="label" textAnchor="middle" y={height / 2 + 22} x={0}> Label </text>
       {selected && (
@@ -64,7 +64,7 @@ const BaseNode: React.SFC<BaseNodeProps> = ({
           r={radius + strokeWidth - 0.5}
           fill="transparent"
           stroke="#77BAFF"
-          strokeWidth={0.8}
+          strokeWidth={strokeWidth * .26}
         />
       )}
     </g>
