@@ -9,8 +9,7 @@ type DecoratorTypes = {
   onClick?: any;
 };
 
-const Decorator: React.SFC<DecoratorTypes> = ({ x, y, radius, onClick, children }) => {
-  return (
+const Decorator: React.SFC<DecoratorTypes> = ({ x, y, radius, onClick, children }) => (
     <g transform={`translate(${x}, ${y})`}>
       <defs>
         <filter id="dropshadow">
@@ -23,6 +22,5 @@ const Decorator: React.SFC<DecoratorTypes> = ({ x, y, radius, onClick, children 
       {children}
     </g>
   );
-};
 
 export default Decorator;

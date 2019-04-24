@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars, no-undef */
 
 import * as React from 'react';
+import { PenIcon } from '@patternfly/react-icons';
 import Decorator from './Decorator';
 import BaseNode from './BaseNode';
 import WorkloadNode from './WorkloadNode';
-import { PenIcon } from '@patternfly/react-icons';
+
 
 type NodeWrapperProps = {
   height: number;
@@ -18,7 +19,6 @@ type NodeWrapperProps = {
 };
 
 type NodeWrapperState = {
-  height: number;
   data: any; //Change this to type of NodeData
 };
 
@@ -36,26 +36,8 @@ class NodeWrapper extends React.Component<NodeWrapperProps, NodeWrapperState> {
   workloadNodeOuterRadius: number;
   decoratorRadius: number;
 
-  constructor(props: NodeWrapperProps) {
-    super(props);
-    this.state = { height: props.height, data: props.nodeData };
-    this.radius = props.radius ? props.radius : this.state.height / 2;
-    this.strokeWidth = this.radius * 0.15;
-    this.whiteSpaceBWPodAndOuterRadius = this.strokeWidth / 2;
-    this.whiteSpaceBWPodAndInnerRadius = this.strokeWidth;
-    this.innerCircleRadius =
-      this.radius -
-      this.strokeWidth -
-      this.whiteSpaceBWPodAndInnerRadius -
-      this.whiteSpaceBWPodAndOuterRadius;
-    this.workloadNodeInnerRadius = this.innerCircleRadius + this.whiteSpaceBWPodAndInnerRadius;
-    this.workloadNodeOuterRadius =
-      this.innerCircleRadius + this.whiteSpaceBWPodAndInnerRadius + this.strokeWidth;
-    this.decoratorRadius = this.radius * 0.25;
-  }
-
-  getNodeLabel = () => {
-    const dcData = this.state.data.resource.filter(
+  getNodeLabel = (data: any) => {
+    const dcData = data.resource.filter(
       (r) => r.kind === 'DeploymentConfig' || r.kind === 'Deployment',
     );
     const labels = dcData[0].metadata.labels;
@@ -70,21 +52,34 @@ class NodeWrapper extends React.Component<NodeWrapperProps, NodeWrapperState> {
   };
 
   render() {
-    const { selected, x, y, onSelect } = this.props;
+    const { height, nodeData, selected, x, y, onSelect } = this.props;
+    this.radius = this.props.radius ? this.props.radius : height / 2;
+    this.strokeWidth = this.radius * 0.15;
+    this.whiteSpaceBWPodAndOuterRadius = this.strokeWidth / 2;
+    this.whiteSpaceBWPodAndInnerRadius = this.strokeWidth;
+    this.innerCircleRadius =
+      this.radius -
+      this.strokeWidth -
+      this.whiteSpaceBWPodAndInnerRadius -
+      this.whiteSpaceBWPodAndOuterRadius;
+    this.workloadNodeInnerRadius = this.innerCircleRadius + this.whiteSpaceBWPodAndInnerRadius;
+    this.workloadNodeOuterRadius =
+      this.innerCircleRadius + this.whiteSpaceBWPodAndInnerRadius + this.strokeWidth;
+    this.decoratorRadius = this.radius * 0.25;
     return (
       <g transform={`translate(${x},${y})`}>
         <BaseNode
-          baseOuterRadius={this.radius}
-          baseInnerRadius={this.innerCircleRadius}
-          icon={this.state.data ? this.state.data.data.buildImage : undefined} // REMOVE this condition once integrated with dataModel
-          label={this.state.data ? this.getNodeLabel() : undefined} // REMOVE this condition once integrated with dataModel
+          outerRadius={this.radius}
+          innerRadius={this.innerCircleRadius}
+          icon={nodeData ? nodeData.data.buildImage : undefined} // REMOVE this condition once integrated with dataModel
+          label={nodeData ? this.getNodeLabel(nodeData) : undefined} // REMOVE this condition once integrated with dataModel
           selected={selected}
           onSelect={onSelect}
         />
         <WorkloadNode
           innerRadius={this.workloadNodeInnerRadius}
           outerRadius={this.workloadNodeOuterRadius}
-          data={this.state.data ? this.state.data.data.donutStatus.pods : pods} // REMOVE this condition once integrated with dataModel
+          data={nodeData ? nodeData.data.donutStatus.pods : pods} // REMOVE this condition once integrated with dataModel
         />
         <Decorator
           x={this.radius - this.decoratorRadius}
