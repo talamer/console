@@ -1,32 +1,33 @@
 import * as React from "react";
 
 interface DecoratorTypes {
+  x: number;
+  y: number;
   radius: number;
   onClick?: any;
 }
 
-const Decorator: React.SFC<DecoratorTypes> = ({radius, onClick}) => {
+const Decorator: React.SFC<DecoratorTypes> = ({x, y, radius, onClick, children}) => {
   return (
-    <g className="decorator">
+    <g className="decorator" transform={`translate(${x}, ${y})`}>
       <defs>
         <filter id="dropshadow">
         {/*
           // @ts-ignore */}
-          <feDropShadow dx=".2" dy=".2" stdDeviation=".3" />
+          <feDropShadow dx=".7" dy=".7" stdDeviation=".8" />
         </filter>
       </defs>
-      <g>
         <circle
           className="che-link"
-          cx={radius - radius * .20}
-          cy={radius - radius * .20}
-          r={radius * .30}
+          cx={0}
+          cy={0}
+          r={radius}
           fill="#fff"
           filter="url(#dropshadow)"
           onClick={onClick}
         />
+        {children}
       </g>
-    </g>
   );
 };
 

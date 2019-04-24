@@ -1,25 +1,27 @@
-import * as React from "react";
+import * as React from 'react';
 
 interface BaseNodeProps {
-  height: number;
-  width: number;
-  radius: number;
-  strokeWidth: number;
+  x?: number;
+  y?: number;
+  baseOuterRadius: number;
+  baseInnerRadius: number;
   selected: boolean;
+  onSelect?: Function;
   icon?: string;
   label?: string;
 }
 
 const BaseNode: React.SFC<BaseNodeProps> = ({
-  height,
-  width,
-  radius,
-  strokeWidth,
+  x = 0,
+  y = 0,
+  baseOuterRadius,
+  baseInnerRadius,
   selected,
-  icon
+  icon,
+  label
 }) => {
   return (
-    <g transform={`translate(0, 0)`}>
+    <g transform={`translate(${x}, ${y})`}>
       <defs>
         <pattern
           id="image"
@@ -27,44 +29,37 @@ const BaseNode: React.SFC<BaseNodeProps> = ({
           y="0"
           height="100%"
           width="100%"
-          viewBox={`0 0 ${radius * 2 - strokeWidth} ${radius * 2 -
-            strokeWidth}`}
+          viewBox={`0 0 ${baseInnerRadius} ${baseInnerRadius}`}
         >
           <image
             x="0"
             y="0"
-            width={radius * 2 - strokeWidth}
-            height={radius * 2 - strokeWidth}
-            xlinkHref={icon ? `/static/assets/${icon}.svg`: "/static/assets/openshift-logo.svg"}
+            width={baseInnerRadius}
+            height={baseInnerRadius}
+            xlinkHref={icon ? `/static/assets/${icon}.svg` : '/static/assets/openshift.svg'}
           />
         </pattern>
       </defs>
-      <circle
-        className="base-circle"
-        cx={0}
-        cy={0}
-        r={radius}
-        fill="#fff"
-        stroke="#fff"
-        strokeWidth={strokeWidth + strokeWidth * .33}
-      />
-      <circle
-        className="donut-hole"
-        cx={0}
-        cy={0}
-        r={radius - (strokeWidth * .75)}
-        fill="url(#image)"
-      />
-      <text className="label" textAnchor="middle" y={height / 2 + 22} x={0}> Label </text>
+      <circle className="base-circle" cx={0} cy={0} r={baseOuterRadius} fill="#fff" />
+      <circle className="donut-hole" cx={0} cy={0} r={baseInnerRadius} fill="url(#image)" />
+      <text
+        className="label"
+        textAnchor="middle"
+        style={{ fontSize: baseOuterRadius * 0.25 }}
+        y={baseOuterRadius + baseOuterRadius * 0.25}
+        x={0}
+      >
+        {label ? label : 'DeploymentConfig'}
+      </text>
       {selected && (
         <circle
           className="selected"
           cx={0}
           cy={0}
-          r={radius + strokeWidth - 0.5}
+          r={baseOuterRadius + baseOuterRadius * 0.03}
           fill="transparent"
           stroke="#77BAFF"
-          strokeWidth={strokeWidth * .26}
+          strokeWidth={baseOuterRadius * 0.06}
         />
       )}
     </g>
