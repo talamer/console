@@ -6,7 +6,7 @@ import { PenIcon } from '@patternfly/react-icons';
 
 type props = {
   height: number;
-  wdth: number;
+  width: number;
   selected: boolean;
   nodeData: any; //Change this to type of Node Data
   x: number;
