@@ -59,7 +59,7 @@ import {
   StorageClassModel,
   SubscriptionModel,
   PackageManifestModel,
-  PipelineModel
+  PipelineModel,
 } from '../models';
 
 export const resourceDetailPages = ImmutableMap<GroupVersionKind | string, () => Promise<React.ComponentType<any>>>()
