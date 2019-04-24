@@ -40,14 +40,11 @@ export default class WorkloadNode extends React.PureComponent<WorkloadNodeProps,
   };
 
   chooseColor = (d, i) => {
-    console.log(d);
     return { fill: podColor[d.status.phase] };
   };
 
   render() {
     const { data, innerRadius, outerRadius, x = 0, y = 0} = this.props;
-    // const innerRadius = radius - (strokeWidth * .75);
-    // const outerRadius = radius + (strokeWidth * .35);
     const pieFunc = pie().sort(null);
 
     const podData = data.map(() => 100 / data.length);

@@ -32,6 +32,7 @@ class NodeWrapper extends React.Component<props, state> {
   workloadNodeInnerRadius: number;
   workloadNodeOuterRadius: number;
   decoratorRadius: number;
+
   constructor(props) {
     super(props);
     this.state = { height: props.height, data: props.nodeData };
@@ -50,7 +51,6 @@ class NodeWrapper extends React.Component<props, state> {
     this.decoratorRadius = this.radius * 0.25;
   }
 
-  //TODO create a method to get the label
   getNodeLabel = () => {
     const dcData = this.state.data.resource.filter(
       (r) => r.kind === 'DeploymentConfig' || r.kind === 'Deployment',
@@ -68,21 +68,21 @@ class NodeWrapper extends React.Component<props, state> {
   };
 
   render() {
-    const { selected, nodeData, x, y, onSelect } = this.props;
+    const { selected, x, y, onSelect } = this.props;
     return (
       <g className="node-wrapper" transform={`translate(${x},${y})`}>
         <BaseNode
           baseOuterRadius={this.radius}
           baseInnerRadius={this.innerCircleRadius}
-          icon={nodeData ? nodeData.data.buildImage : undefined} // REMOVE this condition once integrated with dataModel
-          label={nodeData ? this.getNodeLabel() : undefined} // REMOVE this condition once integrated with dataModel
+          icon={this.state.data ? this.state.data.data.buildImage : undefined} // REMOVE this condition once integrated with dataModel
+          label={this.state.data ? this.getNodeLabel() : undefined} // REMOVE this condition once integrated with dataModel
           selected={selected}
           onSelect={onSelect}
         />
         <WorkloadNode
           innerRadius={this.workloadNodeInnerRadius}
           outerRadius={this.workloadNodeOuterRadius}
-          data={nodeData ? nodeData.data.donutStatus.pods : pods} // REMOVE this condition once integrated with dataModel
+          data={this.state.data ? this.state.data.data.donutStatus.pods : pods} // REMOVE this condition once integrated with dataModel
         />
         <Decorator
           x={this.radius - this.decoratorRadius}
