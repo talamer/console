@@ -16,7 +16,7 @@ describe('EmptyState', () => {
       }),
     });
 
-    const topologyWrapper = shallow(<ConnectedComponent store={store} />);
+    const topologyWrapper = shallow(<ConnectedComponent store={store} title=""/>);
 
     expect(topologyWrapper.props().resources).toEqual('project');
   });
@@ -28,7 +28,7 @@ describe('EmptyState', () => {
       }),
     });
 
-    const topologyWrapper = shallow(<ConnectedComponent store={store} />);
+    const topologyWrapper = shallow(<ConnectedComponent store={store} title="" />);
 
     expect(topologyWrapper.props().resources).toEqual('dev');
   });

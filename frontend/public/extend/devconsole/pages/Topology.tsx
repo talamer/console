@@ -24,6 +24,8 @@ export interface TopologyPageProps {
   }>;
 }
 
+const EmptyMsg = () => <ODCEmptyState title="Topology" />
+
 export const TopologyPageContent: React.FunctionComponent<TopologyPageContentProps> = (
   props: TopologyPageContentProps,
 ) => {
@@ -33,7 +35,7 @@ export const TopologyPageContent: React.FunctionComponent<TopologyPageContentPro
       label="Topology"
       loaded={props.loaded}
       loadError={props.loadError}
-      EmptyMsg={ODCEmptyState}
+      EmptyMsg={EmptyMsg}
     >
       <h1>This is Topology View</h1>
     </StatusBox>
