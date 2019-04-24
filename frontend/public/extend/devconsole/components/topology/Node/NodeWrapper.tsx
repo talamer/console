@@ -1,10 +1,12 @@
+/* eslint-disable no-unused-vars, no-undef */
+
 import * as React from 'react';
 import Decorator from './Decorator';
 import BaseNode from './BaseNode';
 import WorkloadNode from './WorkloadNode';
 import { PenIcon } from '@patternfly/react-icons';
 
-type props = {
+type NodeWrapperProps = {
   height: number;
   width: number;
   selected: boolean;
@@ -12,9 +14,10 @@ type props = {
   x: number;
   y: number;
   onSelect: Function;
+  radius?: number;
 };
 
-type state = {
+type NodeWrapperState = {
   height: number;
   data: any; //Change this to type of NodeData
 };
@@ -23,7 +26,7 @@ const INSTANCE: string = 'app.kubernetes.io/instance';
 const COMPONENT: string = 'app.kubernetes.io/component';
 const NAME: string = 'app.kubernetes.io/name';
 
-class NodeWrapper extends React.Component<props, state> {
+class NodeWrapper extends React.Component<NodeWrapperProps, NodeWrapperState> {
   strokeWidth: number;
   radius: number;
   whiteSpaceBWPodAndOuterRadius: number;
@@ -33,7 +36,7 @@ class NodeWrapper extends React.Component<props, state> {
   workloadNodeOuterRadius: number;
   decoratorRadius: number;
 
-  constructor(props) {
+  constructor(props: NodeWrapperProps) {
     super(props);
     this.state = { height: props.height, data: props.nodeData };
     this.radius = props.radius ? props.radius : this.state.height / 2;
@@ -64,7 +67,6 @@ class NodeWrapper extends React.Component<props, state> {
       return labels[NAME];
     }
     return dcData[0].metadata.name;
-
   };
 
   render() {
@@ -90,9 +92,7 @@ class NodeWrapper extends React.Component<props, state> {
           radius={this.decoratorRadius}
         >
           <g transform={`translate(-${this.decoratorRadius / 2}, -${this.decoratorRadius / 2})`}>
-            <PenIcon
-              style={{ fontSize: this.decoratorRadius }}
-            />
+            <PenIcon style={{ fontSize: this.decoratorRadius }} />
           </g>
         </Decorator>
       </g>
@@ -100,7 +100,7 @@ class NodeWrapper extends React.Component<props, state> {
   }
 }
 
-const Wrapper = (props) => {
+const Wrapper = (props: any) => {
   return <NodeWrapper {...props} />;
 };
 

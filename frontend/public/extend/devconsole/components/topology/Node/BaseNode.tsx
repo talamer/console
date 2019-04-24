@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars, no-undef */
+
 import * as React from 'react';
 
 type BaseNodeProps = {
@@ -19,7 +21,7 @@ const BaseNode: React.SFC<BaseNodeProps> = ({
   selected,
   icon,
   label,
-}) => {
+}: BaseNodeProps) => {
   return (
     <g transform={`translate(${x}, ${y})`}>
       <defs>
@@ -41,7 +43,7 @@ const BaseNode: React.SFC<BaseNodeProps> = ({
         </pattern>
       </defs>
       <circle cx={0} cy={0} r={baseOuterRadius} fill="#fff" />
-      <circle  cx={0} cy={0} r={baseInnerRadius} fill="url(#image)" />
+      <circle cx={0} cy={0} r={baseInnerRadius} fill="url(#image)" />
       <text
         textAnchor="middle"
         style={{ fontSize: baseOuterRadius * 0.25 }}

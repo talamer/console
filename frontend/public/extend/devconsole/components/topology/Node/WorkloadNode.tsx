@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars, no-undef */
+
 import * as React from 'react';
 import { TransitionMotion, Motion, spring } from 'react-motion';
 import { pie, arc } from 'd3';
@@ -24,7 +26,6 @@ type WorkloadNodeProps = {
 };
 
 export default class WorkloadNode extends React.PureComponent<WorkloadNodeProps, {}> {
-
   willLeave = ({ style }) => {
     return {
       ...style,
@@ -44,7 +45,7 @@ export default class WorkloadNode extends React.PureComponent<WorkloadNodeProps,
   };
 
   render() {
-    const { data, innerRadius, outerRadius, x = 0, y = 0} = this.props;
+    const { data, innerRadius, outerRadius, x = 0, y = 0 } = this.props;
     const pieFunc = pie().sort(null);
 
     const podData = data.map(() => 100 / data.length);
@@ -57,13 +58,13 @@ export default class WorkloadNode extends React.PureComponent<WorkloadNodeProps,
     const pieData = pieFunc(podData);
 
     const motionStyles = pieData.map((d, i) => ({
-      key: `${i }`,
+      key: `${i}`,
       data: { ...d, index: i, podData: this.props.data[i] },
       style: d,
     }));
 
     const defaultStyles = pieData.map((d, i) => ({
-      key: `${i }`,
+      key: `${i}`,
       data: { ...d, index: i, podData: this.props.data[i] },
       style: { ...d, endAngle: d.startAngle },
     }));
