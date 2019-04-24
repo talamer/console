@@ -13,7 +13,7 @@ const PipelineDetailsPage = props => <DetailsPage
 
     {
       href: 'Runs',
-      name: 'Runs',
+      name: 'Pipeline Runs',
       component: PipelineRuns,
     },
     navFactory.envEditor(PipelinEnvironmentComponent),
