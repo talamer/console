@@ -5,7 +5,7 @@ export interface TopologyLayoutProps {
   topologyGraphData: TopologyDataModel;
 }
 
-const TopologyLayout: React.SFC<any> = (props: any) => {
+const TopologyLayout: React.SFC<TopologyLayoutProps> = (props: TopologyLayoutProps) => {
   const { topologyGraphData } = props;
   if (!topologyGraphData.graph.nodes.length) {
     return null;
