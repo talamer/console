@@ -1,4 +1,4 @@
-import { TransformTopologyData } from '../topology/TopologyDataUtils';
+import { TransformTopologyData } from '../topology/topology-utils';
 import { resources, topologyData } from '../__mocks__/TopologyDataMocks';
 
 describe('TopologyUtils ', () => {

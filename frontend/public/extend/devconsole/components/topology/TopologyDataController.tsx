@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { TopologyDataResources, Resource, TopologyDataModel } from './topology-types';
-import { TransformTopologyData } from './TopologyDataUtils';
+import { TransformTopologyData } from './topology-utils';
 
 export interface TopologyDataProps {
   namespace: string;
