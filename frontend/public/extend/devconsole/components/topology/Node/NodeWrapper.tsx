@@ -4,16 +4,20 @@ import BaseNode from './BaseNode';
 import WorkloadNode from './WorkloadNode';
 
 const NodeWrapper = (props) => {
-  const {height, width, selected, nodeData} = props;
-  const strokeWidth: number =  3;
+  const {height, width, selected, nodeData, x, y} = props;
   const radius = props.radius ? props.radius : height / 2;
+  const strokeWidth: number =  radius * .25;
   const commonNodeProps = {
     height, width, radius, strokeWidth
   }
+  //TODO create a method to get the label
+  //
   return (
-    <g className="node-wrapper">
-      <BaseNode {...commonNodeProps} icon={nodeData.data.image.name || 'mongodb'} selected={selected} />
-      <WorkloadNode {...commonNodeProps} data={nodeData.data.donut_status.pods || pods} />
+    <g className="node-wrapper"
+      transform={`translate(${x},${y})`}
+    >
+      <BaseNode {...commonNodeProps} icon={nodeData ? nodeData.data.buildImage : 'nodejs'} selected={selected} />
+      <WorkloadNode {...commonNodeProps} data={nodeData ? nodeData.data.donutStatus.pods : pods} />
       <Decorator radius={radius} />
     </g>
   );
