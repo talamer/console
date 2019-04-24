@@ -7,6 +7,7 @@ interface BaseNodeProps {
   strokeWidth: number;
   selected: boolean;
   icon?: string;
+  label?: string;
 }
 
 const BaseNode: React.SFC<BaseNodeProps> = ({
@@ -34,7 +35,7 @@ const BaseNode: React.SFC<BaseNodeProps> = ({
             y="0"
             width={radius * 2 - strokeWidth}
             height={radius * 2 - strokeWidth}
-            href={icon ? icon : "https://svgshare.com/i/CTh.svg"}
+            href={icon ? `../../../../../imgs/logos/${icon}.svg`: "../../../../../imgs/openshift-logo.svg"}
           />
         </pattern>
       </defs>
@@ -54,6 +55,7 @@ const BaseNode: React.SFC<BaseNodeProps> = ({
         stroke="#fff"
         strokeWidth={strokeWidth + 1}
       />
+      <text className="label" textAnchor="middle" y={height / 2 + 22} x={0}> Label </text>
       {selected && (
         <circle
           className="selected"
