@@ -16,7 +16,7 @@ export interface TopologyDataProps {
   replicasets?: Resource;
   render: (props) => {};
 }
-class TopologyDataController extends React.Component<TopologyDataProps> {
+export class TopologyDataController extends React.Component<TopologyDataProps> {
   shouldComponentUpdate(nextProps) {
     return this.props.namespace !== nextProps.namespace || nextProps.loaded;
   }

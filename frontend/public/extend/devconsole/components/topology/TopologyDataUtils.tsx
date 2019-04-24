@@ -45,10 +45,10 @@ export class TransformTopologyData {
    */
   transformDataBy(targetDeployment = 'deployments') {
     if (!this._deploymentKindMap[targetDeployment]) {
-      throw new Error(`Invalid deployment kind: (${targetDeployment})`);
+      throw new Error(`Invalid target deployment resource: (${targetDeployment})`);
     }
-    if (_.isEmpty(this.resources)) {
-      throw new Error('no resources found');
+    if (_.isEmpty(this.resources[targetDeployment].data)) {
+      return;
     }
     const targetDeploymentsKind = this._deploymentKindMap[targetDeployment].dcKind;
 
