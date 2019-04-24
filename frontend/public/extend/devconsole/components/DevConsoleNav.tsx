@@ -34,8 +34,8 @@ export const PageNav = (props: DevConsoleNavigationProps) => {
     if (excludes.length <1 || excludes[0] === '') {
       return includeFlag;
     }
-    const excludeFlag = true;
-    excludes.map( keyword => excludeFlag && !props.location.includes(keyword));
+    let excludeFlag = false;
+    excludes.map( keyword => excludeFlag = excludeFlag || props.location.includes(keyword));
     return includeFlag && !excludeFlag;
   };
 
