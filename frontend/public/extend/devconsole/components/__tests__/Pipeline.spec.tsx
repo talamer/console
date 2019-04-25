@@ -1,18 +1,18 @@
 /* eslint-disable no-unused-vars */
 import * as React from 'react';
 import { shallow } from 'enzyme';
-import { ListPage} from '../../../../components/factory';
+import { ListPage } from '../../../../components/factory';
 import PipelinePage from '../../pages/Pipelines';
-import PipelineRuns from '../pipelines/pipeline-run';
+import PipelineRuns from '../pipelines/PipelineRuns';
 
 const pipelinePageProps = {
   namespace: 'all-namespaces',
 };
 
 const pipelineRunProps = {
-  obj:{
+  obj: {
     metadata: {
-      name:'pipeline-a',
+      name: 'pipeline-a',
     },
   },
 };

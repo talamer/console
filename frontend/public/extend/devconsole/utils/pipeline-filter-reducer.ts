@@ -2,7 +2,7 @@ export const pipelineFilterReducer = (pipeline): string => {
   if (!pipeline || !pipeline.spec.runs) {
     return '';
   }
-  return pipeline.spec.runs[pipeline.spec.runs.length-1].status;
+  return pipeline.spec.runs[pipeline.spec.runs.length - 1].status;
 };
 
 export const pipelineRunFilterReducer = (pipelineRun): string => {
