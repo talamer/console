@@ -1,5 +1,10 @@
 .odc-empty-state {
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 10%;
+  padding: 25px;
+  background: var(--pf-global--Color--light-200);
+  box-shadow: var(--pf-global--BoxShadow--inset);
+
+  &__card {
+    height: 100%;
+    text-align: center;
+  }
 }

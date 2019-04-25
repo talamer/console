@@ -16,20 +16,8 @@ describe('EmptyState', () => {
       }),
     });
 
-    const topologyWrapper = shallow(<ConnectedComponent store={store} />);
+    const topologyWrapper = shallow(<ConnectedComponent store={store} title=""/>);
 
-    expect(topologyWrapper.props().resources).toEqual('project');
-  });
-
-  it('should pass resources from state as prop', () => {
-    const store = mockStore({
-      UI: ImmutableMap({
-        activePerspective: 'dev',
-      }),
-    });
-
-    const topologyWrapper = shallow(<ConnectedComponent store={store} />);
-
-    expect(topologyWrapper.props().resources).toEqual('dev');
+    expect(topologyWrapper.props().activeNamespace).toEqual('project');
   });
 });
