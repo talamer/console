@@ -185,6 +185,32 @@ export const PodModel: K8sKind = {
   labelPlural: 'Pods',
 };
 
+export const PipelineModel: K8sKind = {
+  apiGroup: 'tekton.dev',
+  apiVersion: 'v1alpha1',
+  label: 'Pipeline',
+  path: 'pipelines',
+  plural: 'pipelines',
+  abbr: 'PL',
+  namespaced: true,
+  kind: 'Pipeline',
+  id: 'pipeline',
+  labelPlural: 'Pipelines',
+};
+
+export const PipelinerunModel: K8sKind = {
+  apiGroup: 'tekton.dev',
+  apiVersion: 'v1alpha1',
+  label: 'Pipelinerun',
+  path: 'pipelineruns',
+  plural: 'pipelineruns',
+  abbr: 'PLR',
+  namespaced: true,
+  kind: 'PipelineRun',
+  id: 'pipelineRun',
+  labelPlural: 'PipelineRuns',
+};
+
 export const ContainerModel: K8sKind = {
   apiVersion: 'v1',
   label: 'Container',

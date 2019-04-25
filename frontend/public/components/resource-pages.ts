@@ -42,6 +42,7 @@ import {
   PackageManifestModel,
   PersistentVolumeClaimModel,
   PersistentVolumeModel,
+  PipelineModel,
   PodModel,
   ProjectModel,
   PrometheusModel,
@@ -97,6 +98,7 @@ export const resourceDetailPages = ImmutableMap<GroupVersionKind | string, () =>
   .set(referenceForModel(ServiceInstanceModel), () => import('./service-instance' /* webpackChunkName: "service-instance" */).then(m => m.ServiceInstanceDetailsPage))
   .set(referenceForModel(ServiceBindingModel), () => import('./service-binding' /* webpackChunkName: "service-binding" */).then(m => m.ServiceBindingDetailsPage))
   .set(referenceForModel(ServiceModel), () => import('./service' /* webpackChunkName: "service" */).then(m => m.ServicesDetailsPage))
+  .set(referenceForModel(PipelineModel), () => import('../extend/devconsole/components/pipelines/PipelineDetailsPage' /* webpackChunkName: "PipelineDetailsPage" */).then(m => m.default))
   .set(referenceForModel(IngressModel), () => import('./ingress' /* webpackChunkName: "ingress" */).then(m => m.IngressesDetailsPage))
   .set(referenceForModel(RouteModel), () => import('./routes' /* webpackChunkName: "routes" */).then(m => m.RoutesDetailsPage))
   .set(referenceForModel(ClusterRoleModel), () => import('./RBAC/role' /* webpackChunkName: "role" */).then(m => m.ClusterRolesDetailsPage))
@@ -156,6 +158,7 @@ export const resourceListPages = ImmutableMap<GroupVersionKind | string, () => P
   .set(referenceForModel(ServiceInstanceModel), () => import('./service-instance' /* webpackChunkName: "service-instance" */).then(m => m.ServiceInstancesPage))
   .set(referenceForModel(ServiceBindingModel), () => import('./service-binding' /* webpackChunkName: "service-binding" */).then(m => m.ServiceBindingsPage))
   .set(referenceForModel(ServiceModel), () => import('./service' /* webpackChunkName: "service" */).then(m => m.ServicesPage))
+  .set(referenceForModel(PipelineModel), () => import('../extend/devconsole/pages/Pipelines' /* webpackChunkName: "PipelineDetailsPage" */).then(m => m.default))
   .set(referenceForModel(IngressModel), () => import('./ingress' /* webpackChunkName: "ingress" */).then(m => m.IngressesPage))
   .set(referenceForModel(RouteModel), () => import('./routes' /* webpackChunkName: "routes" */).then(m => m.RoutesPage))
   .set(referenceForModel(RoleModel), () => import('./RBAC/role' /* webpackChunkName: "role" */).then(m => m.RolesPage))

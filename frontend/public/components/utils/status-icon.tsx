@@ -48,6 +48,7 @@ export const StatusIcon: React.FunctionComponent<StatusIconProps> = ({status}) =
     case 'Bound':
     case 'Complete':
     case 'Completed':
+    case 'Succeeded':
     case 'Enabled':
     case 'Ready':
     case 'Up to date':
