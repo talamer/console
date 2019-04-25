@@ -5,7 +5,6 @@ import {
   CardBody,
   CardHeader,
   CardFooter,
-  Title,
   Grid,
   GridItem,
 } from '@patternfly/react-core';
@@ -13,6 +12,7 @@ import { connect } from 'react-redux';
 import PerspectiveLink from '../PerspectiveLink';
 import { formatNamespacedRouteForResource } from '../../../../../ui/ui-actions';
 import './EmptyState.scss';
+import { PageHeading } from '../../../../../components/utils';
 
 interface StateProps {
   activeNamespace: string;
@@ -26,23 +26,21 @@ export type ODCEmptyStateProps = StateProps & ODCEmptyStateOwnProps;
 
 const ODCEmptyState: React.FunctionComponent<ODCEmptyStateProps> = (props: ODCEmptyStateProps) => (
   <React.Fragment>
-    <Title style={{ margin: '2%' }} size="xl">
-      {props.title}
-    </Title>
+    <PageHeading title={props.title} />
     <div className="odc-empty-state">
       <Grid gutter="md">
-        <GridItem sm={6} md={5} lg={4}>
+        <GridItem sm={6} md={6} lg={4}>
           <Card className="odc-empty-state__card">
             <CardHeader>Import from Git</CardHeader>
             <CardBody>Import code from your git repository, to be built and deployed </CardBody>
             <CardFooter>
-              <PerspectiveLink className="pf-c-button pf-m-secondary" to="/git-import">
+              <PerspectiveLink className="pf-c-button pf-m-secondary" to="/import">
                 Import from Git
               </PerspectiveLink>
             </CardFooter>
           </Card>
         </GridItem>
-        <GridItem sm={6} md={5} lg={4}>
+        <GridItem sm={6} md={6} lg={4}>
           <Card className="odc-empty-state__card">
             <CardHeader>Browse Catalog</CardHeader>
             <CardBody>Browse the catalog to discover, deploy and connect to services</CardBody>
@@ -53,7 +51,7 @@ const ODCEmptyState: React.FunctionComponent<ODCEmptyStateProps> = (props: ODCEm
             </CardFooter>
           </Card>
         </GridItem>
-        <GridItem sm={6} md={5} lg={4}>
+        <GridItem sm={6} md={6} lg={4}>
           <Card className="odc-empty-state__card">
             <CardHeader>Deploy Image</CardHeader>
             <CardBody>Deploy an existing image from an image registry or image stream tag</CardBody>
@@ -67,7 +65,7 @@ const ODCEmptyState: React.FunctionComponent<ODCEmptyStateProps> = (props: ODCEm
             </CardFooter>
           </Card>
         </GridItem>
-        <GridItem sm={6} md={5} lg={4}>
+        <GridItem sm={6} md={6} lg={4}>
           <Card className="odc-empty-state__card">
             <CardHeader>Import YAML</CardHeader>
             <CardBody>Create or replace resources from their YAML or JSON definitions.</CardBody>
@@ -81,7 +79,7 @@ const ODCEmptyState: React.FunctionComponent<ODCEmptyStateProps> = (props: ODCEm
             </CardFooter>
           </Card>
         </GridItem>
-        <GridItem sm={6} md={5} lg={4}>
+        <GridItem sm={6} md={6} lg={4}>
           <Card className="odc-empty-state__card">
             <CardHeader>Add Database</CardHeader>
             <CardBody>
