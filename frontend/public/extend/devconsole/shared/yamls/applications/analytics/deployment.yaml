@@ -9,8 +9,7 @@ metadata:
     app.kubernetes.io/instance: user-analytics
     app.kubernetes.io/version: "1.0"
   annotations:
-    app.openshift.io/connects-to: 'nodejs'
-    app.openshift.io/connects-to: 'wit-deployment'
+    app.openshift.io/connects-to: '["wit"]'
 spec:
   replicas: 3
   selector:

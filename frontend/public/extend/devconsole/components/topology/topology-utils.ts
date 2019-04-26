@@ -72,7 +72,10 @@ export class TransformTopologyData {
       const deploymentsLabels = _.get(deploymentConfig, 'metadata.labels');
       this._topologyData.topology[dcUID] = {
         id: dcUID,
-        name: _.get(deploymentConfig, 'metadata.name'),
+        name:
+          deploymentsLabels['app.kubernetes.io/instance'] ||
+          _.get(deploymentConfig, 'metadata.name'),
+
         type: 'workload',
         resources: _(nodeResources)
           .map((resource) => {
@@ -184,30 +187,40 @@ export class TransformTopologyData {
     const { metadata } = deploymentConfig;
     const currentNode = {
       id: metadata.uid,
-      type: 'node',
-      name: metadata.name,
+      type: 'workload',
+      name: metadata.labels['app.openshift.io/instance'] || metadata.name,
     };
 
     if (!_.some(this._topologyData.graph.nodes, { id: currentNode.id })) {
       // add the node to graph
       this._topologyData.graph.nodes.push(currentNode);
       const labels = _.get(deploymentConfig, 'metadata.labels');
-      const edges = _.get(deploymentConfig, 'metadata.annotations');
+      const annotations = _.get(deploymentConfig, 'metadata.annotations');
+      let edges = [];
       const totalDeployments = _.cloneDeep(
         _.concat(this.resources.deploymentConfigs.data, this.resources.deployments.data),
       );
-      // // find and add the edges
-      if (_.has(edges, 'app.openshift.io/connects-to')) {
-        const targetNode = _.get(
-          _.find(totalDeployments, ['metadata.name', edges['app.openshift.io/connects-to']]),
-          'metadata.uid',
-        );
-        if (targetNode) {
-          this._topologyData.graph.edges.push({
-            source: currentNode.id,
-            target: targetNode,
-          });
+      // // find and add the edges for a node
+      if (_.has(annotations, 'app.openshift.io/connects-to')) {
+        try {
+          edges = JSON.parse(annotations['app.openshift.io/connects-to']);
+        } catch (e) {
+          //connects-to annotation should hold a JSON string value
+          throw new Error('Invalid connects-to annotation provided');
         }
+        _.map(edges, (edge) => {
+          //handles multiple edges
+          const targetNode = _.get(
+            _.find(totalDeployments, ['metadata.labels["app.kubernetes.io/instance"]', edge]),
+            'metadata.uid',
+          );
+          if (targetNode) {
+            this._topologyData.graph.edges.push({
+              source: currentNode.id,
+              target: targetNode,
+            });
+          }
+        });
       }
 
       _.forEach(labels, (label, key) => {
@@ -249,7 +262,10 @@ export class TransformTopologyData {
   /**
    * sort the deployement version
    */
-  private sortByDeploymentVersion = (replicationControllers: ResourceProps[], descending: boolean) => {
+  private sortByDeploymentVersion = (
+    replicationControllers: ResourceProps[],
+    descending: boolean,
+  ) => {
     const version = 'openshift.io/deployment-config.latest-version';
     const compareDeployments = (left, right) => {
       const leftVersion = parseInt(_.get(left, version), 10);
