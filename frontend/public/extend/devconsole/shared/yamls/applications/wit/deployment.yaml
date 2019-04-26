@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/part-of: application-1
     app.kubernetes.io/name: nodejs
     app.kubernetes.io/component: backend
-    app.kubernetes.io/instance: user-wit
+    app.kubernetes.io/instance: wit
     app.kubernetes.io/version: "1.0"
 spec:
   replicas: 3
@@ -15,7 +15,7 @@ spec:
       app.kubernetes.io/part-of: application-1
       app.kubernetes.io/name: nodejs
       app.kubernetes.io/component: backend
-      app.kubernetes.io/instance: user-wit
+      app.kubernetes.io/instance: wit
       app.kubernetes.io/version: "1.0"
   template:
     metadata:
@@ -23,7 +23,7 @@ spec:
         app.kubernetes.io/part-of: application-1
         app.kubernetes.io/name: nodejs
         app.kubernetes.io/component: backend
-        app.kubernetes.io/instance: user-wit
+        app.kubernetes.io/instance: wit
         app.kubernetes.io/version: "1.0"
     spec:
       containers:
