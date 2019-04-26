@@ -72,7 +72,10 @@ export class TransformTopologyData {
       const deploymentsLabels = _.get(deploymentConfig, 'metadata.labels');
       this._topologyData.topology[dcUID] = {
         id: dcUID,
-        name: _.get(deploymentConfig, 'metadata.name'),
+        name:
+          deploymentsLabels['app.kubernetes.io/instance'] ||
+          _.get(deploymentConfig, 'metadata.name'),
+
         type: 'workload',
         resources: _(nodeResources)
           .map((resource) => {
@@ -184,8 +187,8 @@ export class TransformTopologyData {
     const { metadata } = deploymentConfig;
     const currentNode = {
       id: metadata.uid,
-      type: 'node',
-      name: metadata.name,
+      type: 'workload',
+      name: metadata.labels['app.openshift.io/instance'] || metadata.name,
     };
 
     if (!_.some(this._topologyData.graph.nodes, { id: currentNode.id })) {
@@ -202,9 +205,11 @@ export class TransformTopologyData {
         try {
           edges = JSON.parse(annotations['app.openshift.io/connects-to']);
         } catch (e) {
+          //connects-to annotation should hold a JSON string value
           throw new Error('Invalid connects-to annotation provided');
         }
-        _.map(edges, (edge) => { //handles multiple edges
+        _.map(edges, (edge) => {
+          //handles multiple edges
           const targetNode = _.get(
             _.find(totalDeployments, ['metadata.labels["app.kubernetes.io/instance"]', edge]),
             'metadata.uid',
@@ -257,7 +262,10 @@ export class TransformTopologyData {
   /**
    * sort the deployement version
    */
-  private sortByDeploymentVersion = (replicationControllers: ResourceProps[], descending: boolean) => {
+  private sortByDeploymentVersion = (
+    replicationControllers: ResourceProps[],
+    descending: boolean,
+  ) => {
     const version = 'openshift.io/deployment-config.latest-version';
     const compareDeployments = (left, right) => {
       const leftVersion = parseInt(_.get(left, version), 10);
