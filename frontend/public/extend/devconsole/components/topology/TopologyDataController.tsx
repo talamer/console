@@ -26,7 +26,6 @@ export interface TopologyDataControllerProps {
 class Controller extends React.PureComponent<ControllerProps> {
   render() {
     const { render, resources, loaded, loadError } = this.props;
-
     return render({
       loaded,
       loadError,
@@ -87,6 +86,12 @@ export default class TopologyDataController extends React.PureComponent<
         kind: 'ReplicaSet',
         namespace,
         prop: 'replicasets',
+      },
+      {
+        isList: true,
+        kind: 'BuildConfig',
+        namespace,
+        prop: 'buildconfigs',
       },
     ];
     return (

@@ -3,15 +3,16 @@ import * as React from 'react';
 import { shallow, ShallowWrapper } from 'enzyme';
 import TopologyDataController, { TopologyDataControllerProps } from '../TopologyDataController';
 import { resources } from '../__mocks__/TopologyDataMocks';
+import { renderTopology } from '../../../pages/Topology';
+import ODCEmptyState from '../../../shared/components/EmptyState/EmptyState';
 
 describe('TopologyDataController', () => {
-  const TopologyLayout = () => <h1>Topology Layout</h1>;
 
   const props = {
     namespace: 'test',
     resources,
     // eslint-disable-next-line react/display-name
-    render: (p) => <TopologyLayout {...p} />,
+    render: renderTopology,
   };
   let wrapper: ShallowWrapper<TopologyDataControllerProps>;
   beforeEach(() => {
@@ -22,11 +23,7 @@ describe('TopologyDataController', () => {
     expect(wrapper.exists()).toBeTruthy();
   });
 
-  // it('should render the topology Layout', () => {
-  //   expect(wrapper.equals(<TopologyLayout />)).toBeTruthy();
-  // });
-
-  // it('should render the topology Layout with topology graph data', () => {
-  //   expect(wrapper.find(TopologyLayout).props()).toEqual({ topologyGraphData: topologyData });
-  // });
+  it('should render the empty state component', () => {
+    expect(wrapper.find(<ODCEmptyState title="Topology"  />)).toBeTruthy();
+  });
 });

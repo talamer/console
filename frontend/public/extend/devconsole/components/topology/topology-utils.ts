@@ -69,9 +69,9 @@ export class TransformTopologyData {
       const dcPods = this.getPods(replicationController);
       const service = this.getService(deploymentConfig);
       const route = this.getRoute(service);
-
+      const buildConfigs = this.getBuildConfigs(deploymentConfig);
       // list of resources in the
-      const nodeResources = [deploymentConfig, replicationController, service, route];
+      const nodeResources = [deploymentConfig, replicationController, service, route, buildConfigs];
       // populate the graph Data
       this.createGraphData(deploymentConfig);
       // add the lookup object
@@ -124,6 +124,20 @@ export class TransformTopologyData {
       }
     });
     return route;
+  }
+  private getBuildConfigs(deploymentConfig: ResourceProps): ResourceProps {
+    const buildConfig = {
+      kind: 'BuildConfig',
+      metadata: [],
+      status: {},
+      spec: {},
+    };
+
+    const bconfig = _.find(this.resources.buildconfigs.data, [
+      'metadata.labels["app.kubernetes.io/instance"]',
+      _.get(deploymentConfig, 'metadata.labels["app.kubernetes.io/instance"]'),
+    ]);
+    return bconfig ? _.merge(buildConfig, bconfig) : buildConfig;
   }
   /**
    * fetches the service from the deploymentconfig
