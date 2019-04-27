@@ -426,7 +426,9 @@ export class ImportFlowForm extends React.Component<Props, State> {
 
     builderImages.forEach((image) => {
       image.spec.tags.forEach((tag) => {
-        this.imageStreams[image.metadata.name + tag.name] = [image.metadata.name, tag.name];
+        if (!tag.annotations.tags.includes('hidden')) {
+          this.imageStreams[image.metadata.name+tag.name] = [image.metadata.name, tag.name];
+        }
       });
     });
 
