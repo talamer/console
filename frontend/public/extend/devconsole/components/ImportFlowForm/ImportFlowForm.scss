@@ -1,0 +1,10 @@
+.odc-import-form {
+  &__success-icon {
+    color: var(--pf-global--success-color--200);
+    font-size: 15px;
+    margin-left: 5px;
+  }
+  &__loader {
+    margin-left: 5px;
+  }
+}
