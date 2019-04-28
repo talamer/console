@@ -962,6 +962,7 @@ const overviewDispatchToProps = (dispatch) => {
 const Overview_: React.SFC<OverviewProps> = (({mock, namespace, selectedItem, selectedView, title, dismissDetails}) => {
   const sidebarOpen = !_.isEmpty(selectedItem) && selectedView !== View.Dashboard;
   const className = classnames('overview', {'overview--sidebar-shown': sidebarOpen});
+  console.log('########### - 121', selectedItem);
   // TODO: Update resources for native Kubernetes clusters.
   const resources = [
     {
