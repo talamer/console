@@ -4,7 +4,7 @@ import DefaultNode from './shapes/DefaultNode';
 import WorkloadNode from './shapes/WorkloadNode';
 import { NodeProvider, EdgeProvider } from './topology-types';
 
-export const nodeProvider: NodeProvider = ({ type }) => {
+export const nodeProvider: NodeProvider = (type) => {
   switch (type) {
     case 'workload':
       return WorkloadNode;
@@ -13,7 +13,7 @@ export const nodeProvider: NodeProvider = ({ type }) => {
   }
 };
 
-export const edgeProvider: EdgeProvider = ({ type }) => {
+export const edgeProvider: EdgeProvider = (type) => {
   switch (type) {
     default:
       return DefaultEdge;
