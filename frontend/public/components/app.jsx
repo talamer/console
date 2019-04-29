@@ -307,6 +307,8 @@ class App extends React.PureComponent {
                     // <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/roles/:name/:rule/edit')} exact loader={() => import('./RBAC' /* webpackChunkName: "rbac" */).then(m => m.EditRulePage)} />
                   }
 
+                  { devconsoleEnabled && devConsoleRoutes.map(r => <Route key={r.path} {...r} />)}
+
                   <LazyRoute path={this._prependActivePerspective('/deploy-image')} exact loader={() => import('./deploy-image').then(m => m.DeployImage)} />
 
                   <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/secrets/new/:type')} exact kind="Secret" loader={() => import('./secrets/create-secret' /* webpackChunkName: "create-secret" */).then(m => m.CreateSecret)} />
@@ -342,8 +344,6 @@ class App extends React.PureComponent {
 
                   <Route path={this._prependActivePerspective('/k8s/all-namespaces/:plural')} exact component={ResourceListPage} />
                   <Route path={this._prependActivePerspective('/k8s/all-namespaces/:plural/:name')} component={ResourceDetailsPage} />
-
-                  { devconsoleEnabled && devConsoleRoutes.map(r => <Route key={r.path} {...r} />)}
 
                   <LazyRoute path={this._prependActivePerspective('/error')} exact loader={() => import('./error' /* webpackChunkName: "error" */).then(m => m.ErrorPage)} />
                   <Route path={this._prependActivePerspective('/')} exact component={DefaultPage} />

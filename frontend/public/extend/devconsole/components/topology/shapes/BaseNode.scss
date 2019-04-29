@@ -1,0 +1,16 @@
+.odc-base-node {
+  &__selection {
+    fill: none;
+    stroke: var(--pf-global--active-color--300);
+  }
+
+  &__label {
+    pointer-events: none;
+    fill: var(--pf-global--Color--100);
+    font-size: var(--pf-global--icon--FontSize--md);
+
+    &.is-selected {
+      fill: var(--pf-global--active-color--300);
+    }
+  }
+}

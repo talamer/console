@@ -92,6 +92,12 @@ export default class TopologyDataController extends React.PureComponent<
         namespace,
         prop: 'replicasets',
       },
+      {
+        isList: true,
+        kind: 'BuildConfig',
+        namespace,
+        prop: 'buildconfigs',
+      },
     ];
     return (
       <Firehose resources={resources} forceUpdate>
