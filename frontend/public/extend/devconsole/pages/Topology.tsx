@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Helmet } from 'react-helmet';
 import { match as RMatch } from 'react-router';
 import ODCEmptyState from '../shared/components/EmptyState/EmptyState';
-import { StatusBox, PageHeading } from '../../../components/utils';
+import { StatusBox } from '../../../components/utils';
 import TopologyDataController, { RenderProps } from '../components/topology/TopologyDataController';
 import Topology from '../components/topology/Topology';
 
@@ -35,9 +35,6 @@ function renderTopology({ loaded, loadError, data }: RenderProps) {
           bottom: 0,
         }}
       >
-        <div style={{ flexGrow: 0, flexShrink: 0 }}>
-          <PageHeading title="Topology" />
-        </div>
         <Topology data={data} />
       </div>
     </StatusBox>
