@@ -28,7 +28,7 @@ export interface TopologyDataResources {
 }
 
 export interface Node {
-  id?: string;
+  id: string;
   type?: string;
   name?: string;
 }
@@ -60,6 +60,7 @@ export interface TopologyDataModel {
   graph: GraphModel;
   topology: TopologyDataMap;
 }
+
 export interface Pod {
   id: string;
   name: string;
@@ -96,24 +97,22 @@ export interface Selectable {
   onSelect?(): void;
 }
 
-export type ViewNode = Node & {
-  x?: number;
-  y?: number;
-  size?: number;
+export type ViewNode = {
+  id: string;
+  type?: string;
+  x: number;
+  y: number;
+  size: number;
 };
 
-export type ViewEdge = Edge & {
+export type ViewEdge = {
+  id: string;
+  type?: string;
   source: ViewNode;
   target: ViewNode;
 };
 
 export type ViewGroup = Group;
-
-export interface ViewGraphData {
-  nodes: ViewNode[];
-  edges: ViewEdge[];
-  groups: ViewGroup[];
-}
 
 export type NodeProps<D = {}> = ViewNode &
   Selectable & {
@@ -125,9 +124,9 @@ export type EdgeProps<D = {}> = ViewEdge & {
 };
 
 export interface NodeProvider {
-  (ViewNode, any): ComponentType<NodeProps>;
+  (TopologyDataObject): ComponentType<NodeProps>;
 }
 
 export interface EdgeProvider {
-  (ViewNode, any): ComponentType<EdgeProps>;
+  (TopologyDataObject): ComponentType<EdgeProps>;
 }

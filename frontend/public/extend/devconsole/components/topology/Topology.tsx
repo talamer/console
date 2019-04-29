@@ -5,7 +5,7 @@ import { ExpandIcon, SearchPlusIcon, SearchMinusIcon } from '@patternfly/react-i
 import { nodeProvider, edgeProvider } from './shape-providers';
 import Graph from './Graph';
 import GraphToolbar from './GraphToolbar';
-import { GraphApi, Node, TopologyDataModel } from './topology-types';
+import { GraphApi, TopologyDataModel } from './topology-types';
 
 type State = {
   selected?: string;
@@ -20,9 +20,9 @@ export default class Topology extends React.Component<TopologyProps, State> {
     selected: null,
   };
 
-  onSelect = (node: Node) => {
+  onSelect = (nodeId: string) => {
     this.setState(({ selected }) => {
-      return { selected: !node || selected === node.id ? null : node.id };
+      return { selected: !nodeId || selected === nodeId ? null : nodeId };
     });
   };
 

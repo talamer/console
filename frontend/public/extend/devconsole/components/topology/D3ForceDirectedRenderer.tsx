@@ -2,47 +2,60 @@
 import * as React from 'react';
 import * as d3 from 'd3';
 import * as ReactDOM from 'react-dom';
+import * as _ from 'lodash-es';
 import {
   ViewNode,
   ViewEdge,
-  ViewGraphData,
   NodeProvider,
   EdgeProvider,
   NodeProps,
   TopologyDataMap,
   TopologyDataObject,
+  GraphModel,
+  Edge,
 } from './topology-types';
 import SvgDefsProvider from '../../shared/components/svg/SvgDefsProvider';
 
 interface State {
   zoomTransform?: string;
+  nodesById: {
+    [id: string]: ViewNode;
+  };
+  nodes: string[];
+  edgesById: {
+    [id: string]: ViewEdge;
+  };
+  edges: string[];
+  graph: GraphModel;
 }
 
 export interface D3ForceDirectedRendererProps {
   width: number;
   height: number;
-  graph: ViewGraphData;
+  graph: GraphModel;
   topology: TopologyDataMap;
   nodeProvider: NodeProvider;
   edgeProvider: EdgeProvider;
   nodeSize: number;
   selected?: string;
-  onSelect?(Node): void;
+  onSelect?(string): void;
 }
 
-function getEdgeId(d: ViewEdge): string {
-  if (typeof d.source === 'string') {
-    return `${d.source}_${d.target}`;
-  }
-  return `${d.source.id}_${d.target.id}`;
+function getEdgeId(d: Edge): string {
+  return d.id || `${d.source}_${d.target}`;
 }
 
 export default class D3ForceDirectedRenderer extends React.Component<
   D3ForceDirectedRendererProps,
   State
   > {
-  state = {
+  state: State = {
     zoomTransform: null,
+    nodesById: {},
+    nodes: [],
+    edgesById: {},
+    edges: [],
+    graph: null,
   };
 
   private $svg: d3.Selection<SVGSVGElement, null, null, undefined>;
@@ -57,11 +70,77 @@ export default class D3ForceDirectedRenderer extends React.Component<
     super(props);
 
     this.simulation = d3
-      .forceSimulation(props.graph.nodes)
+      .forceSimulation()
       .force('collide', d3.forceCollide().radius(props.nodeSize))
-      .force('link', d3.forceLink(props.graph.edges).id((d: ViewNode) => d.id))
       .force('charge', d3.forceManyBody())
       .force('center', d3.forceCenter(props.width / 2, props.height / 2));
+  }
+
+  static getDerivedStateFromProps(
+    nextProps: D3ForceDirectedRendererProps,
+    prevState: State,
+  ): State {
+    if (nextProps.graph === prevState.graph) {
+      // do not re-compute state if graph has not changed
+      return prevState;
+    }
+
+    const { nodes, edges, nodesById, edgesById } = prevState;
+
+    // Not the most efficient checks but ensures that if the nodes and edges are the same,
+    // then we re-use the old state.
+    // If nodes or edges change, re-create the state but re-use the old positions of the nodes.
+
+    let newNodesById = nodesById;
+    let newNodes = nextProps.graph.nodes.map((d) => d.id);
+    if (_.isEqual(newNodes, nodes)) {
+      newNodes = nodes;
+    } else {
+      newNodesById = nextProps.graph.nodes.reduce(
+        (acc, d) => {
+          acc[d.id] = {
+            x: nextProps.width / 2,
+            y: nextProps.height / 2,
+            ...nodesById[d.id],
+            id: d.id,
+            type: d.type,
+            size: nextProps.nodeSize,
+          };
+          return acc;
+        },
+        {} as { [id: string]: ViewNode },
+      );
+    }
+
+    let newEdgesById = edgesById;
+    let newEdges = nextProps.graph.edges.map((d) => getEdgeId(d));
+    if (newNodes === nodes && _.isEqual(newEdges, edges)) {
+      newEdges = edges;
+    } else {
+      newEdgesById = nextProps.graph.edges.reduce(
+        (acc, d) => {
+          const id = getEdgeId(d);
+          acc[id] = {
+            ...edgesById[id],
+            id,
+            type: d.type,
+            source: newNodesById[d.source],
+            target: newNodesById[d.target],
+          };
+          return acc;
+        },
+        {} as { [id: string]: ViewEdge },
+      );
+    }
+
+    return {
+      ...prevState,
+      graph: nextProps.graph,
+      nodesById: newNodesById,
+      nodes: newNodes,
+      edgesById: newEdgesById,
+      edges: newEdges,
+    };
   }
 
   componentDidMount() {
@@ -71,21 +150,34 @@ export default class D3ForceDirectedRenderer extends React.Component<
       .on('zoom', this.onZoom);
     this.zoom(this.$svg);
 
-    this.simulation.on('tick', () => this.forceUpdate());
-    this.simulation.restart();
+    this.simulation
+      .nodes(this.state.nodes.map((d) => this.state.nodesById[d]))
+      .force(
+        'link',
+        d3
+          .forceLink(this.state.edges.map((d) => this.state.edgesById[d]))
+          .id((d: ViewNode) => d.id),
+      )
+      .on('tick', () => this.forceUpdate())
+      .restart();
   }
 
-  componentWillUpdate(nextProps) {
+  componentDidUpdate(prevProps: D3ForceDirectedRendererProps, prevState: State) {
     let restart = false;
-    if (nextProps.width !== this.props.width || nextProps.height !== this.props.height) {
-      this.simulation.force('center', d3.forceCenter(nextProps.width / 2, nextProps.height / 2));
+    if (prevProps.width !== this.props.width || prevProps.height !== this.props.height) {
+      this.simulation.force('center', d3.forceCenter(this.props.width / 2, this.props.height / 2));
       restart = true;
     }
-    if (nextProps.graph !== this.props.graph) {
-      this.simulation.nodes(nextProps.graph.nodes);
-      // @ts-ignore
-      this.simulation.force('link').links(nextProps.graph.edges);
-      this.simulation.alpha(0.2);
+    if (prevState.nodes !== this.state.nodes || prevState.edges !== this.state.edges) {
+      this.simulation
+        .nodes(this.state.nodes.map((d) => this.state.nodesById[d]))
+        .force(
+          'link',
+          d3
+            .forceLink(this.state.edges.map((d) => this.state.edgesById[d]))
+            .id((d: ViewNode) => d.id),
+        )
+        .alpha(0.2);
       restart = true;
     }
     if (restart) {
@@ -170,32 +262,34 @@ export default class D3ForceDirectedRenderer extends React.Component<
       onSelect,
       topology,
     } = this.props;
-    const { nodes, edges } = this.props.graph;
-    const { zoomTransform } = this.state;
+    const { nodes, edges, nodesById, edgesById, zoomTransform } = this.state;
     return (
       <svg height={height} width={width} ref={this.refSvg}>
         <SvgDefsProvider>
           <g transform={zoomTransform}>
             <g>
-              {edges.map((edge) => {
-                const data = topology[edge.id];
-                const Component = edgeProvider(edge, data);
-                return <Component {...edge} key={getEdgeId(edge)} data={data} />;
+              {edges.map((edgeId) => {
+                const data = topology[edgeId];
+                const viewEdge = edgesById[edgeId];
+                const Component = edgeProvider(data);
+                return <Component {...viewEdge} key={edgeId} data={data} />;
               })}
             </g>
             <g>
-              {nodes.map((node) => {
-                const Component = nodeProvider(node, topology[node.id]);
+              {nodes.map((nodeId) => {
+                const data = topology[nodeId];
+                const viewNode = nodesById[nodeId];
+                const Component = nodeProvider(data);
                 return (
                   <ViewWrapper
                     component={Component}
                     size={nodeSize}
-                    {...node}
-                    node={node}
-                    data={topology[node.id]}
-                    key={node.id}
-                    selected={node.id === selected}
-                    onSelect={onSelect ? () => onSelect(node) : null}
+                    {...viewNode}
+                    node={viewNode}
+                    data={data}
+                    key={nodeId}
+                    selected={nodeId === selected}
+                    onSelect={onSelect ? () => onSelect(nodeId) : null}
                     onEnter={this.onNodeEnter}
                   />
                 );
