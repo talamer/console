@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-vars, no-undef */
 import DefaultEdge from './shapes/DefaultEdge';
 import DefaultNode from './shapes/DefaultNode';
-import NodeWrapper from './Node/NodeWrapper';
+import WorkloadNode from './shapes/WorkloadNode';
 import { NodeProvider, EdgeProvider } from './topology-types';
 
 export const nodeProvider: NodeProvider = ({ type }) => {
   switch (type) {
     case 'workload':
-      return NodeWrapper;
+      return WorkloadNode;
     default:
       return DefaultNode;
   }
