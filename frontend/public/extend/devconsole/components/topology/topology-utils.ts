@@ -114,7 +114,7 @@ export class TransformTopologyData {
     // get the route
     const route = {
       kind: 'Route',
-      metadata: [],
+      metadata: {},
       status: {},
       spec: {},
     };
@@ -128,7 +128,7 @@ export class TransformTopologyData {
   private getBuildConfigs(deploymentConfig: ResourceProps): ResourceProps {
     const buildConfig = {
       kind: 'BuildConfig',
-      metadata: [],
+      metadata: {},
       status: {},
       spec: {},
     };
@@ -146,7 +146,7 @@ export class TransformTopologyData {
   private getService(deploymentConfig: ResourceProps): ResourceProps {
     const service = {
       kind: 'Service',
-      metadata: [],
+      metadata: {},
       status: {},
       spec: {},
     };
