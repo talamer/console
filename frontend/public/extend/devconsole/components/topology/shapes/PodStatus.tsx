@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars, no-undef */
-
 import * as React from 'react';
 import { TransitionMotion, Motion, spring } from 'react-motion';
 import { pie, arc } from 'd3';
@@ -18,7 +17,7 @@ export const podColor = {
   Unknown: '#f9d67a',
 };
 
-type WorkloadNodeProps = {
+type PodStatusProps = {
   x?: number;
   y?: number;
   pods: Pod[];
@@ -26,7 +25,7 @@ type WorkloadNodeProps = {
   outerRadius: number;
 };
 
-export default class WorkloadNode extends React.PureComponent<WorkloadNodeProps> {
+export default class PodStatus extends React.PureComponent<PodStatusProps> {
   willLeave = ({ style }) => {
     return {
       ...style,

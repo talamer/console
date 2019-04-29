@@ -12,6 +12,7 @@ import {
   TopologyDataMap,
   TopologyDataObject,
 } from './topology-types';
+import SvgDefsProvider from '../../shared/components/svg/SvgDefsProvider';
 
 interface State {
   zoomTransform?: string;
@@ -173,33 +174,35 @@ export default class D3ForceDirectedRenderer extends React.Component<
     const { zoomTransform } = this.state;
     return (
       <svg height={height} width={width} ref={this.refSvg}>
-        <g transform={zoomTransform}>
-          <g>
-            {edges.map((edge) => {
-              const data = topology[edge.id];
-              const Component = edgeProvider(edge, data);
-              return <Component {...edge} key={getEdgeId(edge)} data={data} />;
-            })}
+        <SvgDefsProvider>
+          <g transform={zoomTransform}>
+            <g>
+              {edges.map((edge) => {
+                const data = topology[edge.id];
+                const Component = edgeProvider(edge, data);
+                return <Component {...edge} key={getEdgeId(edge)} data={data} />;
+              })}
+            </g>
+            <g>
+              {nodes.map((node) => {
+                const Component = nodeProvider(node, topology[node.id]);
+                return (
+                  <ViewWrapper
+                    component={Component}
+                    size={nodeSize}
+                    {...node}
+                    node={node}
+                    data={topology[node.id]}
+                    key={node.id}
+                    selected={node.id === selected}
+                    onSelect={onSelect ? () => onSelect(node) : null}
+                    onEnter={this.onNodeEnter}
+                  />
+                );
+              })}
+            </g>
           </g>
-          <g>
-            {nodes.map((node) => {
-              const Component = nodeProvider(node, topology[node.id]);
-              return (
-                <ViewWrapper
-                  component={Component}
-                  size={nodeSize}
-                  {...node}
-                  node={node}
-                  data={topology[node.id]}
-                  key={node.id}
-                  selected={node.id === selected}
-                  onSelect={onSelect ? () => onSelect(node) : null}
-                  onEnter={this.onNodeEnter}
-                />
-              );
-            })}
-          </g>
-        </g>
+        </SvgDefsProvider>
       </svg>
     );
   }
