@@ -26,6 +26,7 @@ export interface TopologyDataControllerProps {
 class Controller extends React.PureComponent<ControllerProps> {
   render() {
     const { render, resources, loaded, loadError } = this.props;
+
     return render({
       loaded,
       loadError,
