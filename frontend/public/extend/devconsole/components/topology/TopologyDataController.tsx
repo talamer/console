@@ -26,11 +26,7 @@ export interface TopologyDataControllerProps {
 class Controller extends React.PureComponent<ControllerProps> {
   render() {
     const { render, resources, loaded, loadError } = this.props;
-    console.log("Resources", resources);
-    console.log(new TransformTopologyData(resources)
-    .transformDataBy('deployments')
-    .transformDataBy('deploymentConfigs')
-    .getTopologyData());
+
     return render({
       loaded,
       loadError,

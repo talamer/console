@@ -873,5 +873,5 @@ export const MockResources: TopologyDataResources = {
   pods: samplePods,
   services: sampleServices,
   routes: sampleRoutes,
-  buildConfigs: sampleBuildConfigs,
+  buildconfigs: sampleBuildConfigs,
 };
