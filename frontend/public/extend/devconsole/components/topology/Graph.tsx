@@ -8,7 +8,6 @@ import {
   EdgeProvider,
   NodeProvider,
   GraphModel,
-  ViewGraphData,
   TopologyDataMap,
 } from './topology-types';
 import './Graph.scss';
@@ -28,11 +27,11 @@ export interface GraphProps {
   topology: TopologyDataMap;
   children?(GraphApi): React.ReactNode;
   selected?: string;
-  onSelect?(Node): void;
+  onSelect?(string): void;
 }
 
 export default class Graph extends React.Component<GraphProps, State> {
-  state = {
+  state: State = {
     dimensions: null,
     graphApi: null,
   };
@@ -72,8 +71,7 @@ export default class Graph extends React.Component<GraphProps, State> {
             nodeSize={125}
             height={dimensions.height}
             width={dimensions.width}
-            // TODO transform instead of blind cast
-            graph={graph as ViewGraphData}
+            graph={graph}
             topology={topology}
             nodeProvider={nodeProvider}
             edgeProvider={edgeProvider}

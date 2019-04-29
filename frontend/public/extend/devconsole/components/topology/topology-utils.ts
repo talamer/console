@@ -75,7 +75,7 @@ export class TransformTopologyData {
       // populate the graph Data
       this.createGraphData(deploymentConfig);
       // add the lookup object
-      const deploymentsLabels = _.get(deploymentConfig, 'metadata.labels');
+      const deploymentsLabels = _.get(deploymentConfig, 'metadata.labels') || {};
       this._topologyData.topology[dcUID] = {
         id: dcUID,
         name:
@@ -208,7 +208,7 @@ export class TransformTopologyData {
     const currentNode = {
       id: metadata.uid,
       type: 'workload',
-      name: metadata.labels['app.openshift.io/instance'] || metadata.name,
+      name: (metadata.labels && metadata.labels['app.openshift.io/instance']) || metadata.name,
     };
 
     if (!_.some(this._topologyData.graph.nodes, { id: currentNode.id })) {
