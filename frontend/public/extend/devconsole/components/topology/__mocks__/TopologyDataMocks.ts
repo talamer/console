@@ -9,6 +9,7 @@ export const resources: TopologyDataResources = {
   routes: { data: [] },
   deployments: { data: [] },
   replicasets: { data: [] },
+  buildconfigs: { data: [] },
 };
 
 export const topologyData: TopologyDataModel = {

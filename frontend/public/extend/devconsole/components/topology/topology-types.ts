@@ -4,7 +4,7 @@ import { ObjectMetadata } from '../../../../module/k8s';
 
 export interface ResourceProps {
   kind: string;
-  metadata: ObjectMetadata[];
+  metadata: ObjectMetadata;
   status: {};
   spec: {
     selector?: {};
@@ -23,6 +23,7 @@ export interface TopologyDataResources {
   routes: Resource;
   deployments: Resource;
   replicasets: Resource;
+  buildconfigs: Resource;
 }
 
 export interface Node {
