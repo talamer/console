@@ -1,22 +1,18 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable no-unused-vars no-undef */
 import * as React from 'react';
 import { shallow, mount, ShallowWrapper } from 'enzyme';
 import { TopologyDataObject } from './../topology-types';
 import SideBar, { TopologySideBarProps } from './../TopologySideBar';
+import { CloseButton } from '../../../../../components/utils';
 
 describe('TopologySideBar:', () => {
-  const TopologyLayout = () => <h1>Topology Layout</h1>;
 
-  let props = {
+  const props = {
     selected: 'aaa',
     item: {
-      resources: [
-        {kind: "DeploymentConfig"},
-        {kind: "Route"},
-        {kind: "Service"}
-      ]
+      resources: [{ kind: 'DeploymentConfig' }, { kind: 'Route' }, { kind: 'Service' }],
     } as TopologyDataObject,
-    onClose: () => ''
+    onClose: () => '',
   } as TopologySideBarProps;
 
   let wrapper: ShallowWrapper<TopologySideBarProps>;
@@ -29,10 +25,10 @@ describe('TopologySideBar:', () => {
     expect(wrapper.exists()).toBeTruthy();
   });
 
-  xit('clicking on close button should call the onClose callback function', () => {
-    let onClose = jest.fn()
-    wrapper = shallow(<SideBar selected={'a'} item={props.item} onClose={onClose} />)
-    wrapper.find('CloseButton[data-test-id="sidebar-close-button"]').simulate('click');
+  it('clicking on close button should call the onClose callback function', () => {
+    const onClose = jest.fn();
+    wrapper = shallow(<SideBar selected={'a'} item={props.item} onClose={onClose} />);
+    wrapper.find(CloseButton).shallow().find('button').simulate('click');
     expect(onClose).toHaveBeenCalled();
   });
 });
