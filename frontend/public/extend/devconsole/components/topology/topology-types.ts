@@ -124,9 +124,9 @@ export type EdgeProps<D = {}> = ViewEdge & {
 };
 
 export interface NodeProvider {
-  (TopologyDataObject): ComponentType<NodeProps>;
+  (string): ComponentType<NodeProps>;
 }
 
 export interface EdgeProvider {
-  (TopologyDataObject): ComponentType<EdgeProps>;
+  (string): ComponentType<EdgeProps>;
 }

@@ -271,7 +271,7 @@ export default class D3ForceDirectedRenderer extends React.Component<
               {edges.map((edgeId) => {
                 const data = topology[edgeId];
                 const viewEdge = edgesById[edgeId];
-                const Component = edgeProvider(data);
+                const Component = edgeProvider(viewEdge.type);
                 return <Component {...viewEdge} key={edgeId} data={data} />;
               })}
             </g>
@@ -279,7 +279,7 @@ export default class D3ForceDirectedRenderer extends React.Component<
               {nodes.map((nodeId) => {
                 const data = topology[nodeId];
                 const viewNode = nodesById[nodeId];
-                const Component = nodeProvider(data);
+                const Component = nodeProvider(viewNode.type);
                 return (
                   <ViewWrapper
                     component={Component}
