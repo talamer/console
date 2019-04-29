@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars no-undef */
 import * as React from 'react';
-import { shallow, mount, ShallowWrapper } from 'enzyme';
+import { shallow, ShallowWrapper } from 'enzyme';
 import { TopologyDataObject } from './../topology-types';
 import SideBar, { TopologySideBarProps } from './../TopologySideBar';
 import { CloseButton } from '../../../../../components/utils';
