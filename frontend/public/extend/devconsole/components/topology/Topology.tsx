@@ -58,6 +58,7 @@ export default class Topology extends React.Component<TopologyProps, State> {
           <TopologySideBar
             item={this.props.data.topology[this.state.selected]}
             selected={this.state.selected}
+            onClose={() => this.setState({selected: null})}
           />
         )}
       </>

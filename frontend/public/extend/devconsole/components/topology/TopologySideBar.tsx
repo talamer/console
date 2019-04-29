@@ -7,23 +7,35 @@ import { ResourceOverviewPage } from '../../../../components/overview/resource-o
 type TopologySideBarProps = {
   item: TopologyDataObject;
   selected: string;
+  onClose: Function;
 }
 
 class TopologySideBar extends React.Component<TopologySideBarProps> {
 
-  getSelectedItem = (item: TopologyDataObject) => {
-    console.log(item.resources.filter(o => o.kind === "DeploymentConfig" || o.kind === "Deployment")[0]);
-    return item.resources.filter(o => o.kind === "DeploymentConfig" || o.kind === "Deployment")[0];
+  getSelectedItemObj = (item: TopologyDataObject) => {
+    const dc = item.resources.filter(o => o.kind === "DeploymentConfig" || o.kind === "Deployment");
+    const routes = item.resources.filter(o => o.kind === "Route");
+    const services = item.resources.filter(o => o.kind === "Service");
+    const buildConfigs = item.resources.filter(o => o.kind === "BuildConfig");
+    return {
+      obj: { apiVersion: "apps.openshift.io/v1",
+        ...dc[0]
+      },
+      kind: dc[0].kind,
+      routes,
+      services,
+      buildConfigs,
+    }
 
   }
 
   render() {
-    const ItemtoShowOnSideBar = this.getSelectedItem(this.props.item);
+    const ItemtoShowOnSideBar = this.getSelectedItemObj(this.props.item);
     return (
       <>
       <ModelessOverlay show={!!this.props.selected}>
       <div className="overview__sidebar-dismiss clearfix">
-            <CloseButton onClick={() => ('')} />
+            <CloseButton onClick={this.props.onClose} />
           </div>
           <ResourceOverviewPage
             item={ItemtoShowOnSideBar}
