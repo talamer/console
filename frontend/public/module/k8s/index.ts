@@ -18,7 +18,6 @@ export type OwnerReference = {
   kind: string;
   uid: string;
   apiVersion: string;
-  [key: string]: any;
 };
 
 export type ObjectReference = {

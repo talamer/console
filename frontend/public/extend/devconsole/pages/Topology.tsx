@@ -15,7 +15,7 @@ export interface TopologyPageProps {
 
 const EmptyMsg = () => <ODCEmptyState title="Topology" />;
 
-export function renderTopology({ loaded, loadError, data }: RenderProps) {
+function renderTopology({ loaded, loadError, data }: RenderProps) {
   return (
     <StatusBox
       data={data ? data.graph.nodes : null}
