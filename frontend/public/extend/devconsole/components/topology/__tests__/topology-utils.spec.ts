@@ -103,6 +103,8 @@ describe('TopologyUtils ', () => {
     const result = transformTopologyData.getTopologyData();
     const nodeIds = Object.keys(result.topology);
     expect(nodeIds.length).toEqual(result.graph.nodes.length)
-    // expect(result.topology[nodeIds[0]]).toHaveProperty('data')
+    expect(result.topology[nodeIds[0]].type).toBe('workload');
+    expect(Object.keys(result.topology[nodeIds[0]])).toContain('data');
+    expect(Object.keys(result.topology[nodeIds[0]].data)).toEqual(['builderImage','donutStatus']);
   });
 });
