@@ -33,7 +33,6 @@ describe('TopologySideBar:', () => {
     let onClose = jest.fn()
     wrapper = shallow(<SideBar selected={'a'} item={props.item} onClose={onClose} />)
     wrapper.find('CloseButton[data-test-id="sidebar-close-button"]').simulate('click');
-    console.log('#####', wrapper.debug);
     expect(onClose).toHaveBeenCalled();
   });
 });
