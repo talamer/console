@@ -12,7 +12,11 @@
     "experimentalDecorators": true,
     "sourceMap": true,
     "noUnusedLocals": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": [
+      "jest",
+      "jasmine",
+    ]
   },
   "exclude": [
     "node_modules",

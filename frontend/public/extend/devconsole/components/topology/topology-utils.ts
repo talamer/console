@@ -236,6 +236,7 @@ export class TransformTopologyData {
           );
           if (targetNode) {
             this._topologyData.graph.edges.push({
+              id: `${currentNode.id}_${targetNode}`,
               source: currentNode.id,
               target: targetNode,
             });
@@ -253,7 +254,7 @@ export class TransformTopologyData {
         });
         if (!groupExists) {
           this._topologyData.graph.groups.push({
-            id: this.generateUUID(),
+            id: `group:${label}`,
             name: label,
             nodes: [currentNode.id],
           });
