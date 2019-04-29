@@ -4,10 +4,11 @@ import { ObjectMetadata } from '../../../../module/k8s';
 
 export interface ResourceProps {
   kind: string;
+  apiVersion?: string;
   metadata: ObjectMetadata;
   status: {};
   spec: {
-    selector?: {};
+    [key: string]: any;
   };
 }
 
