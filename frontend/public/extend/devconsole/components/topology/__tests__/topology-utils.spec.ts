@@ -37,7 +37,6 @@ describe('TopologyUtils ', () => {
     const transformTopologyData = new TransformTopologyData(MockResources);
     transformTopologyData.transformDataBy('deployments');
     const result = transformTopologyData.getTopologyData();
-    console.log(result);
 
     expect(result.graph.nodes.length).toEqual(MockResources.deployments.data.length); // should contain only two deployment
     expect(Object.keys(result.topology).length).toEqual(MockResources.deployments.data.length); // should contain only two deployment
@@ -57,7 +56,6 @@ describe('TopologyUtils ', () => {
     const transformTopologyData = new TransformTopologyData(MockResources);
     transformTopologyData.transformDataBy('deploymentConfigs');
     const result = transformTopologyData.getTopologyData();
-    console.log(result);
 
     expect(result.graph.nodes.length).toEqual(MockResources.deploymentConfigs.data.length); // should contain only two deployment
     expect(Object.keys(result.topology).length).toEqual(

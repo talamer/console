@@ -24,6 +24,7 @@ export interface TopologyDataResources {
   routes: Resource;
   deployments: Resource;
   replicasets: Resource;
+  buildConfigs: Resource;
 }
 
 export interface Node {

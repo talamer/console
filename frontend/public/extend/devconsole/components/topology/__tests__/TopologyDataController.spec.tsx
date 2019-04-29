@@ -5,7 +5,6 @@ import TopologyDataController, { TopologyDataControllerProps } from '../Topology
 import { resources } from '../__mocks__/TopologyDataMocks';
 import { renderTopology } from '../../../pages/Topology';
 import ODCEmptyState from '../../../shared/components/EmptyState/EmptyState';
-import { MockResources } from '../__mocks__/TopologyResourcesMocks';
 
 describe('TopologyDataController', () => {
 

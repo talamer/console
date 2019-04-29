@@ -785,6 +785,86 @@ export const sampleRoutes: Resource = {
   ],
 };
 
+const sampleBuildConfigs: Resource = {
+  data: [
+    {
+      kind: 'BuildConfig',
+      metadata: {
+        name: 'analytics-build',
+        namespace: 'testproject3',
+        selfLink:
+          '/apis/build.openshift.io/v1/namespaces/testproject3/buildconfigs/analytics-build',
+        uid: '5ca46c49-680d-11e9-b69e-5254003f9382',
+        resourceVersion: '1772624',
+        creationTimestamp: '2019-04-26T10:23:40Z',
+        labels: {
+          'app.kubernetes.io/component': 'backend',
+          'app.kubernetes.io/instance': 'user-analytics',
+          'app.kubernetes.io/name': 'python',
+          'app.kubernetes.io/part-of': 'application-1',
+          'app.kubernetes.io/version': '1.0',
+        },
+        annotations: {
+          'app.openshift.io/vcs-ref': 'v1.0.0',
+          'app.openshift.io/vcs-uri': 'git@github.com:redhat-developer/topology-example.git',
+          'kubectl.kubernetes.io/last-applied-configuration':
+            '{"apiVersion":"build.openshift.io/v1","kind":"BuildConfig","metadata":{"annotations":{"app.openshift.io/vcs-ref":"v1.0.0","app.openshift.io/vcs-uri":"git@github.com:redhat-developer/topology-example.git"},"labels":{"app.kubernetes.io/component":"backend","app.kubernetes.io/instance":"user-analytics","app.kubernetes.io/name":"python","app.kubernetes.io/part-of":"application-1","app.kubernetes.io/version":"1.0"},"name":"analytics-build","namespace":"testproject3"},"spec":{"output":{"to":{"kind":"ImageStreamTag","name":"analytics-build:latest"}},"source":{"git":{"uri":"git@github.com:DhritiShikhar/topology-example.git"},"type":"Git"},"strategy":{"dockerStrategy":{"noCache":true}}}}\n',
+        },
+      },
+      spec: {},
+      status: {
+        lastVersion: 1,
+      },
+    },
+    {
+      kind: 'BuildConfig',
+      metadata: {
+        name: 'nodejs',
+        namespace: 'testproject3',
+        selfLink: '/apis/build.openshift.io/v1/namespaces/testproject3/buildconfigs/nodejs',
+        uid: '02fc958f-680f-11e9-b69e-5254003f9382',
+        resourceVersion: '1160891',
+        creationTimestamp: '2019-04-26T10:35:29Z',
+        labels: {
+          app: 'nodejs',
+        },
+      },
+      spec: {},
+      status: {
+        lastVersion: 1,
+      },
+    },
+    {
+      kind: 'BuildConfig',
+      metadata: {
+        name: 'wit-build',
+        namespace: 'testproject3',
+        selfLink: '/apis/build.openshift.io/v1/namespaces/testproject3/buildconfigs/wit-build',
+        uid: '608914d2-680d-11e9-b69e-5254003f9382',
+        resourceVersion: '1157436',
+        creationTimestamp: '2019-04-26T10:23:47Z',
+        labels: {
+          'app.kubernetes.io/component': 'backend',
+          'app.kubernetes.io/instance': 'wit',
+          'app.kubernetes.io/name': 'nodejs',
+          'app.kubernetes.io/part-of': 'application-1',
+          'app.kubernetes.io/version': '1.0',
+        },
+        annotations: {
+          'app.openshift.io/vcs-ref': 'v1.0.0',
+          'app.openshift.io/vcs-uri': 'git@github.com:redhat-developer/topology-example.git',
+          'kubectl.kubernetes.io/last-applied-configuration':
+            '{"apiVersion":"build.openshift.io/v1","kind":"BuildConfig","metadata":{"annotations":{"app.openshift.io/vcs-ref":"v1.0.0","app.openshift.io/vcs-uri":"git@github.com:redhat-developer/topology-example.git"},"labels":{"app.kubernetes.io/component":"backend","app.kubernetes.io/instance":"wit","app.kubernetes.io/name":"nodejs","app.kubernetes.io/part-of":"application-1","app.kubernetes.io/version":"1.0"},"name":"wit-build","namespace":"testproject3"},"spec":{"output":{"to":{"kind":"ImageStreamTag","name":"wit-build:latest"}},"source":{"git":{"uri":"git@github.com:DhritiShikhar/topology-example.git"},"type":"Git"},"strategy":{"dockerStrategy":{"noCache":true}}}}\n',
+        },
+      },
+      spec: {},
+      status: {
+        lastVersion: 0,
+      },
+    },
+  ],
+};
+
 export const MockResources: TopologyDataResources = {
   deployments: sampleDeployments,
   deploymentConfigs: sampleDeploymentConfigs,
@@ -793,4 +873,5 @@ export const MockResources: TopologyDataResources = {
   pods: samplePods,
   services: sampleServices,
   routes: sampleRoutes,
+  buildConfigs: sampleBuildConfigs,
 };
