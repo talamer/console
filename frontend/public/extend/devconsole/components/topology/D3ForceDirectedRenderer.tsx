@@ -323,6 +323,13 @@ export default class D3ForceDirectedRenderer extends React.Component<
     };
   }
 
+  deselect = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (this.props.selected) {
+      this.props.onSelect(null);
+    }
+  };
+
   render() {
     const {
       width,
@@ -336,7 +343,7 @@ export default class D3ForceDirectedRenderer extends React.Component<
     } = this.props;
     const { nodes, edges, nodesById, edgesById, groups, groupsById, zoomTransform } = this.state;
     return (
-      <svg height={height} width={width} ref={this.refSvg}>
+      <svg height={height} width={width} ref={this.refSvg} onClick={this.deselect}>
         <SvgDefsProvider>
           <g transform={zoomTransform}>
             <g>
