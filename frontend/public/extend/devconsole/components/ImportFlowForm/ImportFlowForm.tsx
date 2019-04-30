@@ -94,8 +94,6 @@ export class ImportFlowForm extends React.Component<Props, State> {
 
   private onBrowserClose = event => {
     event.preventDefault();
-    GitSourceModel.path = `namespaces/${this.props.activeNamespace}/gitsources`;
-    GitSourceAnalysisModel.path = `namespaces/${this.props.activeNamespace}/gitsourceanalyses`;
     if (this.state.gitSourceCreated && !this.state.componentCreated) {
       k8sKill(GitSourceModel, this.gitSourceParams(this.state.gitSourceName), {}, {});
       k8sKill(GitSourceAnalysisModel, this.gitSourceAnalysisParams(this.state.gitSourceAnalysisName), {}, {});
@@ -109,8 +107,6 @@ export class ImportFlowForm extends React.Component<Props, State> {
 
   componentWillUnmount() {
     window.removeEventListener('beforeunload', this.onBrowserClose);
-    GitSourceModel.path = `namespaces/${this.props.activeNamespace}/gitsources`;
-    GitSourceAnalysisModel.path = `namespaces/${this.props.activeNamespace}/gitsourceanalyses`;
     if (this.state.gitSourceCreated && !this.state.componentCreated) {
       k8sKill(GitSourceModel, this.gitSourceParams(this.state.gitSourceName), {}, {});
       k8sKill(GitSourceAnalysisModel, this.gitSourceAnalysisParams(this.state.gitSourceAnalysisName), {}, {});
@@ -267,6 +263,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
       apiVersion: 'devconsole.openshift.io/v1alpha1',
       metadata: {
         name: this.state.name,
+        namespace: this.state.namespace,
         labels: {
           'app.kubernetes.io/part-of':  this.state.application,
           'app.kubernetes.io/name': this.imageStreams[this.state.builderImage][0],
@@ -298,7 +295,6 @@ export class ImportFlowForm extends React.Component<Props, State> {
     }
 
     if (!this.disableSubmitButton()) {
-      GitSourceComponentModel.path = `namespaces/${this.props.activeNamespace}/components`;
       k8sCreate(
         GitSourceComponentModel,
         this.catalogParams(),
