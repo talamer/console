@@ -30,14 +30,12 @@ const TopologySideBar: React.FunctionComponent<TopologySideBarProps> = ({
   };
 
   return (
-    <React.Fragment>
       <ModelessOverlay className="odc-topology-sidebar__overlay" show={!!selected}>
         <div className="odc-topology-sidebar__dismiss clearfix">
           <CloseButton onClick={onClose} data-test-id="sidebar-close-button" />
         </div>
         <ResourceOverviewPage item={ItemtoShowOnSideBar} kind={ItemtoShowOnSideBar.kind} />
       </ModelessOverlay>
-    </React.Fragment>
   );
 };
 
