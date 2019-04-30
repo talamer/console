@@ -8,7 +8,7 @@ import { CloseButton } from '../../../../../components/utils';
 describe('TopologySideBar:', () => {
 
   const props = {
-    selected: 'aaa',
+    show: true,
     item: {
       resources: [{ kind: 'DeploymentConfig' }, { kind: 'Route' }, { kind: 'Service' }],
     } as TopologyDataObject,
@@ -22,7 +22,7 @@ describe('TopologySideBar:', () => {
 
   it('clicking on close button should call the onClose callback function', () => {
     const onClose = jest.fn();
-    const wrapper = shallow(<SideBar selected={'a'} item={props.item} onClose={onClose} />);
+    const wrapper = shallow(<SideBar show item={props.item} onClose={onClose} />);
     wrapper.find(CloseButton).shallow().find('button').simulate('click');
     expect(onClose).toHaveBeenCalled();
   });
