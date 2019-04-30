@@ -21,6 +21,14 @@ export default class Topology extends React.Component<TopologyProps, State> {
     selected: null,
   };
 
+  static getDerivedStateFromProps(nextProps: TopologyProps, prevState: State): State {
+    const { selected } = prevState;
+    if (selected && !nextProps.data.topology[selected]) {
+      return { selected: null };
+    }
+    return prevState;
+  }
+
   onSelect = (nodeId: string) => {
     this.setState(({ selected }) => {
       return { selected: !nodeId || selected === nodeId ? null : nodeId };
@@ -61,12 +69,8 @@ export default class Topology extends React.Component<TopologyProps, State> {
         >
           {this.renderToolbar}
         </Graph>
-        {this.state.selected ? (
-          <TopologySideBar
-            item={topology[selected]}
-            selected={selected}
-            onClose={this.onSidebarClose}
-          />
+        {selected ? (
+          <TopologySideBar item={topology[selected]} show onClose={this.onSidebarClose} />
         ) : null}
       </React.Fragment>
     );

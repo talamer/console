@@ -8,7 +8,7 @@ import './TopologySideBar.scss';
 
 export type TopologySideBarProps = {
   item: TopologyDataObject;
-  selected: string;
+  show: boolean;
   onClose: Function;
 };
 
@@ -27,7 +27,7 @@ function metadataUIDCheck(items: any) {
 
 const TopologySideBar: React.FunctionComponent<TopologySideBarProps> = ({
   item,
-  selected,
+  show,
   onClose,
 }) => {
   const dc = item.resources.filter((o) => o.kind === 'DeploymentConfig' || o.kind === 'Deployment');
@@ -43,7 +43,7 @@ const TopologySideBar: React.FunctionComponent<TopologySideBarProps> = ({
   };
 
   return (
-    <ModelessOverlay className="odc-topology-sidebar__overlay" show={!!selected}>
+    <ModelessOverlay className="odc-topology-sidebar__overlay" show={show}>
       <div className="odc-topology-sidebar__dismiss clearfix">
         <CloseButton onClick={onClose} data-test-id="sidebar-close-button" />
       </div>
