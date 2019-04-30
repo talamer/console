@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, no-undef */
 import { TopologyDataResources, Resource } from '../topology-types';
 
 export const sampleDeploymentConfigs: Resource = {
@@ -9,7 +10,7 @@ export const sampleDeploymentConfigs: Resource = {
         name: 'nodejs',
         namespace: 'testproject1',
         selfLink: '/apis/apps.openshift.io/v1/namespaces/testproject1/deploymentconfigs/nodejs',
-        uid: "02f680df-680f-11e9-b69e-5254003f9382",
+        uid: '02f680df-680f-11e9-b69e-5254003f9382',
         resourceVersion: '732186',
         generation: 2,
         creationTimestamp: '2019-04-22T11:58:33Z',

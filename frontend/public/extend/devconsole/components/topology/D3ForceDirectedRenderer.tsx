@@ -282,16 +282,16 @@ export default class D3ForceDirectedRenderer extends React.Component<
     if (!d3.event.active) {
       this.simulation.alphaTarget(0.1).restart();
     }
-    d.nodes.forEach((d) => {
-      d.fx = d.x;
-      d.fy = d.y;
+    d.nodes.forEach((gd) => {
+      gd.fx = gd.x;
+      gd.fy = gd.y;
     });
   };
 
   onGroupDragged = (d: ViewGroup) => {
-    d.nodes.forEach((d) => {
-      d.fx += d3.event.dx;
-      d.fy += d3.event.dy;
+    d.nodes.forEach((gd) => {
+      gd.fx += d3.event.dx;
+      gd.fy += d3.event.dy;
     });
   };
 
@@ -299,9 +299,9 @@ export default class D3ForceDirectedRenderer extends React.Component<
     if (!d3.event.active) {
       this.simulation.alphaTarget(0);
     }
-    d.nodes.forEach((d) => {
-      d.fx = null;
-      d.fy = null;
+    d.nodes.forEach((gd) => {
+      gd.fx = null;
+      gd.fy = null;
     });
   };
 
