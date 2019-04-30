@@ -5,7 +5,7 @@ import { ExpandIcon, SearchPlusIcon, SearchMinusIcon } from '@patternfly/react-i
 import { nodeProvider, edgeProvider } from './shape-providers';
 import Graph from './Graph';
 import GraphToolbar from './GraphToolbar';
-import { GraphApi, Node, TopologyDataModel } from './topology-types';
+import { GraphApi, TopologyDataModel } from './topology-types';
 import TopologySideBar from './TopologySideBar';
 
 type State = {
