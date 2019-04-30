@@ -420,17 +420,19 @@ export class ImportFlowForm extends React.Component<Props, State> {
       builderImageError,
     } = this.state;
 
-    const builderImages = _.filter(this.props.resources.imagestreams.data, (imagestream) => {
-      return isBuilder(imagestream);
-    });
-
-    builderImages.forEach((image) => {
-      image.spec.tags.forEach((tag) => {
-        if (!tag.annotations.tags.includes('hidden')) {
-          this.imageStreams[image.metadata.name+tag.name] = [image.metadata.name, tag.name];
-        }
+    if(this.props.resources.imagestreams.loaded) {
+      const builderImages = _.filter(this.props.resources.imagestreams.data, (imagestream) => {
+        return isBuilder(imagestream);
       });
-    });
+
+      builderImages.forEach((image) => {
+        image.spec.tags.forEach((tag) => {
+          if (!tag.annotations.tags.includes('hidden')) {
+            this.imageStreams[image.metadata.name+tag.name] = [image.metadata.name, tag.name];
+          }
+        });
+      });
+    }
 
     let gitTypeField, showGitValidationStatus, showDetectBuildToolStatus;
     if (gitType || gitTypeError) {
