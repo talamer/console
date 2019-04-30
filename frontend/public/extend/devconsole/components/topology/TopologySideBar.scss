@@ -16,8 +16,6 @@
 }
 
 .modal.odc-topology-sidebar__overlay {
-  top: 123px;
-  @media screen and (max-width: 767px) {
-    top: 107px;
-  }
+  top: 0;
+  position: absolute;
 }
