@@ -6,6 +6,7 @@ import { nodeProvider, edgeProvider } from './shape-providers';
 import Graph from './Graph';
 import GraphToolbar from './GraphToolbar';
 import { GraphApi, TopologyDataModel } from './topology-types';
+import TopologySideBar from './TopologySideBar';
 
 type State = {
   selected?: string;
@@ -42,16 +43,25 @@ export default class Topology extends React.Component<TopologyProps, State> {
 
   render() {
     return (
-      <Graph
-        graph={this.props.data.graph}
-        topology={this.props.data.topology}
-        nodeProvider={nodeProvider}
-        edgeProvider={edgeProvider}
-        selected={this.state.selected}
-        onSelect={this.onSelect}
-      >
-        {this.renderToolbar}
-      </Graph>
+      <React.Fragment>
+        <Graph
+          graph={this.props.data.graph}
+          topology={this.props.data.topology}
+          nodeProvider={nodeProvider}
+          edgeProvider={edgeProvider}
+          selected={this.state.selected}
+          onSelect={this.onSelect}
+        >
+          {this.renderToolbar}
+        </Graph>
+        {this.state.selected ? (
+          <TopologySideBar
+            item={this.props.data.topology[this.state.selected]}
+            selected={this.state.selected}
+            onClose={() => this.setState({selected: null})}
+          />
+        ) : null}
+      </React.Fragment>
     );
   }
 }

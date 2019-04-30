@@ -73,7 +73,7 @@ export interface TopologyDataObject<D = {}> {
   id: string;
   name: string;
   type: string;
-  resources: Resource[];
+  resources: ResourceProps[];
   data: D;
 }
 

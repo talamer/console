@@ -1,0 +1,23 @@
+.odc-topology-sidebar {
+
+  &__dismiss {
+    padding: 0 5px;
+
+    .close {
+      // adjustments to increase click target and default color contrast because it's on a grey background
+      opacity: .3;
+      padding: 10px 15px;
+    }
+
+    .pficon-close {
+      font-size: 16px;
+    }
+  }
+}
+
+.modal.odc-topology-sidebar__overlay {
+  top: 123px;
+  @media screen and (max-width: 767px) {
+    top: 107px;
+  }
+}
