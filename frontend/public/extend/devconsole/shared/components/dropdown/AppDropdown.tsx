@@ -21,6 +21,12 @@ const AppDropdown: React.FC<AppDropdownProps> = (props) => {
       namespace: props.namespace,
       kind: 'DeploymentConfig',
       prop: 'deploymentConfigs',
+    },
+    {
+      isList: true,
+      namespace: props.namespace,
+      kind: 'Deployment',
+      prop: 'deployments',
     }
   ];
   return (
