@@ -67,7 +67,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
     this.state = {
       gitType: '',
       gitRepoUrl: '',
-      namespace: '',
+      namespace: props.activeNamespace || '',
       name: '',
       application: '',
       selectedApplicationKey: '',
