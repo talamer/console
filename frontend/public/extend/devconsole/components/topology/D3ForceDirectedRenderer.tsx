@@ -232,7 +232,8 @@ export default class D3ForceDirectedRenderer extends React.Component<
         .drag<SVGGElement, ViewNode>()
         .on('start', (d) => this.onNodeDragStart(d))
         .on('drag', (d) => this.onNodeDragged(d))
-        .on('end', (d) => this.onNodeDragEnd(d)),
+        .on('end', (d) => this.onNodeDragEnd(d))
+        .filter(() => this.state.nodes.length > 1),
     );
   };
 
@@ -274,7 +275,8 @@ export default class D3ForceDirectedRenderer extends React.Component<
         .drag<SVGGElement, ViewGroup>()
         .on('start', (d) => this.onGroupDragStart(d))
         .on('drag', (d) => this.onGroupDragged(d))
-        .on('end', (d) => this.onGroupDragEnd(d)),
+        .on('end', (d) => this.onGroupDragEnd(d))
+        .filter(() => this.state.groups.length > 1),
     );
   };
 
