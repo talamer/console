@@ -13,6 +13,9 @@ import {
   TopologyDataObject,
   GraphModel,
   Edge,
+  ViewGroup,
+  GroupProvider,
+  GroupProps,
 } from './topology-types';
 import SvgDefsProvider from '../../shared/components/svg/SvgDefsProvider';
 
@@ -26,6 +29,10 @@ interface State {
     [id: string]: ViewEdge;
   };
   edges: string[];
+  groupsById: {
+    [id: string]: ViewGroup;
+  };
+  groups: string[];
   graph: GraphModel;
 }
 
@@ -36,6 +43,7 @@ export interface D3ForceDirectedRendererProps {
   topology: TopologyDataMap;
   nodeProvider: NodeProvider;
   edgeProvider: EdgeProvider;
+  groupProvider: GroupProvider;
   nodeSize: number;
   selected?: string;
   onSelect?(string): void;
@@ -55,6 +63,8 @@ export default class D3ForceDirectedRenderer extends React.Component<
     nodes: [],
     edgesById: {},
     edges: [],
+    groupsById: {},
+    groups: [],
     graph: null,
   };
 
@@ -85,7 +95,7 @@ export default class D3ForceDirectedRenderer extends React.Component<
       return prevState;
     }
 
-    const { nodes, edges, nodesById, edgesById } = prevState;
+    const { nodes, edges, groups, nodesById, edgesById, groupsById } = prevState;
 
     // Not the most efficient checks but ensures that if the nodes and edges are the same,
     // then we re-use the old state.
@@ -105,6 +115,7 @@ export default class D3ForceDirectedRenderer extends React.Component<
             id: d.id,
             type: d.type,
             size: nextProps.nodeSize,
+            name: d.name,
           };
           return acc;
         },
@@ -133,6 +144,26 @@ export default class D3ForceDirectedRenderer extends React.Component<
       );
     }
 
+    let newGroupsById = groupsById;
+    let newGroups = nextProps.graph.groups.map((d) => d.id);
+    if (newNodes === nodes && _.isEqual(newGroups, groups)) {
+      newGroups = groups;
+    } else {
+      newGroupsById = nextProps.graph.groups.reduce(
+        (acc, d) => {
+          acc[d.id] = {
+            ...groupsById[d.id],
+            id: d.id,
+            type: d.type,
+            nodes: d.nodes.map((nodeId) => newNodesById[nodeId]),
+            name: d.name,
+          };
+          return acc;
+        },
+        {} as { [id: string]: ViewGroup },
+      );
+    }
+
     return {
       ...prevState,
       graph: nextProps.graph,
@@ -140,6 +171,8 @@ export default class D3ForceDirectedRenderer extends React.Component<
       nodes: newNodes,
       edgesById: newEdgesById,
       edges: newEdges,
+      groupsById: newGroupsById,
+      groups: newGroups,
     };
   }
 
@@ -196,15 +229,15 @@ export default class D3ForceDirectedRenderer extends React.Component<
   onNodeEnter = ($node: NodeSelection) => {
     $node.call(
       d3
-        .drag()
-        .on('start', (d) => this.dragstarted(d))
-        .on('drag', (d) => this.dragged(d))
-        .on('end', (d) => this.dragended(d)),
+        .drag<SVGGElement, ViewNode>()
+        .on('start', (d) => this.onNodeDragStart(d))
+        .on('drag', (d) => this.onNodeDragged(d))
+        .on('end', (d) => this.onNodeDragEnd(d)),
     );
   };
 
   private dragCount: number = 0;
-  dragstarted = (d) => {
+  onNodeDragStart = (d: ViewNode) => {
     d3.event.sourceEvent.stopPropagation();
     if (this.dragCount) {
       this.dragCount++;
@@ -213,7 +246,7 @@ export default class D3ForceDirectedRenderer extends React.Component<
     d.fy = d.y;
   };
 
-  dragged = (d) => {
+  onNodeDragged = (d: ViewNode) => {
     if (!this.dragCount && (Math.abs(d.fx - d3.event.x) > 5 || Math.abs(d.fy - d3.event.y) > 5)) {
       this.dragCount++;
       this.simulation.alphaTarget(0.1).restart();
@@ -224,15 +257,52 @@ export default class D3ForceDirectedRenderer extends React.Component<
     }
   };
 
-  dragended = (d) => {
+  onNodeDragEnd = (d: ViewNode) => {
     if (this.dragCount) {
       --this.dragCount;
-      if (!this.dragCount) {
+      if (!this.dragCount && !d3.event.active) {
         this.simulation.alphaTarget(0);
       }
     }
     d.fx = null;
     d.fy = null;
+  };
+
+  onGroupEnter = ($group: GroupSelection) => {
+    $group.call(
+      d3
+        .drag<SVGGElement, ViewGroup>()
+        .on('start', (d) => this.onGroupDragStart(d))
+        .on('drag', (d) => this.onGroupDragged(d))
+        .on('end', (d) => this.onGroupDragEnd(d)),
+    );
+  };
+
+  onGroupDragStart = (d: ViewGroup) => {
+    if (!d3.event.active) {
+      this.simulation.alphaTarget(0.1).restart();
+    }
+    d.nodes.forEach((d) => {
+      d.fx = d.x;
+      d.fy = d.y;
+    });
+  };
+
+  onGroupDragged = (d: ViewGroup) => {
+    d.nodes.forEach((d) => {
+      d.fx += d3.event.dx;
+      d.fy += d3.event.dy;
+    });
+  };
+
+  onGroupDragEnd = (d: ViewGroup) => {
+    if (!d3.event.active) {
+      this.simulation.alphaTarget(0);
+    }
+    d.nodes.forEach((d) => {
+      d.fx = null;
+      d.fy = null;
+    });
   };
 
   api() {
@@ -257,16 +327,31 @@ export default class D3ForceDirectedRenderer extends React.Component<
       height,
       nodeProvider,
       edgeProvider,
-      nodeSize,
+      groupProvider,
       selected,
       onSelect,
       topology,
     } = this.props;
-    const { nodes, edges, nodesById, edgesById, zoomTransform } = this.state;
+    const { nodes, edges, nodesById, edgesById, groups, groupsById, zoomTransform } = this.state;
     return (
       <svg height={height} width={width} ref={this.refSvg}>
         <SvgDefsProvider>
           <g transform={zoomTransform}>
+            <g>
+              {groups.map((groupId) => {
+                const viewGroup = groupsById[groupId];
+                const Component = groupProvider(viewGroup.type);
+                return (
+                  <GroupWrapper
+                    component={Component}
+                    {...viewGroup}
+                    key={groupId}
+                    onEnter={this.onGroupEnter}
+                    view={viewGroup}
+                  />
+                );
+              })}
+            </g>
             <g>
               {edges.map((edgeId) => {
                 const data = topology[edgeId];
@@ -283,9 +368,8 @@ export default class D3ForceDirectedRenderer extends React.Component<
                 return (
                   <ViewWrapper
                     component={Component}
-                    size={nodeSize}
                     {...viewNode}
-                    node={viewNode}
+                    view={viewNode}
                     data={data}
                     key={nodeId}
                     selected={nodeId === selected}
@@ -307,7 +391,7 @@ type NodeSelection = d3.Selection<Element, ViewNode, null, undefined>;
 type ViewWrapperProps = NodeProps & {
   component: React.ComponentType<NodeProps>;
   onEnter(NodeSelection): void;
-  node: ViewNode;
+  view: ViewNode;
   data: TopologyDataObject;
 };
 
@@ -316,19 +400,49 @@ class ViewWrapper extends React.Component<ViewWrapperProps> {
 
   componentDidMount() {
     // eslint-disable-next-line react/no-find-dom-node
-    this.$node = d3.select(ReactDOM.findDOMNode(this)).datum(this.props.node);
+    this.$node = d3.select(ReactDOM.findDOMNode(this)).datum(this.props.view);
     this.props.onEnter && this.props.onEnter(this.$node);
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.node !== this.props.node) {
+  componentDidUpdate(prevProps: ViewWrapperProps) {
+    if (prevProps.view !== this.props.view) {
       // we need to update the data so that d3 apis get the correct new node
-      this.$node.datum(this.props.node);
+      this.$node.datum(this.props.view);
     }
   }
 
   render() {
-    const { component: Component, onEnter, node, ...other } = this.props;
+    const { component: Component, onEnter, view, ...other } = this.props;
+    return <Component {...other} />;
+  }
+}
+
+type GroupSelection = d3.Selection<Element, ViewGroup, null, undefined>;
+
+type GroupWrapperProps = GroupProps & {
+  component: React.ComponentType<GroupProps>;
+  onEnter(GroupSelection): void;
+  view: ViewGroup;
+};
+
+class GroupWrapper extends React.Component<GroupWrapperProps> {
+  private $group: GroupSelection;
+
+  componentDidMount() {
+    // eslint-disable-next-line react/no-find-dom-node
+    this.$group = d3.select(ReactDOM.findDOMNode(this)).datum(this.props.view);
+    this.props.onEnter && this.props.onEnter(this.$group);
+  }
+
+  componentDidUpdate(prevProps: GroupWrapperProps) {
+    if (prevProps.view !== this.props.view) {
+      // we need to update the data so that d3 apis get the correct new group
+      this.$group.datum(this.props.view);
+    }
+  }
+
+  render() {
+    const { component: Component, onEnter, view, ...other } = this.props;
     return <Component {...other} />;
   }
 }

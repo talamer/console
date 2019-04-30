@@ -9,6 +9,7 @@ import {
   NodeProvider,
   GraphModel,
   TopologyDataMap,
+  GroupProvider,
 } from './topology-types';
 import './Graph.scss';
 
@@ -23,6 +24,7 @@ interface State {
 export interface GraphProps {
   nodeProvider: NodeProvider;
   edgeProvider: EdgeProvider;
+  groupProvider: GroupProvider;
   graph: GraphModel;
   topology: TopologyDataMap;
   children?(GraphApi): React.ReactNode;
@@ -59,6 +61,7 @@ export default class Graph extends React.Component<GraphProps, State> {
       graph,
       nodeProvider,
       edgeProvider,
+      groupProvider,
       onSelect,
       selected,
       topology,
@@ -75,6 +78,7 @@ export default class Graph extends React.Component<GraphProps, State> {
             topology={topology}
             nodeProvider={nodeProvider}
             edgeProvider={edgeProvider}
+            groupProvider={groupProvider}
             ref={this.captureApiRef}
             onSelect={onSelect}
             selected={selected}

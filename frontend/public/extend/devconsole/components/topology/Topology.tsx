@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { Button } from 'patternfly-react';
 import { ExpandIcon, SearchPlusIcon, SearchMinusIcon } from '@patternfly/react-icons';
-import { nodeProvider, edgeProvider } from './shape-providers';
+import { nodeProvider, edgeProvider, groupProvider } from './shape-providers';
 import Graph from './Graph';
 import GraphToolbar from './GraphToolbar';
 import { GraphApi, TopologyDataModel } from './topology-types';
@@ -27,6 +27,10 @@ export default class Topology extends React.Component<TopologyProps, State> {
     });
   };
 
+  onSidebarClose = () => {
+    this.setState({ selected: null });
+  };
+
   renderToolbar = (graphApi: GraphApi) => (
     <GraphToolbar>
       <Button onClick={graphApi.zoomIn} title="Zoom In" aria-label="Zoom In">
@@ -42,23 +46,26 @@ export default class Topology extends React.Component<TopologyProps, State> {
   );
 
   render() {
+    const { data: { graph, topology } } = this.props;
+    const { selected } = this.state;
     return (
       <React.Fragment>
         <Graph
-          graph={this.props.data.graph}
-          topology={this.props.data.topology}
+          graph={graph}
+          topology={topology}
           nodeProvider={nodeProvider}
           edgeProvider={edgeProvider}
-          selected={this.state.selected}
+          groupProvider={groupProvider}
+          selected={selected}
           onSelect={this.onSelect}
         >
           {this.renderToolbar}
         </Graph>
         {this.state.selected ? (
           <TopologySideBar
-            item={this.props.data.topology[this.state.selected]}
-            selected={this.state.selected}
-            onClose={() => this.setState({selected: null})}
+            item={topology[selected]}
+            selected={selected}
+            onClose={this.onSidebarClose}
           />
         ) : null}
       </React.Fragment>

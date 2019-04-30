@@ -42,6 +42,7 @@ export interface Edge {
 
 export interface Group {
   id?: string;
+  type?: string;
   name: string;
   nodes: string[];
 }
@@ -103,6 +104,9 @@ export type ViewNode = {
   x: number;
   y: number;
   size: number;
+  name: string;
+  fx?: number;
+  fy?: number;
 };
 
 export type ViewEdge = {
@@ -112,7 +116,12 @@ export type ViewEdge = {
   target: ViewNode;
 };
 
-export type ViewGroup = Group;
+export type ViewGroup = {
+  id: string;
+  type?: string;
+  name: string;
+  nodes: ViewNode[];
+};
 
 export type NodeProps<D = {}> = ViewNode &
   Selectable & {
@@ -123,10 +132,16 @@ export type EdgeProps<D = {}> = ViewEdge & {
   data?: TopologyDataObject<D>;
 };
 
+export type GroupProps = ViewGroup;
+
 export interface NodeProvider {
   (string): ComponentType<NodeProps>;
 }
 
 export interface EdgeProvider {
   (string): ComponentType<EdgeProps>;
+}
+
+export interface GroupProvider {
+  (string): ComponentType<GroupProps>;
 }
