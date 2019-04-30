@@ -20,7 +20,7 @@ class Defs extends React.PureComponent<{}, DefsState> {
 
   setDefs(defs: DefsMap) {
     // setting the state will re-render this component
-    this.setState({ defs });
+    this.setState({ defs: { ...defs } });
   }
 
   render() {
