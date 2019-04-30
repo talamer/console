@@ -60,7 +60,7 @@ export const sampleDeployments = {
         labels: {
           'app.kubernetes.io/component': 'backend',
           'app.kubernetes.io/instance': 'analytics',
-          'app.kubernetes.io/name': 'analytics',
+          'app.kubernetes.io/name': 'python',
           'app.kubernetes.io/part-of': 'application-1',
           'app.kubernetes.io/version': '1.0',
         },
@@ -71,7 +71,7 @@ export const sampleDeployments = {
           matchLabels: {
             'app.kubernetes.io/component': 'backend',
             'app.kubernetes.io/instance': 'analytics',
-            'app.kubernetes.io/name': 'analytics',
+            'app.kubernetes.io/name': 'python',
             'app.kubernetes.io/part-of': 'application-1',
             'app.kubernetes.io/version': '1.0',
           },
@@ -82,7 +82,7 @@ export const sampleDeployments = {
             labels: {
               'app.kubernetes.io/component': 'backend',
               'app.kubernetes.io/instance': 'analytics',
-              'app.kubernetes.io/name': 'analytics',
+              'app.kubernetes.io/name': 'python',
               'app.kubernetes.io/part-of': 'application-1',
               'app.kubernetes.io/version': '1.0',
             },
@@ -118,7 +118,7 @@ export const sampleDeployments = {
         labels: {
           'app.kubernetes.io/component': 'backend',
           'app.kubernetes.io/instance': 'wit',
-          'app.kubernetes.io/name': 'wit',
+          'app.kubernetes.io/name': 'nodejs',
           'app.kubernetes.io/part-of': 'application-1',
           'app.kubernetes.io/version': '1.0',
         },
@@ -129,7 +129,7 @@ export const sampleDeployments = {
           matchLabels: {
             'app.kubernetes.io/component': 'backend',
             'app.kubernetes.io/instance': 'wit',
-            'app.kubernetes.io/name': 'wit',
+            'app.kubernetes.io/name': 'nodejs',
             'app.kubernetes.io/part-of': 'application-1',
             'app.kubernetes.io/version': '1.0',
           },
@@ -140,7 +140,7 @@ export const sampleDeployments = {
             labels: {
               'app.kubernetes.io/component': 'backend',
               'app.kubernetes.io/instance': 'wit',
-              'app.kubernetes.io/name': 'wit',
+              'app.kubernetes.io/name': 'nodejs',
               'app.kubernetes.io/part-of': 'application-1',
               'app.kubernetes.io/version': '1.0',
             },
@@ -624,7 +624,7 @@ export const sampleServices: Resource = {
         selector: {
           'app.kubernetes.io/component': 'backend',
           'app.kubernetes.io/instance': 'analytics',
-          'app.kubernetes.io/name': 'analytics',
+          'app.kubernetes.io/name': 'python',
           'app.kubernetes.io/part-of': 'application-1',
           'app.kubernetes.io/version': '1.0',
         },

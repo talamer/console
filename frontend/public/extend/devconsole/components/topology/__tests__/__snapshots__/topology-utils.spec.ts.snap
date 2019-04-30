@@ -228,7 +228,7 @@ Object {
     },
     "5ca9ae28-680d-11e9-8c69-5254003f9382": Object {
       "data": Object {
-        "builderImage": "analytics",
+        "builderImage": "python",
         "donutStatus": Object {
           "pods": Array [
             Object {
@@ -363,7 +363,7 @@ Object {
             "labels": Object {
               "app.kubernetes.io/component": "backend",
               "app.kubernetes.io/instance": "analytics",
-              "app.kubernetes.io/name": "analytics",
+              "app.kubernetes.io/name": "python",
               "app.kubernetes.io/part-of": "application-1",
               "app.kubernetes.io/version": "1.0",
             },
@@ -382,7 +382,7 @@ Object {
               "matchLabels": Object {
                 "app.kubernetes.io/component": "backend",
                 "app.kubernetes.io/instance": "analytics",
-                "app.kubernetes.io/name": "analytics",
+                "app.kubernetes.io/name": "python",
                 "app.kubernetes.io/part-of": "application-1",
                 "app.kubernetes.io/version": "1.0",
               },
@@ -400,7 +400,7 @@ Object {
                 "labels": Object {
                   "app.kubernetes.io/component": "backend",
                   "app.kubernetes.io/instance": "analytics",
-                  "app.kubernetes.io/name": "analytics",
+                  "app.kubernetes.io/name": "python",
                   "app.kubernetes.io/part-of": "application-1",
                   "app.kubernetes.io/version": "1.0",
                 },
@@ -481,7 +481,7 @@ Object {
             "selector": Object {
               "app.kubernetes.io/component": "backend",
               "app.kubernetes.io/instance": "analytics",
-              "app.kubernetes.io/name": "analytics",
+              "app.kubernetes.io/name": "python",
               "app.kubernetes.io/part-of": "application-1",
               "app.kubernetes.io/version": "1.0",
             },
@@ -534,7 +534,7 @@ Object {
     },
     "60a9b423-680d-11e9-8c69-5254003f9382": Object {
       "data": Object {
-        "builderImage": "wit",
+        "builderImage": "nodejs",
         "donutStatus": Object {
           "pods": Array [
             Object {
@@ -668,7 +668,7 @@ Object {
             "labels": Object {
               "app.kubernetes.io/component": "backend",
               "app.kubernetes.io/instance": "wit",
-              "app.kubernetes.io/name": "wit",
+              "app.kubernetes.io/name": "nodejs",
               "app.kubernetes.io/part-of": "application-1",
               "app.kubernetes.io/version": "1.0",
             },
@@ -687,7 +687,7 @@ Object {
               "matchLabels": Object {
                 "app.kubernetes.io/component": "backend",
                 "app.kubernetes.io/instance": "wit",
-                "app.kubernetes.io/name": "wit",
+                "app.kubernetes.io/name": "nodejs",
                 "app.kubernetes.io/part-of": "application-1",
                 "app.kubernetes.io/version": "1.0",
               },
@@ -705,7 +705,7 @@ Object {
                 "labels": Object {
                   "app.kubernetes.io/component": "backend",
                   "app.kubernetes.io/instance": "wit",
-                  "app.kubernetes.io/name": "wit",
+                  "app.kubernetes.io/name": "nodejs",
                   "app.kubernetes.io/part-of": "application-1",
                   "app.kubernetes.io/version": "1.0",
                 },
@@ -759,16 +759,69 @@ Object {
         },
         Object {
           "kind": "Service",
-          "metadata": Object {},
-          "name": undefined,
-          "spec": Object {},
-          "status": Object {},
+          "metadata": Object {
+            "annotations": Object {
+              "kubectl.kubernetes.io/last-applied-configuration": "{\\"apiVersion\\":\\"v1\\",\\"kind\\":\\"Service\\",\\"metadata\\":{\\"annotations\\":{},\\"labels\\":{\\"app.kubernetes.io/component\\":\\"backend\\",\\"app.kubernetes.io/instance\\":\\"wit\\",\\"app.kubernetes.io/name\\":\\"nodejs\\",\\"app.kubernetes.io/part-of\\":\\"application-1\\",\\"app.kubernetes.io/version\\":\\"1.0\\"},\\"name\\":\\"wit-service\\",\\"namespace\\":\\"testproject3\\"},\\"spec\\":{\\"ports\\":[{\\"port\\":80}],\\"selector\\":{\\"app.kubernetes.io/component\\":\\"backend\\",\\"app.kubernetes.io/instance\\":\\"wit\\",\\"app.kubernetes.io/name\\":\\"nodejs\\",\\"app.kubernetes.io/part-of\\":\\"application-1\\",\\"app.kubernetes.io/version\\":\\"1.0\\"}}}
+",
+            },
+            "creationTimestamp": "2019-04-26T10:23:48Z",
+            "labels": Object {
+              "app.kubernetes.io/component": "backend",
+              "app.kubernetes.io/instance": "wit",
+              "app.kubernetes.io/name": "nodejs",
+              "app.kubernetes.io/part-of": "application-1",
+              "app.kubernetes.io/version": "1.0",
+            },
+            "name": "wit-service",
+            "namespace": "testproject3",
+            "resourceVersion": "1157449",
+            "selfLink": "/api/v1/namespaces/testproject3/services/wit-service",
+            "uid": "60e010cc-680d-11e9-8c69-5254003f9382",
+          },
+          "name": "wit-service",
+          "spec": Object {
+            "selector": Object {
+              "app.kubernetes.io/component": "backend",
+              "app.kubernetes.io/instance": "wit",
+              "app.kubernetes.io/name": "nodejs",
+              "app.kubernetes.io/part-of": "application-1",
+              "app.kubernetes.io/version": "1.0",
+            },
+          },
+          "status": Object {
+            "loadBalancer": Object {},
+          },
         },
         Object {
           "kind": "Route",
-          "metadata": Object {},
-          "name": undefined,
-          "spec": Object {},
+          "metadata": Object {
+            "annotations": Object {
+              "kubectl.kubernetes.io/last-applied-configuration": "{\\"apiVersion\\":\\"route.openshift.io/v1\\",\\"kind\\":\\"Route\\",\\"metadata\\":{\\"annotations\\":{},\\"labels\\":{\\"app.kubernetes.io/component\\":\\"backend\\",\\"app.kubernetes.io/instance\\":\\"wit\\",\\"app.kubernetes.io/name\\":\\"nodejs\\",\\"app.kubernetes.io/part-of\\":\\"application-1\\",\\"app.kubernetes.io/version\\":\\"1.0\\"},\\"name\\":\\"wit-route\\",\\"namespace\\":\\"testproject3\\"},\\"spec\\":{\\"host\\":\\"wit.io\\",\\"path\\":\\"/\\",\\"to\\":{\\"kind\\":\\"Service\\",\\"name\\":\\"wit-service\\"}}}
+",
+            },
+            "creationTimestamp": "2019-04-26T10:23:48Z",
+            "labels": Object {
+              "app.kubernetes.io/component": "backend",
+              "app.kubernetes.io/instance": "wit",
+              "app.kubernetes.io/name": "nodejs",
+              "app.kubernetes.io/part-of": "application-1",
+              "app.kubernetes.io/version": "1.0",
+            },
+            "name": "wit-route",
+            "namespace": "testproject3",
+            "resourceVersion": "1157450",
+            "selfLink": "/apis/route.openshift.io/v1/namespaces/testproject3/routes/wit-route",
+            "uid": "60dba9b8-680d-11e9-b69e-5254003f9382",
+          },
+          "name": "wit-route",
+          "spec": Object {
+            "host": "wit.io",
+            "to": Object {
+              "kind": "Service",
+              "name": "wit-service",
+              "weight": 100,
+            },
+          },
           "status": Object {},
         },
         Object {

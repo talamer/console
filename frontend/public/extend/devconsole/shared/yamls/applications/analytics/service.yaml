@@ -11,7 +11,7 @@ metadata:
 spec:
   selector:
     app.kubernetes.io/part-of: application-1
-    app.kubernetes.io/name: analytics
+    app.kubernetes.io/name: python
     app.kubernetes.io/component: backend
     app.kubernetes.io/instance: user-analytics
     app.kubernetes.io/version: "1.0"
