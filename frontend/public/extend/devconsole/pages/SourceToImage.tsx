@@ -27,7 +27,7 @@ export const SourceToImagePage: React.FC = () => {
       <div className="co-m-pane__body">
         <h1 className="co-m-pane__heading">{title}</h1>
         <Firehose resources={resources}>
-          <BuildSource preselectedNamespace={preselectedNamespace}/>
+          <BuildSource preselectedNamespace={preselectedNamespace} />
         </Firehose>
       </div>
     </React.Fragment>

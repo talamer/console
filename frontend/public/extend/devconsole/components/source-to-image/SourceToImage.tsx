@@ -37,7 +37,7 @@ const mapBuildSourceStateToProps = (state) => {
 class BuildSource extends React.Component<
   BuildSourceStateProps & BuildSourceProps,
   BuildSourceState
-> {
+  > {
   constructor(props) {
     super(props);
 
@@ -104,9 +104,7 @@ class BuildSource extends React.Component<
   };
 
   fillSample: React.ReactEventHandler<HTMLButtonElement> = (event) => {
-    const {
-      obj: { data: imageStream },
-    } = this.props;
+    const { obj: { data: imageStream } } = this.props;
     const { name: currentName, selectedTag } = this.state;
     const tag = _.find(imageStream.spec.tags, { name: selectedTag });
     const repository = getSampleRepo(tag);
@@ -122,9 +120,7 @@ class BuildSource extends React.Component<
       return;
     }
 
-    const {
-      obj: { data: imageStream },
-    } = this.props;
+    const { obj: { data: imageStream } } = this.props;
     const imageStreamTagName = `${imageStream.metadata.name}:${selectedTag}`;
     this.setState({ inProgress: true });
     k8sGet(ImageStreamTagModel, imageStreamTagName, imageStream.metadata.namespace).then(
@@ -144,10 +140,7 @@ class BuildSource extends React.Component<
 
   save = (event: React.FormEvent<EventTarget>) => {
     event.preventDefault();
-    const {
-      activePerspective,
-      obj: { data: imageStream },
-    } = this.props;
+    const { activePerspective, obj: { data: imageStream } } = this.props;
     const {
       name,
       namespace,
@@ -349,7 +342,9 @@ class BuildSource extends React.Component<
   }
 }
 
-export default connect<BuildSourceStateProps, {}, BuildSourceProps>(mapBuildSourceStateToProps)(BuildSource);
+export default connect<BuildSourceStateProps, {}, BuildSourceProps>(mapBuildSourceStateToProps)(
+  BuildSource,
+);
 
 export type BuildSourceProps = {
   obj?: any;

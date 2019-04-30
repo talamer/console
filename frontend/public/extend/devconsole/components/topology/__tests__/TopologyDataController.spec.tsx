@@ -7,7 +7,6 @@ import { renderTopology } from '../../../pages/Topology';
 import ODCEmptyState from '../../../shared/components/EmptyState/EmptyState';
 
 describe('TopologyDataController', () => {
-
   const props = {
     namespace: 'test',
     resources,
@@ -24,6 +23,6 @@ describe('TopologyDataController', () => {
   });
 
   it('should render the empty state component', () => {
-    expect(wrapper.find(<ODCEmptyState title="Topology"  />)).toBeTruthy();
+    expect(wrapper.find(<ODCEmptyState title="Topology" />)).toBeTruthy();
   });
 });

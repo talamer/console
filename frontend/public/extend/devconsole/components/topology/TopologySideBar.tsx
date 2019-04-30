@@ -12,6 +12,19 @@ export type TopologySideBarProps = {
   onClose: Function;
 };
 
+/**
+ * REMOVE: once we get labels in place
+ * This is a temporary check to avoid the `Warning: Each child in an array or iterator should have a unique "key" prop`.
+ * Its coming when buildConfig/route/service metadata is empty object,
+ * BuildOverviewList, RouteOverviewList, ServiceOverview list uses the metadata.uid as the value of `key` prop.
+ *
+ * Datacontroller get the buildConfigs based on apps.kubernetes.io/instance label which is not applied to apps created using browser catalog
+ */
+
+function metadataUIDCheck(items: any) {
+  return items.filter((item) => item.metadata && item.metadata.uid);
+}
+
 const TopologySideBar: React.FunctionComponent<TopologySideBarProps> = ({
   item,
   selected,
@@ -38,18 +51,5 @@ const TopologySideBar: React.FunctionComponent<TopologySideBarProps> = ({
     </ModelessOverlay>
   );
 };
-
-/**
- * REMOVE: once we get labels in place
- * This is a temporary check to avoid the `Warning: Each child in an array or iterator should have a unique "key" prop`.
- * Its coming when buildConfig/route/service metadata is empty object,
- * BuildOverviewList, RouteOverviewList, ServiceOverview list uses the metadata.uid as the value of `key` prop.
- *
- * Datacontroller get the buildConfigs based on apps.kubernetes.io/instance label which is not applied to apps created using browser catalog
- */
-
-function metadataUIDCheck(items: any) {
-  return items.filter((item) => item.metadata && item.metadata.uid);
-}
 
 export default TopologySideBar;

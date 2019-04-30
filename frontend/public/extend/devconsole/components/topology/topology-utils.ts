@@ -265,7 +265,7 @@ export class TransformTopologyData {
       });
     }
   }
-  
+
   /**
    * sort the deployement version
    */
