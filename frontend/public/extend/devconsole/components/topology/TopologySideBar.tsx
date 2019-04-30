@@ -30,24 +30,31 @@ const TopologySideBar: React.FunctionComponent<TopologySideBarProps> = ({
   show,
   onClose,
 }) => {
-  const dc = item.resources.filter((o) => o.kind === 'DeploymentConfig' || o.kind === 'Deployment');
-  const routes = metadataUIDCheck(item.resources.filter((o) => o.kind === 'Route'));
-  const services = metadataUIDCheck(item.resources.filter((o) => o.kind === 'Service'));
-  const buildConfigs = metadataUIDCheck(item.resources.filter((o) => o.kind === 'BuildConfig'));
-  const ItemtoShowOnSideBar = {
-    obj: { apiVersion: 'apps.openshift.io/v1', ...dc[0] },
-    kind: dc[0].kind,
-    routes,
-    services,
-    buildConfigs,
-  };
+  let itemtoShowOnSideBar;
+  if (item) {
+    const dc = item.resources.filter(
+      (o) => o.kind === 'DeploymentConfig' || o.kind === 'Deployment',
+    );
+    const routes = metadataUIDCheck(item.resources.filter((o) => o.kind === 'Route'));
+    const services = metadataUIDCheck(item.resources.filter((o) => o.kind === 'Service'));
+    const buildConfigs = metadataUIDCheck(item.resources.filter((o) => o.kind === 'BuildConfig'));
+    itemtoShowOnSideBar = {
+      obj: { apiVersion: 'apps.openshift.io/v1', ...dc[0] },
+      kind: dc[0].kind,
+      routes,
+      services,
+      buildConfigs,
+    };
+  }
 
   return (
     <ModelessOverlay className="odc-topology-sidebar__overlay" show={show}>
       <div className="odc-topology-sidebar__dismiss clearfix">
         <CloseButton onClick={onClose} data-test-id="sidebar-close-button" />
       </div>
-      <ResourceOverviewPage item={ItemtoShowOnSideBar} kind={ItemtoShowOnSideBar.kind} />
+      {itemtoShowOnSideBar ? (
+        <ResourceOverviewPage item={itemtoShowOnSideBar} kind={itemtoShowOnSideBar.kind} />
+      ) : null}
     </ModelessOverlay>
   );
 };

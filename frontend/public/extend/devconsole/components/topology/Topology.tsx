@@ -54,7 +54,9 @@ export default class Topology extends React.Component<TopologyProps, State> {
   );
 
   render() {
-    const { data: { graph, topology } } = this.props;
+    const {
+      data: { graph, topology },
+    } = this.props;
     const { selected } = this.state;
     return (
       <React.Fragment>
@@ -69,9 +71,11 @@ export default class Topology extends React.Component<TopologyProps, State> {
         >
           {this.renderToolbar}
         </Graph>
-        {selected ? (
-          <TopologySideBar item={topology[selected]} show onClose={this.onSidebarClose} />
-        ) : null}
+        <TopologySideBar
+          item={selected ? topology[selected] : null}
+          show={selected ? true : false}
+          onClose={this.onSidebarClose}
+        />
       </React.Fragment>
     );
   }
