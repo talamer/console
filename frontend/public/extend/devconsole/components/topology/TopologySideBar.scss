@@ -18,4 +18,9 @@
 .modal.odc-topology-sidebar__overlay {
   top: 0;
   position: absolute;
+  max-width: 100%;
+}
+
+.modal-dialog {
+  max-width: 100%;
 }

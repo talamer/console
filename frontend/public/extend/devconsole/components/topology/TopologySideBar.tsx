@@ -45,8 +45,6 @@ const TopologySideBar: React.FunctionComponent<TopologySideBarProps> = ({
       services,
       buildConfigs,
     };
-  } else {
-    ItemtoShowOnSideBar = null;
   }
 
   return (
