@@ -284,8 +284,7 @@ class App extends React.PureComponent {
 
                   <LazyRoute path={this._prependActivePerspective('/catalog/create-service-instance')} exact loader={() => import('./service-catalog/create-instance' /* webpackChunkName: "create-service-instance" */).then(m => m.CreateInstancePage)} />
                   <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/serviceinstances/:name/create-binding')} exact loader={() => import('./service-catalog/create-binding' /* webpackChunkName: "create-binding" */).then(m => m.CreateBindingPage)} />
-                  <LazyRoute path={this._prependActivePerspective('/catalog/instantiate-template')} exact loader={() => import('./instantiate-template' /* webpackChunkName: "instantiate-template" */).then(m => m.InstantiateTemplatePage)} />
-                  <LazyRoute path={this._prependActivePerspective('/catalog/source-to-image')} exact loader={() => import('./source-to-image' /* webpackChunkName: "source-to-image" */).then(m => m.SourceToImagePage)} />
+                  <LazyRoute path={this._prependActivePerspective('/catalog/source-to-image')} exact loader={() => import('../extend/devconsole/pages/SourceToImage' /* webpackChunkName: "source-to-image" */).then(m => m.SourceToImagePage)} />
 
                   <Route path={this._prependActivePerspective('/k8s/ns/:ns/alertmanagers/:name')} exact render={({match}) => <Redirect to={`/k8s/ns/${match.params.ns}/${referenceForModel(AlertmanagerModel)}/${match.params.name}`} />} />
 

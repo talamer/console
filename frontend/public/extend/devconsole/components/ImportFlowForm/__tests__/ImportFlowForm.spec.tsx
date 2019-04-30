@@ -68,11 +68,11 @@ describe('ImportFlowForm: ', () => {
                     dockerImageReference: 'docker.io/openshift/perl-516-centos7@sha256:e2d681b6e3b7e8eedf2fbb288c3e6587db6fd2b7a4aa55dd3a8ab032094dfa8c',
                     image: 'sha256:e2d681b6e3b7e8eedf2fbb288c3e6587db6fd2b7a4aa55dd3a8ab032094dfa8c',
                     generation: 2,
-                  }
+                  },
                 ],
               },
             ],
-          }
+          },
         },
       },
     },

@@ -16,7 +16,7 @@ describe('EmptyState', () => {
       }),
     });
 
-    const topologyWrapper = shallow(<ConnectedComponent store={store} title=""/>);
+    const topologyWrapper = shallow(<ConnectedComponent store={store} title="" />);
 
     expect(topologyWrapper.props().activeNamespace).toEqual('project');
   });

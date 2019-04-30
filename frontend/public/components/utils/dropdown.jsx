@@ -293,7 +293,7 @@ export class Dropdown extends DropdownMixin {
 
   render() {
     const {active, autocompleteText, selectedKey, items, title, bookmarks, keyboardHoverKey, favoriteKey} = this.state;
-    const {autocompleteFilter, autocompletePlaceholder, className, buttonClassName, menuClassName, storageKey, canFavorite, dropDownClassName, titlePrefix, describedBy} = this.props;
+    const {autocompleteFilter, autocompletePlaceholder, actionItem, className, buttonClassName, menuClassName, storageKey, canFavorite, dropDownClassName, titlePrefix, describedBy} = this.props;
 
     const spacerBefore = this.props.spacerBefore || new Set();
     const headerBefore = this.props.headerBefore || {};
@@ -316,6 +316,27 @@ export class Dropdown extends DropdownMixin {
         rows.push(<li key={`${key}-header`}><div className="dropdown-menu__header" >{headerBefore[key]}</div></li>);
       }
       rows.push(<DropDownRow className={klass} key={key} itemKey={key} content={content} onBookmark={storageKey && this.onBookmark} onclick={this.onClick} selected={selected} hover={hover} />);
+    };
+
+    const ActionRow = () => {
+      const { actionTitle, actionKey } = actionItem;
+      const selected = (actionKey === selectedKey) && !this.props.noSelection;
+      const hover = actionKey === keyboardHoverKey;
+      return (
+        <React.Fragment>
+          <DropDownRow
+            className={classNames({'active': selected})}
+            key={`${actionKey}-${actionTitle}`}
+            itemKey={actionKey}
+            content={actionTitle}
+            onclick={this.onClick}
+            selected={selected}
+            hover={hover} />
+          <li className="co-namespace-selector__divider">
+            <div className="dropdown-menu__divider" />
+          </li>
+        </React.Fragment>
+      );
     };
 
     _.each(items, (v, k) => addItem(k, v));
@@ -348,6 +369,7 @@ export class Dropdown extends DropdownMixin {
                   onClick={e => e.stopPropagation()} />
               </div>
             }
+            { actionItem ? <ActionRow /> : null}
             { bookMarkRows }
             {_.size(bookMarkRows) ? <li className="co-namespace-selector__divider"><div className="dropdown-menu__divider" /></li> : null}
             {rows}
@@ -362,6 +384,10 @@ Dropdown.propTypes = {
   autocompleteFilter: PropTypes.func,
   autocompletePlaceholder: PropTypes.string,
   canFavorite: PropTypes.bool,
+  actionItem: PropTypes.objectOf(
+    PropTypes.string,
+    PropTypes.string
+  ),
   className: PropTypes.string,
   defaultBookmarks: PropTypes.objectOf(PropTypes.string),
   dropDownClassName: PropTypes.string,

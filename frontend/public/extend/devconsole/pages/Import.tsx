@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet';
-import { PageSection, PageSectionVariants } from '@patternfly/react-core';
 import { ImportFlow } from './../components/import/ImportFlow';
 import { PageHeading } from '../../../components/utils';
 
 const ImportPage: React.FunctionComponent = () => (
-  <PageSection variant={PageSectionVariants.light}>
+  <React.Fragment>
     <Helmet>
       <title>Import from git</title>
     </Helmet>
@@ -13,7 +12,7 @@ const ImportPage: React.FunctionComponent = () => (
     <div className="co-m-pane__body">
       <ImportFlow />
     </div>
-  </PageSection>
+  </React.Fragment>
 );
 
 export default ImportPage;
