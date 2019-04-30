@@ -18,9 +18,9 @@ const TopologySideBar: React.FunctionComponent<TopologySideBarProps> = ({
   onClose,
 }) => {
   const dc = item.resources.filter((o) => o.kind === 'DeploymentConfig' || o.kind === 'Deployment');
-  const routes = item.resources.filter((o) => o.kind === 'Route');
-  const services = item.resources.filter((o) => o.kind === 'Service');
-  const buildConfigs = item.resources.filter((o) => o.kind === 'BuildConfig');
+  const routes = metadataUIDCheck(item.resources.filter((o) => o.kind === 'Route'));
+  const services = metadataUIDCheck(item.resources.filter((o) => o.kind === 'Service'));
+  const buildConfigs = metadataUIDCheck(item.resources.filter((o) => o.kind === 'BuildConfig'));
   const ItemtoShowOnSideBar = {
     obj: { apiVersion: 'apps.openshift.io/v1', ...dc[0] },
     kind: dc[0].kind,
@@ -30,13 +30,26 @@ const TopologySideBar: React.FunctionComponent<TopologySideBarProps> = ({
   };
 
   return (
-      <ModelessOverlay className="odc-topology-sidebar__overlay" show={!!selected}>
-        <div className="odc-topology-sidebar__dismiss clearfix">
-          <CloseButton onClick={onClose} data-test-id="sidebar-close-button" />
-        </div>
-        <ResourceOverviewPage item={ItemtoShowOnSideBar} kind={ItemtoShowOnSideBar.kind} />
-      </ModelessOverlay>
+    <ModelessOverlay className="odc-topology-sidebar__overlay" show={!!selected}>
+      <div className="odc-topology-sidebar__dismiss clearfix">
+        <CloseButton onClick={onClose} data-test-id="sidebar-close-button" />
+      </div>
+      <ResourceOverviewPage item={ItemtoShowOnSideBar} kind={ItemtoShowOnSideBar.kind} />
+    </ModelessOverlay>
   );
 };
+
+/**
+ * REMOVE: once we get labels in place
+ * This is a temporary check to avoid the `Warning: Each child in an array or iterator should have a unique "key" prop`.
+ * Its coming when buildConfig/route/service metadata is empty object,
+ * BuildOverviewList, RouteOverviewList, ServiceOverview list uses the metadata.uid as the value of `key` prop.
+ *
+ * Datacontroller get the buildConfigs based on apps.kubernetes.io/instance label which is not applied to apps created using browser catalog
+ */
+
+function metadataUIDCheck(items: any) {
+  return items.filter((item) => item.metadata && item.metadata.uid);
+}
 
 export default TopologySideBar;
