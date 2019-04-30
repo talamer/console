@@ -420,15 +420,19 @@ export class ImportFlowForm extends React.Component<Props, State> {
       builderImageError,
     } = this.state;
 
-    const builderImages = _.filter(this.props.resources.imagestreams.data, (imagestream) => {
-      return isBuilder(imagestream);
-    });
-
-    builderImages.forEach((image) => {
-      image.spec.tags.forEach((tag) => {
-        this.imageStreams[image.metadata.name + tag.name] = [image.metadata.name, tag.name];
+    if (this.props.resources.imagestreams.loaded) {
+      const builderImages = _.filter(this.props.resources.imagestreams.data, (imagestream) => {
+        return isBuilder(imagestream);
       });
-    });
+
+      builderImages.forEach((image) => {
+        image.spec.tags.forEach((tag) => {
+          if (!tag.annotations.tags.includes('hidden')) {
+            this.imageStreams[image.metadata.name+tag.name] = [image.metadata.name, tag.name];
+          }
+        });
+      });
+    }
 
     let gitTypeField, showGitValidationStatus, showDetectBuildToolStatus;
     if (gitType || gitTypeError) {
@@ -491,7 +495,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
             autoComplete="off"
             name="gitRepoUrl"
           />
-          <HelpBlock>{gitRepoUrlError ? gitRepoUrlError : 'Some helper text'}</HelpBlock>
+          <HelpBlock>{gitRepoUrlError ? gitRepoUrlError : ''}</HelpBlock>
         </FormGroup>
         {gitTypeField}
         <FormGroup
@@ -505,7 +509,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
             data-test-id="import-application-name"
           />
           <HelpBlock>
-            {namespaceError ? namespaceError : 'Some help text with explanation'}
+            {namespaceError ? namespaceError : ''}
           </HelpBlock>
         </FormGroup>
         <AppNameSelector
@@ -552,7 +556,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
             data-test-id="import-builder-image"
           />
           <HelpBlock>
-            {builderImageError ? builderImageError : 'Some help text with explanation'}
+            {builderImageError ? builderImageError : ''}
           </HelpBlock>
         </FormGroup>
         <div className="co-m-btn-bar">
