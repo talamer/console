@@ -495,7 +495,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
             autoComplete="off"
             name="gitRepoUrl"
           />
-          <HelpBlock>{gitRepoUrlError ? gitRepoUrlError : 'Some helper text'}</HelpBlock>
+          <HelpBlock>{gitRepoUrlError ? gitRepoUrlError : ''}</HelpBlock>
         </FormGroup>
         {gitTypeField}
         <FormGroup
@@ -509,7 +509,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
             data-test-id="import-application-name"
           />
           <HelpBlock>
-            {namespaceError ? namespaceError : 'Some help text with explanation'}
+            {namespaceError ? namespaceError : ''}
           </HelpBlock>
         </FormGroup>
         <AppNameSelector
@@ -556,7 +556,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
             data-test-id="import-builder-image"
           />
           <HelpBlock>
-            {builderImageError ? builderImageError : 'Some help text with explanation'}
+            {builderImageError ? builderImageError : ''}
           </HelpBlock>
         </FormGroup>
         <div className="co-m-btn-bar">
