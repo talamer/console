@@ -420,7 +420,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
       builderImageError,
     } = this.state;
 
-    if(this.props.resources.imagestreams.loaded) {
+    if (this.props.resources.imagestreams.loaded) {
       const builderImages = _.filter(this.props.resources.imagestreams.data, (imagestream) => {
         return isBuilder(imagestream);
       });
