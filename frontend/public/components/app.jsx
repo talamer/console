@@ -91,18 +91,28 @@ const mapPerspectiveStateToProps = (state) => {
   };
 };
 
+const PerspectiveRedirectComponent = props => {
+  if (flagPending(props.flags.SHOW_DEV_CONSOLE)) {
+    return <Loading />;
+  }
+
+  if(props.activePerspective === 'dev' && !props.flags.SHOW_DEV_CONSOLE) {
+    return <Redirect to='/404'/>;
+  }
+  return null;
+}
 // The default page component lets us connect to flags without connecting the entire App.
 const DefaultPage = connect(mapPerspectiveStateToProps)(
   connectToFlags(FLAGS.OPENSHIFT)(({ flags }) => {
     const openshiftFlag = flags[FLAGS.OPENSHIFT];
     const lastViewedPerspective = localStorage.getItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY);
-    if (flagPending(openshiftFlag)) {
+    if (flagPending(openshiftFlag) && flagPending(FLAGS.SHOW_DEV_CONSOLE)) {
       return <Loading />;
     }
 
     if (openshiftFlag) {
       // TODO - We should be using the link utility to create these links with perspective.
-      return lastViewedPerspective && lastViewedPerspective !== 'admin' ? (
+      return lastViewedPerspective && flags[FLAGS.SHOW_DEV_CONSOLE] && lastViewedPerspective !== 'admin' ? (
         <Redirect to={`/${lastViewedPerspective}`} />
       ) : (
         <Redirect to="/k8s/cluster/projects" />
@@ -241,6 +251,8 @@ class App extends React.PureComponent {
             <div id="content">
               <GlobalNotifications />
               <Route path={namespacedRoutes} component={NamespaceBar} />
+              <Route path={['/dev']} render={props => <PerspectiveRedirectComponent {...props} {...this.props} />}  />
+
               <div id="content-scrollable">
                 <Switch>
                   <Route path={['/all-namespaces', '/ns/:ns']} component={RedirectComponent} />
