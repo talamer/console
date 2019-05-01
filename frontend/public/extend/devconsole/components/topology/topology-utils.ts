@@ -220,13 +220,14 @@ export class TransformTopologyData {
       const totalDeployments = _.cloneDeep(
         _.concat(this.resources.deploymentConfigs.data, this.resources.deployments.data),
       );
-      // // find and add the edges for a node
+      // find and add the edges for a node
       if (_.has(annotations, 'app.openshift.io/connects-to')) {
         try {
           edges = JSON.parse(annotations['app.openshift.io/connects-to']);
         } catch (e) {
-          //connects-to annotation should hold a JSON string value
-          throw new Error('Invalid connects-to annotation provided');
+          // connects-to annotation should hold a JSON string value but failed to parse
+          // treat value as a comma separated list of strings
+          edges = annotations['app.openshift.io/connects-to'].split(',').map((v) => v.trim());
         }
         _.map(edges, (edge) => {
           //handles multiple edges
