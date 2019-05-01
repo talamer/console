@@ -1,4 +1,8 @@
 .odc-base-node {
+  &__bg {
+    fill: #fff;
+  }
+
   &__selection {
     fill: none;
     stroke: var(--pf-global--active-color--300);

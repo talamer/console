@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import SvgDropShadowFilter from '../../../shared/components/svg/SvgDropShadowFilter';
+import { createFilterIdUrl } from '../../../shared/utils/svg-utils';
 import './Decorator.scss';
 
 type DecoratorTypes = {
@@ -14,6 +15,7 @@ type DecoratorTypes = {
 };
 
 const FILTER_ID = 'DecoratorDropShadowFilterId';
+
 const Decorator: React.FunctionComponent<DecoratorTypes> = ({
   x,
   y,
@@ -39,7 +41,13 @@ const Decorator: React.FunctionComponent<DecoratorTypes> = ({
     >
       <SvgDropShadowFilter id={FILTER_ID} floodOpacity={0.5} />
       <title>{title}</title>
-      <circle cx={0} cy={0} r={radius} fill="#fff" filter={`url(#${FILTER_ID})`} />
+      <circle
+        className="odc-decorator__bg"
+        cx={0}
+        cy={0}
+        r={radius}
+        filter={createFilterIdUrl(FILTER_ID)}
+      />
       {children}
     </g>
   );
