@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import SvgDropShadowFilter from '../../../shared/components/svg/SvgDropShadowFilter';
+import { getImageForIconClass } from '../../../../../components/catalog/catalog-item-icon';
 import './BaseNode.scss';
 
 type BaseNodeProps = {
@@ -47,8 +48,7 @@ const BaseNode: React.FunctionComponent<BaseNodeProps> = ({
         y={-innerRadius}
         width={innerRadius * 2}
         height={innerRadius * 2}
-        xlinkHref={icon ? `/static/assets/${icon}.svg` : '/static/assets/openshift.svg'}
-        onError={(e) => e.currentTarget.setAttribute('xlink:href', '/static/assets/openshift.svg')}
+        xlinkHref={getImageForIconClass(`icon-${icon}`) || getImageForIconClass('icon-openshift')}
       />
       <text
         className={`odc-base-node__label ${selected ? 'is-selected' : ''}`}
