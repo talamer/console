@@ -1,0 +1,76 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  annotations:
+  generation: 1
+  name: tutorial-pipeline-run-1
+spec:
+  generation: 1
+  pipelineRef:
+    name: tutorial-pipeline
+  resources:
+    - name: source-repo
+      paths: null
+      resourceRef:
+        name: skaffold-git
+    - name: web-image
+      paths: null
+      resourceRef:
+        name: skaffold-image-leeroy-web
+  serviceAccount: ""
+  trigger:
+    type: manual
+status:
+  conditions:
+    - lastTransitionTime: 2018-12-11T20:32:41Z
+      message: All Tasks have completed executing
+      reason: Succeeded
+      status: "True"
+      type: Succeeded
+  taskRuns:
+    tutorial-pipeline-run-1-build-skaffold-web:
+      conditions:
+        - lastTransitionTime: 2018-12-11T20:31:41Z
+          status: "True"
+          type: Succeeded
+      podName: tutorial-pipeline-run-1-build-skaffold-web-pod-21ddf0
+      startTime: 2018-12-11T20:30:19Z
+      steps:
+        - terminated:
+            containerID: docker://c699fcba94....f96108ac9f4db22b94e0c
+            exitCode: 0
+            finishedAt: 2018-12-11T20:30:36Z
+            reason: Completed
+            startedAt: 2018-12-11T20:30:36Z
+        - terminated:
+            containerID: docker://f5f752d....824262ad6ce7675
+            exitCode: 0
+            finishedAt: 2018-12-11T20:31:17Z
+            reason: Completed
+            startedAt: 2018-12-11T20:30:37Z
+    tutorial-pipeline-run-1-deploy-web:
+      conditions:
+        - lastTransitionTime: 2018-12-11T20:32:41Z
+          status: "True"
+          type: Succeeded
+      podName: tutorial-pipeline-run-1-deploy-web-pod-7a796b
+      startTime: 2018-12-11T20:32:11Z
+      steps:
+        - terminated:
+            containerID: docker://eaefb7b6d685....f001f895430f71374
+            exitCode: 0
+            finishedAt: 2018-12-11T20:32:28Z
+            reason: Completed
+            startedAt: 2018-12-11T20:32:28Z
+        - terminated:
+            containerID: docker://4cfc6eba47a7a....dcaef1e9b1eee3661b8a85f
+            exitCode: 0
+            finishedAt: 2018-12-11T20:32:31Z
+            reason: Completed
+            startedAt: 2018-12-11T20:32:31Z
+        - terminated:
+            containerID: docker://01b376b92....dce4ccec9641d77
+            exitCode: 0
+            finishedAt: 2018-12-11T20:32:35Z
+            reason: Completed
+            startedAt: 2018-12-11T20:32:34Z

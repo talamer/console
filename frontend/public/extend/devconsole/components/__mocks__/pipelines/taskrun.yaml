@@ -1,0 +1,53 @@
+apiVersion: tekton.dev/v1alpha1
+kind: TaskRun
+metadata:
+  creationTimestamp: 2018-12-11T18:14:29Z
+  generation: 1
+  name: build-docker-image-from-git-source-task-run
+  resourceVersion: "6733537"
+  selfLink: /apis/tekton.dev/v1alpha1/namespaces/default/taskruns/build-docker-image-from-git-source-task-run
+  uid: 99d297fd-fd70-11e8-9129-42010a8a0fdc
+spec:
+  generation: 1
+  inputs:
+    params:
+      - name: pathToDockerFile
+        value: Dockerfile
+      - name: pathToContext
+        value: /workspace/git-source/examples/microservices/leeroy-web #configure: may change depending on your source
+    resources:
+      - name: git-source
+        paths: null
+        resourceRef:
+          name: skaffold-git
+  outputs:
+    resources:
+      - name: builtImage
+        paths: null
+        resourceRef:
+          name: skaffold-image-leeroy-web
+  taskRef:
+    name: build-docker-image-from-git-source
+  taskSpec: null
+  trigger:
+    type: manual
+status:
+  conditions:
+    - lastTransitionTime: 2018-12-11T18:15:09Z
+      status: "True"
+      type: Succeeded
+  podName: build-docker-image-from-git-source-task-run-pod-24d414
+  startTime: 2018-12-11T18:14:29Z
+  steps:
+    - terminated:
+        containerID: docker://138ce30c722eed....c830c9d9005a0542
+        exitCode: 0
+        finishedAt: 2018-12-11T18:14:47Z
+        reason: Completed
+        startedAt: 2018-12-11T18:14:47Z
+    - terminated:
+        containerID: docker://4a75136c029fb1....4c94b348d4f67744
+        exitCode: 0
+        finishedAt: 2018-12-11T18:14:48Z
+        reason: Completed
+        startedAt: 2018-12-11T18:14:48Z
