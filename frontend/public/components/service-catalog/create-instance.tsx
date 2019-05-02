@@ -28,6 +28,7 @@ import {
   resourcePathFromModel,
   StatusBox,
 } from '../utils';
+import AppNameSelector from '../../extend/devconsole/shared/components/dropdown/AppNameSelector';
 
 const PARAMETERS_SECRET_KEY = 'parameters';
 
@@ -41,6 +42,8 @@ class CreateInstance extends React.Component<CreateInstanceProps, CreateInstance
     this.state = {
       name: '',
       namespace,
+      application: '',
+      selectedApplicationKey: '',
       plan: '',
       formData: {},
       inProgress: false,
@@ -77,6 +80,10 @@ class CreateInstance extends React.Component<CreateInstanceProps, CreateInstance
     this.setState({plan: event.currentTarget.value});
   }
 
+  onApplicationChange = (application: string, selectedKey: string) => {
+    this.setState({ application, selectedApplicationKey: selectedKey});
+  }
+
   createInstance = (secretName: string): Promise<K8sResourceKind> => {
     const parametersFrom = secretName ? [{ secretKeyRef: { name: secretName, key: PARAMETERS_SECRET_KEY } }] : [];
     const serviceInstance: K8sResourceKind = {
@@ -85,6 +92,11 @@ class CreateInstance extends React.Component<CreateInstanceProps, CreateInstance
       metadata: {
         name: this.state.name,
         namespace: this.state.namespace,
+        labels: {
+          'app.kubernetes.io/part-of': this.state.application,
+          'app.kubernetes.io/instance': this.state.name,
+          'app.kubernetes.io/component': this.state.name,
+        },
       },
       spec: {
         clusterServiceClassExternalName: _.get(this.props.obj, 'data.spec.externalName'),
@@ -157,6 +169,12 @@ class CreateInstance extends React.Component<CreateInstanceProps, CreateInstance
                   <label className="control-label co-required" htmlFor="dropdown-selectbox">Namespace</label>
                   <NsDropdown selectedKey={this.state.namespace} onChange={this.onNamespaceChange} id="dropdown-selectbox" />
                 </div>
+                <AppNameSelector
+                  application={this.state.application}
+                  selectedKey={this.state.selectedApplicationKey}
+                  namespace={this.state.namespace}
+                  onChange={this.onApplicationChange}
+                />
                 <div className="form-group co-create-service-instance__name">
                   <label className="control-label co-required" htmlFor="name">Service Instance Name</label>
                   <input className="form-control"
@@ -212,6 +230,8 @@ export type CreateInstanceProps = {
 export type CreateInstanceState = {
   name: string,
   namespace: string,
+  application: string,
+  selectedApplicationKey: string,
   plan: string,
   formData: any,
   inProgress: boolean,
