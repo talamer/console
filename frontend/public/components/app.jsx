@@ -42,7 +42,7 @@ import 'url-search-params-polyfill';
 // Extensions
 import devConsoleRoutes from '../extend/devconsole/routes';
 import PerspectiveSwitcher from '../extend/devconsole/shared/components/PerspectiveSwitcher';
-import { pathWithPerspective } from './utils/perspective';
+import { pathWithPerspective, PerspectiveFlagMap } from './utils/perspective';
 
 // React Router's proptypes are incorrect. See https://github.com/ReactTraining/react-router/pull/5393
 Route.propTypes.path = PropTypes.oneOfType([
@@ -126,10 +126,6 @@ class App extends React.PureComponent {
     this._onResize = this._onResize.bind(this);
     this._onPerspectiveSwitcherClose = this._onPerspectiveSwitcherClose.bind(this);
     this.previousDesktopState = this._isDesktop();
-    this.perspectiveMap = {
-      admin: FLAGS.OPENSHIFT,
-      dev: FLAGS.SHOW_DEV_CONSOLE
-    }
     this.state = {
       isNavOpen: this._isDesktop(),
       isPerspectiveSwitcherOpen : false,
@@ -211,8 +207,8 @@ class App extends React.PureComponent {
 
   _prependActivePerspective(path) {
     const { flags, activePerspective } = this.props;
-    const activePerspectiveFlag = flags[this.perspectiveMap[activePerspective]];
-    if(activePerspective !== 'admin' && flags && !flagPending(activePerspectiveFlag) && activePerspectiveFlag) {
+    const activePerspectiveFlag = flags[PerspectiveFlagMap[activePerspective]];
+    if(flags && !flagPending(activePerspectiveFlag) && activePerspectiveFlag) {
       return pathWithPerspective(activePerspective, path);
     }
     return path;
