@@ -9,6 +9,7 @@ import { BuildModel, PipelineModel } from '../../../models';
 interface DevConsoleNavigationProps {
   isNavOpen: boolean;
   location: string;
+  activeNamespace: string;
   onNavSelect: () => void;
   onToggle: () => void;
 }
@@ -17,47 +18,59 @@ const DevNavSection = NavSection as React.ComponentClass<any>;
 
 export const PageNav = (props: DevConsoleNavigationProps) => {
   //Generic implementation of isActive functionality
-  const isActive = (includes:Array<string>, position:string, excludes:Array<string>) => {
+  const isActive = (includes: Array<string>, position: string, excludes: Array<string>) => {
     if (includes.length < 1 || includes[0] === '') {
       return false;
     }
     let includeFlag = false;
     switch (position) {
-      case 'any' : includes.map( keyword => includeFlag = includeFlag || props.location.includes(keyword));
+      case 'any':
+        includes.map((keyword) => (includeFlag = includeFlag || props.location.includes(keyword)));
         break;
-      case 'start': includes.map( keyword => includeFlag = includeFlag || props.location.startsWith(keyword));
+      case 'start':
+        includes.map(
+          (keyword) => (includeFlag = includeFlag || props.location.startsWith(keyword)),
+        );
         break;
-      default : includes.map( keyword => includeFlag = includeFlag || props.location.endsWith(keyword));
+      default:
+        includes.map((keyword) => (includeFlag = includeFlag || props.location.endsWith(keyword)));
         break;
     }
     //Example call for exclude isActive(['pipeline'],'',['pipelinerun'])
-    if (excludes.length <1 || excludes[0] === '') {
+    if (excludes.length < 1 || excludes[0] === '') {
       return includeFlag;
     }
     let excludeFlag = false;
-    excludes.map( keyword => excludeFlag = excludeFlag || props.location.includes(keyword));
+    excludes.map((keyword) => (excludeFlag = excludeFlag || props.location.includes(keyword)));
     return includeFlag && !excludeFlag;
   };
 
   return (
     <Nav aria-label="Nav" onSelect={props.onNavSelect} onToggle={props.onToggle}>
       <NavList>
-        <HrefLink href="/add" name="+Add" activePath="/dev/add" isActive={isActive(['add'],'',[''])} />
+        <HrefLink
+          href="/add"
+          name="+Add"
+          activePath="/dev/add"
+          isActive={isActive(['add'], '', [''])}
+        />
         <HrefLink
           href="/topology"
           name="Topology"
           activePath="/dev/topology"
-          isActive={isActive(['topology'],'',[''])}
+          isActive={isActive(['topology'], '', [''])}
         />
         <ResourceNSLink
           resource="buildconfigs"
           name={BuildModel.labelPlural}
-          isActive={isActive(['buildconfigs'],'',[''])}
+          activeNamespace={props.activeNamespace}
+          isActive={isActive(['buildconfigs'], '', [''])}
         />
         <ResourceNSLink
           resource="pipelines"
           name={PipelineModel.labelPlural}
-          isActive={isActive(['pipelines','pipelinerun'],'any',[''])}
+          activeNamespace={props.activeNamespace}
+          isActive={isActive(['pipelines', 'pipelinerun'], 'any', [''])}
         />
         <DevNavSection title="Advanced">
           <ResourceClusterLink resource="projects" name="Projects" required={FLAGS.OPENSHIFT} />
@@ -90,6 +103,7 @@ export const DevConsoleNavigation: React.FunctionComponent<DevConsoleNavigationP
 const mapStateToProps = (state) => {
   return {
     location: state.UI.get('location'),
+    activeNamespace: state.UI.get('activeNamespace'),
   };
 };
 
