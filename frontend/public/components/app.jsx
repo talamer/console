@@ -91,22 +91,12 @@ const mapPerspectiveStateToProps = (state) => {
   };
 };
 
-const PerspectiveRedirectComponent = props => {
-  if (flagPending(props.flags.SHOW_DEV_CONSOLE)) {
-    return <Loading />;
-  }
-
-  if(props.activePerspective === 'dev' && !props.flags.SHOW_DEV_CONSOLE) {
-    return <Redirect to='/404'/>;
-  }
-  return null;
-}
 // The default page component lets us connect to flags without connecting the entire App.
 const DefaultPage = connect(mapPerspectiveStateToProps)(
   connectToFlags(FLAGS.OPENSHIFT)(({ flags }) => {
     const openshiftFlag = flags[FLAGS.OPENSHIFT];
     const lastViewedPerspective = localStorage.getItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY);
-    if (flagPending(openshiftFlag) && flagPending(FLAGS.SHOW_DEV_CONSOLE)) {
+    if (flagPending(openshiftFlag) && flagPending(flags[FLAGS.SHOW_DEV_CONSOLE])) {
       return <Loading />;
     }
 
@@ -217,7 +207,18 @@ class App extends React.PureComponent {
   }
 
   _prependActivePerspective(path) {
-    return pathWithPerspective(this.props.activePerspective, path);
+    const { flags, activePerspective } = this.props;
+    if(flags && !flagPending(FLAGS.SHOW_DEV_CONSOLE) && flags.SHOW_DEV_CONSOLE && activePerspective === 'dev') {
+      return pathWithPerspective(activePerspective, path);
+    }
+    return path;
+  }
+
+  _handlePageNotFound(props) {
+   if (flagPending(props.flags[FLAGS.SHOW_DEV_CONSOLE])) {
+      return <Route component={null}/>;
+   }
+   return <LazyRoute loader={() => import('./error' /* webpackChunkName: "error" */).then(m => m.ErrorPage404)} />
   }
 
   render() {
@@ -251,8 +252,6 @@ class App extends React.PureComponent {
             <div id="content">
               <GlobalNotifications />
               <Route path={namespacedRoutes} component={NamespaceBar} />
-              <Route path={['/dev']} render={props => <PerspectiveRedirectComponent {...props} {...this.props} />}  />
-
               <div id="content-scrollable">
                 <Switch>
                   <Route path={['/all-namespaces', '/ns/:ns']} component={RedirectComponent} />
@@ -360,7 +359,7 @@ class App extends React.PureComponent {
                   <LazyRoute path={this._prependActivePerspective('/error')} exact loader={() => import('./error' /* webpackChunkName: "error" */).then(m => m.ErrorPage)} />
                   <Route path={this._prependActivePerspective('/')} exact component={DefaultPage} />
 
-                  <LazyRoute loader={() => import('./error' /* webpackChunkName: "error" */).then(m => m.ErrorPage404)} />
+                  {this._handlePageNotFound(this.props)}
                 </Switch>
               </div>
             </div>
