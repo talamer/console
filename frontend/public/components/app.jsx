@@ -102,7 +102,7 @@ const DefaultPage = connect(mapPerspectiveStateToProps)(
 
     if (openshiftFlag) {
       // TODO - We should be using the link utility to create these links with perspective.
-      return lastViewedPerspective && flags[FLAGS.SHOW_DEV_CONSOLE] && lastViewedPerspective !== 'admin' ? (
+      return lastViewedPerspective && lastViewedPerspective !== 'admin' ? (
         <Redirect to={`/${lastViewedPerspective}`} />
       ) : (
         <Redirect to="/k8s/cluster/projects" />
@@ -126,7 +126,10 @@ class App extends React.PureComponent {
     this._onResize = this._onResize.bind(this);
     this._onPerspectiveSwitcherClose = this._onPerspectiveSwitcherClose.bind(this);
     this.previousDesktopState = this._isDesktop();
-
+    this.perspectiveMap = {
+      admin: FLAGS.OPENSHIFT,
+      dev: FLAGS.SHOW_DEV_CONSOLE
+    }
     this.state = {
       isNavOpen: this._isDesktop(),
       isPerspectiveSwitcherOpen : false,
@@ -208,7 +211,8 @@ class App extends React.PureComponent {
 
   _prependActivePerspective(path) {
     const { flags, activePerspective } = this.props;
-    if(flags && !flagPending(FLAGS.SHOW_DEV_CONSOLE) && flags.SHOW_DEV_CONSOLE && activePerspective === 'dev') {
+    const activePerspectiveFlag = flags[this.perspectiveMap[activePerspective]];
+    if(activePerspective !== 'admin' && flags && !flagPending(activePerspectiveFlag) && activePerspectiveFlag) {
       return pathWithPerspective(activePerspective, path);
     }
     return path;
