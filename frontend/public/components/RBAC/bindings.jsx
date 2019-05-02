@@ -2,7 +2,6 @@ import * as _ from 'lodash-es';
 import * as React from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 
 import { getQN, k8sCreate, k8sPatch, referenceFor } from '../../module/k8s';
 import { getActiveNamespace, formatNamespacedRouteForResource, UIActions } from '../../ui/ui-actions';
@@ -28,6 +27,7 @@ import {
 } from '../utils';
 import { isSystemRole } from './index';
 import { connectToFlags, FLAGS, flagPending } from '../../features';
+import PerspectiveLink from '../../extend/devconsole/shared/components/PerspectiveLink';
 
 const bindingKind = binding => binding.metadata.namespace ? 'RoleBinding' : 'ClusterRoleBinding';
 
@@ -392,7 +392,7 @@ const BaseEditRoleBinding = connect(null, {setActiveNamespace: UIActions.setActi
 
           <ButtonBar errorMessage={this.state.error} inProgress={this.state.inProgress}>
             <button type="submit" className="btn btn-primary" id="save-changes">{saveButtonText || 'Create'}</button>
-            <Link to={formatNamespacedRouteForResource('rolebindings')} className="btn btn-default" id="cancel">Cancel</Link>
+            <PerspectiveLink to={formatNamespacedRouteForResource('rolebindings')} className="btn btn-default" id="cancel">Cancel</PerspectiveLink>
           </ButtonBar>
         </form>
       </div>;
