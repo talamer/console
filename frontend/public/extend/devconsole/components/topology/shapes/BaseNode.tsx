@@ -2,6 +2,7 @@
 import * as React from 'react';
 import SvgDropShadowFilter from '../../../shared/components/svg/SvgDropShadowFilter';
 import { getImageForIconClass } from '../../../../../components/catalog/catalog-item-icon';
+import { createFilterIdUrl } from '../../../shared/utils/svg-utils';
 import './BaseNode.scss';
 
 type BaseNodeProps = {
@@ -42,7 +43,13 @@ const BaseNode: React.FunctionComponent<BaseNodeProps> = ({
       }
     >
       <SvgDropShadowFilter id={FILTER_ID} />
-      <circle cx={0} cy={0} r={outerRadius} fill="#fff" filter={`url(#${FILTER_ID})`} />
+      <circle
+        className="odc-base-node__bg"
+        cx={0}
+        cy={0}
+        r={outerRadius}
+        filter={createFilterIdUrl(FILTER_ID)}
+      />
       <image
         x={-innerRadius}
         y={-innerRadius}
