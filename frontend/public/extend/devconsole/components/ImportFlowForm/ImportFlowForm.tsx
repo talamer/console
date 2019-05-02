@@ -33,9 +33,10 @@ export interface State {
   gitRepoUrlError: string;
   gitSourceName: string;
   gitSourceAnalysisName: string;
-  gitSourceCreated: boolean;
+  isGitSourceCreated: boolean;
   lastEnteredGitUrl: string;
-  componentCreated: boolean;
+  isComponentCreated: boolean;
+  isBuilderImageDetected: boolean;
   gitUrlValidationStatus: string;
 }
 
@@ -59,10 +60,11 @@ const initialState: State = {
   builderImageError: '',
   gitSourceName: '',
   gitSourceAnalysisName: '',
-  gitSourceCreated: false,
+  isGitSourceCreated: false,
   lastEnteredGitUrl: '',
-  componentCreated: false,
+  isComponentCreated: false,
   gitUrlValidationStatus: '',
+  isBuilderImageDetected: false,
 };
 
 export class ImportFlowForm extends React.Component<Props, State> {
@@ -83,10 +85,11 @@ export class ImportFlowForm extends React.Component<Props, State> {
       gitRepoUrlError: '',
       gitSourceName: '',
       gitSourceAnalysisName: '',
-      gitSourceCreated: false,
+      isGitSourceCreated: false,
       lastEnteredGitUrl: '',
-      componentCreated: false,
+      isComponentCreated: false,
       gitUrlValidationStatus: '',
+      isBuilderImageDetected: false,
     };
   }
   private randomString = this.generateRandomString();
@@ -98,32 +101,25 @@ export class ImportFlowForm extends React.Component<Props, State> {
 
   private onBrowserClose = (event) => {
     event.preventDefault();
-    if (this.state.gitSourceCreated && !this.state.componentCreated) {
-      k8sKill(GitSourceModel, this.gitSourceParams(this.state.gitSourceName), {}, {});
+    if (this.state.isGitSourceCreated && !this.state.isComponentCreated) {
+      k8sKill(GitSourceModel, this.gitSourceParams(this.state.gitSourceName));
       k8sKill(
         GitSourceAnalysisModel,
-        this.gitSourceAnalysisParams(this.state.gitSourceAnalysisName),
-        {},
-        {},
-      );
+        this.gitSourceAnalysisParams(this.state.gitSourceAnalysisName));
     }
   };
 
   componentDidMount() {
     window.addEventListener('beforeunload', this.onBrowserClose);
-    this.setState({ namespace: this.props.activeNamespace });
   }
 
   componentWillUnmount() {
     window.removeEventListener('beforeunload', this.onBrowserClose);
-    if (this.state.gitSourceCreated && !this.state.componentCreated) {
-      k8sKill(GitSourceModel, this.gitSourceParams(this.state.gitSourceName), {}, {});
+    if (this.state.isGitSourceCreated && !this.state.isComponentCreated) {
+      k8sKill(GitSourceModel, this.gitSourceParams(this.state.gitSourceName));
       k8sKill(
         GitSourceAnalysisModel,
-        this.gitSourceAnalysisParams(this.state.gitSourceAnalysisName),
-        {},
-        {},
-      );
+        this.gitSourceAnalysisParams(this.state.gitSourceAnalysisName));
     }
     clearInterval(this.validateUrlPoller);
     clearInterval(this.detectBuildtoolPoller);
@@ -146,10 +142,22 @@ export class ImportFlowForm extends React.Component<Props, State> {
   };
 
   handleGitRepoUrlChange = (event) => {
-    this.setState({ gitRepoUrl: event.target.value, gitRepoUrlError: '' });
+    clearInterval(this.detectBuildtoolPoller);
+    clearInterval(this.validateUrlPoller);
+    this.setState({
+      gitRepoUrl: event.target.value,
+      lastEnteredGitUrl: '',
+      gitRepoUrlError: '',
+      gitUrlValidationStatus: '',
+      isGitSourceCreated: false,
+      builderImage: '',
+      isBuilderImageDetected: false,
+      builderImageError: '',
+      gitType: '',
+    });
     const urlRegex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
     if (!urlRegex.test(event.target.value)) {
-      this.setState({ gitRepoUrlError: 'Please enter the valid git URL', gitType: '' });
+      this.setState({ gitRepoUrlError: 'Please enter the valid git URL', gitType: '', gitUrlValidationStatus: ''});
     } else {
       this.setState({ gitRepoUrlError: '' });
     }
@@ -168,7 +176,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
   };
 
   handleBuilderImageChange = (builderImage: string) => {
-    this.setState({ builderImage });
+    this.setState({ builderImage, isBuilderImageDetected:false });
     if (builderImage !== '') {
       this.setState({ builderImageError: '' });
     }
@@ -218,36 +226,32 @@ export class ImportFlowForm extends React.Component<Props, State> {
   validateGitRepo = (): void => {
     if (
       this.state.lastEnteredGitUrl !== this.state.gitRepoUrl &&
-      this.state.gitRepoUrlError === ''
-    ) {
-      if (this.state.gitSourceCreated) {
-        k8sKill(GitSourceModel, this.gitSourceParams(this.state.gitSourceName));
-        k8sKill(
-          GitSourceAnalysisModel,
-          this.gitSourceAnalysisParams(this.state.gitSourceAnalysisName),
-        );
-        this.setState({
-          gitUrlValidationStatus: '',
-          gitSourceCreated: false,
-          builderImage: '',
-          builderImageError: '',
-        });
-      }
-
+      this.state.gitRepoUrlError === '') {
+      k8sKill(GitSourceModel, this.gitSourceParams(this.state.gitSourceName));
+      k8sKill(
+        GitSourceAnalysisModel,
+        this.gitSourceAnalysisParams(this.state.gitSourceAnalysisName),
+      );
       k8sCreate(
         GitSourceModel,
         this.gitSourceParams(
-          `${this.props.activeNamespace}-${this.lastSegmentUrl()}-${this.randomString}`,
+          `${this.state.namespace}-${this.lastSegmentUrl()}-${this.randomString}`,
         ),
-      ).then(() => {
+      ).then(
+        (res) => {
+          this.setState({
+            isGitSourceCreated: true,
+            gitSourceName: res.metadata.name,
+            lastEnteredGitUrl: this.state.gitRepoUrl,
+            gitRepoUrlError: '',
+          });
+          this.validateUrlPoller= setInterval(this.checkUrlValidationStatus, 3000);
+        }
+      ).catch(() => {
         this.setState({
-          gitSourceCreated: true,
-          gitSourceName: `${this.props.activeNamespace}-${this.lastSegmentUrl()}-${
-            this.randomString
-          }`,
+          gitRepoUrlError: 'Please enter the valid git URL',
           lastEnteredGitUrl: this.state.gitRepoUrl,
         });
-        this.validateUrlPoller = setInterval(this.checkUrlValidationStatus, 3000);
       });
       this.setState({ gitTypeError: '' });
       if (this.detectGitType(this.state.gitRepoUrl) === '') {
@@ -323,7 +327,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
     if (!this.disableSubmitButton()) {
       k8sCreate(GitSourceComponentModel, this.catalogParams()).then(
         () => {
-          this.setState({ componentCreated: true });
+          this.setState({ isComponentCreated: true });
           history.push(pathWithPerspective('dev', `/topology/ns/${this.state.namespace}`));
         },
         (err) => {
@@ -340,7 +344,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
   };
 
   checkUrlValidationStatus = () => {
-    k8sGet(GitSourceModel, this.state.gitSourceName, this.props.activeNamespace)
+    k8sGet(GitSourceModel, this.state.gitSourceName, this.state.namespace)
       .then((res) => {
         if (res.status.connection.state === 'ok') {
           this.setState({
@@ -354,21 +358,27 @@ export class ImportFlowForm extends React.Component<Props, State> {
           });
         }
         clearInterval(this.validateUrlPoller);
+      }).catch(() => {
+        this.setState({
+          gitRepoUrlError: 'Please enter the valid git URL',
+        });
       })
       .then(() => {
         if (this.state.gitUrlValidationStatus === 'ok') {
           k8sCreate(
             GitSourceAnalysisModel,
             this.gitSourceAnalysisParams(
-              `${this.props.activeNamespace}-${this.lastSegmentUrl()}-gsa-${this.randomString}`,
+              `${this.state.namespace}-${this.lastSegmentUrl()}-gsa-${this.randomString}`,
             ),
-          ).then(() => {
+          ).then((res) => {
             this.setState({
-              gitSourceAnalysisName: `${this.props.activeNamespace}-${this.lastSegmentUrl()}-gsa-${
-                this.randomString
-              }`,
+              gitSourceAnalysisName: res.metadata.name,
             });
             this.detectBuildtoolPoller = setInterval(this.detectBuildTool, 3000);
+          }).catch(() => {
+            this.setState({
+              builderImageError: 'We failed to detect the build image, select an appropriate image.',
+            });
           });
         }
       });
@@ -380,10 +390,14 @@ export class ImportFlowForm extends React.Component<Props, State> {
     k8sGet(
       GitSourceAnalysisModel,
       this.state.gitSourceAnalysisName,
-      this.props.activeNamespace,
+      this.state.namespace,
     ).then((res) => {
       if (this.state.builderImage === '') {
-        if (
+        if (res.status.analyzed === true && !Object.keys(res.status.buildEnvStatistics).length) {
+          this.setState({
+            builderImageError: 'We failed to detect the build image, select an appropriate image.',
+          });
+        } else if (
           !Object.keys(this.imageStreams).includes(
             `${res.status.buildEnvStatistics.detectedBuildTypes[0].name.toLowerCase()}latest`,
           )
@@ -396,11 +410,17 @@ export class ImportFlowForm extends React.Component<Props, State> {
         } else {
           this.setState({
             builderImage: `${res.status.buildEnvStatistics.detectedBuildTypes[0].name.toLowerCase()}latest`,
+            isBuilderImageDetected: true,
             builderImageError: '',
           });
         }
       }
       clearInterval(this.detectBuildtoolPoller);
+    },
+    ).catch(() => {
+      this.setState({
+        builderImageError: 'We failed to detect the build image, select an appropriate image.',
+      });
     });
   };
 
@@ -451,7 +471,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
       );
     }
 
-    if (this.state.gitSourceCreated && this.state.gitUrlValidationStatus === '') {
+    if (this.state.isGitSourceCreated && this.state.gitUrlValidationStatus === '') {
       showGitValidationStatus = (
         <span className="odc-import-form__loader">
           <LoadingInline />
@@ -471,7 +491,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
           <LoadingInline />
         </span>
       );
-    } else if (this.state.builderImage !== '') {
+    } else if (this.state.isBuilderImageDetected) {
       showDetectBuildToolStatus = <CheckCircleIcon className="odc-import-form__success-icon" />;
     }
 
