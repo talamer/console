@@ -93,10 +93,10 @@ const mapPerspectiveStateToProps = (state) => {
 
 // The default page component lets us connect to flags without connecting the entire App.
 const DefaultPage = connect(mapPerspectiveStateToProps)(
-  connectToFlags(FLAGS.OPENSHIFT)(({ flags }) => {
+  connectToFlags(FLAGS.OPENSHIFT)(({ flags, activePerspective }) => {
     const openshiftFlag = flags[FLAGS.OPENSHIFT];
     const lastViewedPerspective = localStorage.getItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY);
-    if (flagPending(openshiftFlag) && flagPending(flags[FLAGS.SHOW_DEV_CONSOLE])) {
+    if (flagPending(openshiftFlag) || (activePerspective === 'dev' && flagPending(flags[FLAGS.SHOW_DEV_CONSOLE]))) {
       return <Loading />;
     }
 
@@ -207,18 +207,18 @@ class App extends React.PureComponent {
 
   _prependActivePerspective(path) {
     const { flags, activePerspective } = this.props;
-    const activePerspectiveFlag = flags[PerspectiveFlagMap[activePerspective]];
-    if(flags && !flagPending(activePerspectiveFlag) && activePerspectiveFlag) {
+    const activePerspectiveFlagEnabled = flags[PerspectiveFlagMap[activePerspective]];
+    if (flags && !flagPending(activePerspectiveFlagEnabled) && activePerspectiveFlagEnabled) {
       return pathWithPerspective(activePerspective, path);
     }
     return path;
   }
 
-  _handlePageNotFound(props) {
-   if (flagPending(props.flags[FLAGS.SHOW_DEV_CONSOLE])) {
-      return <Route component={null}/>;
-   }
-   return <LazyRoute loader={() => import('./error' /* webpackChunkName: "error" */).then(m => m.ErrorPage404)} />
+  _handlePageNotFound({ flags, activePerspective }) {
+    if (activePerspective === 'dev' && flagPending(flags[FLAGS.SHOW_DEV_CONSOLE])) {
+      return <Route component={null} />;
+    }
+    return <LazyRoute loader={() => import('./error' /* webpackChunkName: "error" */).then(m => m.ErrorPage404)} />;
   }
 
   render() {

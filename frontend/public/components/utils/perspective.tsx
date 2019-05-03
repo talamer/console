@@ -2,6 +2,7 @@ import { getActivePerspective } from '../../ui/ui-selectors';
 import { FLAGS } from '../../features';
 import store from '../../redux';
 
+/* eslint-disable no-unused-vars, no-undef */
 export enum PerspectiveFlagMap {
   admin = FLAGS.OPENSHIFT,
   dev = FLAGS.SHOW_DEV_CONSOLE
