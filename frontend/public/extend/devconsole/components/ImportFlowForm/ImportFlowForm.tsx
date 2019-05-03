@@ -67,13 +67,16 @@ const initialState: State = {
   isBuilderImageDetected: false,
 };
 
-enum UrlErrorType {
-  RepoNotReachable = 'The git URL is not reachable. Please enter the URL properly.',
-  BranchNotFound = 'The branch could not be found. Please enter the URL with the correct branch name.',
+enum ErrorMessage {
+  RepoNotReachable = 'The git URL is not reachable. Please enter a correct URL.',
+  BranchNotFound = 'The branch could not be found. Please enter the URL with a correct branch name.',
+  BuilderImageError = 'We failed to detect the builder image. Please select an appropriate image.',
+  GitUrlError = 'Please enter a valid git URL.',
+  GitTypeError = 'We failed to detect the git type. Please choose a git type.',
 }
 
-const getUrlErrorMessage = (errorType: UrlErrorType) =>
-  UrlErrorType[errorType] || 'Please enter a valid git URL';
+const getUrlErrorMessage = (errorType: ErrorMessage) =>
+  ErrorMessage[errorType] || ErrorMessage.GitUrlError;
 
 export class ImportFlowForm extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -147,7 +150,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
     if (gitType !== '') {
       this.setState({ gitTypeError: '' });
     } else {
-      this.setState({ gitTypeError: 'Please choose a git type' });
+      this.setState({ gitTypeError: 'Please choose a git type.' });
     }
   };
 
@@ -167,7 +170,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
     const urlRegex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
     if (!urlRegex.test(event.target.value)) {
       this.setState({
-        gitRepoUrlError: 'Please enter a valid git URL',
+        gitRepoUrlError: ErrorMessage.GitUrlError,
         gitType: '',
         gitTypeError: '',
         gitUrlValidationStatus: '',
@@ -264,7 +267,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
         })
         .catch(() => {
           this.setState({
-            gitRepoUrlError: 'Please enter a valid git URL',
+            gitRepoUrlError: ErrorMessage.GitUrlError,
             lastEnteredGitUrl: this.state.gitRepoUrl,
           });
         });
@@ -272,7 +275,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
       if (this.detectGitType(this.state.gitRepoUrl) === '') {
         this.setState({
           gitType: this.detectGitType(this.state.gitRepoUrl),
-          gitTypeError: 'Not able to detect the git type. Please choose a git type',
+          gitTypeError: ErrorMessage.GitTypeError,
         });
       } else {
         this.setState({ gitType: this.detectGitType(this.state.gitRepoUrl) });
@@ -296,6 +299,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
       !this.state.gitRepoUrl ||
       !this.state.gitType ||
       !this.state.namespace ||
+      !this.state.selectedApplicationKey ||
       !this.state.name ||
       !this.state.builderImage ||
       this.state.gitUrlValidationStatus !== 'ok'
@@ -327,18 +331,6 @@ export class ImportFlowForm extends React.Component<Props, State> {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    if (this.state.namespace === '') {
-      this.setState({ namespaceError: 'Please select the application name' });
-    } else {
-      this.setState({ namespaceError: '' });
-    }
-
-    if (this.state.builderImage === '') {
-      this.setState({ builderImageError: 'Please select the builder image' });
-    } else {
-      this.setState({ builderImageError: '' });
-    }
-
     if (!this.disableSubmitButton()) {
       k8sCreate(GitSourceComponentModel, this.catalogParams()).then(
         () => {
@@ -376,7 +368,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
       })
       .catch(() => {
         this.setState({
-          gitRepoUrlError: 'Please enter a valid git URL',
+          gitRepoUrlError: ErrorMessage.GitUrlError,
         });
       })
       .then(() => {
@@ -395,8 +387,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
             })
             .catch(() => {
               this.setState({
-                builderImageError:
-                  'We failed to detect the build image, select an appropriate image.',
+                builderImageError: ErrorMessage.BuilderImageError,
               });
             });
         }
@@ -411,8 +402,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
         if (this.state.builderImage === '') {
           if (res.status.analyzed === true && !Object.keys(res.status.buildEnvStatistics).length) {
             this.setState({
-              builderImageError:
-                'We failed to detect the build image, select an appropriate image.',
+              builderImageError: ErrorMessage.BuilderImageError,
             });
           } else if (
             !Object.keys(this.imageStreams).includes(
@@ -436,7 +426,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
       })
       .catch(() => {
         this.setState({
-          builderImageError: 'We failed to detect the build image, select an appropriate image.',
+          builderImageError: ErrorMessage.BuilderImageError,
         });
       });
   };
