@@ -24,7 +24,7 @@ interface PipelineRunsProps {
 class PipelineRuns extends React.Component<PipelineRunsProps> {
   render() {
     const selector = {
-      "tekton.dev/pipeline": this.props.obj.metadata.name,
+      'tekton.dev/pipeline': this.props.obj.metadata.name,
     };
     return (
       <ListPage
