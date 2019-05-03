@@ -57,7 +57,7 @@ const WorkloadNode: React.FC<NodeProps<WorkloadData>> = ({
           radius={decoratorRadius}
           href={workload.data.url}
           external
-          title="Route"
+          title="Open URL"
         >
           <g transform={`translate(-${decoratorRadius / 2}, -${decoratorRadius / 2})`}>
             <ExternalLinkAltIcon style={{ fontSize: decoratorRadius }} />
