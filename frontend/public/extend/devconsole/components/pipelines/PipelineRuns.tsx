@@ -31,6 +31,7 @@ class PipelineRuns extends React.Component<PipelineRunsProps> {
         showTitle={false}
         canCreate={false}
         kind="PipelineRun"
+        namespace={this.props.obj.metadata.namespace}
         selector={selector}
         ListComponent={PipelineRunsList}
         rowFilters={filters}
