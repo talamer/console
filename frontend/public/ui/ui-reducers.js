@@ -20,9 +20,10 @@ export default (state, action) => {
       }
     }
 
+    const lastPerspective = localStorage.getItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY);
     let activePerspective = getPerspective(pathname);
-    if (!activePerspective) {
-      activePerspective = localStorage.getItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY);
+    if (pathname === '/' && lastPerspective !== activePerspective) {
+      activePerspective = lastPerspective;
     }
 
     return ImmutableMap({

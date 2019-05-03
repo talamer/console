@@ -8,7 +8,7 @@ import * as PropTypes from 'prop-types';
 
 import store from '../redux';
 import { productName } from '../branding';
-import { ALL_NAMESPACES_KEY, LAST_PERSPECTIVE_LOCAL_STORAGE_KEY } from '../const';
+import { ALL_NAMESPACES_KEY } from '../const';
 import { connectToFlags, featureActions, flagPending, FLAGS } from '../features';
 import { analyticsSvc } from '../module/analytics';
 import { GlobalNotifications } from './global-notifications';
@@ -102,8 +102,8 @@ const DefaultPage = connect(mapPerspectiveStateToProps)(
 
     if (openshiftFlag) {
       // TODO - We should be using the link utility to create these links with perspective.
-      return lastViewedPerspective && lastViewedPerspective !== 'admin' ? (
-        <Redirect to={`/${lastViewedPerspective}`} />
+      return activePerspective && activePerspective !== 'admin' ? (
+        <Redirect to={`/${activePerspective}`} />
       ) : (
         <Redirect to="/k8s/cluster/projects" />
       );
@@ -318,7 +318,7 @@ class App extends React.PureComponent {
                     // <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/roles/:name/:rule/edit')} exact loader={() => import('./RBAC' /* webpackChunkName: "rbac" */).then(m => m.EditRulePage)} />
                   }
 
-                  { this.props.activePerspective === 'dev' && devConsoleRoutes.map(r => <Route key={r.path} {...r} />)}
+                  { (devconsoleEnabled || this.props.activePerspective === 'dev') && devConsoleRoutes.map(r => <Route key={r.path} {...r} />)}
 
                   <LazyRoute path={this._prependActivePerspective('/deploy-image')} exact loader={() => import('./deploy-image').then(m => m.DeployImage)} />
 
@@ -357,7 +357,7 @@ class App extends React.PureComponent {
                   <Route path={this._prependActivePerspective('/k8s/all-namespaces/:plural/:name')} component={ResourceDetailsPage} />
 
                   <LazyRoute path={this._prependActivePerspective('/error')} exact loader={() => import('./error' /* webpackChunkName: "error" */).then(m => m.ErrorPage)} />
-                  <Route path={this._prependActivePerspective('/')} exact component={DefaultPage} />
+                  <Route path="/" exact component={DefaultPage} />
 
                   {this._handlePageNotFound(this.props)}
                 </Switch>
