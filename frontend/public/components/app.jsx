@@ -41,7 +41,7 @@ import 'url-search-params-polyfill';
 // Extensions
 import devConsoleRoutes from '../extend/devconsole/routes';
 import PerspectiveSwitcher from '../extend/devconsole/shared/components/PerspectiveSwitcher';
-import { pathWithPerspective } from './utils/perspective';
+import { pathWithPerspective, PerspectiveFlagMap } from './utils/perspective';
 
 // Extensions
 import devConsoleRoutes from '../extend/devconsole/routes';
@@ -96,10 +96,10 @@ const mapPerspectiveStateToProps = (state) => {
 
 // The default page component lets us connect to flags without connecting the entire App.
 const DefaultPage = connect(mapPerspectiveStateToProps)(
-  connectToFlags(FLAGS.OPENSHIFT)(({ flags }) => {
+  connectToFlags(FLAGS.OPENSHIFT)(({ flags, activePerspective }) => {
     const openshiftFlag = flags[FLAGS.OPENSHIFT];
     const lastViewedPerspective = localStorage.getItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY);
-    if (flagPending(openshiftFlag)) {
+    if (flagPending(openshiftFlag) || (activePerspective === 'dev' && flagPending(flags[FLAGS.SHOW_DEV_CONSOLE]))) {
       return <Loading />;
     }
 
@@ -129,7 +129,6 @@ class App extends React.PureComponent {
     this._onResize = this._onResize.bind(this);
     this._onPerspectiveSwitcherClose = this._onPerspectiveSwitcherClose.bind(this);
     this.previousDesktopState = this._isDesktop();
-
     this.state = {
       isNavOpen: this._isDesktop(),
       isPerspectiveSwitcherOpen : false,
@@ -210,7 +209,19 @@ class App extends React.PureComponent {
   }
 
   _prependActivePerspective(path) {
-    return pathWithPerspective(this.props.activePerspective, path);
+    const { flags, activePerspective } = this.props;
+    const activePerspectiveFlagEnabled = flags[PerspectiveFlagMap[activePerspective]];
+    if (flags && !flagPending(activePerspectiveFlagEnabled) && activePerspectiveFlagEnabled) {
+      return pathWithPerspective(activePerspective, path);
+    }
+    return path;
+  }
+
+  _handlePageNotFound({ flags, activePerspective }) {
+    if (activePerspective === 'dev' && flagPending(flags[FLAGS.SHOW_DEV_CONSOLE])) {
+      return <Route component={null} />;
+    }
+    return <LazyRoute loader={() => import('./error' /* webpackChunkName: "error" */).then(m => m.ErrorPage404)} />;
   }
 
   render() {
@@ -358,7 +369,7 @@ class App extends React.PureComponent {
                   <LazyRoute path={this._prependActivePerspective('/error')} exact loader={() => import('./error' /* webpackChunkName: "error" */).then(m => m.ErrorPage)} />
                   <Route path={this._prependActivePerspective('/')} exact component={DefaultPage} />
 
-                  <LazyRoute loader={() => import('./error' /* webpackChunkName: "error" */).then(m => m.ErrorPage404)} />
+                  {this._handlePageNotFound(this.props)}
                 </Switch>
               </div>
             </div>
