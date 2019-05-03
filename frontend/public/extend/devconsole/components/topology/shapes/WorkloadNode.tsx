@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
-import { PenIcon } from '@patternfly/react-icons';
+import { PenIcon, ExternalLinkAltIcon } from '@patternfly/react-icons';
 import Decorator from './Decorator';
 import BaseNode from './BaseNode';
 import PodStatus from './PodStatus';
@@ -47,6 +47,20 @@ const WorkloadNode: React.FC<NodeProps<WorkloadData>> = ({
         >
           <g transform={`translate(-${decoratorRadius / 2}, -${decoratorRadius / 2})`}>
             <PenIcon style={{ fontSize: decoratorRadius }} />
+          </g>
+        </Decorator>
+      )}
+      {workload.data.url && (
+        <Decorator
+          x={radius - decoratorRadius}
+          y={-radius + decoratorRadius}
+          radius={decoratorRadius}
+          href={workload.data.url}
+          external
+          title="Open URL"
+        >
+          <g transform={`translate(-${decoratorRadius / 2}, -${decoratorRadius / 2})`}>
+            <ExternalLinkAltIcon style={{ fontSize: decoratorRadius }} />
           </g>
         </Decorator>
       )}

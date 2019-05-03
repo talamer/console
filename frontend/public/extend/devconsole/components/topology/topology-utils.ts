@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as _ from 'lodash-es';
 import { LabelSelector } from '../../../../module/k8s/label-selector';
+import { getRouteWebURL } from '../../../../components/routes';
 import {
   TopologyDataResources,
   ResourceProps,
@@ -76,6 +77,7 @@ export class TransformTopologyData {
       this.createGraphData(deploymentConfig);
       // add the lookup object
       const deploymentsLabels = _.get(deploymentConfig, 'metadata.labels') || {};
+      const deploymentsAnnotations = _.get(deploymentConfig, 'metadata.annotations') || {};
       this._topologyData.topology[dcUID] = {
         id: dcUID,
         name:
@@ -88,8 +90,8 @@ export class TransformTopologyData {
           return resource;
         }),
         data: {
-          // url: 'dummy_url',
-          // editUrl: 'dummy_edit_url',
+          url: !_.isEmpty(route.spec) ? getRouteWebURL(route): null,
+          editUrl: deploymentsAnnotations['app.openshift.io/edit-url'],
           builderImage: deploymentsLabels['app.kubernetes.io/name'],
           donutStatus: {
             pods: _.map(dcPods, (pod) =>
