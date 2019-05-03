@@ -52,8 +52,8 @@ const WorkloadNode: React.FC<NodeProps<WorkloadData>> = ({
       )}
       {workload.data.url && (
         <Decorator
-          x={-radius + decoratorRadius}
-          y={radius - decoratorRadius}
+          x={radius - decoratorRadius}
+          y={-radius + decoratorRadius}
           radius={decoratorRadius}
           href={workload.data.url}
           external
