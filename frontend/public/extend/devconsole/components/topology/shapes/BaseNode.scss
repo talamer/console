@@ -1,6 +1,6 @@
 .odc-base-node {
   &__bg {
-    fill: #fff;
+    fill: var(--pf-global--BackgroundColor--light-100);
   }
 
   &__selection {
@@ -10,11 +10,7 @@
 
   &__label {
     pointer-events: none;
-    fill: var(--pf-global--Color--100);
-    font-size: var(--pf-global--FontSize--md);
-
-    &.is-selected {
-      fill: var(--pf-global--active-color--300);
-    }
+    fill: var(--pf-global--Color--300);
+    font-size: var(--pf-global--FontSize--sm);
   }
 }

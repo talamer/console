@@ -15,8 +15,8 @@ const WorkloadNode: React.FC<NodeProps<WorkloadData>> = ({
   onSelect,
 }) => {
   const radius = size / 2;
-  const podStatusStrokeWidth = radius * 0.15;
-  const podStatusInset = podStatusStrokeWidth / 2;
+  const podStatusStrokeWidth = 8 / 90 * size;
+  const podStatusInset = 5 / 90 * size;
   const podStatusOuterRadius = radius - podStatusInset;
   const podStatusInnerRadius = podStatusOuterRadius - podStatusStrokeWidth;
   const decoratorRadius = radius * 0.25;
@@ -30,40 +30,44 @@ const WorkloadNode: React.FC<NodeProps<WorkloadData>> = ({
       label={workload.name}
       selected={selected}
       onSelect={onSelect}
+      attachments={[
+        workload.data.editUrl && (
+          <Decorator
+            key="edit"
+            x={radius - decoratorRadius * 0.75}
+            y={radius - decoratorRadius * 0.75}
+            radius={decoratorRadius}
+            href={workload.data.editUrl}
+            external
+            title="Edit Source Code"
+          >
+            <g transform={`translate(-${decoratorRadius / 2}, -${decoratorRadius / 2})`}>
+              <PenIcon style={{ fontSize: decoratorRadius }} />
+            </g>
+          </Decorator>
+        ),
+        workload.data.url && (
+          <Decorator
+            key="route"
+            x={radius - decoratorRadius * 0.75}
+            y={-radius + decoratorRadius * 0.75}
+            radius={decoratorRadius}
+            href={workload.data.url}
+            external
+            title="Open URL"
+          >
+            <g transform={`translate(-${decoratorRadius / 2}, -${decoratorRadius / 2})`}>
+              <ExternalLinkAltIcon style={{ fontSize: decoratorRadius }} />
+            </g>
+          </Decorator>
+        ),
+      ]}
     >
       <PodStatus
         innerRadius={podStatusInnerRadius}
         outerRadius={podStatusOuterRadius}
         pods={workload.data.donutStatus.pods}
       />
-      {workload.data.editUrl && (
-        <Decorator
-          x={radius - decoratorRadius}
-          y={radius - decoratorRadius}
-          radius={decoratorRadius}
-          href={workload.data.editUrl}
-          external
-          title="Edit Source Code"
-        >
-          <g transform={`translate(-${decoratorRadius / 2}, -${decoratorRadius / 2})`}>
-            <PenIcon style={{ fontSize: decoratorRadius }} />
-          </g>
-        </Decorator>
-      )}
-      {workload.data.url && (
-        <Decorator
-          x={radius - decoratorRadius}
-          y={-radius + decoratorRadius}
-          radius={decoratorRadius}
-          href={workload.data.url}
-          external
-          title="Open URL"
-        >
-          <g transform={`translate(-${decoratorRadius / 2}, -${decoratorRadius / 2})`}>
-            <ExternalLinkAltIcon style={{ fontSize: decoratorRadius }} />
-          </g>
-        </Decorator>
-      )}
     </BaseNode>
   );
 };
