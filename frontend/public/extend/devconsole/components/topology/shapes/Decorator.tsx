@@ -30,14 +30,10 @@ const Decorator: React.FunctionComponent<DecoratorTypes> = ({
     <g
       className="odc-decorator"
       transform={`translate(${x}, ${y})`}
-      onClick={
-        onClick
-          ? (e) => {
-            e.stopPropagation();
-            onClick();
-          }
-          : null
-      }
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick && onClick();
+      }}
     >
       <SvgDropShadowFilter id={FILTER_ID} floodOpacity={0.5} />
       <title>{title}</title>
