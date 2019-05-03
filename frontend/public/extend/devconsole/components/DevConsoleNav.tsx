@@ -6,6 +6,7 @@ import { Nav, NavList, PageSidebar } from '@patternfly/react-core';
 import { HrefLink, NavSection, ResourceClusterLink, ResourceNSLink } from '../../../components/nav';
 import { FLAGS } from '../../../features';
 import { BuildModel, PipelineModel } from '../../../models';
+import { stripPerspectivePath } from '../../../components/utils/link';
 
 interface DevConsoleNavigationProps {
   isNavOpen: boolean;
@@ -30,7 +31,9 @@ export const PageNav = (props: DevConsoleNavigationProps) => {
     let matchflag: boolean = false;
     paths.map(
       (path) =>
-        (matchflag = matchflag || matchPath(stripNSFromPath(props.location), { path }) != null),
+        (matchflag =
+          matchflag ||
+          matchPath(stripPerspectivePath(stripNSFromPath(props.location)), { path }) != null),
     );
     return matchflag;
   };
@@ -42,31 +45,25 @@ export const PageNav = (props: DevConsoleNavigationProps) => {
           href="/add"
           name="+Add"
           activePath="/dev/add"
-          isActive={isActive([
-            '/dev/add',
-            '/dev/import',
-            '/dev/catalog',
-            '/dev/k8s/import',
-            '/dev/deploy-image',
-          ])}
+          isActive={isActive(['/add', '/import', '/catalog', '/k8s/import', '/deploy-image'])}
         />
         <HrefLink
           href="/topology"
           name="Topology"
           activePath="/dev/topology"
-          isActive={isActive(['/dev/topology'])}
+          isActive={isActive(['/topology'])}
         />
         <ResourceNSLink
           resource="buildconfigs"
           name={BuildModel.labelPlural}
           activeNamespace={props.activeNamespace}
-          isActive={isActive(['/dev/k8s/buildconfigs'])}
+          isActive={isActive(['/k8s/buildconfigs'])}
         />
         <ResourceNSLink
           resource="pipelines"
           name={PipelineModel.labelPlural}
           activeNamespace={props.activeNamespace}
-          isActive={isActive(['/dev/k8s/pipelines', '/dev/k8s/pipelineruns'])}
+          isActive={isActive(['/k8s/pipelines', '/k8s/pipelineruns'])}
         />
         <DevNavSection title="Advanced">
           <ResourceClusterLink resource="projects" name="Projects" required={FLAGS.OPENSHIFT} />
