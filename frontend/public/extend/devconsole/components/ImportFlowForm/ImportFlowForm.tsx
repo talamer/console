@@ -68,20 +68,12 @@ const initialState: State = {
 };
 
 enum UrlErrorType {
-  RepoNotReachable = 'RepoNotReachable',
-  BranchNotFound = 'BranchNotFound',
+  RepoNotReachable = 'The git URL is not reachable. Please enter the URL properly.',
+  BranchNotFound = 'The branch could not be found. Please enter the URL with the correct branch name.',
 }
 
-const getUrlErrorMessage = (errorType: UrlErrorType) => {
-  switch (errorType) {
-    case UrlErrorType.RepoNotReachable:
-      return 'The git url is not reachable. Please enter the url properly.';
-    case UrlErrorType.BranchNotFound:
-      return 'The branch couldnot be found. Please enter the url with the correct branch name.';
-    default:
-      return null;
-  }
-};
+const getUrlErrorMessage = (errorType: UrlErrorType) =>
+  UrlErrorType[errorType] || 'Please enter a valid git URL';
 
 export class ImportFlowForm extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -155,7 +147,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
     if (gitType !== '') {
       this.setState({ gitTypeError: '' });
     } else {
-      this.setState({ gitTypeError: 'Please choose git type' });
+      this.setState({ gitTypeError: 'Please choose a git type' });
     }
   };
 
@@ -171,13 +163,13 @@ export class ImportFlowForm extends React.Component<Props, State> {
       builderImage: '',
       isBuilderImageDetected: false,
       builderImageError: '',
-      gitType: '',
     });
     const urlRegex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
     if (!urlRegex.test(event.target.value)) {
       this.setState({
-        gitRepoUrlError: 'Please enter the valid git URL',
+        gitRepoUrlError: 'Please enter a valid git URL',
         gitType: '',
+        gitTypeError: '',
         gitUrlValidationStatus: '',
       });
     } else {
@@ -272,7 +264,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
         })
         .catch(() => {
           this.setState({
-            gitRepoUrlError: 'Please enter the valid git URL',
+            gitRepoUrlError: 'Please enter a valid git URL',
             lastEnteredGitUrl: this.state.gitRepoUrl,
           });
         });
@@ -280,7 +272,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
       if (this.detectGitType(this.state.gitRepoUrl) === '') {
         this.setState({
           gitType: this.detectGitType(this.state.gitRepoUrl),
-          gitTypeError: 'Not able to detect the git type. Please choose git type',
+          gitTypeError: 'Not able to detect the git type. Please choose a git type',
         });
       } else {
         this.setState({ gitType: this.detectGitType(this.state.gitRepoUrl) });
@@ -384,7 +376,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
       })
       .catch(() => {
         this.setState({
-          gitRepoUrlError: 'Please enter the valid git URL',
+          gitRepoUrlError: 'Please enter a valid git URL',
         });
       })
       .then(() => {
