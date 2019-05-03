@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { matchPath } from 'react-router';
 import { Nav, NavList, PageSidebar } from '@patternfly/react-core';
 import { HrefLink, NavSection, ResourceClusterLink, ResourceNSLink } from '../../../components/nav';
 import { FLAGS } from '../../../features';
@@ -14,35 +15,24 @@ interface DevConsoleNavigationProps {
   onToggle: () => void;
 }
 
+const stripNSFromPath = (href) => {
+  if (href.includes('/ns/')) {
+    href = href.split('/ns/');
+    return href[0] + (href[1] ? href[1].replace(/[^/]*/, '') : '');
+  }
+  return href.replace('/all-namespaces', '');
+};
+
 const DevNavSection = NavSection as React.ComponentClass<any>;
 
 export const PageNav = (props: DevConsoleNavigationProps) => {
-  //Generic implementation of isActive functionality
-  const isActive = (includes: Array<string>, position: string, excludes: Array<string>) => {
-    if (includes.length < 1 || includes[0] === '') {
-      return false;
-    }
-    let includeFlag = false;
-    switch (position) {
-      case 'any':
-        includes.map((keyword) => (includeFlag = includeFlag || props.location.includes(keyword)));
-        break;
-      case 'start':
-        includes.map(
-          (keyword) => (includeFlag = includeFlag || props.location.startsWith(keyword)),
-        );
-        break;
-      default:
-        includes.map((keyword) => (includeFlag = includeFlag || props.location.endsWith(keyword)));
-        break;
-    }
-    //Example call for exclude isActive(['pipeline'],'',['pipelinerun'])
-    if (excludes.length < 1 || excludes[0] === '') {
-      return includeFlag;
-    }
-    let excludeFlag = false;
-    excludes.map((keyword) => (excludeFlag = excludeFlag || props.location.includes(keyword)));
-    return includeFlag && !excludeFlag;
+  const isActive = (paths: Array<string>) => {
+    let matchflag: boolean = false;
+    paths.map(
+      (path) =>
+        (matchflag = matchflag || matchPath(stripNSFromPath(props.location), { path }) != null),
+    );
+    return matchflag;
   };
 
   return (
@@ -52,25 +42,31 @@ export const PageNav = (props: DevConsoleNavigationProps) => {
           href="/add"
           name="+Add"
           activePath="/dev/add"
-          isActive={isActive(['add'], '', [''])}
+          isActive={isActive([
+            '/dev/add',
+            '/dev/import',
+            '/dev/catalog',
+            '/dev/k8s/import',
+            '/dev/deploy-image',
+          ])}
         />
         <HrefLink
           href="/topology"
           name="Topology"
           activePath="/dev/topology"
-          isActive={isActive(['topology'], '', [''])}
+          isActive={isActive(['/dev/topology'])}
         />
         <ResourceNSLink
           resource="buildconfigs"
           name={BuildModel.labelPlural}
           activeNamespace={props.activeNamespace}
-          isActive={isActive(['buildconfigs'], '', [''])}
+          isActive={isActive(['/dev/k8s/buildconfigs'])}
         />
         <ResourceNSLink
           resource="pipelines"
           name={PipelineModel.labelPlural}
           activeNamespace={props.activeNamespace}
-          isActive={isActive(['pipelines', 'pipelinerun'], 'any', [''])}
+          isActive={isActive(['/dev/k8s/pipelines', '/dev/k8s/pipelineruns'])}
         />
         <DevNavSection title="Advanced">
           <ResourceClusterLink resource="projects" name="Projects" required={FLAGS.OPENSHIFT} />
