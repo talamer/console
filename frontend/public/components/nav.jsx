@@ -32,7 +32,7 @@ export const matchesModel = (resourcePath, model) => model && matchesPath(resour
 import { Nav, NavExpandable, NavItem, NavList, PageSidebar } from '@patternfly/react-core';
 import PerspectiveLink from '../extend/devconsole/shared/components/PerspectiveLink';
 
-const stripNS = href => {
+export const stripNS = href => {
   href = stripBasePath(href);
   return href.replace(/^\/?k8s\//, '').replace(/^\/?(cluster|all-namespaces|ns\/[^/]*)/, '').replace(/^\//, '');
 };
@@ -132,7 +132,7 @@ ResourceClusterLink.propTypes = {
 
 export class HrefLink extends NavLink {
   static isActive(props, resourcePath) {
-    const noNSHref = stripNS(props.href);
+    const noNSHref = stripNS(stripPerspectivePath(props.href));
     return resourcePath === noNSHref || _.startsWith(resourcePath, `${noNSHref}/`);
   }
 
