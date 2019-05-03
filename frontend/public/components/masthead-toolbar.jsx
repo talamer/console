@@ -257,19 +257,22 @@ class MastheadToolbar_ extends React.Component {
                 </Firehose>
             }
             {/* desktop -- (application launcher dropdown), help dropdown [documentation, about] */}
-            {flags[FLAGS.OPENSHIFT] && <ToolbarItem>
-              <Dropdown
-                isPlain
-                onSelect={this._onApplicationLauncherDropdownSelect}
-                toggle={
-                  <DropdownToggle aria-label="Application Launcher" iconComponent={null} onToggle={this._onApplicationLauncherDropdownToggle}>
-                    <ThIcon />
-                  </DropdownToggle>
-                }
-                isOpen={isApplicationLauncherDropdownOpen}
-                dropdownItems={this._renderMenuItems(this._launchActions())}
-              />
-            </ToolbarItem>}
+            {flags[FLAGS.OPENSHIFT] &&
+              (flagPending(flags[FLAGS.SHOW_DEV_CONSOLE]) || !flags[FLAGS.SHOW_DEV_CONSOLE]) &&
+                <ToolbarItem>
+                  <Dropdown
+                    isPlain
+                    onSelect={this._onApplicationLauncherDropdownSelect}
+                    toggle={
+                      <DropdownToggle aria-label="Application Launcher" iconComponent={null} onToggle={this._onApplicationLauncherDropdownToggle}>
+                        <ThIcon />
+                      </DropdownToggle>
+                    }
+                    isOpen={isApplicationLauncherDropdownOpen}
+                    dropdownItems={this._renderMenuItems(this._launchActions())}
+                  />
+                </ToolbarItem>
+            }
             <ToolbarItem>
               <Dropdown
                 isPlain
@@ -298,7 +301,7 @@ class MastheadToolbar_ extends React.Component {
 }
 
 const mastheadToolbarStateToProps = state => {
-  const desiredFlags = [FLAGS.AUTH_ENABLED, FLAGS.OPENSHIFT, FLAGS.CLUSTER_VERSION];
+  const desiredFlags = [FLAGS.AUTH_ENABLED, FLAGS.OPENSHIFT, FLAGS.CLUSTER_VERSION, FLAGS.SHOW_DEV_CONSOLE];
   const flagProps = flagStateToProps(desiredFlags, state);
   const user = state.UI.get('user');
   return { ...flagProps, user };
