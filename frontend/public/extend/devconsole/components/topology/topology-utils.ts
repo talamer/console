@@ -90,7 +90,7 @@ export class TransformTopologyData {
           return resource;
         }),
         data: {
-          url: getRouteWebURL(route),
+          url: !_.isEmpty(route.spec) ? getRouteWebURL(route): null,
           editUrl: deploymentsAnnotations['app.openshift.io/edit-url'],
           builderImage: deploymentsLabels['app.kubernetes.io/name'],
           donutStatus: {
