@@ -191,11 +191,11 @@ class App extends React.PureComponent {
   }
 
   _sidebarNav() {
-    if (
-      this.props.flags.SHOW_DEV_CONSOLE &&
-      this.props.activePerspective === 'dev'
-    ) {
-      return <DevConsoleNavigation isNavOpen={this.state.isNavOpen} />;
+    if (this.props.activePerspective === 'dev') {
+      if (!flagPending(FLAGS.SHOW_DEV_CONSOLE)) {
+        return <DevConsoleNavigation isNavOpen={this.state.isNavOpen} />;
+      }
+      return null;
     }
     return (
       <Navigation
@@ -318,7 +318,7 @@ class App extends React.PureComponent {
                     // <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/roles/:name/:rule/edit')} exact loader={() => import('./RBAC' /* webpackChunkName: "rbac" */).then(m => m.EditRulePage)} />
                   }
 
-                  { devconsoleEnabled && devConsoleRoutes.map(r => <Route key={r.path} {...r} />)}
+                  { this.props.activePerspective === 'dev' && devConsoleRoutes.map(r => <Route key={r.path} {...r} />)}
 
                   <LazyRoute path={this._prependActivePerspective('/deploy-image')} exact loader={() => import('./deploy-image').then(m => m.DeployImage)} />
 
