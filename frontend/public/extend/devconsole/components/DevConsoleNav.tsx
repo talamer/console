@@ -2,9 +2,16 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Nav, NavList, PageSidebar } from '@patternfly/react-core';
-import { HrefLink, NavSection, ResourceClusterLink, ResourceNSLink } from '../../../components/nav';
+import {
+  HrefLink,
+  NavSection,
+  ResourceClusterLink,
+  ResourceNSLink,
+  stripNS,
+} from '../../../components/nav';
 import { FLAGS } from '../../../features';
 import { BuildModel, PipelineModel } from '../../../models';
+import { stripPerspectivePath } from '../../../components/utils/link';
 
 interface DevConsoleNavigationProps {
   isNavOpen: boolean;
@@ -16,78 +23,49 @@ interface DevConsoleNavigationProps {
 
 const DevNavSection = NavSection as React.ComponentClass<any>;
 
-export const PageNav = (props: DevConsoleNavigationProps) => {
-  //Generic implementation of isActive functionality
-  const isActive = (includes: Array<string>, position: string, excludes: Array<string>) => {
-    if (includes.length < 1 || includes[0] === '') {
-      return false;
-    }
-    let includeFlag = false;
-    switch (position) {
-      case 'any':
-        includes.map((keyword) => (includeFlag = includeFlag || props.location.includes(keyword)));
-        break;
-      case 'start':
-        includes.map(
-          (keyword) => (includeFlag = includeFlag || props.location.startsWith(keyword)),
-        );
-        break;
-      default:
-        includes.map((keyword) => (includeFlag = includeFlag || props.location.endsWith(keyword)));
-        break;
-    }
-    //Example call for exclude isActive(['pipeline'],'',['pipelinerun'])
-    if (excludes.length < 1 || excludes[0] === '') {
-      return includeFlag;
-    }
-    let excludeFlag = false;
-    excludes.map((keyword) => (excludeFlag = excludeFlag || props.location.includes(keyword)));
-    return includeFlag && !excludeFlag;
+export const PageNav = ({
+  location,
+  activeNamespace,
+  onNavSelect,
+  onToggle,
+}: DevConsoleNavigationProps) => {
+  const resourcePath = location ? stripNS(stripPerspectivePath(location)) : '';
+  const isActive = (paths: string[]) => {
+    return paths.some((path) => HrefLink.isActive({ href: path }, resourcePath));
+  };
+  const isResourceActive = (paths: string[]) => {
+    return paths.some((path) =>
+      ResourceNSLink.isActive({ resource: path }, resourcePath, activeNamespace),
+    );
   };
 
   return (
-    <Nav aria-label="Nav" onSelect={props.onNavSelect} onToggle={props.onToggle}>
+    <Nav aria-label="Nav" onSelect={onNavSelect} onToggle={onToggle}>
       <NavList>
         <HrefLink
           href="/add"
           name="+Add"
-          activePath="/dev/add"
-          isActive={isActive(['add'], '', [''])}
+          isActive={isActive(['add', 'import', 'catalog', 'import', 'deploy-image'])}
         />
-        <HrefLink
-          href="/topology"
-          name="Topology"
-          activePath="/dev/topology"
-          isActive={isActive(['topology'], '', [''])}
-        />
+        <HrefLink href="/topology" name="Topology" isActive={isActive(['topology'])} />
         <ResourceNSLink
           resource="buildconfigs"
           name={BuildModel.labelPlural}
-          activeNamespace={props.activeNamespace}
-          isActive={isActive(['buildconfigs'], '', [''])}
+          activeNamespace={activeNamespace}
+          isActive={isResourceActive(['buildconfigs'])}
         />
         <ResourceNSLink
           resource="pipelines"
           name={PipelineModel.labelPlural}
-          activeNamespace={props.activeNamespace}
-          isActive={isActive(['pipelines', 'pipelinerun'], 'any', [''])}
+          activeNamespace={activeNamespace}
+          isActive={isResourceActive(['pipelines', 'pipelineruns'])}
         />
         <DevNavSection title="Advanced">
           <ResourceClusterLink resource="projects" name="Projects" required={FLAGS.OPENSHIFT} />
-          <HrefLink
-            href="/overview"
-            name="Status"
-            activePath="/overview"
-            required={FLAGS.OPENSHIFT}
-          />
-          <HrefLink
-            href="/status"
-            name="Status"
-            activePath="/status"
-            disallowed={FLAGS.OPENSHIFT}
-          />
+          <HrefLink href="/overview" name="Status" required={FLAGS.OPENSHIFT} />
+          <HrefLink href="/status" name="Status" disallowed={FLAGS.OPENSHIFT} />
           <ResourceNSLink resource="events" name="Events" />
-          <HrefLink href="/search" name="Search" activePath="/search" />
+          <HrefLink href="/search" name="Search" />
         </DevNavSection>
       </NavList>
     </Nav>
