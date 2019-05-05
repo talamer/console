@@ -93,9 +93,8 @@ const mapPerspectiveStateToProps = (state) => {
 
 // The default page component lets us connect to flags without connecting the entire App.
 const DefaultPage = connect(mapPerspectiveStateToProps)(
-  connectToFlags(FLAGS.OPENSHIFT)(({ flags, activePerspective }) => {
+  connectToFlags(FLAGS.OPENSHIFT, FLAGS.SHOW_DEV_CONSOLE)(({ flags, activePerspective }) => {
     const openshiftFlag = flags[FLAGS.OPENSHIFT];
-    const lastViewedPerspective = localStorage.getItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY);
     if (flagPending(openshiftFlag) || (activePerspective === 'dev' && flagPending(flags[FLAGS.SHOW_DEV_CONSOLE]))) {
       return <Loading />;
     }
@@ -192,7 +191,7 @@ class App extends React.PureComponent {
 
   _sidebarNav() {
     if (this.props.activePerspective === 'dev') {
-      if (!flagPending(FLAGS.SHOW_DEV_CONSOLE)) {
+      if (!flagPending(this.props.flags[FLAGS.SHOW_DEV_CONSOLE])) {
         return <DevConsoleNavigation isNavOpen={this.state.isNavOpen} />;
       }
       return null;
@@ -318,7 +317,7 @@ class App extends React.PureComponent {
                     // <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/roles/:name/:rule/edit')} exact loader={() => import('./RBAC' /* webpackChunkName: "rbac" */).then(m => m.EditRulePage)} />
                   }
 
-                  { (devconsoleEnabled || this.props.activePerspective === 'dev') && devConsoleRoutes.map(r => <Route key={r.path} {...r} />)}
+                  { (devconsoleEnabled) && devConsoleRoutes.map(r => <Route key={r.path} {...r} />)}
 
                   <LazyRoute path={this._prependActivePerspective('/deploy-image')} exact loader={() => import('./deploy-image').then(m => m.DeployImage)} />
 
