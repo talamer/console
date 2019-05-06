@@ -6,6 +6,7 @@ import { CheckCircleIcon } from '@patternfly/react-icons';
 import { Dropdown, NsDropdown, LoadingInline } from '../../../../components/utils';
 import { history } from '../../../../components/utils/router';
 import { GitSourceModel, GitSourceComponentModel, GitSourceAnalysisModel } from '../../models';
+import { SecretModel } from '../../../../models';
 import { k8sCreate, k8sKill, k8sGet, K8sResourceKind } from '../../../../module/k8s';
 import { pathWithPerspective } from './../../../../../public/components/utils/perspective';
 import './ImportFlowForm.scss';
@@ -13,6 +14,7 @@ import AppNameSelector from '../../shared/components/dropdown/AppNameSelector';
 import BuilderImageSelector from '../import/BuilderImageSelector';
 import { normalizeBuilderImages, NormalizedBuilderImages } from '../../utils/imagestream-utils';
 import BuilderImageTagSelector from '../import/BuilderImageTagSelector';
+import SourceSecretSelector from '../import/SourceSecretSelector';
 
 export type FirehoseList = {
   data?: K8sResourceKind[];
@@ -34,6 +36,7 @@ export interface State {
   nameError: string;
   builderImageError: string;
   gitRepoUrlError: string;
+  gitRepoUrlInfo: string;
   gitSourceName: string;
   gitSourceAnalysisName: string;
   isGitSourceCreated: boolean;
@@ -42,6 +45,13 @@ export interface State {
   isBuilderImageDetected: boolean;
   gitUrlValidationStatus: string;
   isGitTypeVisible: boolean;
+  sourceSecretName: string;
+  selectedSourceSecret: string;
+  secretAuthType: string;
+  secretCredentials: {
+    [key: string]: string;
+  };
+  showSourceSecretDropDown: boolean;
 }
 
 export interface Props {
@@ -61,6 +71,7 @@ const initialState: State = {
   recommendedImage: '',
   gitTypeError: '',
   gitRepoUrlError: '',
+  gitRepoUrlInfo: '',
   namespaceError: '',
   nameError: '',
   builderImageError: '',
@@ -72,6 +83,11 @@ const initialState: State = {
   gitUrlValidationStatus: '',
   isBuilderImageDetected: false,
   isGitTypeVisible: false,
+  selectedSourceSecret: '',
+  sourceSecretName: '',
+  secretAuthType: '',
+  secretCredentials: {},
+  showSourceSecretDropDown: false,
 };
 
 enum ErrorMessage {
@@ -104,6 +120,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
       nameError: '',
       builderImageError: '',
       gitRepoUrlError: '',
+      gitRepoUrlInfo: '',
       gitSourceName: '',
       gitSourceAnalysisName: '',
       isGitSourceCreated: false,
@@ -112,6 +129,11 @@ export class ImportFlowForm extends React.Component<Props, State> {
       gitUrlValidationStatus: '',
       isBuilderImageDetected: false,
       isGitTypeVisible: false,
+      selectedSourceSecret: '',
+      sourceSecretName: '',
+      secretAuthType: '',
+      secretCredentials: {},
+      showSourceSecretDropDown: false,
     };
   }
   private randomString = this.generateRandomString();
@@ -170,13 +192,16 @@ export class ImportFlowForm extends React.Component<Props, State> {
       gitRepoUrl: event.target.value,
       lastEnteredGitUrl: '',
       gitRepoUrlError: '',
+      gitRepoUrlInfo: '',
       gitUrlValidationStatus: '',
       isGitSourceCreated: false,
       recommendedImage: '',
       isBuilderImageDetected: false,
       builderImageError: '',
+      showSourceSecretDropDown: false,
+      selectedSourceSecret: '',
     });
-    const urlRegex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
+    const urlRegex = /^(?:git|ssh|http(s)?(:\/\/)|(git@))?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
     if (!urlRegex.test(event.target.value)) {
       this.setState({
         gitRepoUrlError: ErrorMessage.GitUrlError,
@@ -201,6 +226,21 @@ export class ImportFlowForm extends React.Component<Props, State> {
 
   onApplicationChange = (application: string, selectedKey: string) => {
     this.setState({ application, selectedApplicationKey: selectedKey });
+  };
+
+  onSourceSecretChange = (
+    sourceSecret: string,
+    selectedKey: string,
+    authType: string,
+    credentials?: { [key: string]: string },
+  ) => {
+    this.setState({
+      sourceSecretName: sourceSecret,
+      selectedSourceSecret: selectedKey,
+      secretAuthType: authType,
+      secretCredentials: credentials,
+      gitRepoUrlInfo: '',
+    });
   };
 
   onNameChange = (event) => {
@@ -240,6 +280,36 @@ export class ImportFlowForm extends React.Component<Props, State> {
       },
       spec: {
         url: this.state.gitRepoUrl,
+      },
+    };
+  }
+
+  private sourceSecretBasicParams() {
+    return {
+      apiVersion: 'v1',
+      kind: 'Secret',
+      metadata: {
+        name: this.state.sourceSecretName,
+        namespace: this.state.namespace,
+      },
+      type: this.state.secretAuthType,
+      data: this.state.secretCredentials,
+    };
+  }
+
+  private gitSourceWithSecretParams(gitSourceName: string, gitSecretName: string) {
+    return {
+      kind: 'GitSource',
+      apiVersion: 'devconsole.openshift.io/v1alpha1',
+      metadata: {
+        name: gitSourceName,
+        namespace: this.state.namespace,
+      },
+      spec: {
+        url: this.state.gitRepoUrl,
+        secretRef: {
+          name: gitSecretName,
+        },
       },
     };
   }
@@ -324,12 +394,16 @@ export class ImportFlowForm extends React.Component<Props, State> {
   disableSubmitButton = (): boolean => {
     return (
       !this.state.gitRepoUrl ||
+      this.state.gitRepoUrlError !== '' ||
       !this.state.gitType ||
       !this.state.namespace ||
-      !this.state.selectedApplicationKey ||
+      !this.state.application ||
       !this.state.name ||
       !this.state.selectedImage ||
-      this.state.gitUrlValidationStatus !== 'ok'
+      (this.state.showSourceSecretDropDown && !this.state.sourceSecretName) ||
+      (this.state.selectedSourceSecret === 'create-source-secret' &&
+        !(this.state.secretCredentials.password || this.state.secretCredentials.sshPrivateKey))
+      // this.state.gitUrlValidationStatus !== 'ok'
     );
   };
 
@@ -359,15 +433,60 @@ export class ImportFlowForm extends React.Component<Props, State> {
   handleSubmit = (event) => {
     event.preventDefault();
     if (!this.disableSubmitButton()) {
-      k8sCreate(GitSourceComponentModel, this.catalogParams()).then(
-        () => {
-          this.setState({ isComponentCreated: true });
-          history.push(pathWithPerspective('dev', `/topology/ns/${this.state.namespace}`));
-        },
-        (err) => {
-          this.setState({ nameError: err.message });
-        },
-      );
+      if (this.state.selectedSourceSecret === 'create-source-secret') {
+        k8sCreate(SecretModel, this.sourceSecretBasicParams()).then(() => {
+          k8sCreate(
+            GitSourceModel,
+            this.gitSourceWithSecretParams(this.state.gitSourceName, this.state.sourceSecretName),
+          )
+            .then(() => {
+              k8sCreate(GitSourceComponentModel, this.catalogParams()).then(
+                () => {
+                  this.setState({ isComponentCreated: true });
+                  history.push(pathWithPerspective('dev', `/topology/ns/${this.state.namespace}`));
+                },
+                (err) => {
+                  this.setState({ nameError: err.message });
+                },
+              );
+            })
+            .catch((err) => {
+              this.setState({ nameError: err.message });
+            });
+        });
+      } else if (
+        this.state.showSourceSecretDropDown &&
+        this.state.selectedSourceSecret === this.state.sourceSecretName
+      ) {
+        k8sCreate(
+          GitSourceModel,
+          this.gitSourceWithSecretParams(this.state.gitSourceName, this.state.sourceSecretName),
+        )
+          .then(() => {
+            k8sCreate(GitSourceComponentModel, this.catalogParams()).then(
+              () => {
+                this.setState({ isComponentCreated: true });
+                history.push(pathWithPerspective('dev', `/topology/ns/${this.state.namespace}`));
+              },
+              (err) => {
+                this.setState({ nameError: err.message });
+              },
+            );
+          })
+          .catch((err) => {
+            this.setState({ nameError: err.message });
+          });
+      } else {
+        k8sCreate(GitSourceComponentModel, this.catalogParams()).then(
+          () => {
+            this.setState({ isComponentCreated: true });
+            history.push(pathWithPerspective('dev', `/topology/ns/${this.state.namespace}`));
+          },
+          (err) => {
+            this.setState({ nameError: err.message });
+          },
+        );
+      }
     }
   };
 
@@ -384,12 +503,23 @@ export class ImportFlowForm extends React.Component<Props, State> {
           this.setState({
             gitUrlValidationStatus: res.status.connection.state,
             gitRepoUrlError: '',
+            showSourceSecretDropDown: false,
           });
         } else {
-          this.setState({
-            gitUrlValidationStatus: res.status.connection.state,
-            gitRepoUrlError: getUrlErrorMessage(res.status.connection.reason),
-          });
+          if (res.status.connection.reason === 'RepoNotReachable') {
+            k8sKill(GitSourceModel, this.gitSourceParams(this.state.gitSourceName));
+            this.setState({
+              showSourceSecretDropDown: true,
+              gitRepoUrlInfo:
+                'Unable to establish connection. Check the Git URL or provide more details if a private Git Repo.',
+              gitUrlValidationStatus: res.status.connection.state,
+            });
+          } else {
+            this.setState({
+              gitUrlValidationStatus: res.status.connection.state,
+              gitRepoUrlError: getUrlErrorMessage(res.status.connection.reason),
+            });
+          }
         }
         clearInterval(this.validateUrlPoller);
       })
@@ -483,6 +613,9 @@ export class ImportFlowForm extends React.Component<Props, State> {
       nameError,
       builderImageError,
       isGitTypeVisible,
+      selectedSourceSecret,
+      sourceSecretName,
+      secretCredentials,
     } = this.state;
 
     const { imageStreams } = this.props;
@@ -554,6 +687,17 @@ export class ImportFlowForm extends React.Component<Props, State> {
             />
             <HelpBlock>{namespaceError}</HelpBlock>
           </FormGroup>
+          {this.state.showSourceSecretDropDown ? (
+          <SourceSecretSelector
+            sourceSecret={sourceSecretName}
+            secretCredentials={secretCredentials}
+            namespace={namespace}
+            selectedKey={selectedSourceSecret}
+            onChange={this.onSourceSecretChange}
+          />
+        ) : (
+          ''
+        )}
           <AppNameSelector
             application={application}
             namespace={namespace}
