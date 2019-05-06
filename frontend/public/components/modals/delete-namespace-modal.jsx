@@ -1,11 +1,18 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-
+import { connect } from 'react-redux';
 import { k8sKill } from '../../module/k8s';
 import { createModalLauncher, ModalTitle, ModalBody, ModalSubmitFooter } from '../factory/modal';
 import { history, PromiseComponent} from '../utils';
+import { pathWithPerspective } from '../utils/perspective';
+import { getActivePerspective } from '../../ui/ui-selectors';
 
-class DeleteNamespaceModal extends PromiseComponent {
+const mapStateToProps = state => {
+  return {
+    activePerspective: getActivePerspective(state),
+  };
+};
+const DeleteNamespaceModal = connect(mapStateToProps)(class DeleteNamespaceModal extends PromiseComponent {
   constructor(props) {
     super(props);
     this.state = Object.assign(this.state, {isTypedNsMatching: false});
@@ -23,7 +30,7 @@ class DeleteNamespaceModal extends PromiseComponent {
     event.preventDefault();
     this.handlePromise(k8sKill(this.props.kind, this.props.resource)).then(() => {
       this._close();
-      history.push(`/k8s/cluster/${this.props.kind.path}`);
+      history.push(pathWithPerspective(this.props.activePerspective, `/k8s/cluster/${this.props.kind.path}`));
     });
   }
 
@@ -43,7 +50,7 @@ class DeleteNamespaceModal extends PromiseComponent {
       <ModalSubmitFooter submitText="Delete" submitDisabled={!this.state.isTypedNsMatching} submitButtonClass="btn-danger" cancel={this._cancel} errorMessage={this.state.errorMessage} inProgress={this.state.inProgress} />
     </form>;
   }
-}
+});
 
 DeleteNamespaceModal.propTypes = {
   kind: PropTypes.object,
