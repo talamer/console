@@ -103,6 +103,7 @@
     "text-encoding": "0.x",
     "url-polyfill": "^1.0.12",
     "url-search-params-polyfill": "2.x",
+    "victory": "^32.2.2",
     "whatwg-fetch": "2.x",
     "xterm": "~3.8.1"
   },
