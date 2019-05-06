@@ -3,11 +3,14 @@ import { Firehose } from '../../../../components/utils';
 import { ImageStreamModel } from '../../../../models';
 import ImportFlowForm from '../ImportFlowForm/ImportFlowForm';
 
-export const ImportFlow: React.FunctionComponent = () => {
+interface ImportFlowProps {
+  namespace: string;
+}
 
+export const ImportFlow: React.FunctionComponent<ImportFlowProps> = ({ namespace }) => {
   return (
-    <Firehose resources={[{kind: ImageStreamModel.kind, prop: 'imagestreams', isList: true}]}>
-      <ImportFlowForm />
+    <Firehose resources={[{ kind: ImageStreamModel.kind, prop: 'imagestreams', isList: true }]}>
+      <ImportFlowForm activeNamespace={namespace} />
     </Firehose>
   );
 };

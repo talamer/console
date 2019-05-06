@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 import * as React from 'react';
-import { connect } from 'react-redux';
 import * as fuzzy from 'fuzzysearch';
 import * as _ from 'lodash-es';
 import { Form, FormControl, FormGroup, ControlLabel, HelpBlock, Button } from 'patternfly-react';
@@ -599,9 +598,4 @@ export class ImportFlowForm extends React.Component<Props, State> {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    activeNamespace: state.UI.get('activeNamespace'),
-  };
-};
-export default connect(mapStateToProps)(ImportFlowForm);
+export default ImportFlowForm;
