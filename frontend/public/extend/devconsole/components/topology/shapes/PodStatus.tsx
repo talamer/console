@@ -53,7 +53,7 @@ export default class PodStatus extends React.PureComponent<PodStatusProps> {
     const arcFunc = arc()
       .outerRadius(outerRadius)
       .innerRadius(innerRadius)
-      .padAngle(0.01);
+      .padAngle(0.02);
 
     const pieData = pieFunc(podData);
 

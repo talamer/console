@@ -71,7 +71,7 @@ export default class Graph extends React.Component<GraphProps, State> {
       <div ref={measureRef} className="odc-graph">
         {dimensions && (
           <Renderer
-            nodeSize={125}
+            nodeSize={104}
             height={dimensions.height}
             width={dimensions.width}
             graph={graph}

@@ -35,7 +35,7 @@ const Decorator: React.FunctionComponent<DecoratorTypes> = ({
         onClick && onClick();
       }}
     >
-      <SvgDropShadowFilter id={FILTER_ID} floodOpacity={0.5} />
+      <SvgDropShadowFilter id={FILTER_ID} stdDeviation={1} floodOpacity={0.5} />
       <title>{title}</title>
       <circle
         className="odc-decorator__bg"

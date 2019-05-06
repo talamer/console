@@ -3,7 +3,7 @@
   transition: color 0.2s ease;
 
   &__bg {
-    fill: #fff;
+    fill: var(--pf-global--BackgroundColor--light-100);
   }
 
   &:hover,

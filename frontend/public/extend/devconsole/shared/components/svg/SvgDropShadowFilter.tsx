@@ -17,9 +17,9 @@ const SvgDropShadowFilter: React.FC<SvgDropShadowFilterProps> = ({
   id,
   dx = 0,
   dy = 1,
-  stdDeviation = 1,
+  stdDeviation = 2,
   floodColor = '#030303',
-  floodOpacity = 0.15,
+  floodOpacity = 0.2,
 }) => (
   <SvgDefs id={id}>
     <filter
