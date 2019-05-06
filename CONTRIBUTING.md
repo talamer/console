@@ -1,6 +1,6 @@
 # How to Contribute
 
-This document outlines some of the conventions on development workflow.
+This document outlines some of the conventions on development workflo
 
 ## Getting Started
 
