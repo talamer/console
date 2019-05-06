@@ -191,7 +191,7 @@ class App extends React.PureComponent {
 
   _sidebarNav() {
     if (this.props.activePerspective === 'dev') {
-      if (!flagPending(this.props.flags[FLAGS.SHOW_DEV_CONSOLE])) {
+      if (this.props.flags[FLAGS.SHOW_DEV_CONSOLE] && !flagPending(this.props.flags[FLAGS.SHOW_DEV_CONSOLE])) {
         return <DevConsoleNavigation isNavOpen={this.state.isNavOpen} />;
       }
       return null;
