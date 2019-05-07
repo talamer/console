@@ -18,7 +18,7 @@ import { Navigation } from './nav';
 import { SearchPage } from './search';
 import { ResourceDetailsPage, ResourceListPage } from './resource-list';
 import { history, AsyncComponent, Loading } from './utils';
-import { namespacedPrefixes } from './utils/link';
+import { namespacedPrefixes, legalPerspectiveNames } from './utils/link';
 import { UIActions, getActiveNamespace } from '../ui/ui-actions';
 import { getActivePerspective } from '../ui/ui-selectors';
 import { ClusterServiceVersionModel, SubscriptionModel, AlertmanagerModel } from '../models';
@@ -123,6 +123,8 @@ class App extends React.PureComponent {
     this._onNavSelect = this._onNavSelect.bind(this);
     this._isDesktop = this._isDesktop.bind(this);
     this._onResize = this._onResize.bind(this);
+    this.showAdminNav = this.showAdminNav.bind(this);
+    this.showActivePerspectiveNav = this.showActivePerspectiveNav.bind(this);
     this._onPerspectiveSwitcherClose = this._onPerspectiveSwitcherClose.bind(this);
     this.previousDesktopState = this._isDesktop();
     this.state = {
@@ -189,22 +191,30 @@ class App extends React.PureComponent {
     }
   }
 
+  showAdminNav() {
+    return (
+      this.props.activePerspective &&
+      legalPerspectiveNames.includes(this.props.activePerspective) &&
+      this.props.flags[PerspectiveFlagMap[this.props.activeNamespace]] ===
+        false &&
+      !flagPending(
+        this.props.flags[PerspectiveFlagMap[this.props.activePerspective]]
+      )
+    );
+  }
+
+  showActivePerspectiveNav(perspective) {
+    return (this.props.activePerspective === perspective &&
+    this.props.flags[PerspectiveFlagMap[perspective]] &&
+    !flagPending(this.props.flags[PerspectiveFlagMap[perspective]]));
+  }
+
+
   _sidebarNav() {
-    if (
-      this.props.activePerspective === 'dev' &&
-      this.props.flags[FLAGS.SHOW_DEV_CONSOLE] &&
-      !flagPending(this.props.flags[FLAGS.SHOW_DEV_CONSOLE])
-    ) {
+    if (this.showActivePerspectiveNav('dev')) {
       return <DevConsoleNavigation isNavOpen={this.state.isNavOpen} />;
     }
-    if (
-      (this.props.activePerspective === 'dev' &&
-        this.props.flags[FLAGS.SHOW_DEV_CONSOLE] === false &&
-        !flagPending(this.props.flags[FLAGS.SHOW_DEV_CONSOLE])) ||
-      (this.props.activePerspective === 'admin' &&
-        this.props.flags[FLAGS.OPENSHIFT] &&
-        !flagPending(this.props.flags[FLAGS.OPENSHIFT]))
-    ) {
+    if (this.showActivePerspectiveNav('admin') || this.showAdminNav()) {
       return (
         <Navigation
           isNavOpen={this.state.isNavOpen}
