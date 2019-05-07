@@ -2,10 +2,10 @@
 import * as React from 'react';
 import SvgDefsContext, { SvgDefsContextProps } from './SvgDefsContext';
 
-type SvgDefsProps = {
+export interface SvgDefsProps {
   id: string;
   children: React.ReactNode;
-};
+}
 
 type SvgDefsSetterProps = SvgDefsContextProps & SvgDefsProps;
 

@@ -5,7 +5,7 @@ import { getImageForIconClass } from '../../../../../components/catalog/catalog-
 import { createFilterIdUrl } from '../../../shared/utils/svg-utils';
 import './BaseNode.scss';
 
-interface State {
+export interface State {
   hover?: boolean;
 }
 
@@ -14,7 +14,7 @@ export interface BaseNodeProps {
   y?: number;
   outerRadius: number;
   innerRadius?: number;
-  selected: boolean;
+  selected?: boolean;
   onSelect?: Function;
   icon?: string;
   label?: string;
@@ -24,6 +24,16 @@ export interface BaseNodeProps {
 
 const FILTER_ID = 'BaseNodeDropShadowFilterId';
 const FILTER_ID_HOVER = 'BaseNodeDropShadowFilterId--hover';
+
+const MAX_LABEL_LENGTH = 16;
+
+const truncateEnd = (text: string = ''): string => {
+  const length = text.length;
+  if (length <= MAX_LABEL_LENGTH) {
+    return text;
+  }
+  return `${text.substr(0, MAX_LABEL_LENGTH)}…`;
+};
 
 export default class BaseNode extends React.Component<BaseNodeProps, State> {
   state: State = {};
@@ -75,15 +85,17 @@ export default class BaseNode extends React.Component<BaseNodeProps, State> {
               getImageForIconClass(`icon-${icon}`) || getImageForIconClass('icon-openshift')
             }
           />
-          <text
-            className="odc-base-node__label"
-            textAnchor="middle"
-            y={outerRadius + 10}
-            x={0}
-            dy="0.6em"
-          >
-            {label}
-          </text>
+          {label != null && (
+            <text
+              className="odc-base-node__label"
+              textAnchor="middle"
+              y={outerRadius + 10}
+              x={0}
+              dy="0.6em"
+            >
+              {selected || hover ? label : truncateEnd(label)}
+            </text>
+          )}
           {selected && (
             <circle
               className="odc-base-node__selection"

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { Firehose } from '../../../../components/utils';
 import { ImageStreamModel } from '../../../../models';
