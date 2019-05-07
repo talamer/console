@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import { shallow, mount } from 'enzyme';
 import { ImportFlowForm } from './../ImportFlowForm';
+import { createThunkMiddleware } from '../../../../../redux';
 
-const middlewares = [thunk];
+const middlewares = [createThunkMiddleware()];
 const mockStore = configureMockStore(middlewares);
 
 describe('ImportFlowForm: ', () => {
