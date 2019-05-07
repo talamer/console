@@ -7,9 +7,9 @@ export interface SvgDefsProps {
   children: React.ReactNode;
 }
 
-type SvgDefsSetterProps = SvgDefsContextProps & SvgDefsProps;
+export type SvgDefsSetterProps = SvgDefsContextProps & SvgDefsProps;
 
-class SvgDefsSetter extends React.Component<SvgDefsSetterProps> {
+export class SvgDefsSetter extends React.Component<SvgDefsSetterProps> {
   static contextType = SvgDefsContext;
 
   componentDidMount() {

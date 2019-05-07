@@ -9,12 +9,12 @@ interface DefsMap {
   };
 }
 
-interface DefsState {
+export interface DefsState {
   defs?: DefsMap;
 }
 
-class Defs extends React.PureComponent<{}, DefsState> {
-  state = {
+export class Defs extends React.PureComponent<{}, DefsState> {
+  state: DefsState = {
     defs: null,
   };
 
@@ -46,9 +46,9 @@ export interface SvgDefsProviderProps {
  * such as filters, are eliminated.
  */
 class SvgDefsProvider extends React.Component<SvgDefsProviderProps> {
-  private defsRef = React.createRef<Defs>();
+  private readonly defsRef = React.createRef<Defs>();
 
-  private defs: DefsMap = {};
+  private readonly defs: DefsMap = {};
 
   private contextValue: SvgDefsContextProps = {
     addDef: (id, node) => {

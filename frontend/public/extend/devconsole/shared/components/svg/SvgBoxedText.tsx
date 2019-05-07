@@ -3,19 +3,19 @@ import * as React from 'react';
 import SvgDropShadowFilter from './SvgDropShadowFilter';
 import { createFilterIdUrl } from '../../utils/svg-utils';
 
-interface State {
-  bb: SVGRect;
+export interface State {
+  bb: { width: number; height: number };
 }
 
-export type SvgBoxedTextProps = {
-  children: string;
-  className: string;
-  paddingX: number;
-  paddingY: number;
-  x: number;
-  y: number;
+export interface SvgBoxedTextProps {
+  children?: string;
+  className?: string;
+  paddingX?: number;
+  paddingY?: number;
+  x?: number;
+  y?: number;
   cornerRadius?: number;
-};
+}
 
 const FILTER_ID = 'SvgBoxedTextDropShadowFilterId';
 
@@ -27,31 +27,34 @@ export default class SvgBoxedText extends React.PureComponent<SvgBoxedTextProps,
     bb: null,
   };
 
-  textRef = React.createRef<SVGTextElement>();
+  private readonly textRef = React.createRef<SVGTextElement>();
 
   componentDidMount() {
     this.computeBoxSize();
   }
 
-  componentDidUpdate({ children }: SvgBoxedTextProps) {
-    if (this.props.children !== children) {
+  componentDidUpdate({ className, children }: SvgBoxedTextProps) {
+    if (this.props.children !== children || this.props.className !== className) {
       this.computeBoxSize();
     }
   }
 
   private computeBoxSize() {
-    this.setState({ bb: this.textRef.current.getBBox() });
+    const { current } = this.textRef;
+    if (current && current.getBBox) {
+      this.setState({ bb: current.getBBox() });
+    }
   }
 
   render() {
     const {
       children,
       className,
-      paddingX,
-      paddingY,
+      paddingX = 0,
+      paddingY = 0,
       cornerRadius = 4,
-      x,
-      y,
+      x = 0,
+      y = 0,
       ...other
     } = this.props;
     const { bb } = this.state;
