@@ -74,6 +74,7 @@ const WorkloadNode: React.FC<NodeProps<WorkloadData>> = ({
         outerRadius={podStatusOuterRadius}
         x={x}
         y={y}
+        data={workload.data.donutStatus.pods}
         height={size}
         width={size}
       />
