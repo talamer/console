@@ -32,6 +32,4 @@ describe('Defs', () => {
         .props().children,
     ).toBe(state.defs.second.node);
   });
-
-  it('should render defs');
 });
