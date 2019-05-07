@@ -12,10 +12,12 @@ import {
 import { FLAGS } from '../../../features';
 import { BuildModel, PipelineModel } from '../../../models';
 import { stripPerspectivePath } from '../../../components/utils/link';
+import { ConditionalResourceNSLink } from './ConditionalResourceLinks';
 
 interface DevConsoleNavigationProps {
   isNavOpen: boolean;
   location: string;
+  flags: any;
   activeNamespace: string;
   onNavSelect: () => void;
   onToggle: () => void;
@@ -28,6 +30,7 @@ export const PageNav = ({
   activeNamespace,
   onNavSelect,
   onToggle,
+  flags,
 }: DevConsoleNavigationProps) => {
   const resourcePath = location ? stripNS(stripPerspectivePath(location)) : '';
   const isActive = (paths: string[]) => {
@@ -54,11 +57,13 @@ export const PageNav = ({
           activeNamespace={activeNamespace}
           isActive={isResourceActive(['buildconfigs'])}
         />
-        <ResourceNSLink
+        <ConditionalResourceNSLink
           resource="pipelines"
           name={PipelineModel.labelPlural}
           activeNamespace={activeNamespace}
           isActive={isResourceActive(['pipelines', 'pipelineruns'])}
+          flags={flags}
+          required={FLAGS.SHOW_PIPELINE}
         />
         <DevNavSection title="Advanced">
           <ResourceClusterLink resource="projects" name="Projects" required={FLAGS.OPENSHIFT} />
@@ -82,6 +87,7 @@ const mapStateToProps = (state) => {
   return {
     location: state.UI.get('location'),
     activeNamespace: state.UI.get('activeNamespace'),
+    flags: state.FLAGS,
   };
 };
 

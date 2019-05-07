@@ -15,6 +15,7 @@ import {
   SelfSubjectAccessReviewModel,
   PackageManifestModel,
   OperatorGroupModel,
+  PipelineModel,
 } from './models';
 import { k8sBasePath, referenceForModel, ClusterVersionKind } from './module/k8s';
 import { k8sCreate } from './module/k8s/resource';
@@ -66,6 +67,7 @@ export enum FLAGS {
   CLUSTER_VERSION = 'CLUSTER_VERSION',
   MACHINE_CONFIG = 'MACHINE_CONFIG',
   SHOW_DEV_CONSOLE = 'SHOW_DEV_CONSOLE',
+  SHOW_PIPELINE = 'SHOW_PIPELINE',
 }
 
 export const DEFAULTS_ = _.mapValues(FLAGS, flag => flag === FLAGS.AUTH_ENABLED
@@ -205,6 +207,17 @@ const detectDevConsole = dispatch => {
     );
 };
 
+const pipelinePath = `${k8sBasePath}/apis/${PipelineModel.apiGroup}/${PipelineModel.apiVersion}`;
+const detectPipeline = dispatch => {
+  coFetchJSON(pipelinePath)
+    .then(
+      res => setFlag(dispatch, FLAGS.SHOW_PIPELINE, true),
+      err => _.get(err, 'response.status') === 404
+        ? setFlag(dispatch, FLAGS.SHOW_PIPELINE, false)
+        : handleError(err, FLAGS.SHOW_PIPELINE, dispatch, detectPipeline)
+    );
+};
+
 export const featureActions = [
   detectOpenShift,
   detectCanCreateProject,
@@ -213,6 +226,7 @@ export const featureActions = [
   detectUser,
   detectLoggingURL,
   detectDevConsole,
+  detectPipeline,
 ];
 
 const projectListPath = `${k8sBasePath}/apis/project.openshift.io/v1/projects?limit=1`;

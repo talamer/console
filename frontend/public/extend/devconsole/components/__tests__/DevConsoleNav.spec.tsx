@@ -9,6 +9,7 @@ function shallowSetup() {
     location: '/devops',
     activeNamespace: '',
     isNavOpen: true,
+    flags:{},
     onNavSelect: () => {},
     onToggle: () => {},
   };
