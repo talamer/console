@@ -190,18 +190,28 @@ class App extends React.PureComponent {
   }
 
   _sidebarNav() {
-    if (this.props.activePerspective === 'dev') {
-      if (this.props.flags[FLAGS.SHOW_DEV_CONSOLE] && !flagPending(this.props.flags[FLAGS.SHOW_DEV_CONSOLE])) {
-        return <DevConsoleNavigation isNavOpen={this.state.isNavOpen} />;
-      }
-      return null;
+    if (
+      this.props.activePerspective === 'dev' &&
+      this.props.flags[FLAGS.SHOW_DEV_CONSOLE] &&
+      !flagPending(this.props.flags[FLAGS.SHOW_DEV_CONSOLE])
+    ) {
+      return <DevConsoleNavigation isNavOpen={this.state.isNavOpen} />;
     }
-    return (
-      <Navigation
-        isNavOpen={this.state.isNavOpen}
-        onNavSelect={this._onNavSelect}
-      />
-    );
+    if (
+      (this.props.activePerspective === 'dev' &&
+        this.props.flags[FLAGS.SHOW_DEV_CONSOLE] === false &&
+        !flagPending(this.props.flags[FLAGS.SHOW_DEV_CONSOLE])) ||
+      (this.props.activePerspective === 'admin' &&
+        this.props.flags[FLAGS.OPENSHIFT] &&
+        !flagPending(this.props.flags[FLAGS.OPENSHIFT]))
+    ) {
+      return (
+        <Navigation
+          isNavOpen={this.state.isNavOpen}
+          onNavSelect={this._onNavSelect}
+        />
+      );
+    }
   }
 
   _prependActivePerspective(path) {
@@ -430,7 +440,7 @@ if ('serviceWorker' in navigator) {
   }
 }
 const AppComponent = connect(mapPerspectiveStateToProps)(
-  connectToFlags(FLAGS.SHOW_DEV_CONSOLE)(App)
+  connectToFlags(FLAGS.OPENSHIFT, FLAGS.SHOW_DEV_CONSOLE)(App)
 );
 
 render((
