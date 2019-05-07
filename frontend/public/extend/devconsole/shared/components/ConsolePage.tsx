@@ -15,7 +15,7 @@ const ConsolePage: React.FunctionComponent<ConsolePageProps> = (props: ConsolePa
       {props.header}
       <main role="main" className="pf-c-page__main">
         <div className="odc-console-page">
-          <div style={{ display: 'flex' }}>{props.sidebar}</div>
+          <div className="odc-console-page__nav">{props.sidebar}</div>
           <div className="odc-console-page__section">{props.children}</div>
           {props.megaMenu}
         </div>
