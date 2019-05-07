@@ -2,7 +2,7 @@
 import * as React from 'react';
 import SvgDefs from '../../../shared/components/svg/SvgDefs';
 
-interface SvgDropShadowFilterProps {
+export interface SvgDropShadowFilterProps {
   /* The unique ID that identifies the filter.
      It is also used to uniquely identify the def entry to prevent duplicates. */
   id: string;
