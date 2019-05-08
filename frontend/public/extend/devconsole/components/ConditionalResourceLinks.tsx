@@ -12,6 +12,8 @@ export const ConditionalResource = ({
   disallowed,
   children,
 }: ConditionalResourceProps) => {
-  if (!flags.get(required) || flags.get(disallowed || !children)) return null;
+  if (!flags.get(required) || flags.get(disallowed || !children)) {
+    return null;
+  }
   return children;
 };

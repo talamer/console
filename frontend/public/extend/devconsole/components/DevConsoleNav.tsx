@@ -57,14 +57,14 @@ export const PageNav = ({
           activeNamespace={activeNamespace}
           isActive={isResourceActive(['buildconfigs'])}
         />
-        <ConditionalResource    
+        <ConditionalResource
           flags={flags}
           required={FLAGS.SHOW_PIPELINE}>
           <ResourceNSLink resource="pipelines"
-          name={PipelineModel.labelPlural}
-          activeNamespace={activeNamespace}
-          isActive={isResourceActive(['pipelines', 'pipelineruns'])}
-        />
+            name={PipelineModel.labelPlural}
+            activeNamespace={activeNamespace}
+            isActive={isResourceActive(['pipelines', 'pipelineruns'])}
+          />
         </ConditionalResource>
         <DevNavSection title="Advanced">
           <ResourceClusterLink resource="projects" name="Projects" required={FLAGS.OPENSHIFT} />
