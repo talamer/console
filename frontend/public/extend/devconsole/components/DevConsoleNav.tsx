@@ -12,7 +12,7 @@ import {
 import { FLAGS } from '../../../features';
 import { BuildModel, PipelineModel } from '../../../models';
 import { stripPerspectivePath } from '../../../components/utils/link';
-import { ConditionalResourceNSLink } from './ConditionalResourceLinks';
+import { ConditionalResource } from './ConditionalResourceLinks';
 
 interface DevConsoleNavigationProps {
   isNavOpen: boolean;
@@ -57,14 +57,15 @@ export const PageNav = ({
           activeNamespace={activeNamespace}
           isActive={isResourceActive(['buildconfigs'])}
         />
-        <ConditionalResourceNSLink
-          resource="pipelines"
+        <ConditionalResource    
+          flags={flags}
+          required={FLAGS.SHOW_PIPELINE}>
+          <ResourceNSLink resource="pipelines"
           name={PipelineModel.labelPlural}
           activeNamespace={activeNamespace}
           isActive={isResourceActive(['pipelines', 'pipelineruns'])}
-          flags={flags}
-          required={FLAGS.SHOW_PIPELINE}
         />
+        </ConditionalResource>
         <DevNavSection title="Advanced">
           <ResourceClusterLink resource="projects" name="Projects" required={FLAGS.OPENSHIFT} />
           <HrefLink href="/overview" name="Status" required={FLAGS.OPENSHIFT} />

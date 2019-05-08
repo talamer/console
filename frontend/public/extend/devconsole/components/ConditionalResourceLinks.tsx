@@ -1,33 +1,17 @@
 /* eslint-disable no-unused-vars, no-undef */
-import * as React from 'react';
-import { ResourceNSLink } from '../../../components/nav';
-
-interface ConditionalResourceNSLinkProps {
+interface ConditionalResourceProps {
   flags: any;
-  resource: string;
-  activeNamespace: string;
-  isActive: boolean;
-  required: string;
-  name: string;
+  required?: string;
+  disallowed?: string;
+  children: any;
 }
 
-export const ConditionalResourceNSLink = ({
+export const ConditionalResource = ({
   flags,
-  resource,
-  activeNamespace,
-  isActive,
   required,
-  name,
-}: ConditionalResourceNSLinkProps) => {
-  if (!flags.get(required)) {
-    return null;
-  }
-  return (
-    <ResourceNSLink
-      resource={resource}
-      name={name}
-      activeNamespace={activeNamespace}
-      isActive={isActive}
-    />
-  );
+  disallowed,
+  children,
+}: ConditionalResourceProps) => {
+  if (!flags.get(required) || flags.get(disallowed || !children)) return null;
+  return children;
 };
