@@ -195,7 +195,7 @@ class App extends React.PureComponent {
     return (
       this.props.activePerspective &&
       legalPerspectiveNames.includes(this.props.activePerspective) &&
-      this.props.flags[PerspectiveFlagMap[this.props.activeNamespace]] ===
+      this.props.flags[PerspectiveFlagMap[this.props.activePerspective]] ===
         false &&
       !flagPending(
         this.props.flags[PerspectiveFlagMap[this.props.activePerspective]]
@@ -214,7 +214,7 @@ class App extends React.PureComponent {
     if (this.showActivePerspectiveNav('dev')) {
       return <DevConsoleNavigation isNavOpen={this.state.isNavOpen} />;
     }
-    if (this.showActivePerspectiveNav('admin') || this.showAdminNav()) {
+    if (this.props.activePerspective === 'admin' || this.showAdminNav()) {
       return (
         <Navigation
           isNavOpen={this.state.isNavOpen}
@@ -450,7 +450,7 @@ if ('serviceWorker' in navigator) {
   }
 }
 const AppComponent = connect(mapPerspectiveStateToProps)(
-  connectToFlags(FLAGS.OPENSHIFT, FLAGS.SHOW_DEV_CONSOLE)(App)
+  connectToFlags(FLAGS.SHOW_DEV_CONSOLE)(App)
 );
 
 render((
