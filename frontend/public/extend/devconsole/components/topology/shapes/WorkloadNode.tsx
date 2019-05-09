@@ -31,7 +31,7 @@ const WorkloadNode: React.FC<NodeProps<WorkloadData>> = ({
       selected={selected}
       onSelect={onSelect}
       attachments={[
-        workload.data.url && (
+        workload.data.editUrl && (
           <Decorator
             key="edit"
             x={radius - decoratorRadius * 0.7}
