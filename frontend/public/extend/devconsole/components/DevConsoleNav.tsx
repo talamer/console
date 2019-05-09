@@ -16,7 +16,7 @@ import { stripPerspectivePath } from '../../../components/utils/link';
 interface DevConsoleNavigationProps {
   isNavOpen: boolean;
   location: string;
-  flags: any;
+  flags: Map<string, boolean>;
   activeNamespace: string;
   onNavSelect: () => void;
   onToggle: () => void;
@@ -56,14 +56,14 @@ export const PageNav = ({
           activeNamespace={activeNamespace}
           isActive={isResourceActive(['buildconfigs'])}
         />
-        {flags.get(FLAGS.SHOW_PIPELINE) ? (
+        {flags.get(FLAGS.SHOW_PIPELINE) && (
           <ResourceNSLink
             resource="pipelines"
             name={PipelineModel.labelPlural}
             activeNamespace={activeNamespace}
             isActive={isResourceActive(['pipelines', 'pipelineruns'])}
           />
-        ) : null}
+        )}
         <DevNavSection title="Advanced">
           <ResourceClusterLink resource="projects" name="Projects" required={FLAGS.OPENSHIFT} />
           <HrefLink href="/overview" name="Status" required={FLAGS.OPENSHIFT} />
