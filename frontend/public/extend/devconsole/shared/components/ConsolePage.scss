@@ -8,4 +8,13 @@
     flex-grow: 1;
     flex-shrink: 1;
   }
+
+  &__sidebar {
+    display: flex;
+
+    & > .pf-c-page__sidebar {
+      position: relative;
+      top: 0;
+    }
+  }
 }
