@@ -123,8 +123,6 @@ class App extends React.PureComponent {
     this._onNavSelect = this._onNavSelect.bind(this);
     this._isDesktop = this._isDesktop.bind(this);
     this._onResize = this._onResize.bind(this);
-    this.showAdminNav = this.showAdminNav.bind(this);
-    this.showActivePerspectiveNav = this.showActivePerspectiveNav.bind(this);
     this._onPerspectiveSwitcherClose = this._onPerspectiveSwitcherClose.bind(this);
     this.previousDesktopState = this._isDesktop();
     this.state = {
@@ -192,7 +190,7 @@ class App extends React.PureComponent {
   }
 
   showAdminNav() {
-    return (
+    return this.props.activePerspective === 'admin' || (
       this.props.activePerspective &&
       legalPerspectiveNames.includes(this.props.activePerspective) &&
       this.props.flags[PerspectiveFlagMap[this.props.activePerspective]] ===
@@ -214,7 +212,7 @@ class App extends React.PureComponent {
     if (this.showActivePerspectiveNav('dev')) {
       return <DevConsoleNavigation isNavOpen={this.state.isNavOpen} />;
     }
-    if (this.props.activePerspective === 'admin' || this.showAdminNav()) {
+    if (this.showAdminNav()) {
       return (
         <Navigation
           isNavOpen={this.state.isNavOpen}
