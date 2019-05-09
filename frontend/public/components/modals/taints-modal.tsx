@@ -7,13 +7,13 @@ import { Dropdown, EmptyBox, PromiseComponent } from '../utils';
 import { K8sKind, k8sPatch, NodeKind, Taint } from '../../module/k8s';
 import { createModalLauncher, ModalBody, ModalComponentProps, ModalSubmitFooter, ModalTitle } from '../factory';
 
-class TaintsModal extends PromiseComponent {
+class TaintsModal extends PromiseComponent<TaintsModalProps, TaintsModalState> {
   readonly state: TaintsModalState;
 
   constructor(public props: TaintsModalProps) {
     super(props);
     // Add an empty row for editing if no taints exist.
-    this.state.taints = this.props.resource.spec.taints;
+    this.state.taints = this.props.resource.spec.taints || [];
   }
 
   _submit = (e: React.FormEvent<EventTarget>) => {
@@ -70,7 +70,7 @@ class TaintsModal extends PromiseComponent {
       'NoExecute': 'NoExecute',
     };
     const { taints, errorMessage, inProgress } = this.state;
-    return <form onSubmit={this._submit} name="form" className="modal-content taint-modal">
+    return <form onSubmit={this._submit} name="form" className="modal-content modal-content--accommodate-dropdown taint-modal">
       <ModalTitle>Edit Taints</ModalTitle>
       <ModalBody>
         {_.isEmpty(taints)
@@ -125,7 +125,6 @@ export const taintsModal = createModalLauncher(TaintsModal);
 type TaintsModalProps = {
   resourceKind: K8sKind;
   resource: NodeKind;
-  modalClassName: string;
 } & ModalComponentProps;
 
 type TaintsModalState = {

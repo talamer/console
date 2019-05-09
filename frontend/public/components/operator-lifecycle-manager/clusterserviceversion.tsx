@@ -91,7 +91,7 @@ export const ClusterServiceVersionList: React.SFC<ClusterServiceVersionListProps
   return <List {...props} Row={ClusterServiceVersionRow} Header={ClusterServiceVersionHeader} EmptyMsg={EmptyMsg} />;
 };
 
-const stateToProps = ({k8s, FLAGS}, {match}) => ({
+const stateToProps = ({k8s, FLAGS}) => ({
   loading: FLAGS.get(featureFlags.OPENSHIFT) === undefined || !k8s.getIn([FLAGS.get(featureFlags.OPENSHIFT) ? 'projects' : 'namespaces', 'loaded']),
 });
 
@@ -105,11 +105,12 @@ export const ClusterServiceVersionsPage = connect(stateToProps)((props: ClusterS
     Installed Operators are represented by Cluster Service Versions within this namespace. For more information, see the <ExternalLink href="https://github.com/operator-framework/operator-lifecycle-manager/blob/master/Documentation/design/architecture.md" text="Operator Lifecycle Manager documentation" />. Or create an Operator and Cluster Service Version using the <ExternalLink href="https://github.com/operator-framework/operator-sdk" text="Operator SDK" />.
   </p>;
 
+  const allFilterValues = [CSVConditionReason.CSVReasonInstallSuccessful, CSVConditionReason.CSVReasonCopied];
   const rowFilters = [{
     type: 'clusterserviceversion-status',
-    selected: [CSVConditionReason.CSVReasonInstallSuccessful],
+    selected: allFilterValues,
     reducer: (csv: ClusterServiceVersionKind) => _.get(csv.status, 'reason'),
-    items: [CSVConditionReason.CSVReasonInstallSuccessful, CSVConditionReason.CSVReasonCopied].map(status => ({id: status, title: status})),
+    items: allFilterValues.map(status => ({id: status, title: status})),
   }];
 
   return <React.Fragment>
@@ -120,19 +121,18 @@ export const ClusterServiceVersionsPage = connect(stateToProps)((props: ClusterS
       kind={referenceForModel(ClusterServiceVersionModel)}
       ListComponent={ClusterServiceVersionList}
       helpText={helpText}
-      filterLabel="Cluster Service Versions by name"
       rowFilters={rowFilters}
       showTitle={false} />
   </React.Fragment>;
 });
 
-export const MarkdownView = (props: {content: string, outerScroll: boolean}) => {
+export const MarkdownView = (props: {content: string, styles?: string}) => {
   return <AsyncComponent loader={() => import('./markdown-view').then(c => c.SyncMarkdownView)} {...props} />;
 };
 
 export const CRDCard: React.SFC<CRDCardProps> = (props) => {
   const {csv, crd, canCreate} = props;
-  const createRoute = `/k8s/ns/${csv.metadata.namespace}/${ClusterServiceVersionModel.plural}/${csv.metadata.name}/${referenceForProvidedAPI(crd)}/new`;
+  const createRoute = `/k8s/ns/${csv.metadata.namespace}/${ClusterServiceVersionModel.plural}/${csv.metadata.name}/${referenceForProvidedAPI(crd)}/~new`;
 
   return <div className="co-crd-card">
     <div className="co-crd-card__title">
@@ -205,7 +205,7 @@ export const ClusterServiceVersionDetails: React.SFC<ClusterServiceVersionDetail
             <SectionHeading text="Provided APIs" />
             <CRDCardRow csv={props.obj} crdDescs={providedAPIsFor(props.obj)} />
             <SectionHeading text="Description" />
-            <MarkdownView content={spec.description || 'Not available'} outerScroll={false} />
+            <MarkdownView content={spec.description || 'Not available'} />
           </div>
         </div>
       </div>

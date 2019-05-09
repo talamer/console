@@ -42,6 +42,9 @@ export const config: Config = {
         '--disable-background-timer-throttling',
         '--disable-renderer-backgrounding',
         '--disable-raf-throttling',
+        // Avoid crashes when running in a container due to small /dev/shm size
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=715363
+        '--disable-dev-shm-usage',
       ],
       prefs: {
         'profile.password_manager_enabled': false,
@@ -76,7 +79,7 @@ export const config: Config = {
     // since we're using kubectl instead of oc.
     const resource = browser.params.openshift === 'true' ? 'projects.project.openshift.io' : 'namespaces';
     await browser.close();
-    execSync(`kubectl delete ${resource} ${testName}`);
+    execSync(`if kubectl get ${resource} ${testName} 2> /dev/null; then kubectl delete ${resource} ${testName}; fi`);
   },
   afterLaunch: (exitCode) => {
     failFast.clean();
@@ -183,6 +186,7 @@ export const config: Config = {
       'tests/source-to-image.scenario.ts',
       'tests/deploy-image.scenario.ts',
       'tests/performance.scenario.ts',
+      'tests/monitoring.scenario.ts',
     ],
     all: [
       'tests/login.scenario.ts',
@@ -198,6 +202,7 @@ export const config: Config = {
       'tests/deploy-image.scenario.ts',
       'tests/operator-hub/operator-hub.scenario.ts',
       'tests/developer-catalog.scenario.ts',
+      'tests/monitoring.scenario.ts',
     ],
     login: [
       'tests/login.scenario.ts',

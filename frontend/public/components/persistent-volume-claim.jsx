@@ -8,8 +8,8 @@ import { ResourceEventStream } from './events';
 
 const pvcPhase = pvc => pvc.status.phase;
 
-const { common } = Kebab.factory;
-const menuActions = [...common];
+const { common, ExpandPVC } = Kebab.factory;
+const menuActions = [ExpandPVC, ...common];
 
 const PVCStatus = ({pvc}) => {
   const phase = pvcPhase(pvc);
@@ -94,7 +94,7 @@ const filters = [{
 export const PersistentVolumeClaimsList = props => <List {...props} Header={Header} Row={Row} />;
 export const PersistentVolumeClaimsPage = props => {
   const createProps = {
-    to: `/k8s/ns/${props.namespace || 'default'}/persistentvolumeclaims/new/form`,
+    to: `/k8s/ns/${props.namespace || 'default'}/persistentvolumeclaims/~new/form`,
   };
   return <ListPage {...props} ListComponent={PersistentVolumeClaimsList} kind={kind} canCreate={true} rowFilters={filters} createProps={createProps} />;
 };

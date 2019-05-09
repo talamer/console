@@ -10,12 +10,13 @@ import { history, Firehose } from './utils';
 import { openshiftHelpBase } from './utils/documentation';
 import { AboutModal } from './about-modal';
 import { getAvailableClusterUpdates, clusterVersionReference } from '../module/k8s/cluster-settings';
+import { commandLineToolsModal } from './modals';
 
 const UpdatesAvailableButton = ({obj, onClick}) => {
   const updatesAvailable = !_.isEmpty(getAvailableClusterUpdates(obj.data));
   return updatesAvailable
     ? <ToolbarItem>
-      <Button variant="plain" aria-label="Cluster Updates Available" onClick={onClick}>
+      <Button className="co-update-icon" variant="plain" aria-label="Cluster Updates Available" onClick={onClick}>
         <ArrowCircleUpIcon />
       </Button>
     </ToolbarItem>
@@ -126,7 +127,7 @@ class MastheadToolbar_ extends React.Component {
 
   _onClusterManager(e) {
     e.preventDefault();
-    window.open('https://cloud.openshift.com/clusters', '_blank').opener = null;
+    window.open('https://cloud.redhat.com/openshift', '_blank').opener = null;
   }
 
   _onAboutModal(e) {
@@ -143,10 +144,21 @@ class MastheadToolbar_ extends React.Component {
     window.open(openshiftHelpBase, '_blank').opener = null;
   }
 
+  _onCommandLineTools(e) {
+    e.preventDefault();
+    commandLineToolsModal({});
+  }
+
+  _copyLoginCommand(e) {
+    e.preventDefault();
+    window.open(window.SERVER_FLAGS.requestTokenURL, '_blank').opener = null;
+  }
+
   _launchActions() {
     return [{
       label: 'Multi-Cluster Manager',
       callback: this._onClusterManager,
+      externalLink: true,
     }];
   }
 
@@ -154,7 +166,11 @@ class MastheadToolbar_ extends React.Component {
     return [{
       label: 'Documentation',
       callback: this._onDocumentation,
-    },{
+      externalLink: true,
+    }, {
+      label: 'Command Line Tools',
+      callback: this._onCommandLineTools,
+    }, {
       label: 'About',
       callback: this._onAboutModal,
     }];
@@ -163,7 +179,9 @@ class MastheadToolbar_ extends React.Component {
   _renderMenuItems(actions) {
     return actions.map((action, i) => action.separator
       ? <DropdownSeparator key={i} />
-      : <DropdownItem key={i} onClick={action.callback}>{action.label}</DropdownItem>
+      : <DropdownItem key={i} onClick={action.callback}>
+        {action.label}{action.externalLink && <span className="co-external-link"></span>}
+      </DropdownItem>
     );
   }
 
@@ -191,6 +209,14 @@ class MastheadToolbar_ extends React.Component {
       if (mobile) {
         actions.push({
           separator: true,
+        });
+      }
+
+      if (window.SERVER_FLAGS.requestTokenURL) {
+        actions.push({
+          label: 'Copy Login Command',
+          callback: this._copyLoginCommand,
+          externalLink: true,
         });
       }
 
@@ -230,7 +256,7 @@ class MastheadToolbar_ extends React.Component {
         position="right"
         onSelect={this._onUserDropdownSelect}
         isOpen={isUserDropdownOpen}
-        toggle={<DropdownToggle onToggle={this._onUserDropdownToggle}>{username}</DropdownToggle>}
+        toggle={<DropdownToggle className="co-username" onToggle={this._onUserDropdownToggle}>{username}</DropdownToggle>}
         dropdownItems={this._renderMenuItems(actions)}
       />
     );
@@ -258,13 +284,19 @@ class MastheadToolbar_ extends React.Component {
             }
             {/* desktop -- (application launcher dropdown), help dropdown [documentation, about] */}
             {flags[FLAGS.OPENSHIFT] &&
-              (flagPending(flags[FLAGS.SHOW_DEV_CONSOLE]) || !flags[FLAGS.SHOW_DEV_CONSOLE]) &&
+              (flagPending(flags[FLAGS.SHOW_DEV_CONSOLE]) ||
+                !flags[FLAGS.SHOW_DEV_CONSOLE]) && (
                 <ToolbarItem>
                   <Dropdown
                     isPlain
+                    position="right"
                     onSelect={this._onApplicationLauncherDropdownSelect}
                     toggle={
-                      <DropdownToggle aria-label="Application Launcher" iconComponent={null} onToggle={this._onApplicationLauncherDropdownToggle}>
+                      <DropdownToggle
+                        aria-label="Application Launcher"
+                        iconComponent={null}
+                        onToggle={this._onApplicationLauncherDropdownToggle}
+                      >
                         <ThIcon />
                       </DropdownToggle>
                     }
@@ -272,10 +304,11 @@ class MastheadToolbar_ extends React.Component {
                     dropdownItems={this._renderMenuItems(this._launchActions())}
                   />
                 </ToolbarItem>
-            }
+              )}
             <ToolbarItem>
               <Dropdown
                 isPlain
+                position="right"
                 onSelect={this._onHelpDropdownSelect}
                 toggle={
                   <DropdownToggle aria-label="Help" iconComponent={null} onToggle={this._onHelpDropdownToggle}>

@@ -158,7 +158,6 @@ describe(ClusterServiceVersionsPage.displayName, () => {
 
     expect(listPage.props().kind).toEqual(referenceForModel(ClusterServiceVersionModel));
     expect(listPage.props().ListComponent).toEqual(ClusterServiceVersionList);
-    expect(listPage.props().filterLabel).toEqual('Cluster Service Versions by name');
     expect(listPage.props().showTitle).toBe(false);
   });
 
@@ -187,7 +186,7 @@ describe(CRDCard.displayName, () => {
   it('renders a link to create a new instance', () => {
     const wrapper = shallow(<CRDCard canCreate={true} crd={crd} csv={testClusterServiceVersion} />);
 
-    expect(wrapper.find('.co-crd-card__footer').find(PerspectiveLink).props().to).toEqual(`/k8s/ns/${testClusterServiceVersion.metadata.namespace}/${ClusterServiceVersionModel.plural}/${testClusterServiceVersion.metadata.name}/${referenceForProvidedAPI(crd)}/new`);
+    expect(wrapper.find('.co-crd-card__footer').find(PerspectiveLink).props().to).toEqual(`/k8s/ns/${testClusterServiceVersion.metadata.namespace}/${ClusterServiceVersionModel.plural}/${testClusterServiceVersion.metadata.name}/${referenceForProvidedAPI(crd)}/~new`);
   });
 
   it('does not render link to create new instance if `props.canCreate` is false', () => {

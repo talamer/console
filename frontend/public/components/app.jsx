@@ -7,12 +7,11 @@ import { Redirect, Route, Router, Switch } from 'react-router-dom';
 import * as PropTypes from 'prop-types';
 
 import store from '../redux';
-import { productName } from '../branding';
 import { ALL_NAMESPACES_KEY } from '../const';
 import { connectToFlags, featureActions, flagPending, FLAGS } from '../features';
 import { analyticsSvc } from '../module/analytics';
 import { GlobalNotifications } from './global-notifications';
-import { Masthead } from './masthead';
+import { getBrandingDetails, Masthead } from './masthead';
 import { NamespaceBar } from './namespace';
 import { Navigation } from './nav';
 import { SearchPage } from './search';
@@ -158,6 +157,13 @@ class App extends React.PureComponent {
   }
 
   _onNavToggle() {
+
+    // Some components, like svg charts, need to reflow when nav is toggled.
+    // Fire event after a short delay to allow nav animation to complete.
+    setTimeout(() => {
+      window.dispatchEvent(new Event('nav_toggle'));
+    }, 100);
+
     this.setState(prevState => {
       return {
         isNavOpen: this.props.flags.SHOW_DEV_CONSOLE
@@ -240,6 +246,7 @@ class App extends React.PureComponent {
 
   render() {
     const { isPerspectiveSwitcherOpen } = this.state;
+    const { productName } = getBrandingDetails();
     const devconsoleEnabled = this.props.flags.SHOW_DEV_CONSOLE;
 
     return (
@@ -273,6 +280,7 @@ class App extends React.PureComponent {
                 <Switch>
                   <Route path={['/all-namespaces', '/ns/:ns']} component={RedirectComponent} />
 
+                  <LazyRoute path={this._prependActivePerspective('/cluster-status')} exact loader={() => import('./cluster-overview' /* webpackChunkName: "cluster-overview" */).then(m => m.ClusterOverviewPage)} />
                   <LazyRoute path={this._prependActivePerspective('/overview/all-namespaces')} exact loader={() => import('./cluster-overview' /* webpackChunkName: "cluster-overview" */).then(m => m.ClusterOverviewPage)} />
                   <LazyRoute path={this._prependActivePerspective('/overview/ns/:ns')} exact loader={() => import('./overview' /* webpackChunkName: "overview" */).then(m => m.OverviewPage)} />
                   <Route path={this._prependActivePerspective('/overview')} exact component={NamespaceRedirect} />
@@ -281,7 +289,6 @@ class App extends React.PureComponent {
                   <LazyRoute path={this._prependActivePerspective('/status/ns/:ns')} exact loader={() => import('./cluster-overview' /* webpackChunkName: "cluster-overview" */).then(m => m.ClusterOverviewPage)} />
                   <Route path={this._prependActivePerspective('/status')} exact component={NamespaceRedirect} />
 
-                  <LazyRoute path={this._prependActivePerspective('/cluster-health')} exact loader={() => import('./cluster-health' /* webpackChunkName: "cluster-health" */).then(m => m.ClusterHealth)} />
                   <LazyRoute path={this._prependActivePerspective('/start-guide')} exact loader={() => import('./start-guide' /* webpackChunkName: "start-guide" */).then(m => m.StartGuidePage)} />
 
                   <LazyRoute path={this._prependActivePerspective('/operatorhub/all-namespaces')} exact loader={() => import('./operator-hub/operator-hub-page' /* webpackChunkName: "operator-hub" */).then(m => m.OperatorHubPage)} />
@@ -303,17 +310,17 @@ class App extends React.PureComponent {
 
                   <LazyRoute path={this._prependActivePerspective('/brokermanagement')} loader={() => import('./broker-management' /* webpackChunkName: "brokermanagment" */).then(m => m.BrokerManagementPage)} />
 
-                  <LazyRoute path={this._prependActivePerspective(`/k8s/ns/:ns/${SubscriptionModel.plural}/new`)} exact loader={() => import('./operator-lifecycle-manager' /* webpackChunkName: "create-subscription-yaml" */).then(m => NamespaceFromURL(m.CreateSubscriptionYAML))} />
+                  <LazyRoute path={this._prependActivePerspective(`/k8s/ns/:ns/${SubscriptionModel.plural}/~new`)} exact loader={() => import('./operator-lifecycle-manager' /* webpackChunkName: "create-subscription-yaml" */).then(m => NamespaceFromURL(m.CreateSubscriptionYAML))} />
 
                   <LazyRoute path={this._prependActivePerspective('/catalog/create-service-instance')} exact loader={() => import('./service-catalog/create-instance' /* webpackChunkName: "create-service-instance" */).then(m => m.CreateInstancePage)} />
                   <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/serviceinstances/:name/create-binding')} exact loader={() => import('./service-catalog/create-binding' /* webpackChunkName: "create-binding" */).then(m => m.CreateBindingPage)} />
-                  <LazyRoute path={this._prependActivePerspective('/catalog/source-to-image')} exact loader={() => import('../extend/devconsole/pages/SourceToImage' /* webpackChunkName: "source-to-image" */).then(m => m.SourceToImagePage)} />
+                  <LazyRoute path={this._prependActivePerspective('/catalog/source-to-image')} exact loader={() => import('./source-to-image' /* webpackChunkName: "source-to-image" */).then(m => m.SourceToImagePage)} />
 
                   <Route path={this._prependActivePerspective('/k8s/ns/:ns/alertmanagers/:name')} exact render={({match}) => <Redirect to={`/k8s/ns/${match.params.ns}/${referenceForModel(AlertmanagerModel)}/${match.params.name}`} />} />
 
-                  <LazyRoute path={this._prependActivePerspective(`/k8s/ns/:ns/${ClusterServiceVersionModel.plural}/:name/edit`)} exact loader={() => import('./create-yaml' /* webpackChunkName: "create-yaml" */).then(m => m.EditYAMLPage)} kind={referenceForModel(ClusterServiceVersionModel)} />
-                  <LazyRoute path={this._prependActivePerspective(`/k8s/ns/:ns/${ClusterServiceVersionModel.plural}/:appName/:plural/new`)} exact loader={() => import('./operator-lifecycle-manager/create-crd-yaml' /* webpackChunkName: "create-crd-yaml" */).then(m => m.CreateCRDYAML)} />
-                  <Route path={this._prependActivePerspective(`/k8s/ns/:ns/${ClusterServiceVersionModel.plural}/:appName/:plural/:name`)} component={ResourceDetailsPage} />
+                  <LazyRoute path={`/k8s/ns/:ns/${ClusterServiceVersionModel.plural}/:name/edit`} exact loader={() => import('./create-yaml' /* webpackChunkName: "create-yaml" */).then(m => m.EditYAMLPage)} kind={referenceForModel(ClusterServiceVersionModel)} />
+                  <LazyRoute path={`/k8s/ns/:ns/${ClusterServiceVersionModel.plural}/:appName/:plural/~new`} exact loader={() => import('./operator-lifecycle-manager/create-crd-yaml' /* webpackChunkName: "create-crd-yaml" */).then(m => m.CreateCRDYAML)} />
+                  <Route path={`/k8s/ns/:ns/${ClusterServiceVersionModel.plural}/:appName/:plural/:name`} component={ResourceDetailsPage} />
 
                   <LazyRoute path={this._prependActivePerspective('/k8s/all-namespaces/events')} exact loader={() => import('./events' /* webpackChunkName: "events" */).then(m => NamespaceFromURL(m.EventStreamPage))} />
                   <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/events')} exact loader={() => import('./events' /* webpackChunkName: "events" */).then(m => NamespaceFromURL(m.EventStreamPage))} />
@@ -335,38 +342,36 @@ class App extends React.PureComponent {
                     // <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/roles/:name/:rule/edit')} exact loader={() => import('./RBAC' /* webpackChunkName: "rbac" */).then(m => m.EditRulePage)} />
                   }
 
-                  { (devconsoleEnabled) && devConsoleRoutes.map(r => <Route key={r.path} {...r} />)}
-
                   <LazyRoute path={this._prependActivePerspective('/deploy-image')} exact loader={() => import('./deploy-image').then(m => m.DeployImage)} />
 
-                  <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/secrets/new/:type')} exact kind="Secret" loader={() => import('./secrets/create-secret' /* webpackChunkName: "create-secret" */).then(m => m.CreateSecret)} />
+                  <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/secrets/~new/:type')} exact kind="Secret" loader={() => import('./secrets/create-secret' /* webpackChunkName: "create-secret" */).then(m => m.CreateSecret)} />
                   <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/secrets/:name/edit')} exact kind="Secret" loader={() => import('./secrets/create-secret' /* webpackChunkName: "create-secret" */).then(m => m.EditSecret)} />
                   <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/secrets/:name/edit-yaml')} exact kind="Secret" loader={() => import('./create-yaml').then(m => m.EditYAMLPage)} />
 
-                  <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/routes/new/form')} exact kind="Route" loader={() => import('./routes/create-route' /* webpackChunkName: "create-route" */).then(m => m.CreateRoute)} />
+                  <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/routes/~new/form')} exact kind="Route" loader={() => import('./routes/create-route' /* webpackChunkName: "create-route" */).then(m => m.CreateRoute)} />
 
-                  <LazyRoute path={this._prependActivePerspective('/k8s/cluster/rolebindings/new')} exact loader={() => import('./RBAC' /* webpackChunkName: "rbac" */).then(m => m.CreateRoleBinding)} kind="RoleBinding" />
-                  <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/rolebindings/new')} exact loader={() => import('./RBAC' /* webpackChunkName: "rbac" */).then(m => m.CreateRoleBinding)} kind="RoleBinding" />
+                  <LazyRoute path={this._prependActivePerspective('/k8s/cluster/rolebindings/~new')} exact loader={() => import('./RBAC' /* webpackChunkName: "rbac" */).then(m => m.CreateRoleBinding)} kind="RoleBinding" />
+                  <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/rolebindings/~new')} exact loader={() => import('./RBAC' /* webpackChunkName: "rbac" */).then(m => m.CreateRoleBinding)} kind="RoleBinding" />
                   <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/rolebindings/:name/copy')} exact kind="RoleBinding" loader={() => import('./RBAC' /* webpackChunkName: "rbac" */).then(m => m.CopyRoleBinding)} />
                   <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/rolebindings/:name/edit')} exact kind="RoleBinding" loader={() => import('./RBAC' /* webpackChunkName: "rbac" */).then(m => m.EditRoleBinding)} />
                   <LazyRoute path={this._prependActivePerspective('/k8s/cluster/clusterrolebindings/:name/copy')} exact kind="ClusterRoleBinding" loader={() => import('./RBAC' /* webpackChunkName: "rbac" */).then(m => m.CopyRoleBinding)} />
                   <LazyRoute path={this._prependActivePerspective('/k8s/cluster/clusterrolebindings/:name/edit')} exact kind="ClusterRoleBinding" loader={() => import('./RBAC' /* webpackChunkName: "rbac" */).then(m => m.EditRoleBinding)} />
                   <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/:plural/:name/attach-storage')} exact loader={() => import('./storage/attach-storage' /* webpackChunkName: "attach-storage" */).then(m => m.AttachStorage)} />
 
-                  <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/persistentvolumeclaims/new/form')} exact kind="PersistentVolumeClaim" loader={() => import('./storage/create-pvc' /* webpackChunkName: "create-pvc" */).then(m => m.CreatePVC)} />
+                  <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/persistentvolumeclaims/~new/form')} exact kind="PersistentVolumeClaim" loader={() => import('./storage/create-pvc' /* webpackChunkName: "create-pvc" */).then(m => m.CreatePVC)} />
 
                   <LazyRoute path={this._prependActivePerspective('/monitoring')} loader={() => import('./monitoring' /* webpackChunkName: "monitoring" */).then(m => m.MonitoringUI)} />
                   <LazyRoute path={this._prependActivePerspective('/settings/idp/oidconnect')} exact loader={() => import('./cluster-settings/openid-idp-form' /* webpackChunkName: "openid-idp-form" */).then(m => m.AddOpenIDPage)} />
                   <LazyRoute path={this._prependActivePerspective('/settings/idp/htpasswd')} exact loader={() => import('./cluster-settings/htpasswd-idp-form' /* webpackChunkName: "htpasswd-idp-form" */).then(m => m.AddHTPasswdPage)} />
                   <LazyRoute path={this._prependActivePerspective('/settings/cluster')} loader={() => import('./cluster-settings/cluster-settings' /* webpackChunkName: "cluster-settings" */).then(m => m.ClusterSettingsPage)} />
 
-                  <LazyRoute path={this._prependActivePerspective('/k8s/cluster/storageclasses/new/form')} exact loader={() => import('./storage-class-form' /* webpackChunkName: "storage-class-form" */).then(m => m.StorageClassForm)} />
+                  <LazyRoute path={this._prependActivePerspective('/k8s/cluster/storageclasses/~new/form')} exact loader={() => import('./storage-class-form' /* webpackChunkName: "storage-class-form" */).then(m => m.StorageClassForm)} />
 
                   <Route path={this._prependActivePerspective('/k8s/cluster/:plural')} exact component={ResourceListPage} />
-                  <LazyRoute path={this._prependActivePerspective('/k8s/cluster/:plural/new')} exact loader={() => import('./create-yaml' /* webpackChunkName: "create-yaml" */).then(m => m.CreateYAML)} />
+                  <LazyRoute path={this._prependActivePerspective('/k8s/cluster/:plural/~new')} exact loader={() => import('./create-yaml' /* webpackChunkName: "create-yaml" */).then(m => m.CreateYAML)} />
                   <Route path={this._prependActivePerspective('/k8s/cluster/:plural/:name')} component={ResourceDetailsPage} />
                   <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/pods/:podName/containers/:name')} loader={() => import('./container').then(m => m.ContainersDetailsPage)} />
-                  <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/:plural/new')} exact loader={() => import('./create-yaml' /* webpackChunkName: "create-yaml" */).then(m => NamespaceFromURL(m.CreateYAML))} />
+                  <LazyRoute path={this._prependActivePerspective('/k8s/ns/:ns/:plural/~new')} exact loader={() => import('./create-yaml' /* webpackChunkName: "create-yaml" */).then(m => NamespaceFromURL(m.CreateYAML))} />
                   <Route path={this._prependActivePerspective('/k8s/ns/:ns/:plural/:name')} component={ResourceDetailsPage} />
                   <Route path={this._prependActivePerspective('/k8s/ns/:ns/:plural')} exact component={ResourceListPage} />
 
@@ -374,7 +379,12 @@ class App extends React.PureComponent {
                   <Route path={this._prependActivePerspective('/k8s/all-namespaces/:plural/:name')} component={ResourceDetailsPage} />
 
                   <LazyRoute path={this._prependActivePerspective('/error')} exact loader={() => import('./error' /* webpackChunkName: "error" */).then(m => m.ErrorPage)} />
+
+                  { devconsoleEnabled && devConsoleRoutes.map(r => <Route key={r.path} {...r} />)}
+
                   <Route path="/" exact component={DefaultPage} />
+
+                  <LazyRoute loader={() => import('./error' /* webpackChunkName: "error" */).then(m => m.ErrorPage404)} />
 
                   {this._handlePageNotFound(this.props)}
                 </Switch>
@@ -400,7 +410,8 @@ getCachedResources().then(resources => {
 
 _.each(featureActions, store.dispatch);
 
-analyticsSvc.push({tier: 'tectonic'});
+// Global timer to ensure all <Timestamp> components update in sync
+setInterval(() => store.dispatch(UIActions.updateTimestamps(Date.now())), 10000);
 
 // Used by GUI tests to check for unhandled exceptions
 window.windowError = false;

@@ -5,6 +5,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import PerspectiveLink from '../../extend/devconsole/shared/components/PerspectiveLink';
 
+import { KEYBOARD_SHORTCUTS } from '../../const';
 import k8sActions from '../../module/k8s/k8s-actions';
 import { CheckBoxes, storagePrefix } from '../row-filter';
 import { ErrorPage404, ErrorBoundaryFallback } from '../error';
@@ -30,28 +31,45 @@ export const CompactExpandButtons = ({expand = false, onExpandChange = _.noop}) 
   </label>
 </div>;
 
-/** @type {React.SFC<{autoFocus?: boolean, disabled?: boolean, label: string, onChange: React.ChangeEventHandler<any>, defaultValue: string}}>} */
-export const TextFilter = ({label, onChange, defaultValue, style, className, autoFocus}) => {
-  if (_.isUndefined(autoFocus)) {
-    if (window.matchMedia('(min-width: 800px)').matches) {
-      autoFocus = true;
-    } else {
-      // likely a mobile device, & autofocus will cause keyboard to pop up
-      autoFocus = false;
+/** @type {React.SFC<{disabled?: boolean, label: string, onChange: React.ChangeEventHandler<any>, defaultValue: string}}>} */
+export const TextFilter = ({label, onChange, defaultValue, style, className}) => {
+  const input = React.useRef();
+  const onKeyDown = (e) => {
+    const { nodeName } = e.target;
+    if (nodeName === 'INPUT' || nodeName === 'TEXTAREA' || e.key !== KEYBOARD_SHORTCUTS.focusFilterInput) {
+      return;
     }
-  }
-  return <input
-    autoCapitalize="none"
-    autoFocus={autoFocus}
-    className={classNames('form-control text-filter', className)}
-    defaultValue={defaultValue}
-    onChange={onChange}
-    onKeyDown={e => e.key === 'Escape' && e.target.blur()}
-    placeholder={`Filter ${label}...`}
-    style={style}
-    tabIndex={0}
-    type="text"
-  />;
+
+    e.stopPropagation();
+    e.preventDefault();
+    input.current.focus();
+  };
+
+  React.useEffect(() => {
+    window.addEventListener('keydown', onKeyDown);
+    // Remove event listeners on cleanup
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, []);
+
+  return (
+    <div className="has-feedback">
+      <input
+        ref={input}
+        autoCapitalize="none"
+        className={classNames('form-control co-text-filter', className)}
+        defaultValue={defaultValue}
+        onChange={onChange}
+        onKeyDown={e => e.key === 'Escape' && e.target.blur()}
+        placeholder={`Filter ${label}...`}
+        style={style}
+        tabIndex={0}
+        type="text"
+      />
+      <span className="form-control-feedback form-control-feedback--keyboard-hint"><kbd>/</kbd></span>
+    </div>
+  );
 };
 
 TextFilter.displayName = 'TextFilter';
@@ -181,7 +199,7 @@ export const FireMan_ = connect(null, {filterList: k8sActions.filterList})(
       if (canCreate) {
         if (createProps.to) {
           createLink = <PerspectiveLink className="co-m-primary-action" {...createProps} tabIndex={-1}>
-            <button className="btn btn-primary" id="yaml-create" tabIndex={-1}>{createButtonText}</button>
+            <button className="btn btn-primary" id="yaml-create">{createButtonText}</button>
           </PerspectiveLink>;
         } else if (createProps.items) {
           createLink = <div className="co-m-primary-action">
@@ -189,7 +207,7 @@ export const FireMan_ = connect(null, {filterList: k8sActions.filterList})(
           </div>;
         } else {
           createLink = <div className="co-m-primary-action">
-            <button className="btn btn-primary" id="yaml-create" tabIndex={-1} {...createProps}>{createButtonText}</button>
+            <button className="btn btn-primary" id="yaml-create" {...createProps}>{createButtonText}</button>
           </div>;
         }
       }
@@ -197,8 +215,10 @@ export const FireMan_ = connect(null, {filterList: k8sActions.filterList})(
       const {title} = this.props;
       return <React.Fragment>
         {title && <PageHeading title={title} />}
-        <div className={classNames('co-m-pane__filter-bar', {'co-m-pane__filter-bar--with-help-text': helpText})}>
-          {helpText && <div className={classNames('co-m-pane__filter-bar-group', {'co-m-pane__filter-bar-group--help-text': helpText})}>
+        {/* Show help text above the filter bar if there's a create button. */}
+        {helpText && createLink && <p className="co-m-pane__help-text co-help-text">{helpText}</p>}
+        <div className={classNames('co-m-pane__filter-bar', {'co-m-pane__filter-bar--with-help-text': helpText && !createLink})}>
+          {helpText && !createLink && <div className="co-m-pane__filter-bar-group co-m-pane__filter-bar-group--help-text">
             {helpText}
           </div>}
           {createLink && <div className="co-m-pane__filter-bar-group">
@@ -291,11 +311,11 @@ export const ListPage = withFallback(props => {
   const title = props.title || labelPlural;
   const usedNamespace = !namespace && namespaced ? _.get(match, 'params.ns') : namespace;
 
-  let href = usedNamespace ? `/k8s/ns/${usedNamespace || 'default'}/${plural}/new` : `/k8s/cluster/${plural}/new`;
+  let href = usedNamespace ? `/k8s/ns/${usedNamespace || 'default'}/${plural}/~new` : `/k8s/cluster/${plural}/~new`;
   if (ko.crd) {
     try {
       const ref = referenceForModel(ko);
-      href = usedNamespace ? `/k8s/ns/${usedNamespace || 'default'}/${ref}/new` : `/k8s/cluster/${ref}/new`;
+      href = usedNamespace ? `/k8s/ns/${usedNamespace || 'default'}/${ref}/~new` : `/k8s/cluster/${ref}/~new`;
     } catch (unused) { /**/ }
   }
 
@@ -323,7 +343,7 @@ export const ListPage = withFallback(props => {
     canExpand={canExpand}
     createButtonText={createButtonText || `Create ${label}`}
     createProps={createProps}
-    filterLabel={filterLabel || `${labelPlural} by name`}
+    filterLabel={filterLabel || 'by name'}
     flatten={_resources => _.get(_resources, (name || kind), {}).data}
     helpText={helpText}
     label={labelPlural}
@@ -377,7 +397,7 @@ export const MultiListPage = props => {
     canExpand={canExpand}
     createButtonText={createButtonText || 'Create'}
     createProps={createProps}
-    filterLabel={filterLabel}
+    filterLabel={filterLabel || 'by name'}
     helpText={helpText}
     resources={mock ? [] : resources}
     selectorFilterLabel="Filter by selector (app=nginx) ..."

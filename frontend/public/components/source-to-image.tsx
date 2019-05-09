@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 
 import { LoadingBox, LoadError } from './utils/status-box';
-import { Dropdown, Firehose, history, MsgBox, NsDropdown, ResourceName, ExternalLink } from './utils';
+import { Dropdown, Firehose, history, MsgBox, NsDropdown, ResourceName, ExternalLink, SelectorInput } from './utils';
 import { BuildConfigModel, DeploymentConfigModel, ImageStreamModel, ImageStreamTagModel, RouteModel, ServiceModel } from '../models';
 import { ContainerPort, k8sCreate, k8sGet, K8sResourceKind } from '../module/k8s';
 import { ImageStreamIcon } from './catalog/catalog-item-icon';
@@ -108,6 +108,7 @@ const BuildSource = connect(mapBuildSourceStateToProps)(class BuildSource extend
       ref: '',
       contextDir: '',
       createRoute: false,
+      labels: [],
       ports: [],
       inProgress: false,
     };
@@ -151,11 +152,15 @@ const BuildSource = connect(mapBuildSourceStateToProps)(class BuildSource extend
     this.setState({repository: event.currentTarget.value, ref: '', contextDir: ''});
   }
 
+  onLabelsChange = (labels: string[]) => {
+    this.setState({labels});
+  };
+
   onCreateRouteChange: React.ReactEventHandler<HTMLInputElement> = event => {
     this.setState({createRoute: event.currentTarget.checked});
   }
 
-  fillSample: React.ReactEventHandler<HTMLButtonElement> = event => {
+  fillSample: React.ReactEventHandler<HTMLButtonElement> = () => {
     const { obj: { data: imageStream } } = this.props;
     const { name: currentName, selectedTag } = this.state;
     const tag = _.find(imageStream.spec.tags, { name: selectedTag });
@@ -182,7 +187,8 @@ const BuildSource = connect(mapBuildSourceStateToProps)(class BuildSource extend
   }
 
   getLabels() {
-    return { app: this.state.name };
+    // If no labels are specified, add a default app label
+    return _.isEmpty(this.state.labels) ? {app: this.state.name} : SelectorInput.objectify(this.state.labels);
   }
 
   getPodLabels() {
@@ -462,13 +468,20 @@ const BuildSource = connect(mapBuildSourceStateToProps)(class BuildSource extend
               id="repository"
               required />
             {sampleRepo && <div className="help-block">
-              <button type="button" className="btn btn-link btn-link--no-padding" onClick={this.fillSample}>
+              <button type="button" className="btn btn-link btn-link--no-btn-default-values" onClick={this.fillSample}>
                 Try Sample <i className="fa fa-level-up" aria-hidden="true" />
               </button>
             </div>}
             <div className="help-block">
               For private Git repositories,
-              create a <PerspectiveLink to={`/k8s/ns/${this.state.namespace || 'default'}/secrets/new/source`}>source secret</PerspectiveLink>.
+              create a <PerspectiveLink to={`/k8s/ns/${this.state.namespace || 'default'}/secrets/~new/source`}>source secret</PerspectiveLink>.
+            </div>
+          </div>
+          <div className="form-group">
+            <label htmlFor="tags-input" className="control-label">Labels</label>
+            <SelectorInput labelClassName="co-text-deploymentconfig" onChange={this.onLabelsChange} tags={this.state.labels} />
+            <div className="help-block" id="labels-help">
+              If no labels are specified, app={this.state.name || '<name>'} will be added.
             </div>
           </div>
           {!_.isEmpty(ports) && <div className="form-group">
@@ -514,27 +527,28 @@ export const SourceToImagePage = (props) => {
 };
 
 export type ImageStreamInfoProps = {
-  imageStream: K8sResourceKind,
-  tag: any,
+  imageStream: K8sResourceKind;
+  tag: any;
 };
 
 export type BuildSourceProps = {
-  obj: any,
-  preselectedNamespace: string,
+  obj: any;
+  preselectedNamespace: string;
 };
 
 export type BuildSourceState = {
-  tags: any[],
-  namespace: string,
-  selectedTag: string,
-  name: string,
-  repository: string,
-  ref: string,
-  contextDir: string,
-  createRoute: boolean,
-  ports: ContainerPort[],
-  inProgress: boolean,
-  error?: any,
+  tags: any[];
+  namespace: string;
+  selectedTag: string;
+  name: string;
+  repository: string;
+  ref: string;
+  contextDir: string;
+  labels: string[];
+  createRoute: boolean;
+  ports: ContainerPort[];
+  inProgress: boolean;
+  error?: any;
 };
 
 interface BuildSourceStateProps {

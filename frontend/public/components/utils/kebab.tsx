@@ -3,7 +3,7 @@
 import * as _ from 'lodash-es';
 import * as React from 'react';
 
-import { annotationsModal, configureReplicaCountModal, taintsModal, tolerationsModal, labelsModal, podSelectorModal, deleteModal } from '../modals';
+import { annotationsModal, configureReplicaCountModal, taintsModal, tolerationsModal, labelsModal, podSelectorModal, deleteModal, expandPVCModal } from '../modals';
 import { DropdownMixin } from './dropdown';
 import { history, resourceObjPath } from './index';
 import { referenceForModel, K8sResourceKind, K8sResourceKindReference, K8sKind } from '../../module/k8s';
@@ -84,6 +84,13 @@ const kebabFactory: KebabFactory = {
     label: 'Add Storage',
     href: `${resourceObjPath(obj, kind.crd ? referenceForModel(kind) : kind.kind)}/attach-storage`,
   }),
+  ExpandPVC: (kind, obj) => ({
+    label: 'Expand PVC',
+    callback: () => expandPVCModal({
+      kind,
+      resource: obj,
+    }),
+  }),
 };
 
 // The common menu actions that most resource share
@@ -95,8 +102,9 @@ export const ResourceKebab = connectToModel((props: ResourceKebabProps) => {
   if (!kindObj) {
     return null;
   }
+  const options = _.reject(actions.map(a => a(kindObj, resource)), 'hidden');
   return <Kebab
-    options={actions.map(a => a(kindObj, resource))}
+    options={options}
     key={resource.metadata.uid}
     isDisabled={isDisabled !== undefined ? isDisabled : _.get(resource.metadata, 'deletionTimestamp')}
   />;

@@ -134,7 +134,7 @@
   }
 }
 
-.overview-toolbar__text-filter .text-filter {
+.overview-toolbar__text-filter .co-text-filter {
   min-width: 100%;
   width: 100%;
 
@@ -164,7 +164,6 @@
     bottom: 0;
     box-shadow: var(--pf-global--BoxShadow--md);
     display: none;
-    padding-bottom: 30px;
     position: absolute;
     right: 0;
     top: 0;
@@ -196,7 +195,7 @@
 
     @media(min-width: $screen-lg-min) {
       .overview__main-column {
-        width: calc(100% - 535px);
+        width: calc(100% - 500px);
 
         .co-m-pane__body {
           padding-right: 0;
@@ -271,6 +270,7 @@
 .resource-overview {
   height: 100%;
   min-height: 0;
+  padding-bottom: 30px;
   overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;

@@ -8,12 +8,11 @@ import { NamespaceModel, ProjectModel, SecretModel } from '../models';
 import { k8sGet } from '../module/k8s';
 import { formatNamespacedRouteForResource, UIActions } from '../ui/ui-actions';
 import { ColHead, DetailsPage, List, ListHeader, ListPage, ResourceRow } from './factory';
-import { SafetyFirst } from './safety-first';
-import { ActionsMenu, Kebab, Dropdown, Firehose, LabelList, LoadingInline, navFactory, ResourceKebab, SectionHeading, ResourceIcon, ResourceLink, ResourceSummary, humanizeMem, MsgBox, StatusIcon, ExternalLink } from './utils';
+import { ActionsMenu, Kebab, Dropdown, Firehose, LabelList, LoadingInline, navFactory, ResourceKebab, SectionHeading, ResourceIcon, ResourceLink, ResourceSummary, humanizeBinaryBytes, MsgBox, StatusIcon, ExternalLink, humanizeCpuCores, humanizeDecimalBytes } from './utils';
 import { createNamespaceModal, createProjectModal, deleteNamespaceModal, configureNamespacePullSecretModal } from './modals';
 import { RoleBindingsPage } from './RBAC';
-import { Bar, Line, requirePrometheus } from './graphs';
-import { NAMESPACE_LOCAL_STORAGE_KEY, ALL_NAMESPACES_KEY } from '../const';
+import { Bar, Area, requirePrometheus } from './graphs';
+import { OC_DOWNLOAD_LINK, ALL_NAMESPACES_KEY, KEYBOARD_SHORTCUTS, NAMESPACE_LOCAL_STORAGE_KEY } from '../const';
 import { FLAGS, featureReducerName, flagPending, setFlag, connectToFlags } from '../features';
 import { openshiftHelpBase } from './utils/documentation';
 import { createProjectMessageStateToProps } from '../ui/ui-reducers';
@@ -114,6 +113,9 @@ const ProjectList_ = props => {
     <p>
       To learn more, visit the OpenShift <ExternalLink href={openshiftHelpBase} text="documentation" />.
     </p>
+    <p>
+      Download the <ExternalLink href={OC_DOWNLOAD_LINK} text="command-line tools" />.
+    </p>
   </React.Fragment>;
   const ProjectEmptyMessage = () => <MsgBox title="Welcome to OpenShift" detail={ProjectEmptyMessageDetail} />;
   return <List {...props} Header={ProjectHeader} Row={ProjectRow} EmptyMsg={ProjectEmptyMessage} />;
@@ -126,47 +128,38 @@ const ProjectsPage_ = props => {
 };
 export const ProjectsPage = connectToFlags(FLAGS.CAN_CREATE_PROJECT)(ProjectsPage_);
 
-class PullSecret extends SafetyFirst {
-  constructor(props) {
-    super(props);
-    this.state = {isLoading: true, data: undefined};
-  }
+/** @type {React.SFC<{namespace: K8sResourceKind}>} */
+export const PullSecret = (props) => {
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [data, setData] = React.useState(undefined);
 
-  componentDidMount() {
-    super.componentDidMount();
-    this.load(_.get(this.props, 'namespace.metadata.name'));
-  }
-
-  load(namespaceName) {
-    if (!namespaceName) {
-      return;
-    }
-    k8sGet(SecretModel, null, namespaceName, {queryParams: {fieldSelector: 'type=kubernetes.io/dockerconfigjson'}})
+  React.useEffect(() => {
+    k8sGet(SecretModel, null, props.namespace.metadata.name, {queryParams: {fieldSelector: 'type=kubernetes.io/dockerconfigjson'}})
       .then((pullSecrets) => {
-        this.setState({isLoading: false, data: _.get(pullSecrets, 'items[0]')});
+        setIsLoading(false);
+        setData(_.get(pullSecrets, 'items[0]'));
       })
       .catch((error) => {
-        this.setState({isLoading: false, data: undefined});
-
+        setIsLoading(false);
+        setData(undefined);
         // A 404 just means that no pull secrets exist
         if (error.status !== 404) {
           throw error;
         }
       });
-  }
+  }, [props.namespace.metadata.name]);
 
-  render() {
-    if (this.state.isLoading) {
-      return <LoadingInline />;
-    }
-    const modal = () => configureNamespacePullSecretModal({namespace: this.props.namespace, pullSecret: this.state.data});
-    return <a className="co-m-modal-link" onClick={modal}>{_.get(this.state.data, 'metadata.name') || 'Not Configured'}</a>;
+  if (isLoading) {
+    return <LoadingInline />;
   }
-}
+  const modal = () => configureNamespacePullSecretModal({namespace: props.namespace, pullSecret: data});
+
+  return <button type="button" className="btn btn-link co-modal-btn-link co-modal-btn-link--left" onClick={modal}>{_.get(data, 'metadata.name') || 'Not Configured'}</button>;
+};
 
 export const NamespaceLineCharts = ({ns}) => <div className="row">
   <div className="col-sm-6 col-xs-12">
-    <Line title="CPU Usage" namespace={ns.metadata.name} query={[
+    <Area title="CPU Usage" humanizeValue={humanizeCpuCores} namespace={ns.metadata.name} query={[
       {
         name: 'Used',
         query: `namespace:container_cpu_usage:sum{namespace='${ns.metadata.name}'}`,
@@ -174,7 +167,7 @@ export const NamespaceLineCharts = ({ns}) => <div className="row">
     ]} />
   </div>
   <div className="col-sm-6 col-xs-12">
-    <Line title="Memory Usage" namespace={ns.metadata.name} query={[
+    <Area title="Memory Usage" humanizeValue={humanizeDecimalBytes} namespace={ns.metadata.name} query={[
       {
         name: 'Used',
         query: `namespace:container_memory_usage_bytes:sum{namespace='${ns.metadata.name}'}`,
@@ -187,8 +180,8 @@ export const TopPodsBarChart = ({ns}) => (
   <Bar
     title="Memory Usage by Pod (Top 10)"
     namespace={ns.metadata.name}
-    query={`sort(topk(10, sum by (pod_name)(container_memory_usage_bytes{pod_name!="", namespace="${ns.metadata.name}"})))`}
-    humanize={humanizeMem}
+    query={`sort(topk(10, sum by (pod_name)(container_memory_usage_bytes{container_name!="POD",container_name!="",pod_name!="", namespace="${ns.metadata.name}"})))`}
+    humanize={humanizeBinaryBytes}
     metric="pod_name" />
 );
 
@@ -315,14 +308,13 @@ class NamespaceBarDropdowns_ extends React.Component {
         autocompletePlaceholder={`Select ${model.label.toLowerCase()}...`}
         defaultBookmarks={defaultBookmarks}
         storageKey={NAMESPACE_LOCAL_STORAGE_KEY}
-        shortCut="n" />
+        shortCut={KEYBOARD_SHORTCUTS.focusNamespaceDropdown} />
       {activePerspective !== 'dev' &&
         <ActionsMenu
           actions={addActions}
           title={<React.Fragment><span className="fa fa-plus-circle co-add-actions-selector__icon" aria-hidden="true"></span> Add</React.Fragment>}
           menuClassName="co-add-actions-selector__menu dropdown-menu--right"
-          buttonClassName="btn-link"
-        />
+          buttonClassName="btn-link" />
       }
     </div>;
   }

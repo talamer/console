@@ -3,6 +3,7 @@ import * as React from 'react';
 import * as _ from 'lodash-es';
 
 import { ClusterOperatorModel } from '../../models';
+import { StartGuide } from '../start-guide';
 import {
   ColHead,
   DetailsPage,
@@ -10,6 +11,7 @@ import {
   ListHeader,
   ListPage,
 } from '../factory';
+import { Conditions } from '../conditions';
 import {
   getClusterOperatorStatus,
   getClusterOperatorVersion,
@@ -27,6 +29,7 @@ import {
   ResourceSummary,
   SectionHeading,
 } from '../utils';
+import { STORAGE_PREFIX } from '../../const';
 
 export const clusterOperatorReference: K8sResourceKindReference = referenceForModel(ClusterOperatorModel);
 
@@ -34,22 +37,21 @@ const getIconClass = (status: OperatorStatus) => {
   return {
     [OperatorStatus.Available]: 'pficon pficon-ok text-success',
     [OperatorStatus.Updating]: 'fa fa-refresh',
-    [OperatorStatus.Failing]: 'pficon pficon-error-circle-o text-danger',
+    [OperatorStatus.Degraded]: 'pficon pficon-warning-triangle-o text-warning',
+    [OperatorStatus.Unknown]: 'pficon pficon-unknown',
   }[status];
 };
 
 const OperatorStatusIconAndLabel: React.SFC<OperatorStatusIconAndLabelProps> = ({status}) => {
   const iconClass = getIconClass(status);
-  return status === OperatorStatus.Unknown
-    ? <span className="text-muted">Unknown</span>
-    : <React.Fragment><i className={iconClass} aria-hidden="true" /> {status}</React.Fragment>;
+  return <React.Fragment><i className={iconClass} aria-hidden="true" /> {status}</React.Fragment>;
 };
 
 const ClusterOperatorHeader = props => <ListHeader>
   <ColHead {...props} className="col-md-3 col-sm-3 col-xs-6" sortField="metadata.name">Name</ColHead>
   <ColHead {...props} className="col-md-2 col-sm-3 col-xs-6" sortFunc="getClusterOperatorStatus">Status</ColHead>
-  <ColHead {...props} className="col-md-4 col-sm-3 hidden-xs">Message</ColHead>
   <ColHead {...props} className="col-md-3 col-sm-3 hidden-xs" sortFunc="getClusterOperatorVersion">Version</ColHead>
+  <ColHead {...props} className="col-md-4 col-sm-3 hidden-xs">Message</ColHead>
 </ListHeader>;
 
 const ClusterOperatorRow: React.SFC<ClusterOperatorRowProps> = ({obj}) => {
@@ -62,11 +64,11 @@ const ClusterOperatorRow: React.SFC<ClusterOperatorRowProps> = ({obj}) => {
     <div className="col-md-2 col-sm-3 col-xs-6">
       <OperatorStatusIconAndLabel status={status} />
     </div>
-    <div className="col-md-4 col-sm-3 hidden-xs">
-      {message ? _.truncate(message, { length: 256, separator: ' ' }) : '-'}
-    </div>
     <div className="col-md-3 col-sm-3 hidden-xs">
       {operatorVersion || '-'}
+    </div>
+    <div className="col-md-4 col-sm-3 hidden-xs co-break-word co-pre-line">
+      {message ? _.truncate(message, { length: 256, separator: ' ' }) : '-'}
     </div>
   </div>;
 };
@@ -76,7 +78,7 @@ export const ClusterOperatorList: React.SFC = props => <List {...props} Header={
 const allStatuses = [
   OperatorStatus.Available,
   OperatorStatus.Updating,
-  OperatorStatus.Failing,
+  OperatorStatus.Degraded,
   OperatorStatus.Unknown,
 ];
 
@@ -90,15 +92,26 @@ const filters = [{
   })),
 }];
 
+export const ClusterOperatorStartGuide: React.SFC<{}> = () =>
+  <React.Fragment>
+    <h4>What are Cluster Operators?</h4>
+    <p>
+      An Operator is a method of packaging, deploying, and managing a Kubernetes application. Cluster Operators implement and automate updates of OpenShift and Kubernetes at the cluster level. During an update, the latest versions of the OpenShift and Kubernetes components are downloaded. A rolling update will occur to install the latest versions.
+    </p>
+  </React.Fragment>;
+
 export const ClusterOperatorPage: React.SFC<ClusterOperatorPageProps> = props =>
-  <ListPage
-    {...props}
-    title="Cluster Operators"
-    kind={clusterOperatorReference}
-    ListComponent={ClusterOperatorList}
-    canCreate={false}
-    rowFilters={filters}
-  />;
+  <React.Fragment>
+    <StartGuide dismissKey={`${STORAGE_PREFIX}/seen-cluster-operator-guide`} startGuide={<ClusterOperatorStartGuide />} />
+    <ListPage
+      {...props}
+      title="Cluster Operators"
+      kind={clusterOperatorReference}
+      ListComponent={ClusterOperatorList}
+      canCreate={false}
+      rowFilters={filters}
+    />
+  </React.Fragment>;
 
 const OperandVersions: React.SFC<OperandVersionsProps> = ({versions}) => {
   return _.isEmpty(versions)
@@ -127,6 +140,7 @@ const OperandVersions: React.SFC<OperandVersionsProps> = ({versions}) => {
 const ClusterOperatorDetails: React.SFC<ClusterOperatorDetailsProps> = ({obj}) => {
   const { status, message } = getStatusAndMessage(obj);
   const versions: OperandVersion[] = _.get(obj, 'status.versions', []);
+  const conditions = _.get(obj, 'status.conditions', []);
   return (
     <React.Fragment>
       <div className="co-m-pane__body">
@@ -141,6 +155,10 @@ const ClusterOperatorDetails: React.SFC<ClusterOperatorDetailsProps> = ({obj}) =
       <div className="co-m-pane__body">
         <SectionHeading text="Operand Versions" />
         <OperandVersions versions={versions} />
+      </div>
+      <div className="co-m-pane__body">
+        <SectionHeading text="Conditions" />
+        <Conditions conditions={conditions} />
       </div>
     </React.Fragment>
   );

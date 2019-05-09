@@ -83,6 +83,11 @@ const getAvailableFilters = initialFilters => {
       value: 'ClusterServiceClass',
       active: false,
     },
+    Template: {
+      label: 'Template',
+      value: 'Template',
+      active: false,
+    },
     ImageStream: {
       label: 'Source-to-Image',
       value: 'ImageStream',
@@ -196,7 +201,7 @@ export class CatalogTileViewPage extends React.Component {
       <React.Fragment>
         <TileViewPage
           items={items}
-          itemsSorter={itemsToSort => _.sortBy(itemsToSort, 'tileName')}
+          itemsSorter={itemsToSort => _.sortBy(itemsToSort, ({tileName}) => tileName.toLowerCase())}
           getAvailableCategories={() => catalogCategories}
           // TODO(alecmerdler): Dynamic filters for each Operator and its provided APIs
           getAvailableFilters={getAvailableFilters}

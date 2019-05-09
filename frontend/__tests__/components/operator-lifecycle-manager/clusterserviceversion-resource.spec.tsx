@@ -12,7 +12,7 @@ import { StatusDescriptor } from '../../../public/components/operator-lifecycle-
 import { SpecDescriptor } from '../../../public/components/operator-lifecycle-manager/descriptors/spec';
 import { testCRD, testResourceInstance, testClusterServiceVersion, testOwnedResourceInstance, testModel } from '../../../__mocks__/k8sResourcesMocks';
 import { List, ColHead, ListHeader, DetailsPage, MultiListPage, ListPage } from '../../../public/components/factory';
-import { Timestamp, LabelList, ResourceSummary, StatusBox, ResourceKebab, Kebab } from '../../../public/components/utils';
+import { Timestamp, LabelList, ResourceSummary, StatusBox, ResourceKebab } from '../../../public/components/utils';
 import { referenceFor, K8sKind, referenceForModel } from '../../../public/module/k8s';
 import { ClusterServiceVersionModel } from '../../../public/models';
 
@@ -77,10 +77,11 @@ describe(ClusterServiceVersionResourceRow.displayName, () => {
     expect(link.props().obj).toEqual(testResourceInstance);
   });
 
-  it('renders a `ResourceKebab` for common actions', () => {
+  it('renders a `ResourceKebab` for resource actions', () => {
     const kebab = wrapper.find(ResourceKebab);
 
-    expect(kebab.props().actions).toEqual(Kebab.factory.common);
+    expect(kebab.props().actions[0](testModel, testOwnedResourceInstance).label).toEqual(`Edit ${testModel.label}`);
+    expect(kebab.props().actions[1](testModel, testOwnedResourceInstance).label).toEqual(`Delete ${testModel.label}`);
     expect(kebab.props().kind).toEqual(referenceFor(testResourceInstance));
     expect(kebab.props().resource).toEqual(testResourceInstance);
   });
@@ -287,8 +288,9 @@ describe(ClusterServiceVersionResourcesDetailsPage.displayName, () => {
     ]);
   });
 
-  it('passes common menu actions to `DetailsPage`', () => {
-    expect(wrapper.find(DetailsPage).props().menuActions).toEqual(Kebab.factory.common);
+  it('menu actions to `DetailsPage`', () => {
+    expect(wrapper.find(DetailsPage).props().menuActions[0](testModel, testOwnedResourceInstance).label).toEqual(`Edit ${testModel.label}`);
+    expect(wrapper.find(DetailsPage).props().menuActions[1](testModel, testOwnedResourceInstance).label).toEqual(`Delete ${testModel.label}`);
   });
 
   it('passes function to create breadcrumbs for resource to `DetailsPage`', () => {
@@ -384,7 +386,7 @@ describe(ProvidedAPIsPage.displayName, () => {
     expect(listPage.props().createButtonText).toEqual('Create New');
     expect(listPage.props().createProps.to).not.toBeDefined();
     expect(listPage.props().createProps.items).toEqual({'testresource.testapp.coreos.com': 'Test Resource', 'foobars.testapp.coreos.com': 'Foo Bars'});
-    expect(listPage.props().createProps.createLink(obj.spec.customresourcedefinitions.owned[0].name)).toEqual(`/k8s/ns/default/${ClusterServiceVersionModel.plural}/testapp/testapp.coreos.com~v1~TestResource/new`);
+    expect(listPage.props().createProps.createLink(obj.spec.customresourcedefinitions.owned[0].name)).toEqual(`/k8s/ns/default/${ClusterServiceVersionModel.plural}/testapp/testapp.coreos.com~v1~TestResource/~new`);
   });
 
   it('passes `createProps` for single create button if app has only one owned CRD', () => {
@@ -393,7 +395,7 @@ describe(ProvidedAPIsPage.displayName, () => {
     expect(listPage.props().createButtonText).toEqual(`Create ${testClusterServiceVersion.spec.customresourcedefinitions.owned[0].displayName}`);
     expect(listPage.props().createProps.items).not.toBeDefined();
     expect(listPage.props().createProps.createLink).not.toBeDefined();
-    expect(listPage.props().createProps.to).toEqual(`/k8s/ns/default/${ClusterServiceVersionModel.plural}/testapp/testapp.coreos.com~v1~TestResource/new`);
+    expect(listPage.props().createProps.to).toEqual(`/k8s/ns/default/${ClusterServiceVersionModel.plural}/testapp/testapp.coreos.com~v1~TestResource/~new`);
   });
 
   it('passes `flatten` function which removes `required` resources with owner references to items not in the same list', () => {

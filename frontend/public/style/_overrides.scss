@@ -254,13 +254,39 @@ tags-input .autocomplete .suggestion-item em {
   font-size: $font-size-base;
 }
 
+.xterm .xterm-screen canvas {
+  // workaround bug where 1px white stripe appears atop terminal in Firefox for MacOS
+  // see https://github.com/xtermjs/xterm.js/issues/1974
+  border-right: 1px solid transparent;
+}
+
+kbd {
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25);
+}
+
 // PatternFly 4 overrides
+
+.pf-c-about-modal-box {
+  &__brand {
+    min-width: 220px;
+  }
+
+  &__brand-image {
+    height: auto !important;
+  }
+}
 
 // Webpack will not properly bundle the background-image from PatternFly
 @media only screen and (min-width: 576px) {
   .pf-c-about-modal-box__hero {
     background-image: url('../imgs/pfbg_992.jpg') !important;
   }
+}
+
+.pf-c-about-modal-box__brand-image,
+.pf-c-brand {
+  max-width: 100%;
 }
 
 .pf-c-dropdown__menu {
@@ -276,16 +302,38 @@ tags-input .autocomplete .suggestion-item em {
 }
 
 .pf-c-page {
+  display: block !important;
+  position: relative;
+
   &__header {
-    background-color: var(--pf-global--BackgroundColor--dark-200);
-    background-image: url("../imgs/pfbg_2000.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;
+    background: #151515;
+    display: grid !important;
+    grid-template-columns: 1fr auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  &__header-brand {
+    background: none !important;
+    padding-right: 32px;
+  }
+
+  &__header-brand-link {
+    flex: 0 1 auto !important;
+    max-width: 100% !important;
   }
 
   &__main {
     // `z-index: auto` is required for fullscreen terminal
     --pf-c-page__main--ZIndex: auto;
+    bottom: 0;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--pf-c-page__header--MinHeight);
+    transition: left 100ms ease;
   }
 
   // `.pf-c-page` specificity required
@@ -301,11 +349,20 @@ tags-input .autocomplete .suggestion-item em {
   }
 }
 
+@media screen and (min-width: $grid-float-breakpoint) {
+  .pf-m-expanded + .pf-c-page__main {
+    left: var(--pf-c-page__sidebar--md--Width);
+  }
+}
+
 .pf-c-page__sidebar {
   --pf-c-page__sidebar--BackgroundColor: #{$color-pf-black-900};
   --pf-c-page__sidebar--PaddingBottom: 0;
   --pf-c-page__sidebar--PaddingTop: 0;
-  position: relative; // fix z-index bug in Edge
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  top: var(--pf-c-page__header--MinHeight);
   width: 0 !important; // only set size when expanded (.pf-m-expanded is added)
 
   @media screen and (min-width: $grid-float-breakpoint) {

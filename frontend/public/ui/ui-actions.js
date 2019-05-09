@@ -1,6 +1,8 @@
 import { Base64 } from 'js-base64';
+import * as _ from 'lodash-es';
 
 import store from '../redux';
+import { featureActions } from '../features';
 import { history } from '../components/utils/router';
 import {
   ALL_NAMESPACES_KEY,
@@ -88,6 +90,10 @@ export const types = {
   stopImpersonate: 'stopImpersonate',
   updateOverviewMetrics: 'updateOverviewMetrics',
   updateOverviewResources: 'updateOverviewResources',
+  updateOverviewSelectedGroup: 'updateOverviewSelectedGroup',
+  updateOverviewGroupOptions: 'updateOverviewGroupOptions',
+  updateOverviewFilterValue: 'updateOverviewFilterValue',
+  updateTimestamps: 'updateTimestamps',
 };
 
 /** @type {{[key: string]: function}} */
@@ -167,11 +173,13 @@ export const UIActions = {
     }
 
     dispatch({kind, name, subprotocols, type: types.startImpersonate});
+    _.each(featureActions, dispatch);
     history.push(window.SERVER_FLAGS.basePath);
   },
 
   [types.stopImpersonate]: () => dispatch => {
     dispatch({type: types.stopImpersonate});
+    _.each(featureActions, dispatch);
     history.push(window.SERVER_FLAGS.basePath);
   },
 
@@ -198,7 +206,15 @@ export const UIActions = {
 
   [types.updateOverviewResources]: resources => ({type: types.updateOverviewResources, resources}),
 
+  [types.updateTimestamps]: (lastTick) => ({type: types.updateTimestamps, lastTick}),
+
   [types.dismissOverviewDetails]: () => ({type: types.dismissOverviewDetails}),
+
+  [types.updateOverviewSelectedGroup]: (group) => ({type: types.updateOverviewSelectedGroup, group}),
+
+  [types.updateOverviewGroupOptions]: (groups) => ({type: types.updateOverviewGroupOptions, groups}),
+
+  [types.updateOverviewFilterValue]: (value) => ({type: types.updateOverviewFilterValue, value}),
 
   monitoringLoading: key => ({type: types.setMonitoringData, key, data: {loaded: false, loadError: null, data: null}}),
 

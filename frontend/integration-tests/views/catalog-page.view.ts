@@ -1,11 +1,11 @@
-import { $, $$ } from 'protractor';
+import { $, $$, element, by } from 'protractor';
 
 export const catalogTiles = $$('.catalog-tile-pf');
-export const catalogTileFor = (name: string) => catalogTiles.filter((tile) => tile.$('.catalog-tile-pf-title').getText()
-  .then(text => text === name)).first();
+export const catalogTileFor = (name: string) => element(by.cssContainingText('.catalog-tile-pf-title', name));
 export const catalogTileById = (id: string) => $(`[data-test=${id}]`);
 
 // FilterSidePanel views
+export const showMoreFilters = (group: string) => $(`[data-test-group-name=${group}] .btn-link`);
 export const filterCheckboxFor = (id: string) => $(`input[data-test=${id}]`);
 export const clickFilterCheckbox = (id: string) => filterCheckboxFor(id).click();
 export const filterCheckboxCount = (id: string) => filterCheckboxFor(id).$('.item-count').getText()

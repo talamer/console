@@ -9,15 +9,6 @@ export const configureReplicaCountModal = (props) => import('./configure-count-m
 export const configureJobParallelismModal = (props) => import('./configure-count-modal' /* webpackChunkName: "configure-count-modal" */)
   .then(m => m.configureJobParallelismModal(props));
 
-export const configureClusterSizeModal = (props) => import('./configure-count-modal' /* webpackChunkName: "configure-count-modal" */)
-  .then(m => m.configureClusterSizeModal(props));
-
-export const configureOperatorStrategyModal = (props) => import('./configure-operator-modal' /* webpackChunkName: "configure-operator-modal" */)
-  .then(m => m.configureOperatorStrategyModal(props));
-
-export const configureOperatorChannelModal = (props) => import('./configure-operator-channel-modal' /* webpackChunkName: "configure-operator-channel-modal" */)
-  .then(m => m.configureOperatorChannelModal(props));
-
 export const confirmModal = (props) => import('./confirm-modal' /* webpackChunkName: "confirm-modal" */)
   .then(m => m.confirmModal(props));
 
@@ -68,3 +59,12 @@ export const tolerationsModal = (props) => import('./tolerations-modal' /* webpa
 
 export const installPlanPreviewModal = (props) => import('./installplan-preview-modal' /* webpackChunkName: "installplan-preview-modal" */)
   .then(m => m.installPlanPreviewModal(props));
+
+export const commandLineToolsModal = (props) => import('./command-line-tools-modal' /* webpackChunkName: "command-line-tools-modal" */)
+  .then(m => m.commandLineToolsModal(props));
+
+export const expandPVCModal = (props) => import('./expand-pvc-modal' /* webpackChunkName: "expand-pvc-modal" */)
+  .then(m => m.expandPVCModal(props));
+
+export const configureMachineAutoscalerModal = (props) => import('./configure-machine-autoscaler-modal' /* webpackChunkName: "configure-machine-autoscaler-modal" */)
+  .then(m => m.configureMachineAutoscalerModal(props));

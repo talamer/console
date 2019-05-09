@@ -14,7 +14,6 @@ import 'brace/snippets/yaml';
 
 import { k8sCreate, k8sUpdate, referenceFor, getCompletions, groupVersionFor, snippets, referenceForModel } from '../module/k8s';
 import { history, Loading, resourceObjPath } from './utils';
-import { SafetyFirst } from './safety-first';
 import { coFetchJSON } from '../co-fetch';
 import { ResourceSidebar } from './sidebars/resource-sidebar';
 import { yamlTemplates } from '../models/yaml-templates';
@@ -45,7 +44,7 @@ const stateToProps = ({k8s, UI}) => ({
  */
 /** @augments {React.Component<{obj?: any, create: boolean, kind: string, redirectURL?: string}>} */
 export const EditYAML = connect(stateToProps)(
-  class EditYAML extends SafetyFirst {
+  class EditYAML extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
@@ -74,7 +73,7 @@ export const EditYAML = connect(stateToProps)(
 
       // Retrieve k8s API spec for autocompletion
       if (!window.sessionStorage.getItem(SWAGGER_SESSION_STORAGE_KEY)) {
-        coFetchJSON('api/kubernetes/swagger.json').then(swagger => {
+        coFetchJSON('api/kubernetes/openapi/v2').then(swagger => {
           // Only store definitions to reduce the document size.
           const json = JSON.stringify(swagger.definitions || {});
           try {
@@ -113,13 +112,11 @@ export const EditYAML = connect(stateToProps)(
     }
 
     componentDidMount() {
-      super.componentDidMount();
       this.loadYaml();
       window.addEventListener('resize', this.resize_);
     }
 
     componentWillUnmount() {
-      super.componentWillUnmount();
       if (this.ace) {
         this.ace.destroy();
         // Avoid the use of .remove() to be compatible with IE 11
@@ -352,7 +349,7 @@ export const EditYAML = connect(stateToProps)(
                   <div className="full-width-and-height yaml-editor__flexbox">
                     <div id={this.id} key={this.id} className={classNames('yaml-editor__acebox', {'yaml-editor__acebox--readonly': readOnly})} />
                     <div className="yaml-editor__buttons">
-                      {error && <p className="alert alert-danger"><span className="pficon pficon-error-circle-o"></span>{error}</p>}
+                      {error && <p className="alert alert-danger co-alert"><span className="pficon pficon-error-circle-o"></span>{error}</p>}
                       {success && <p className="alert alert-success"><span className="pficon pficon-ok"></span>{success}</p>}
                       {stale && <p className="alert alert-info">
                         <span className="pficon pficon-info"></span>This object has been updated. Click reload to see the new version.

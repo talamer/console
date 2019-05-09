@@ -15,9 +15,8 @@ import {
 
 import { namespaceProptype } from '../propTypes';
 import { ResourceListDropdown } from './resource-dropdown';
-import { SafetyFirst } from './safety-first';
 import { TextFilter } from './factory';
-import { watchURL } from '../module/k8s';
+import { referenceFor, watchURL } from '../module/k8s';
 import { withStartGuide } from './start-guide';
 import { WSFactory } from '../module/ws-factory';
 import { EventModel, NodeModel } from '../models';
@@ -65,7 +64,7 @@ const Inner = connectToFlags(FLAGS.CAN_LIST_NODE)(class Inner extends React.Pure
           <div className="co-sysevent__subheader">
             <ResourceLink
               className="co-sysevent__resourcelink"
-              kind={obj.kind}
+              kind={referenceFor(obj)}
               namespace={obj.namespace}
               name={obj.name}
               title={obj.uid}
@@ -171,6 +170,7 @@ export class EventsList extends React.Component {
             className="btn-group"
             items={categories}
             onChange={v => this.setState({category: v})}
+            selectedKey={this.state.category}
             title="All Categories"
           />
         </div>
@@ -208,7 +208,7 @@ const measurementCache = new CellMeasurerCache({
   minHeight: 109, /* height of event with a one-line event message on desktop */
 });
 
-class EventStream extends SafetyFirst {
+class EventStream extends React.Component {
   constructor(props) {
     super(props);
     this.messages = {};
@@ -293,14 +293,12 @@ class EventStream extends SafetyFirst {
   }
 
   componentDidMount() {
-    super.componentDidMount();
     if (!this.props.mock) {
       this.wsInit(this.props.namespace);
     }
   }
 
   componentWillUnmount() {
-    super.componentWillUnmount();
     this.ws && this.ws.destroy();
   }
 

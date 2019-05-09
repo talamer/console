@@ -12,7 +12,11 @@ const { common } = Kebab.factory;
 const menuActions = [...common];
 
 const defaultClassAnnotation = 'storageclass.kubernetes.io/is-default-class';
-const isDefaultClass = (storageClass: K8sResourceKind) => _.get(storageClass, ['metadata', 'annotations', defaultClassAnnotation], 'false');
+const betaDefaultStorageClassAnnotation = 'storageclass.beta.kubernetes.io/is-default-class';
+export const isDefaultClass = (storageClass: K8sResourceKind) => {
+  const annotations = _.get(storageClass, 'metadata.annotations') || {};
+  return annotations[defaultClassAnnotation] === 'true' || annotations[betaDefaultStorageClassAnnotation] === 'true';
+};
 
 const StorageClassHeader = props => <ListHeader>
   <ColHead {...props} className="col-sm-4 col-xs-6" sortField="metadata.name">Name</ColHead>
@@ -33,7 +37,7 @@ const StorageClassRow: React.SFC<StorageClassRowProps> = ({obj}) => {
       {obj.reclaimPolicy || '-'}
     </div>
     <div className="col-sm-2 hidden-xs">
-      {isDefaultClass(obj)}
+      {isDefaultClass(obj).toString()}
     </div>
     <div className="dropdown-kebab-pf">
       <ResourceKebab actions={menuActions} kind={StorageClassReference} resource={obj} />
@@ -55,7 +59,7 @@ const StorageClassDetails: React.SFC<StorageClassDetailsProps> = ({obj}) => <Rea
         <dt>Reclaim Policy</dt>
         <dd>{obj.reclaimPolicy || '-'}</dd>
         <dt>Default Class</dt>
-        <dd>{isDefaultClass(obj)}</dd>
+        <dd>{isDefaultClass(obj).toString()}</dd>
       </div>
     </div>
   </div>
@@ -67,11 +71,11 @@ StorageClassList.displayName = 'StorageClassList';
 /* eslint-disable no-undef */
 export const StorageClassPage: React.SFC<StorageClassPageProps> = props => {
   const createProps = {
-    to: '/k8s/cluster/storageclasses/new/form',
+    to: '/k8s/cluster/storageclasses/~new/form',
   };
 
   return <ListPage
-    {...props}
+    {..._.omit(props, 'mock')}
     title="Storage Classes"
     kind={StorageClassReference}
     ListComponent={StorageClassList}

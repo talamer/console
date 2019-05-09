@@ -39,7 +39,7 @@ describe('Performance test', () => {
   it('checks bundle size using ResourceTiming API', async() => {
     const resources = await browser.executeScript<string[]>(() => performance.getEntriesByType('resource')
       .filter(({name}) => name.endsWith('.js') && name.indexOf('main') > -1 && name.indexOf('runtime') === -1)
-      .map(({name, decodedBodySize}) => ({name: name.split('/').slice(-1)[0], size: Math.floor(decodedBodySize / 1024)}))
+      .map(({name, decodedBodySize}: PerformanceResourceTiming) => ({name: name.split('/').slice(-1)[0], size: Math.floor(decodedBodySize / 1024)}))
       .reduce((acc, val) => acc.concat(`${val.name.split('-')[0]}: ${val.size} KB, `), '')
     );
 
@@ -90,7 +90,7 @@ describe('Performance test', () => {
       // Avoid problems where the Catalog nav section appears where Workloads was at the moment the tests try to click.
       await browser.wait(until.visibilityOf(sidenavView.navSectionFor('Catalog')));
       await sidenavView.clickNavLink([route.section, route.name]);
-      await crudView.isLoaded();
+      await browser.wait(crudView.untilNoLoadersPresent);
 
       const routeChunk = await browser.executeScript<PerformanceEntry>(routeChunkFor, routeName);
 

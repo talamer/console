@@ -10,9 +10,7 @@ import { PromiseComponent } from '../../../utils';
 import { k8sUpdate, referenceFor } from '../../../../module/k8s';
 import { createModalLauncher, ModalTitle, ModalBody, ModalSubmitFooter } from '../../../factory/modal';
 
-export class ResourceRequirementsModal extends PromiseComponent {
-  props: ResourceRequirementsModalProps;
-
+export class ResourceRequirementsModal extends PromiseComponent<ResourceRequirementsModalProps, ResourceRequirementsModalState> {
   private submit(e) {
     e.preventDefault();
 
@@ -47,8 +45,8 @@ export const ResourceRequirementsModalLink: React.SFC<ResourceRequirementsModalL
 
   const onClick = () => {
     const modal = createModalLauncher<ResourceRequirementsModalProps>(ResourceRequirementsModal);
-    const description = `Define the ${type === 'limits' ? 'resource' : 'request'} limits for this ${obj.kind} instance.`;
-    const title = `${obj.kind} ${type === 'limits' ? 'Resource' : 'Request'} Limits`;
+    const description = `Define the resource ${type} for this ${obj.kind} instance.`;
+    const title = `${obj.kind} Resource ${_.capitalize(type)}`;
 
     const ResourceRequirementsForm = () => <div>
       <div className="col-xs-5">
@@ -66,7 +64,7 @@ export const ResourceRequirementsModalLink: React.SFC<ResourceRequirementsModalL
     return modal({title, description, obj, Form, type, path});
   };
 
-  return <a className="co-m-modal-link" onClick={onClick}>{`CPU: ${cpu || 'none'}, Memory: ${memory || 'none'}`}</a>;
+  return <button type="button" className="btn btn-link co-modal-btn-link" onClick={onClick}>{`CPU: ${cpu || 'none'}, Memory: ${memory || 'none'}`}</button>;
 };
 
 export type ResourceRequirementsModalProps = {
@@ -78,6 +76,11 @@ export type ResourceRequirementsModalProps = {
   path: string;
   cancel: (error: any) => void;
   close: () => void;
+};
+
+export type ResourceRequirementsModalState = {
+  inProgress: boolean;
+  errorMessage: string;
 };
 
 export type ResourceRequirementsModalLinkProps = {

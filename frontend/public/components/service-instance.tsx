@@ -201,7 +201,7 @@ const ServiceInstancesRow: React.SFC<ServiceInstancesRowProps> = ({obj}) => {
     <div className="col-md-2 hidden-sm hidden-xs co-break-word">
       {planExternalName(obj) || '-'}
     </div>
-    <div className="col-md-2 hidden-sm hidden-xs co-break-word">
+    <div className="col-md-2 hidden-sm hidden-xs co-truncate">
       <Timestamp timestamp={obj.metadata.creationTimestamp} />
     </div>
     <div className="dropdown-kebab-pf">
@@ -230,7 +230,6 @@ export const ServiceInstancesPage: React.SFC<ServiceInstancesPageProps> = props 
     namespace={_.get(props.match, 'params.ns')}
     kind={referenceForModel(ServiceInstanceModel)}
     ListComponent={ServiceInstancesList}
-    filterLabel="Service Instances by name"
     rowFilters={filters}
     showTitle={false}
   />;

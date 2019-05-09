@@ -2,17 +2,25 @@
   padding-top: 15px; // So graph title doesn't abut border
   margin-top: 0;
   margin-bottom: 16px;
-  overflow: hidden;
+  overflow: visible; // Tooltips may overflow
+}
+
+.graph-wrapper svg {
+  overflow: visible !important; // Tooltips may overflow
 }
 
 .graph-title {
-  margin: 0;
-  text-align: center;
+  margin: 0 0 10px 0;
   color: black;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: center;
   white-space: nowrap;
   line-height: 1.4; // so descenders don't clip
+}
+
+.graph-title--left {
+  text-align: left;
 }
 
 .query-browser__wrapper {
@@ -57,4 +65,8 @@
 
 .query-browser__span-reset {
   margin: 0 20px;
+}
+
+.query-browser__error {
+  margin: 10px 10px 20px 10px;
 }

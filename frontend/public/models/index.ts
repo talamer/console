@@ -344,6 +344,33 @@ export const BuildModel: K8sKind = {
   labelPlural: 'Builds',
 };
 
+export const TemplateModel: K8sKind = {
+  label: 'Template',
+  apiVersion: 'v1',
+  path: 'templates',
+  apiGroup: 'template.openshift.io',
+  plural: 'templates',
+  abbr: 'T',
+  namespaced: true,
+  propagationPolicy: 'Foreground',
+  kind: 'Template',
+  id: 'template',
+  labelPlural: 'Templates',
+};
+
+export const TemplateInstanceModel: K8sKind = {
+  label: 'Template Instance',
+  apiVersion: 'v1',
+  path: 'templateinstances',
+  apiGroup: 'template.openshift.io',
+  plural: 'templateinstances',
+  abbr: 'TI',
+  namespaced: true,
+  kind: 'TemplateInstance',
+  id: 'templateinstance',
+  labelPlural: 'Template Instances',
+};
+
 export const ImageStreamModel: K8sKind = {
   label: 'Image Stream',
   apiVersion: 'v1',
@@ -579,45 +606,6 @@ export const SelfSubjectAccessReviewModel: K8sKind = {
   kind: 'SelfSubjectAccessReview',
   id: 'selfsubjectaccessreview',
   labelPlural: 'Self Subject Access Reviews',
-};
-
-export const TectonicVersionModel: K8sKind = {
-  label: 'Tectonic Version',
-  apiGroup: 'tco.coreos.com',
-  apiVersion: 'v1',
-  path: 'tectonicversions',
-  plural: 'tectonicversions',
-  abbr: 'TV',
-  namespaced: true,
-  kind: 'TectonicVersion',
-  id: 'tectonicversion',
-  labelPlural: 'Tectonic Versions',
-};
-
-export const ChannelOperatorConfigModel: K8sKind = {
-  label: 'Channel Operator Config',
-  apiGroup: 'tco.coreos.com',
-  apiVersion: 'v1',
-  path: 'channeloperatorconfigs',
-  plural: 'channeloperatorconfigs',
-  abbr: 'COC',
-  namespaced: true,
-  kind: 'ChannelOperatorConfig',
-  id: 'channeloperatorconfig',
-  labelPlural: 'Channel Operator Configs',
-};
-
-export const AppVersionModel: K8sKind = {
-  label: 'AppVersion',
-  apiGroup: 'tco.coreos.com',
-  apiVersion: 'v1',
-  path: 'appversions',
-  plural: 'appversions',
-  abbr: 'AV',
-  namespaced: true,
-  kind: 'AppVersion',
-  id: 'appversion',
-  labelPlural: 'AppVersions',
 };
 
 export const PersistentVolumeModel: K8sKind = {
@@ -915,6 +903,20 @@ export const MachineConfigModel: K8sKind = {
   crd: true,
 };
 
+export const MachineAutoscalerModel: K8sKind = {
+  label: 'Machine Autoscaler',
+  labelPlural: 'Machine Autoscalers',
+  apiVersion: 'v1beta1',
+  path: 'machineautoscalers',
+  apiGroup: 'autoscaling.openshift.io',
+  plural: 'machineautoscalers',
+  abbr: 'MA',
+  namespaced: true,
+  kind: 'MachineAutoscaler',
+  id: 'machineautoscaler',
+  crd: true,
+};
+
 // Openshift cluster resources
 export const ClusterOperatorModel: K8sKind = {
   label: 'Cluster Operator',
@@ -947,7 +949,7 @@ export const ClusterVersionModel: K8sKind = {
 export const ClusterAutoscalerModel: K8sKind = {
   label: 'Cluster Autoscaler',
   labelPlural: 'Cluster Autoscalers',
-  apiVersion: 'v1alpha1',
+  apiVersion: 'v1',
   path: 'clusterautoscalers',
   apiGroup: 'autoscaling.openshift.io',
   plural: 'clusterautoscalers',

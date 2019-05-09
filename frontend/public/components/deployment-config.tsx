@@ -7,7 +7,7 @@ import { errorModal } from './modals';
 import { DeploymentConfigModel } from '../models';
 import { Conditions } from './conditions';
 import { ResourceEventStream } from './events';
-import { MountedVolumes } from './mounted-vol';
+import { VolumesTable } from './volumes-table';
 import {
   DetailsPage,
   List,
@@ -127,7 +127,7 @@ export const DeploymentConfigsDetails: React.SFC<{obj: any}> = ({obj: dc}) => {
       <ContainerTable containers={dc.spec.template.spec.containers} />
     </div>
     <div className="co-m-pane__body">
-      <MountedVolumes podTemplate={dc.spec.template} heading="Mounted Volumes" />
+      <VolumesTable podTemplate={dc.spec.template} heading="Volumes" />
     </div>
     <div className="co-m-pane__body">
       <SectionHeading text="Conditions" />
@@ -175,7 +175,7 @@ export const DeploymentConfigsPage: React.SFC<DeploymentConfigsPageProps> = prop
     items: createItems,
     createLink: type => type === 'image'
       ? `/deploy-image${props.namespace ? `?preselected-ns=${props.namespace}` : ''}`
-      : `/k8s/ns/${props.namespace || 'default'}/deploymentconfigs/new`,
+      : `/k8s/ns/${props.namespace || 'default'}/deploymentconfigs/~new`,
   };
   return <ListPage {...props} title="Deployment Configs" kind={DeploymentConfigsReference} ListComponent={DeploymentConfigsList} canCreate={true} createButtonText="Create" createProps={createProps} filterLabel={props.filterLabel} />;
 };

@@ -22,7 +22,7 @@ const menuActions = [
   // }),
   (kind, role) => ({
     label: 'Add Role Binding...',
-    href: `/k8s/cluster/rolebindings/new?rolekind=${roleKind(role)}&rolename=${role.metadata.name}`,
+    href: `/k8s/cluster/rolebindings/~new?rolekind=${roleKind(role)}&rolename=${role.metadata.name}`,
   }),
   Kebab.factory.Edit,
   Kebab.factory.Delete,
@@ -139,12 +139,12 @@ export const BindingsForRolePage = (props) => {
   return <MultiListPage
     canCreate={true}
     createButtonText="Create Binding"
-    createProps={{to: `/k8s/${ns ? `ns/${ns}` : 'cluster'}/rolebindings/new?rolekind=${kind}&rolename=${name}`}}
+    createProps={{to: `/k8s/${ns ? `ns/${ns}` : 'cluster'}/rolebindings/~new?rolekind=${kind}&rolename=${name}`}}
     ListComponent={BindingsListComponent}
     staticFilters={[{'role-binding-roleRef': name}]}
     resources={resources}
     textFilter="role-binding"
-    filterLabel="Role Bindings by role or subject"
+    filterLabel="by role or subject"
     namespace={ns}
     flatten={bindingsFlatten} />;
 };
@@ -177,8 +177,7 @@ export const RolesPage = ({namespace, mock, showTitle}) => {
     showTitle={showTitle}
     namespace={namespace}
     createButtonText="Create Role"
-    createProps={{to: `/k8s/ns/${namespace || 'default'}/roles/new`}}
-    filterLabel="Roles by name"
+    createProps={{to: `/k8s/ns/${namespace || 'default'}/roles/~new`}}
     flatten={resources => _.flatMap(resources, 'data').filter(r => !!r)}
     resources={[
       {kind: 'Role', namespaced: true, optional: mock},

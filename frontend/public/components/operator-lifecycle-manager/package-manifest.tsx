@@ -26,10 +26,10 @@ export const PackageManifestRow: React.SFC<PackageManifestRowProps> = (props) =>
   const {displayName, icon = [], version, provider} = channel.currentCSVDesc;
 
   const subscriptionLink = () => ns !== ALL_NAMESPACES_KEY
-    ? <Link to={`/operatormanagement/ns/${ns}/${SubscriptionModel.plural}?name=${subscription.metadata.name}`}>View<span className="visible-lg-inline"> subscription</span></Link>
-    : <Link to={`/operatormanagement/all-namespaces/${SubscriptionModel.plural}?name=${obj.metadata.name}`}>View<span className="visible-lg-inline"> subscriptions</span></Link>;
+    ? <Link to={`/operatormanagement/ns/${ns}?name=${subscription.metadata.name}`}>View<span className="visible-lg-inline"> subscription</span></Link>
+    : <Link to={`/operatormanagement/all-namespaces?name=${obj.metadata.name}`}>View<span className="visible-lg-inline"> subscriptions</span></Link>;
 
-  const createSubscriptionLink = () => `/k8s/ns/${ns === ALL_NAMESPACES_KEY ? defaultNS : ns}/${SubscriptionModel.plural}/new?pkg=${obj.metadata.name}&catalog=${catalogSourceName}&catalogNamespace=${catalogSourceNamespace}`;
+  const createSubscriptionLink = () => `/k8s/ns/${ns === ALL_NAMESPACES_KEY ? defaultNS : ns}/${SubscriptionModel.plural}/~new?pkg=${obj.metadata.name}&catalog=${catalogSourceName}&catalogNamespace=${catalogSourceNamespace}`;
 
   return <div className="row co-resource-list__item co-package-row">
     <div className="col-md-4 col-sm-4 col-xs-6">
@@ -105,14 +105,13 @@ export const PackageManifestsPage: React.SFC<PackageManifestsPageProps> = (props
     showTitle={false}
     helpText={HelpText}
     ListComponent={(listProps: PackageManifestListProps) => <PackageManifestList {...listProps} showDetailsLink={true} namespace={namespace} />}
-    filterLabel="Packages by name"
     textFilter="packagemanifest-name"
     flatten={flatten}
     resources={[
       {kind: referenceForModel(PackageManifestModel), isList: true, namespaced: true, prop: 'packageManifest', selector: {matchExpressions: [{key: visibilityLabel, operator: 'DoesNotExist'}, {key: OPERATOR_HUB_LABEL, operator: 'DoesNotExist'}]}},
       {kind: referenceForModel(CatalogSourceModel), isList: true, namespaced: true, prop: 'catalogSource'},
-      {kind: referenceForModel(SubscriptionModel), isList: true, prop: 'subscription'},
-      {kind: referenceForModel(OperatorGroupModel), isList: true, prop: 'operatorGroup'},
+      {kind: referenceForModel(SubscriptionModel), isList: true, namespaced: true, prop: 'subscription'},
+      {kind: referenceForModel(OperatorGroupModel), isList: true, namespaced: true, prop: 'operatorGroup'},
     ]} />;
 };
 
