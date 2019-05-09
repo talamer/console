@@ -6,6 +6,7 @@ import {
   ALL_NAMESPACES_KEY,
   LAST_NAMESPACE_NAME_LOCAL_STORAGE_KEY,
   LAST_PERSPECTIVE_LOCAL_STORAGE_KEY,
+  LAST_APPLICATION_NAME_LOCAL_STORAGE_KEY,
 } from '../const';
 import { getNSPrefix } from '../components/utils/link';
 import { allModels } from '../module/k8s/k8s-models';
@@ -26,6 +27,7 @@ allModels().forEach((v, k) => {
 });
 
 export const getActiveNamespace = () => store.getState().UI.get('activeNamespace');
+export const getActiveApplication = () => store.getState().UI.get('activeApplication');
 
 export const formatNamespacedRouteForResource = (resource, activeNamespace=getActiveNamespace()) => {
   return activeNamespace === ALL_NAMESPACES_KEY
@@ -76,6 +78,7 @@ export const types = {
   selectOverviewItem: 'selectOverviewItem',
   selectOverviewView: 'selectOverviewView',
   setActiveNamespace: 'setActiveNamespace',
+  setActiveApplication: 'setActiveApplication',
   setActivePerspective: 'setActivePerspective',
   setCreateProjectMessage: 'setCreateProjectMessage',
   setClusterID: 'setClusterID',
@@ -117,6 +120,23 @@ export const UIActions = {
     return {
       type: types.setActiveNamespace,
       value: namespace,
+    };
+  },
+
+  [types.setActiveApplication]: (application) => {
+    if (application) {
+      application = application.trim();
+    }
+
+    if (application !== getActiveApplication()) {
+      // remember the most recently-viewed project, which is automatically
+      // selected when returning to the console
+      localStorage.setItem(LAST_APPLICATION_NAME_LOCAL_STORAGE_KEY, application);
+    }
+
+    return {
+      type: types.setActiveApplication,
+      value: application,
     };
   },
 
