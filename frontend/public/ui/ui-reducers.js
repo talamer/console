@@ -2,7 +2,7 @@ import * as _ from 'lodash-es';
 import { Map as ImmutableMap } from 'immutable';
 
 import { types } from './ui-actions';
-import { ALL_NAMESPACES_KEY, LAST_NAMESPACE_NAME_LOCAL_STORAGE_KEY, NAMESPACE_LOCAL_STORAGE_KEY, LAST_PERSPECTIVE_LOCAL_STORAGE_KEY, ALL_APPLICATIONS_KEY, LAST_APPLICATION_NAME_LOCAL_STORAGE_KEY, APPLICATION_LOCAL_STORAGE_KEY } from '../const';
+import { ALL_NAMESPACES_KEY, LAST_NAMESPACE_NAME_LOCAL_STORAGE_KEY, NAMESPACE_LOCAL_STORAGE_KEY, LAST_PERSPECTIVE_LOCAL_STORAGE_KEY, LAST_APPLICATION_NAME_LOCAL_STORAGE_KEY } from '../const';
 import { AlertStates, isSilenced, SilenceStates } from '../monitoring';
 import { legalNamePattern, getNamespace, getPerspective, defaultPerspective } from '../components/utils/link';
 
@@ -10,6 +10,7 @@ export default (state, action) => {
   if (!state) {
     const { pathname } = window.location;
     const lastPerspective = localStorage.getItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY);
+    const lastApplication = localStorage.getItem(LAST_APPLICATION_NAME_LOCAL_STORAGE_KEY);
 
     let activeNamespace = getNamespace(pathname);
     if (!activeNamespace) {
@@ -18,16 +19,6 @@ export default (state, action) => {
         activeNamespace = parsedFavorite;
       } else {
         activeNamespace = localStorage.getItem(LAST_NAMESPACE_NAME_LOCAL_STORAGE_KEY);
-      }
-    }
-
-    let activeApplication;
-    if (!activeApplication) {
-      const parsedFavorite = localStorage.getItem(APPLICATION_LOCAL_STORAGE_KEY);
-      if (_.isString(parsedFavorite) && (parsedFavorite.match(legalNamePattern) || parsedFavorite === ALL_APPLICATIONS_KEY)) {
-        activeApplication = parsedFavorite;
-      } else {
-        activeApplication = localStorage.getItem(LAST_APPLICATION_NAME_LOCAL_STORAGE_KEY);
       }
     }
 
@@ -40,7 +31,7 @@ export default (state, action) => {
       activeNavSectionId: 'workloads',
       location: pathname,
       activeNamespace: activeNamespace || 'default',
-      activeApplication,
+      activeApplication: lastApplication,
       activePerspective: activePerspective || defaultPerspective,
       createProjectMessage: '',
       overview: new ImmutableMap({
@@ -66,7 +57,6 @@ export default (state, action) => {
 
     case types.setActiveApplication:
       return state.set('activeApplication', action.value);
-
 
     case types.setActivePerspective:
       return state.set('activePerspective', action.value);

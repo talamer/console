@@ -3,7 +3,7 @@ import * as _ from 'lodash-es';
 import * as React from 'react';
 import * as fuzzy from 'fuzzysearch';
 
-import { Dropdown, ResourceName, LoadingInline } from '../../../../../components/utils';
+import { Dropdown, LoadingInline } from '../../../../../components/utils';
 import { K8sResourceKind } from '../../../../../module/k8s';
 
 type FirehoseList = {
@@ -17,6 +17,15 @@ interface LabelDropdownState {
 }
 
 interface LabelDropdownProps {
+  className?: string;
+  menuClassName?: string;
+  buttonClassName?: string;
+  title?: React.ReactNode;
+  titlePrefix?: string;
+  allApplicationsKey?: string;
+  storageKey?: string;
+  canFavorite?: boolean;
+  disabled?: boolean;
   actionItem?: {
     actionTitle: string;
     actionKey: string;
@@ -86,6 +95,11 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
       );
     });
 
+    const allApplications = { name: 'all applications' };
+    if (this.props.allApplicationsKey && !_.isEmpty(unsortedList)) {
+      unsortedList[this.props.allApplicationsKey] = allApplications;
+    }
+
     const sortedList = {};
     _.keys(unsortedList)
       .sort()
@@ -97,13 +111,12 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
 
   onChange = (key) => {
     const { name } = _.get(this.state, ['items', key], {});
-    const { labelType } = this.props;
-    const { actionKey, actionTitle } = this.props.actionItem;
+    const { actionItem } = this.props;
     let title;
-    if (key === actionKey) {
-      title = <span className="btn-dropdown__item--placeholder">{actionTitle}</span>;
+    if (actionItem && key === actionItem.actionKey) {
+      title = <span className="btn-dropdown__item--placeholder">{actionItem.actionTitle}</span>;
     } else {
-      title = <ResourceName kind={labelType} name={name} />;
+      title = <span>{name}</span>;
     }
     this.props.onChange(name, key);
     this.setState({ title });
@@ -111,22 +124,28 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
 
   render() {
     const items = {};
+
     _.keys(this.state.items).forEach((key) => {
       const item = this.state.items[key];
-      items[key] = <ResourceName kind={this.props.labelType} name={item.name} />;
+      items[key] = item.name;
     });
 
     return (
       <Dropdown
+        className={this.props.className}
+        menuClassName={this.props.menuClassName}
+        buttonClassName={this.props.buttonClassName}
+        titlePrefix={this.props.titlePrefix}
         autocompleteFilter={this.autocompleteFilter}
         actionItem={this.props.actionItem}
         items={items}
         onChange={this.onChange}
         selectedKey={this.props.selectedKey}
-        title={this.state.title}
+        title={this.props.title || this.state.title}
         autocompletePlaceholder={this.props.placeholder}
-        dropDownClassName="dropdown--full-width"
-        menuClassName="dropdown-menu--text-wrap"
+        storageKey={this.props.storageKey}
+        canFavorite={this.props.canFavorite}
+        disabled={this.props.disabled}
       />
     );
   }

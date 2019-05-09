@@ -5,6 +5,15 @@ import LabelDropdown from './LabelDropdown';
 import { Firehose } from '../../../../../components/utils';
 
 interface AppDropdownProps {
+  className?: string;
+  menuClassName?: string;
+  buttonClassName?: string;
+  title?: React.ReactNode;
+  titlePrefix?: string;
+  allApplicationsKey?: string;
+  storageKey?: string;
+  canFavorite?: boolean;
+  disabled?: boolean;
   namespace?: string;
   actionItem?: {
     actionTitle: string;

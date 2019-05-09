@@ -127,9 +127,8 @@ export const UIActions = {
     if (application) {
       application = application.trim();
     }
-
     if (application !== getActiveApplication()) {
-      // remember the most recently-viewed project, which is automatically
+      // remember the most recently-viewed application, which is automatically
       // selected when returning to the console
       localStorage.setItem(LAST_APPLICATION_NAME_LOCAL_STORAGE_KEY, application);
     }

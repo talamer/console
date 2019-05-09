@@ -62,6 +62,11 @@ export class DropdownMixin extends React.PureComponent {
 
   toggle(e) {
     e.preventDefault();
+
+    if (this.props.disabled) {
+      return;
+    }
+
     if (this.state.active) {
       this.hide(e);
     } else {
@@ -299,8 +304,10 @@ export class Dropdown extends DropdownMixin {
     const headerBefore = this.props.headerBefore || {};
     const rows = [];
     const bookMarkRows = [];
-
     const addItem = (key, content) => {
+      if (!this.props.items[key]) {
+        return;
+      }
       const selected = (key === selectedKey) && !this.props.noSelection;
       const hover = key === keyboardHoverKey;
       const klass = classNames({'active': selected});
@@ -343,7 +350,7 @@ export class Dropdown extends DropdownMixin {
 
     return <div className={classNames(className)} ref={this.dropdownElement} style={this.props.style}>
       <div className={classNames('dropdown', dropDownClassName)}>
-        <button aria-haspopup="true" onClick={this.toggle} onKeyDown={this.onKeyDown} type="button" className={classNames('btn', 'btn-dropdown', 'dropdown-toggle', buttonClassName ? buttonClassName : 'btn-default')} id={this.props.id} aria-describedby={describedBy} >
+        <button aria-haspopup="true" onClick={this.toggle} onKeyDown={this.onKeyDown} type="button" className={classNames('btn', 'btn-dropdown', 'dropdown-toggle', buttonClassName ? buttonClassName : 'btn-default')} id={this.props.id} aria-describedby={describedBy} disabled={this.props.disabled} >
           <div className="btn-dropdown__content-wrap">
             <span className="btn-dropdown__item">
               {titlePrefix && <span className="btn-link__titlePrefix">{titlePrefix}: </span>}
@@ -401,6 +408,7 @@ Dropdown.propTypes = {
   spacerBefore: PropTypes.instanceOf(Set),
   textFilter: PropTypes.string,
   title: PropTypes.node,
+  disabled: PropTypes.bool,
 };
 
 export const ActionsMenu = (props) => {
