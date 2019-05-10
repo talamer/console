@@ -39,7 +39,7 @@ const (
 
 	// Well-known location of DevConsole App Service for OpenShift. This is only accessible in-cluster after
 	// the developer perspective is enabled using the operator.
-	openshiftDevConsoleAppServiceHost = "devconsole.openshift-operators.csv:8080" // TODO:use a different namespace?
+	openshiftDevConsoleAppServiceHost = "devconsole.openshift-operators.svc:8080" // TODO:use a different namespace?
 )
 
 func main() {
