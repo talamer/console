@@ -1,11 +1,15 @@
 import * as React from 'react';
 import { SectionHeading, ResourceSummary } from '../../../../components/utils';
 
+import PipelineVisualization from '../../shared/components/PipelineVisualization';
+
 const PipelineDetails = ({ obj: pipeline }) => (
   <div className="co-m-pane__body">
+    <SectionHeading text="Pipeline Overview" />
+    <PipelineVisualization pipeline={pipeline} />
     <div className="row">
       <div className="col-sm-6">
-        <SectionHeading text="Pipeline Overview" />
+        <SectionHeading text="Overview" />
         <ResourceSummary resource={pipeline} />
       </div>
       <div className="col-sm-6">
