@@ -9,14 +9,14 @@ import {
   ResourceNSLink,
   stripNS,
 } from '../../../components/nav';
-import { FLAGS } from '../../../features';
+import { FLAGS, connectToFlags } from '../../../features';
 import { BuildModel, PipelineModel } from '../../../models';
 import { stripPerspectivePath } from '../../../components/utils/link';
 
 interface DevConsoleNavigationProps {
   isNavOpen: boolean;
   location: string;
-  flags: Map<string, boolean>;
+  flags: { [key: string]: boolean };
   activeNamespace: string;
   onNavSelect: () => void;
   onToggle: () => void;
@@ -56,7 +56,7 @@ export const PageNav = ({
           activeNamespace={activeNamespace}
           isActive={isResourceActive(['buildconfigs'])}
         />
-        {flags.get(FLAGS.SHOW_PIPELINE) && (
+        {flags[FLAGS.SHOW_PIPELINE] && (
           <ResourceNSLink
             resource="pipelines"
             name={PipelineModel.labelPlural}
@@ -86,8 +86,7 @@ const mapStateToProps = (state) => {
   return {
     location: state.UI.get('location'),
     activeNamespace: state.UI.get('activeNamespace'),
-    flags: state.FLAGS,
   };
 };
 
-export default connect(mapStateToProps)(DevConsoleNavigation);
+export default connect(mapStateToProps)(connectToFlags(FLAGS.SHOW_PIPELINE)(DevConsoleNavigation));
