@@ -1,0 +1,12 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: visualizations.tekton.dev
+spec:
+  group: tekton.dev
+  names:
+    kind: Visualizations
+    plural: visualizations
+  scope: Cluster
+  enabled: true;
+  version: v1karthik1

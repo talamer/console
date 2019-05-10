@@ -42,3 +42,160 @@ spec:
           value: "-d1"
         - name: yamlPathToImage
           value: "spec.template.spec.containers[0].image"
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: openshift-cli-deploy-mapit
+spec:
+  steps:
+  - name: oc
+    image: quay.io/openshift-pipeline/openshift-cli
+    command: ["/usr/local/bin/oc"]
+    args:
+    - rollout
+    - latest
+    - mapit-spring
+---
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: mapit-deploy-pipeline
+spec:
+  resources:
+  - name: mapit-git
+    type: git
+  - name: mapit-image
+    type: image
+  tasks:
+  - name: build-app
+    taskRef:
+      name: mvn-build
+    resources:
+      inputs:
+      - name: workspace-git
+        resource: mapit-git
+      outputs:
+      - name: workspace-git
+        resource: mapit-git
+  - name: test-app
+    taskRef:
+      name: mvn-test
+    resources:
+      inputs:
+      - name: workspace-git
+        resource: mapit-git
+        from: [build-app]
+  - name: analyse-code
+    taskRef:
+      name: static-analysis
+    resources:
+      inputs:
+      - name: workspace-git
+        resource: mapit-git
+        from: [build-app]
+  - name: build-image
+    taskRef:
+      name: buildah
+    runAfter:
+      - test-app
+      - analyse-code
+    params:
+    - name: dockerfile
+      value: Dockerfile.openjdk
+    - name: verifyTLS
+      value: "false"
+    resources:
+      inputs:
+      - name: workspace-git
+        resource: mapit-git
+        from: [build-app]
+      outputs:
+      - name: image
+        resource: mapit-image
+  - name: deploy
+    taskRef:
+      name: openshift-cli-deploy-mapit
+    runAfter:
+      - build-image
+---
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: complex-pipeline-visuals
+spec:
+  resources:
+  - name: mapit-git
+    type: git
+  - name: mapit-image
+    type: image
+  tasks:
+  - name: start-app
+    taskRef:
+      name: mvn-build
+    resources:
+      inputs:
+      - name: workspace-git
+        resource: mapit-git
+      outputs:
+      - name: workspace-git
+        resource: mapit-git
+  - name: test-app-1
+    taskRef:
+      name: mvn-test
+    resources:
+      inputs:
+      - name: workspace-git
+        resource: mapit-git
+        from: [start-app]
+  - name: test-app-2
+    taskRef:
+      name: static-analysis
+    resources:
+      inputs:
+      - name: workspace-git
+        resource: mapit-git
+        from: [start-app]
+  - name: build-image-1
+    taskRef:
+      name: buildah
+    runAfter:
+      - test-app-1
+      - test-app-2
+    params:
+    - name: dockerfile
+      value: Dockerfile.openjdk
+    - name: verifyTLS
+      value: "false"
+    resources:
+      inputs:
+      - name: workspace-git
+        resource: mapit-git
+        from: [build-app]
+      outputs:
+      - name: image
+        resource: mapit-image
+  - name: build-image-2
+    taskRef:
+      name: buildah
+    runAfter:
+      - test-app-1
+      - test-app-2
+    params:
+    - name: dockerfile
+      value: Dockerfile.openjdk
+    - name: verifyTLS
+      value: "false"
+    resources:
+      inputs:
+      - name: workspace-git
+        resource: mapit-git
+        from: [build-app]
+      outputs:
+      - name: image
+        resource: mapit-image
+  - name: deploy
+    taskRef:
+      name: openshift-cli-deploy-mapit
+    runAfter:
+      - build-image-1
+      - build-image-2
