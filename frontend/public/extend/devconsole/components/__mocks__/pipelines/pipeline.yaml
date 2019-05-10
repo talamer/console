@@ -11,7 +11,7 @@ spec:
   tasks:
     - name: build-skaffold-web
       taskRef:
-        name: build-docker-image-from-git-source
+        name: build-skaffold-web
       params:
         - name: pathToDockerFile
           value: Dockerfile
@@ -26,7 +26,7 @@ spec:
             resource: web-image
     - name: deploy-web
       taskRef:
-        name: deploy-using-kubectl
+        name: deploy-web
       resources:
         inputs:
           - name: source
@@ -42,6 +42,7 @@ spec:
           value: "-d1"
         - name: yamlPathToImage
           value: "spec.template.spec.containers[0].image"
+---
 apiVersion: tekton.dev/v1alpha1
 kind: Task
 metadata:
@@ -69,7 +70,7 @@ spec:
   tasks:
   - name: build-app
     taskRef:
-      name: mvn-build
+      name: build-app
     resources:
       inputs:
       - name: workspace-git
@@ -79,7 +80,7 @@ spec:
         resource: mapit-git
   - name: test-app
     taskRef:
-      name: mvn-test
+      name: test-app
     resources:
       inputs:
       - name: workspace-git
@@ -95,7 +96,7 @@ spec:
         from: [build-app]
   - name: build-image
     taskRef:
-      name: buildah
+      name: build-image
     runAfter:
       - test-app
       - analyse-code
@@ -114,7 +115,7 @@ spec:
         resource: mapit-image
   - name: deploy
     taskRef:
-      name: openshift-cli-deploy-mapit
+      name: deploy
     runAfter:
       - build-image
 ---
@@ -131,7 +132,7 @@ spec:
   tasks:
   - name: start-app
     taskRef:
-      name: mvn-build
+      name: start-app
     resources:
       inputs:
       - name: workspace-git
@@ -141,7 +142,7 @@ spec:
         resource: mapit-git
   - name: test-app-1
     taskRef:
-      name: mvn-test
+      name: test-app-1
     resources:
       inputs:
       - name: workspace-git
@@ -149,7 +150,7 @@ spec:
         from: [start-app]
   - name: test-app-2
     taskRef:
-      name: static-analysis
+      name: test-app-2
     resources:
       inputs:
       - name: workspace-git
@@ -157,7 +158,7 @@ spec:
         from: [start-app]
   - name: build-image-1
     taskRef:
-      name: buildah
+      name: build-image-1
     runAfter:
       - test-app-1
       - test-app-2
@@ -176,7 +177,7 @@ spec:
         resource: mapit-image
   - name: build-image-2
     taskRef:
-      name: buildah
+      name: build-image-2
     runAfter:
       - test-app-1
       - test-app-2

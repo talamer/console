@@ -28,7 +28,6 @@ class Task extends React.Component<TaskProps, TaskStates> {
 
   componentDidMount() {
     k8sGet(TaskModel, this.props.task, this.props.namespace).then((res) => {
-      console.log('k8sget', res);
       this.setState({taskDetails:res});
     });
   }
@@ -62,7 +61,7 @@ class Task extends React.Component<TaskProps, TaskStates> {
 class PipelineVisualization extends React.PureComponent<
   PipelineVisualizationProps,
   PipelineVisualizationStates
-> {
+  > {
   constructor(props) {
     super(props);
     this.state = {
@@ -86,30 +85,27 @@ class PipelineVisualization extends React.PureComponent<
     const parentDiv = {
       margin: '5%',
     };
-    //check for correct argument specs
-    if (!this.props.pipeline || !this.props.pipeline.spec || !this.props.pipeline.spec.tasks) {
-    }
+
+    //check correctness of specs first
     const output = getPipelineTasks(this.props.pipeline.spec.tasks);
     return (
       <div style={parentDiv}>
         <h4>Pipeline Visualization Test for {this.props.pipeline.metadata.name}</h4>
         <hr />
         <div className="row">
-        {output.map((stage, i) => {
-          return (
-            <div style={stageStyle} key={i} className="col-lg-2 col-md-2 col-sm-3">
-              <h4 style={stageTitle}>Stage {i + 1}</h4>
-              {stage.map((t, j) => {
-                //check for correct argument specs
-                if (!t.name || !this.props.pipeline.metadata.namespace) {
-                }
-                return (
-                  <Task key={j} task={t.name} namespace={this.props.pipeline.metadata.namespace} />
-                );
-              })}
-            </div>
-          );
-        })}
+          {output.map((stage, i) => {
+            return (
+              <div style={stageStyle} key={i} className="col-lg-2 col-md-2 col-sm-3">
+                <h4 style={stageTitle}>Stage {i + 1}</h4>
+                {stage.map((t, j) => {
+                //check correctness of specs first
+                  return (
+                    <Task key={j} task={t.taskRef.name} namespace={this.props.pipeline.metadata.namespace} />
+                  );
+                })}
+              </div>
+            );
+          })}
         </div>
       </div>
     );
