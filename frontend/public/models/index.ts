@@ -211,6 +211,32 @@ export const PipelinerunModel: K8sKind = {
   labelPlural: 'PipelineRuns',
 };
 
+export const TaskModel: K8sKind = {
+  apiGroup: 'tekton.dev',
+  apiVersion: 'v1alpha1',
+  label: 'Task',
+  path: 'tasks',
+  plural: 'tasks',
+  abbr: 'T',
+  namespaced: true,
+  kind: 'Task',
+  id: 'task',
+  labelPlural: 'Tasks',
+};
+
+export const TaskrunModel: K8sKind = {
+  apiGroup: 'tekton.dev',
+  apiVersion: 'v1alpha1',
+  label: 'Taskrun',
+  path: 'taskruns',
+  plural: 'taskruns',
+  abbr: 'TR',
+  namespaced: true,
+  kind: 'TaskRun',
+  id: 'taskRun',
+  labelPlural: 'TaskRuns',
+};
+
 export const ContainerModel: K8sKind = {
   apiVersion: 'v1',
   label: 'Container',

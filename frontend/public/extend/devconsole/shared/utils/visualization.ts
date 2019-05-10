@@ -1,194 +1,12 @@
 
-/*var pipeline = [
-  {
-    tasks: [
-      {
-        name: 'build-app',
-        taskRef: {
-          name: 'mvn-build',
-        },
-        resources: {
-          inputs: [
-            {
-              name: 'workspace-git',
-              resource: 'mapit-git',
-            },
-          ],
-          outputs: [
-            {
-              name: 'workspace-git',
-              resource: 'mapit-git',
-            },
-          ],
-        },
-      },
-      {
-        name: 'test-app',
-        taskRef: {
-          name: 'mvn-test',
-        },
-        resources: {
-          inputs: [
-            {
-              name: 'workspace-git',
-              resource: 'mapit-git',
-              from: ['build-app'],
-            },
-          ],
-        },
-      },
-      {
-        name: 'analyse-code',
-        taskRef: {
-          name: 'static-analysis',
-        },
-        resources: {
-          inputs: [
-            {
-              name: 'workspace-git',
-              resource: 'mapit-git',
-              from: ['build-app'],
-            },
-          ],
-        },
-      },
-      {
-        name: 'build-image',
-        taskRef: {
-          name: 'buildah',
-        },
-        runAfter: ['test-app', 'analyse-code'],
-        params: [
-          {
-            name: 'dockerfile',
-            value: 'Dockerfile.openjdk',
-          },
-          {
-            name: 'verifyTLS',
-            value: 'false',
-          },
-        ],
-        resources: {
-          inputs: [
-            {
-              name: 'workspace-git',
-              resource: 'mapit-git',
-              from: ['build-app'],
-            },
-          ],
-          outputs: [
-            {
-              name: 'image',
-              resource: 'mapit-image',
-            },
-          ],
-        },
-      },
-      {
-        name: 'deploy',
-        taskRef: {
-          name: 'openshift-cli-deploy-mapit',
-        },
-        runAfter: ['build-image'],
-      },
-    ],
-  },
-  {
-    tasks: [
-      {
-        name: 'deploy',
-        taskRef: {
-          name: 'openshift-cli-deploy-mapit',
-        },
-        runAfter: ['build-image'],
-      },
-      {
-        name: 'build-app',
-        taskRef: {
-          name: 'mvn-build',
-        },
-        resources: {
-          inputs: [
-            {
-              name: 'workspace-git',
-              resource: 'mapit-git',
-            },
-          ],
-          outputs: [
-            {
-              name: 'workspace-git',
-              resource: 'mapit-git',
-            },
-          ],
-        },
-      },
-      {
-        name: 'test-app',
-        taskRef: {
-          name: 'mvn-test',
-        },
-        resources: {
-          inputs: [
-            {
-              name: 'workspace-git',
-              resource: 'mapit-git',
-              from: ['build-app'],
-            },
-          ],
-        },
-      },
-      {
-        name: 'analyse-code',
-        taskRef: {
-          name: 'static-analysis',
-        },
-        resources: {
-          inputs: [
-            {
-              name: 'workspace-git',
-              resource: 'mapit-git',
-              from: ['build-app'],
-            },
-          ],
-        },
-      },
-      {
-        name: 'build-image',
-        taskRef: {
-          name: 'buildah',
-        },
-        runAfter: ['test-app', 'analyse-code'],
-        params: [
-          {
-            name: 'dockerfile',
-            value: 'Dockerfile.openjdk',
-          },
-          {
-            name: 'verifyTLS',
-            value: 'false',
-          },
-        ],
-        resources: {
-          inputs: [
-            {
-              name: 'workspace-git',
-              resource: 'mapit-git',
-              from: ['build-app'],
-            },
-          ],
-          outputs: [
-            {
-              name: 'image',
-              resource: 'mapit-image',
-            },
-          ],
-        },
-      },
-    ],
-  },
-];*/
-const sortTasksByRunAfterAndFrom = (tasks) => {
-  //check and sort the run afters and from
+interface Task {
+  resources?: any;
+  runAfter?: any;
+  name: string;
+}
+
+const sortTasksByRunAfterAndFrom = (tasks: Array<Task>): Array<Task> => {
+  //check and sort tasks by 'runAfter' and 'from' dependency
   var output = tasks;
   for (var i = 0; i < output.length; i++) {
     if (output[i].runAfter && output[i].runAfter.length > 0) {
@@ -207,26 +25,29 @@ const sortTasksByRunAfterAndFrom = (tasks) => {
       output[i].resources.inputs &&
       output[i].resources.inputs[0].from
     ) {
-        let flag = -1;
-        for (var j = 0; j < output.length; j++) {
-          if (i < j && output[j].name == output[i].resources.inputs[0].from[0]) flag = j;
-        }
-        if (flag > -1) {
-          //swap with last matching task
-          let temp = output[flag];
-          output[flag] = output[i];
-          output[i] = temp;
-        }
-
+      let flag = -1;
+      for (var j = 0; j < output.length; j++) {
+        if (i < j && output[j].name == output[i].resources.inputs[0].from[0]) flag = j;
+      }
+      if (flag > -1) {
+        //swap with last matching task
+        let temp = output[flag];
+        output[flag] = output[i];
+        output[i] = temp;
+      }
     }
   }
   return output;
 };
 
-export const getOutput = (actualTasks):Array<Array<Object>> => {
-  var tasks = sortTasksByRunAfterAndFrom(actualTasks);
+export const getPipelineTasks = (actualTasks: Array<Task>): Array<Array<Task>> => {
+  //P.S: Each element in out array is referred to as stage
   var out = [];
-  //Push start node and nodes without dependencies
+
+  //Step 1: Sort Tasks to get in correct order
+  var tasks = sortTasksByRunAfterAndFrom(actualTasks);
+
+  //Step 2: Push all nodes without any dependencies in different stages
   tasks.map((task) => {
     if (task.runAfter && task.runAfter.length > 0) {
       //do nothing
@@ -237,7 +58,8 @@ export const getOutput = (actualTasks):Array<Array<Object>> => {
     }
     return;
   });
-  //Push nodes with from property
+
+  //Step 3: Push nodes with 'from' dependency and stack similar tasks in a stage
   tasks.map((task) => {
     if (task.runAfter && task.runAfter.length > 0) {
       //do nothing
@@ -254,11 +76,9 @@ export const getOutput = (actualTasks):Array<Array<Object>> => {
           next_to_flag &&
           next_to_flag[0].resources.inputs[0].from[0] == task.resources.inputs[0].from[0]
         ) {
-          console.log('b-if', task.name, flag);
           next_to_flag.push(task);
         } else {
           out.splice(i + 1, 0, [task]);
-          console.log('b-else', task.name, flag);
         }
       } else {
         //do nothing
@@ -266,7 +86,8 @@ export const getOutput = (actualTasks):Array<Array<Object>> => {
     }
     return;
   });
-  //Push nodes with run After dependencies
+
+  //Step 4: Push nodes with 'runAfter' dependencies and stack similar tasks in a stage
   tasks.map((task) => {
     if (task.runAfter && task.runAfter.length > 0) {
       var flag = out.length - 1;
@@ -277,22 +98,16 @@ export const getOutput = (actualTasks):Array<Array<Object>> => {
       }
       var next_to_flag = out[flag + 1] ? out[flag + 1] : null;
 
-      if (next_to_flag && 
-        next_to_flag[0].runAfter[0] == task.runAfter[0]) {
-        console.log('a-if', next_to_flag, task.runAfter, flag);
+      if (next_to_flag && next_to_flag[0].runAfter[0] == task.runAfter[0]) {
         next_to_flag.push(task);
       } else {
-        console.log('a-else', task.name, flag);
         out.splice(i + 1, 0, [task]);
       }
     } else {
-      if (task.resources && task.resources.inputs && task.resources.inputs[0].from) {
-        //do nothing
-      } else {
-        //do nothing
-      }
+      //do nothing
     }
     return;
   });
   return out;
 };
+
