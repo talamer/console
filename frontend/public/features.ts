@@ -84,6 +84,7 @@ export const CRDs = {
   'marketplace.redhat.com~v1alpha1~OperatorSource': FLAGS.OPERATOR_HUB,
   [referenceForModel(MachineModel)]: FLAGS.CLUSTER_API,
   [referenceForModel(MachineConfigModel)]: FLAGS.MACHINE_CONFIG,
+  [referenceForModel(PipelineModel)]: FLAGS.SHOW_PIPELINE,
 };
 
 const SET_FLAG = 'SET_FLAG';
