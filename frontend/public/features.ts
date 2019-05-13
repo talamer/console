@@ -208,17 +208,6 @@ const detectDevConsole = dispatch => {
     );
 };
 
-const pipelinePath = `${k8sBasePath}/apis/${PipelineModel.apiGroup}/${PipelineModel.apiVersion}`;
-const detectPipeline = dispatch => {
-  coFetchJSON(pipelinePath)
-    .then(
-      res => setFlag(dispatch, FLAGS.SHOW_PIPELINE, true),
-      err => _.get(err, 'response.status') === 404
-        ? setFlag(dispatch, FLAGS.SHOW_PIPELINE, false)
-        : handleError(err, FLAGS.SHOW_PIPELINE, dispatch, detectPipeline)
-    );
-};
-
 export const featureActions = [
   detectOpenShift,
   detectCanCreateProject,
@@ -227,7 +216,6 @@ export const featureActions = [
   detectUser,
   detectLoggingURL,
   detectDevConsole,
-  detectPipeline,
 ];
 
 const projectListPath = `${k8sBasePath}/apis/project.openshift.io/v1/projects?limit=1`;
