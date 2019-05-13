@@ -39,7 +39,10 @@ const ApplicationSwitcher: React.FC<ApplicationSwitcherProps> = (props) => {
       namespace={props.namespace}
       title={title && <span className="btn-link__title">{title}</span>}
       titlePrefix="Application"
-      allApplicationsKey={props.allApplicationsKey}
+      allSelectorItem={{
+        allSelectorKey: props.allApplicationsKey,
+        allSelectorTitle: allApplicationsTitle,
+      }}
       selectedKey={props.selectedKey}
       onChange={onApplicationChange}
       storageKey={props.storageKey}

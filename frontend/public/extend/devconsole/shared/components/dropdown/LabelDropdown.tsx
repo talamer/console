@@ -18,6 +18,7 @@ interface LabelDropdownState {
 
 interface LabelDropdownProps {
   className?: string;
+  dropDownClassName?: string;
   menuClassName?: string;
   buttonClassName?: string;
   title?: React.ReactNode;
@@ -26,12 +27,15 @@ interface LabelDropdownProps {
   storageKey?: string;
   canFavorite?: boolean;
   disabled?: boolean;
+  allSelectorItem?: {
+    allSelectorKey?: string;
+    allSelectorTitle?: string;
+  };
   actionItem?: {
     actionTitle: string;
     actionKey: string;
   };
   labelSelector: string;
-  labelType: string;
   loaded?: boolean;
   loadError?: string;
   placeholder?: string;
@@ -62,7 +66,7 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
   }
 
   componentWillReceiveProps(nextProps: LabelDropdownProps) {
-    const { labelSelector, resources, loaded, loadError, placeholder } = nextProps;
+    const { labelSelector, resources, loaded, loadError, placeholder, allSelectorItem } = nextProps;
     if (!loaded) {
       this.setState({ title: <LoadingInline /> });
       return;
@@ -95,9 +99,10 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
       );
     });
 
-    const allApplications = { name: 'all applications' };
-    if (this.props.allApplicationsKey && !_.isEmpty(unsortedList)) {
-      unsortedList[this.props.allApplicationsKey] = allApplications;
+    if (this.props.allSelectorItem && !_.isEmpty(unsortedList)) {
+      unsortedList[allSelectorItem.allSelectorKey] = {
+        name: allSelectorItem.allSelectorTitle,
+      };
     }
 
     const sortedList = {};
@@ -133,6 +138,7 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
     return (
       <Dropdown
         className={this.props.className}
+        dropDownClassName={this.props.dropDownClassName}
         menuClassName={this.props.menuClassName}
         buttonClassName={this.props.buttonClassName}
         titlePrefix={this.props.titlePrefix}

@@ -18,7 +18,7 @@ import { FLAGS, featureReducerName, flagPending, setFlag, connectToFlags } from 
 import { openshiftHelpBase } from './utils/documentation';
 import { createProjectMessageStateToProps } from '../ui/ui-reducers';
 import PerspectiveLink from '../extend/devconsole/shared/components/PerspectiveLink';
-import { getActivePerspective } from '../ui/ui-selectors';
+import { getActivePerspective, getActiveApplication } from '../ui/ui-selectors';
 import { pathWithPerspective } from './utils/perspective';
 import ApplicationSwitcher from '../extend/devconsole/components/application-switcher/ApplicationSwitcher';
 
@@ -245,7 +245,7 @@ const defaultBookmarks = {};
 const namespaceBarDropdownStateToProps = state => {
   return {
     activeNamespace: state.UI.get('activeNamespace'),
-    activeApplication: state.UI.get('activeApplication'),
+    activeApplication: getActiveApplication(state),
     activePerspective: getActivePerspective(state),
     canListNS: state[featureReducerName].get(FLAGS.CAN_LIST_NS),
   };

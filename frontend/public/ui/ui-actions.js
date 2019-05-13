@@ -27,7 +27,6 @@ allModels().forEach((v, k) => {
 });
 
 export const getActiveNamespace = () => store.getState().UI.get('activeNamespace');
-export const getActiveApplication = () => store.getState().UI.get('activeApplication');
 
 export const formatNamespacedRouteForResource = (resource, activeNamespace=getActiveNamespace()) => {
   return activeNamespace === ALL_NAMESPACES_KEY
@@ -127,11 +126,10 @@ export const UIActions = {
     if (application) {
       application = application.trim();
     }
-    if (application !== getActiveApplication()) {
-      // remember the most recently-viewed application, which is automatically
-      // selected when returning to the console
-      localStorage.setItem(LAST_APPLICATION_NAME_LOCAL_STORAGE_KEY, application);
-    }
+
+    // remember the most recently-viewed application, which is automatically
+    // selected when returning to the console
+    localStorage.setItem(LAST_APPLICATION_NAME_LOCAL_STORAGE_KEY, application);
 
     return {
       type: types.setActiveApplication,

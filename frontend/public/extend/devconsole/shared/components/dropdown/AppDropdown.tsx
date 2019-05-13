@@ -6,6 +6,7 @@ import { Firehose } from '../../../../../components/utils';
 
 interface AppDropdownProps {
   className?: string;
+  dropDownClassName?: string;
   menuClassName?: string;
   buttonClassName?: string;
   title?: React.ReactNode;
@@ -14,6 +15,10 @@ interface AppDropdownProps {
   storageKey?: string;
   canFavorite?: boolean;
   disabled?: boolean;
+  allSelectorItem?: {
+    allSelectorKey?: string;
+    allSelectorTitle?: string;
+  }
   namespace?: string;
   actionItem?: {
     actionTitle: string;
@@ -43,7 +48,6 @@ const AppDropdown: React.FC<AppDropdownProps> = (props) => {
       <LabelDropdown
         {...props}
         placeholder="Select an Application"
-        labelType="Application"
         labelSelector="app.kubernetes.io/part-of"
       />
     </Firehose>
