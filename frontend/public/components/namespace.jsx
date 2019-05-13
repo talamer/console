@@ -327,8 +327,8 @@ class NamespaceBarDropdowns_ extends React.Component {
           menuClassName="co-add-actions-selector__menu dropdown-menu--right"
           buttonClassName="btn-link" /> :
         <ApplicationSwitcher
-          activeNamespace={activeNamespace}
-          activeApplication={activeApplication}
+          namespace={activeNamespace}
+          application={activeApplication}
           allApplicationsKey={ALL_APPLICATIONS_KEY}
           allNamespacesKey={ALL_NAMESPACES_KEY}
           selectedKey={activeApplication || ALL_APPLICATIONS_KEY}

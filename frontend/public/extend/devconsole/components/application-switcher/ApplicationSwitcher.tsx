@@ -4,8 +4,8 @@ import * as React from 'react';
 import AppDropdown from '../../shared/components/dropdown/AppDropdown';
 
 interface ApplicationSwitcherProps {
-  activeNamespace: string;
-  activeApplication: string;
+  namespace: string;
+  application: string;
   selectedKey: string;
   allApplicationsKey: string;
   allNamespacesKey: string;
@@ -20,13 +20,15 @@ const ApplicationSwitcher: React.FC<ApplicationSwitcherProps> = (props) => {
   const allApplicationsTitle = 'all applications';
 
   let disabled: boolean = false;
-  if (props.activeNamespace === props.allNamespacesKey) {
+  if (props.namespace === props.allNamespacesKey) {
     disabled = true;
   }
 
-  let title: string = props.activeApplication;
-  if (title === props.allApplicationsKey) {
+  let title: string = props.application;
+  if (title === props.allApplicationsKey && !disabled) {
     title = allApplicationsTitle;
+  } else if (disabled) {
+    title = 'No applications';
   }
 
   return (
@@ -34,7 +36,7 @@ const ApplicationSwitcher: React.FC<ApplicationSwitcherProps> = (props) => {
       className="co-namespace-selector"
       menuClassName="co-namespace-selector__menu dropdown-menu--right"
       buttonClassName="btn-link"
-      namespace={props.activeNamespace}
+      namespace={props.namespace}
       title={title && <span className="btn-link__title">{title}</span>}
       titlePrefix="Application"
       allApplicationsKey={props.allApplicationsKey}
