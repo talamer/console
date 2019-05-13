@@ -284,17 +284,28 @@ export class ImportFlowForm extends React.Component<Props, State> {
     };
   }
 
-  private sourceSecretBasicParams() {
-    return {
-      apiVersion: 'v1',
-      kind: 'Secret',
-      metadata: {
-        name: this.state.sourceSecretName,
-        namespace: this.state.namespace,
-      },
-      type: this.state.secretAuthType,
-      data: this.state.secretCredentials,
-    };
+  private sourceSecretParams() {
+    return this.state.secretAuthType === 'kubernetes.io/basic-auth'
+      ? {
+          apiVersion: 'v1',
+          kind: 'Secret',
+          metadata: {
+            name: this.state.sourceSecretName,
+            namespace: this.state.namespace,
+          },
+          type: this.state.secretAuthType,
+          data: this.state.secretCredentials,
+        }
+      : {
+          apiVersion: 'v1',
+          kind: 'Secret',
+          metadata: {
+            name: this.state.sourceSecretName,
+            namespace: this.state.namespace,
+          },
+          type: this.state.secretAuthType,
+          stringData: this.state.secretCredentials,
+        };
   }
 
   private gitSourceWithSecretParams(gitSourceName: string, gitSecretName: string) {
@@ -402,7 +413,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
       !this.state.selectedImage ||
       (this.state.showSourceSecretDropDown && !this.state.sourceSecretName) ||
       (this.state.selectedSourceSecret === 'create-source-secret' &&
-        !(this.state.secretCredentials.password || this.state.secretCredentials.sshPrivateKey))
+        !(this.state.secretCredentials.password || this.state.secretCredentials['ssh-privatekey']))
       // this.state.gitUrlValidationStatus !== 'ok'
     );
   };
@@ -434,26 +445,32 @@ export class ImportFlowForm extends React.Component<Props, State> {
     event.preventDefault();
     if (!this.disableSubmitButton()) {
       if (this.state.selectedSourceSecret === 'create-source-secret') {
-        k8sCreate(SecretModel, this.sourceSecretBasicParams()).then(() => {
-          k8sCreate(
-            GitSourceModel,
-            this.gitSourceWithSecretParams(this.state.gitSourceName, this.state.sourceSecretName),
-          )
-            .then(() => {
-              k8sCreate(GitSourceComponentModel, this.catalogParams()).then(
-                () => {
-                  this.setState({ isComponentCreated: true });
-                  history.push(pathWithPerspective('dev', `/topology/ns/${this.state.namespace}`));
-                },
-                (err) => {
-                  this.setState({ nameError: err.message });
-                },
-              );
-            })
-            .catch((err) => {
-              this.setState({ nameError: err.message });
-            });
-        });
+        k8sCreate(SecretModel, this.sourceSecretParams())
+          .then(() => {
+            k8sCreate(
+              GitSourceModel,
+              this.gitSourceWithSecretParams(this.state.gitSourceName, this.state.sourceSecretName),
+            )
+              .then(() => {
+                k8sCreate(GitSourceComponentModel, this.catalogParams()).then(
+                  () => {
+                    this.setState({ isComponentCreated: true });
+                    history.push(
+                      pathWithPerspective('dev', `/topology/ns/${this.state.namespace}`),
+                    );
+                  },
+                  (err) => {
+                    this.setState({ nameError: err.message });
+                  },
+                );
+              })
+              .catch((err) => {
+                this.setState({ nameError: err.message });
+              });
+          })
+          .catch((err) => {
+            this.setState({ nameError: err.message });
+          });
       } else if (
         this.state.showSourceSecretDropDown &&
         this.state.selectedSourceSecret === this.state.sourceSecretName

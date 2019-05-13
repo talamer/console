@@ -10,7 +10,7 @@ export type SSHAuthSubformProps = {
 };
 
 export type SSHAuthSubformState = {
-  sshPrivateKey: string;
+  'ssh-privatekey': string;
 };
 
 const DroppableFileInput = (props) => (
@@ -29,14 +29,14 @@ export default class SSHAuthSubform extends React.Component<
   constructor(props) {
     super(props);
     this.state = {
-      sshPrivateKey: this.props.secretCredentials.sshPrivateKey || '',
+      'ssh-privatekey': this.props.secretCredentials['ssh-PrivateKey'] || '',
     };
   }
 
   changeData = (event) => {
     this.setState(
       {
-        sshPrivateKey: event.target.value,
+        'ssh-privatekey': event.target.value,
       },
       () => this.props.onChange(this.state),
     );
@@ -45,7 +45,7 @@ export default class SSHAuthSubform extends React.Component<
   onFileChange = (fileData) => {
     this.setState(
       {
-        sshPrivateKey: fileData,
+        'ssh-privatekey': fileData,
       },
       () => this.props.onChange(this.state),
     );
@@ -55,7 +55,7 @@ export default class SSHAuthSubform extends React.Component<
     return (
       <DroppableFileInput
         onChange={this.onFileChange}
-        inputFileData={this.state.sshPrivateKey}
+        inputFileData={this.state['ssh-privatekey']}
         id="ssh-privatekey"
         label="SSH Private Key"
         inputFieldHelpText="Drag and drop file with your private SSH key here or browse to upload it."
