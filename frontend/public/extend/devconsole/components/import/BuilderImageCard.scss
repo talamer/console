@@ -1,0 +1,39 @@
+.odc-builder-image-selector__card {
+  position: relative;
+  height: 110px;
+  width: 132px;
+  margin: 8px;
+  text-align: center;
+
+  &-icon {
+    font-size: 36px;
+    height: 36px;
+    max-width: 80px;
+    min-width: 40px;
+  }
+
+  &-title {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 18px;
+  }
+
+  &-selected {
+    border: var(--pf-global--active-color--100) 2px solid;
+  }
+
+  &-recommended {
+    position: absolute;
+    color: #3f9c35;
+    top: 3px;
+    right: 3px;
+  }
+
+  &:hover {
+    border: var(--pf-global--active-color--100) 2px solid;
+  }
+
+  .pf-c-card__body {
+    padding: 5px;
+  }
+}

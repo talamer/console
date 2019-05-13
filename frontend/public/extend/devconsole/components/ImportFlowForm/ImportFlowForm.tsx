@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 import * as React from 'react';
 import * as fuzzy from 'fuzzysearch';
-import * as _ from 'lodash-es';
 import { Form, FormControl, FormGroup, ControlLabel, HelpBlock, Button } from 'patternfly-react';
 import { CheckCircleIcon } from '@patternfly/react-icons';
 import { Dropdown, NsDropdown, LoadingInline } from '../../../../components/utils';
@@ -9,14 +8,17 @@ import { history } from '../../../../components/utils/router';
 import { GitSourceModel, GitSourceComponentModel, GitSourceAnalysisModel } from '../../models';
 import { k8sCreate, k8sKill, k8sGet, K8sResourceKind } from '../../../../module/k8s';
 import { pathWithPerspective } from './../../../../../public/components/utils/perspective';
-import { isBuilder } from './../../../../../public/components/image-stream';
 import './ImportFlowForm.scss';
 import AppNameSelector from '../../shared/components/dropdown/AppNameSelector';
+import BuilderImageSelector from '../import/BuilderImageSelector';
+import { normalizeBuilderImages, NormalizedBuilderImages } from '../../utils/imagestream-utils';
+import BuilderImageTagSelector from '../import/BuilderImageTagSelector';
 
-type FirehoseList = {
+export type FirehoseList = {
   data?: K8sResourceKind[];
   [key: string]: any;
 };
+
 export interface State {
   gitType: string;
   gitRepoUrl: string;
@@ -24,7 +26,9 @@ export interface State {
   name: string;
   application: string;
   selectedApplicationKey: string;
-  builderImage: string;
+  selectedImage: string;
+  selectedImageTag: string;
+  recommendedImage: string;
   gitTypeError: string;
   namespaceError: string;
   nameError: string;
@@ -41,7 +45,7 @@ export interface State {
 
 export interface Props {
   activeNamespace: string;
-  resources?: FirehoseList;
+  imageStreams?: FirehoseList;
 }
 
 const initialState: State = {
@@ -51,7 +55,9 @@ const initialState: State = {
   name: '',
   application: '',
   selectedApplicationKey: '',
-  builderImage: '',
+  selectedImage: '',
+  selectedImageTag: '',
+  recommendedImage: '',
   gitTypeError: '',
   gitRepoUrlError: '',
   namespaceError: '',
@@ -87,7 +93,9 @@ export class ImportFlowForm extends React.Component<Props, State> {
       name: '',
       application: '',
       selectedApplicationKey: '',
-      builderImage: '',
+      selectedImage: '',
+      selectedImageTag: '',
+      recommendedImage: '',
       gitTypeError: '',
       namespaceError: '',
       nameError: '',
@@ -105,9 +113,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
   private randomString = this.generateRandomString();
   private validateUrlPoller;
   private detectBuildtoolPoller;
-  private imageStreams: { [name: string]: string[] } = {
-    '': ['Select builder image', ''],
-  };
+  private builderImages: NormalizedBuilderImages;
 
   private onBrowserClose = (event) => {
     event.preventDefault();
@@ -162,7 +168,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
       gitRepoUrlError: '',
       gitUrlValidationStatus: '',
       isGitSourceCreated: false,
-      builderImage: '',
+      recommendedImage: '',
       isBuilderImageDetected: false,
       builderImageError: '',
     });
@@ -179,7 +185,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
     }
   };
 
-  handleNamespaceChange = (namespace: string) => {
+  onNamespaceChange = (namespace: string) => {
     this.setState({ namespace });
   };
 
@@ -187,15 +193,20 @@ export class ImportFlowForm extends React.Component<Props, State> {
     this.setState({ application, selectedApplicationKey: selectedKey });
   };
 
-  handleNameChange = (event) => {
+  onNameChange = (event) => {
     this.setState({ name: event.target.value, nameError: '' });
   };
 
-  handleBuilderImageChange = (builderImage: string) => {
-    this.setState({ builderImage, isBuilderImageDetected: false });
-    if (builderImage !== '') {
+  onBuilderImageChange = (selectedImage: string) => {
+    const recentTag = this.builderImages[selectedImage].recentTag.name;
+    this.setState({ selectedImage, selectedImageTag: recentTag, isBuilderImageDetected: false });
+    if (selectedImage !== '') {
       this.setState({ builderImageError: '' });
     }
+  };
+
+  onBuilderImageTagChange = (selectedImageTag: string) => {
+    this.setState({ selectedImageTag });
   };
 
   private generateRandomString() {
@@ -300,7 +311,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
       !this.state.namespace ||
       !this.state.selectedApplicationKey ||
       !this.state.name ||
-      !this.state.builderImage ||
+      !this.state.selectedImage ||
       this.state.gitUrlValidationStatus !== 'ok'
     );
   };
@@ -314,13 +325,13 @@ export class ImportFlowForm extends React.Component<Props, State> {
         namespace: this.state.namespace,
         labels: {
           'app.kubernetes.io/part-of': this.state.application,
-          'app.kubernetes.io/name': this.imageStreams[this.state.builderImage][0],
+          'app.kubernetes.io/name': this.state.selectedImage,
           'app.kubernetes.io/instance': this.state.name,
-          'app.kubernetes.io/version': this.imageStreams[this.state.builderImage][1],
+          'app.kubernetes.io/version': this.state.selectedImageTag,
         },
       },
       spec: {
-        buildType: this.imageStreams[this.state.builderImage][0],
+        buildType: this.state.selectedImage,
         gitSourceRef: this.state.gitSourceName,
         port: 8080,
         exposed: true,
@@ -398,28 +409,35 @@ export class ImportFlowForm extends React.Component<Props, State> {
   detectBuildTool = () => {
     k8sGet(GitSourceAnalysisModel, this.state.gitSourceAnalysisName, this.state.namespace)
       .then((res) => {
-        if (this.state.builderImage === '') {
-          if (res.status.analyzed === true && !Object.keys(res.status.buildEnvStatistics).length) {
+        if (res.status.analyzed === true && !Object.keys(res.status.buildEnvStatistics).length) {
+          this.setState({
+            builderImageError: ErrorMessage.BuilderImageError,
+          });
+        } else if (
+          !Object.keys(this.builderImages).includes(
+            `${res.status.buildEnvStatistics.detectedBuildTypes[0].name.toLowerCase()}`,
+          )
+        ) {
+          this.setState({
+            builderImageError: `We detected '${
+              res.status.buildEnvStatistics.detectedBuildTypes[0].name
+            }' but there are no matching builder images, select an appropriate image.`,
+          });
+        } else {
+          const recommendedImage = res.status.buildEnvStatistics.detectedBuildTypes[0].name.toLowerCase();
+          const recentTag = this.builderImages[recommendedImage].recentTag.name;
+
+          if (!this.state.selectedImage) {
             this.setState({
-              builderImageError: ErrorMessage.BuilderImageError,
-            });
-          } else if (
-            !Object.keys(this.imageStreams).includes(
-              `${res.status.buildEnvStatistics.detectedBuildTypes[0].name.toLowerCase()}latest`,
-            )
-          ) {
-            this.setState({
-              builderImageError: `We detected '${
-                res.status.buildEnvStatistics.detectedBuildTypes[0].name
-              }' but there are no matching builder images, select an appropriate image.`,
-            });
-          } else {
-            this.setState({
-              builderImage: `${res.status.buildEnvStatistics.detectedBuildTypes[0].name.toLowerCase()}latest`,
-              isBuilderImageDetected: true,
-              builderImageError: '',
+              selectedImage: recommendedImage,
             });
           }
+          this.setState({
+            recommendedImage,
+            selectedImageTag: recentTag,
+            isBuilderImageDetected: true,
+            builderImageError: '',
+          });
         }
         clearInterval(this.detectBuildtoolPoller);
       })
@@ -438,7 +456,9 @@ export class ImportFlowForm extends React.Component<Props, State> {
       name,
       application,
       selectedApplicationKey,
-      builderImage,
+      selectedImage,
+      selectedImageTag,
+      recommendedImage,
       gitTypeError,
       gitRepoUrlError,
       namespaceError,
@@ -446,21 +466,13 @@ export class ImportFlowForm extends React.Component<Props, State> {
       builderImageError,
     } = this.state;
 
-    if (this.props.resources.imagestreams.loaded) {
-      const builderImages = _.filter(this.props.resources.imagestreams.data, (imagestream) => {
-        return isBuilder(imagestream);
-      });
+    const { imageStreams } = this.props;
 
-      builderImages.forEach((image) => {
-        image.spec.tags.forEach((tag) => {
-          if (!tag.annotations.tags.includes('hidden')) {
-            this.imageStreams[image.metadata.name + tag.name] = [image.metadata.name, tag.name];
-          }
-        });
-      });
+    if (imageStreams && imageStreams.loaded) {
+      this.builderImages = normalizeBuilderImages(imageStreams.data);
     }
 
-    let gitTypeField, showGitValidationStatus, showDetectBuildToolStatus;
+    let gitTypeField, showGitValidationStatus;
     if (gitType || gitTypeError) {
       gitTypeField = (
         <FormGroup controlId="import-git-type" className={gitTypeError ? 'has-error' : ''}>
@@ -487,100 +499,81 @@ export class ImportFlowForm extends React.Component<Props, State> {
       showGitValidationStatus = <CheckCircleIcon className="odc-import-form__success-icon" />;
     }
 
-    if (
-      this.state.gitUrlValidationStatus === 'ok' &&
-      this.state.builderImage === '' &&
-      this.state.builderImageError === ''
-    ) {
-      showDetectBuildToolStatus = (
-        <span className="odc-import-form__loader">
-          <LoadingInline />
-        </span>
-      );
-    } else if (this.state.isBuilderImageDetected) {
-      showDetectBuildToolStatus = <CheckCircleIcon className="odc-import-form__success-icon" />;
-    }
-
     return (
       <Form
         data-test-id="import-form"
         onSubmit={this.handleSubmit}
-        className="co-m-pane__body-group co-m-pane__form"
+        className="co-m-pane__body-group"
       >
-        <FormGroup controlId="import-git-repo-url" className={gitRepoUrlError ? 'has-error' : ''}>
-          <ControlLabel className="co-required">Git Repository URL</ControlLabel>
-          {showGitValidationStatus}
-          <FormControl
-            type="text"
-            required
-            value={gitRepoUrl}
-            onChange={this.handleGitRepoUrlChange}
-            onBlur={this.validateGitRepo}
-            id="import-git-repo-url"
-            data-test-id="import-git-repo-url"
-            autoComplete="off"
-            name="gitRepoUrl"
+        <div className="co-m-pane__form">
+          <FormGroup controlId="import-git-repo-url" className={gitRepoUrlError ? 'has-error' : ''}>
+            <ControlLabel className="co-required">Git Repository URL</ControlLabel>
+            {showGitValidationStatus}
+            <FormControl
+              type="text"
+              required
+              value={gitRepoUrl}
+              onChange={this.handleGitRepoUrlChange}
+              onBlur={this.validateGitRepo}
+              id="import-git-repo-url"
+              data-test-id="import-git-repo-url"
+              autoComplete="off"
+              name="gitRepoUrl"
+            />
+            <HelpBlock>{gitRepoUrlError ? gitRepoUrlError : ''}</HelpBlock>
+          </FormGroup>
+          {gitTypeField}
+          <FormGroup
+            controlId="import-application-name"
+            className={namespaceError ? 'has-error' : ''}
+          >
+            <ControlLabel className="co-required">Namespace</ControlLabel>
+            <NsDropdown
+              selectedKey={namespace}
+              onChange={this.onNamespaceChange}
+              data-test-id="import-application-name"
+            />
+            <HelpBlock>{namespaceError ? namespaceError : ''}</HelpBlock>
+          </FormGroup>
+          <AppNameSelector
+            application={application}
+            namespace={namespace}
+            selectedKey={selectedApplicationKey}
+            onChange={this.onApplicationChange}
           />
-          <HelpBlock>{gitRepoUrlError ? gitRepoUrlError : ''}</HelpBlock>
-        </FormGroup>
-        {gitTypeField}
-        <FormGroup
-          controlId="import-application-name"
-          className={namespaceError ? 'has-error' : ''}
-        >
-          <ControlLabel className="co-required">Namespace</ControlLabel>
-          <NsDropdown
-            selectedKey={namespace}
-            onChange={this.handleNamespaceChange}
-            data-test-id="import-application-name"
-          />
-          <HelpBlock>{namespaceError ? namespaceError : ''}</HelpBlock>
-        </FormGroup>
-        <AppNameSelector
-          application={application}
-          namespace={namespace}
-          selectedKey={selectedApplicationKey}
-          onChange={this.onApplicationChange}
+          <FormGroup controlId="import-name" className={nameError ? 'has-error' : ''}>
+            <ControlLabel className="co-required">Name</ControlLabel>
+            <FormControl
+              value={name}
+              onChange={this.onNameChange}
+              required
+              type="text"
+              id="import-name"
+              name="name"
+              data-test-id="import-name"
+            />
+            <HelpBlock>
+              {nameError ? nameError : 'Identifies the resources created for this application'}
+            </HelpBlock>
+          </FormGroup>
+        </div>
+        <BuilderImageSelector
+          builderImages={this.builderImages}
+          isBuilderImageDetected={this.state.isBuilderImageDetected}
+          gitUrlValidationStatus={this.state.gitUrlValidationStatus}
+          builderImageError={builderImageError}
+          selectedImage={selectedImage}
+          recommendedImage={recommendedImage}
+          onImageChange={this.onBuilderImageChange}
         />
-        <FormGroup controlId="import-name" className={nameError ? 'has-error' : ''}>
-          <ControlLabel className="co-required">Name</ControlLabel>
-          <FormControl
-            value={name}
-            onChange={this.handleNameChange}
-            required
-            type="text"
-            id="import-name"
-            name="name"
-            data-test-id="import-name"
+        {selectedImage && (
+          <BuilderImageTagSelector
+            imageTags={this.builderImages[selectedImage].tags}
+            selectedImageTag={selectedImageTag}
+            selectedImageDisplayName={this.builderImages[selectedImage].displayName}
+            onTagChange={this.onBuilderImageTagChange}
           />
-          <HelpBlock>
-            {nameError ? nameError : 'Identifies the resources created for this application'}
-          </HelpBlock>
-        </FormGroup>
-        <FormGroup
-          controlId="import-builder-image"
-          className={builderImageError ? 'has-error' : ''}
-        >
-          <ControlLabel className="co-required">Builder Image</ControlLabel>
-          {showDetectBuildToolStatus}
-          <Dropdown
-            dropDownClassName="dropdown--full-width"
-            items={this.imageStreams}
-            selectedKey={builderImage}
-            title={
-              this.props.resources.imagestreams.loaded ? (
-                this.imageStreams[builderImage][0] + this.imageStreams[builderImage][1]
-              ) : (
-                <LoadingInline />
-              )
-            }
-            autocompleteFilter={this.autocompleteFilter}
-            autocompletePlaceholder={'select builder image'}
-            onChange={this.handleBuilderImageChange}
-            data-test-id="import-builder-image"
-          />
-          <HelpBlock>{builderImageError ? builderImageError : ''}</HelpBlock>
-        </FormGroup>
+        )}
         <div className="co-m-btn-bar">
           <Button
             type="submit"
