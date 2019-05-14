@@ -2,30 +2,35 @@
 import * as React from 'react';
 
 import AppDropdown from '../../shared/components/dropdown/AppDropdown';
+import {
+  ALL_NAMESPACES_KEY,
+  ALL_APPLICATIONS_KEY,
+  APPLICATION_LOCAL_STORAGE_KEY,
+} from '../../../../../public/const';
 
 interface ApplicationSwitcherProps {
   namespace: string;
   application: string;
-  selectedKey: string;
-  allApplicationsKey: string;
-  allNamespacesKey: string;
-  storageKey: string;
   onChange: (name: string) => void;
 }
 
-const ApplicationSwitcher: React.FC<ApplicationSwitcherProps> = (props) => {
+const ApplicationSwitcher: React.FC<ApplicationSwitcherProps> = ({
+  namespace,
+  application,
+  onChange,
+}) => {
   const onApplicationChange = (newApplication, key) => {
-    key === props.allApplicationsKey ? props.onChange(key) : props.onChange(newApplication);
+    key === ALL_APPLICATIONS_KEY ? onChange(key) : onChange(newApplication);
   };
   const allApplicationsTitle = 'all applications';
 
   let disabled: boolean = false;
-  if (props.namespace === props.allNamespacesKey) {
+  if (namespace === ALL_NAMESPACES_KEY) {
     disabled = true;
   }
 
-  let title: string = props.application;
-  if (title === props.allApplicationsKey && !disabled) {
+  let title: string = application;
+  if (title === ALL_APPLICATIONS_KEY && !disabled) {
     title = allApplicationsTitle;
   } else if (disabled) {
     title = 'No applications';
@@ -36,16 +41,16 @@ const ApplicationSwitcher: React.FC<ApplicationSwitcherProps> = (props) => {
       className="co-namespace-selector"
       menuClassName="co-namespace-selector__menu dropdown-menu--right"
       buttonClassName="btn-link"
-      namespace={props.namespace}
+      namespace={namespace}
       title={title && <span className="btn-link__title">{title}</span>}
       titlePrefix="Application"
       allSelectorItem={{
-        allSelectorKey: props.allApplicationsKey,
+        allSelectorKey: ALL_APPLICATIONS_KEY,
         allSelectorTitle: allApplicationsTitle,
       }}
-      selectedKey={props.selectedKey}
+      selectedKey={application || ALL_APPLICATIONS_KEY}
       onChange={onApplicationChange}
-      storageKey={props.storageKey}
+      storageKey={APPLICATION_LOCAL_STORAGE_KEY}
       disabled={disabled}
     />
   );

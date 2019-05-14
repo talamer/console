@@ -6,7 +6,6 @@ import {
   ALL_NAMESPACES_KEY,
   LAST_NAMESPACE_NAME_LOCAL_STORAGE_KEY,
   LAST_PERSPECTIVE_LOCAL_STORAGE_KEY,
-  LAST_APPLICATION_NAME_LOCAL_STORAGE_KEY,
 } from '../const';
 import { getNSPrefix } from '../components/utils/link';
 import { allModels } from '../module/k8s/k8s-models';

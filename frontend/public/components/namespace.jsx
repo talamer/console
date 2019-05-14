@@ -13,7 +13,7 @@ import { ActionsMenu, Kebab, Dropdown, Firehose, LabelList, LoadingInline, navFa
 import { createNamespaceModal, createProjectModal, deleteNamespaceModal, configureNamespacePullSecretModal } from './modals';
 import { RoleBindingsPage } from './RBAC';
 import { Bar, Line, requirePrometheus } from './graphs';
-import { NAMESPACE_LOCAL_STORAGE_KEY, ALL_NAMESPACES_KEY, ALL_APPLICATIONS_KEY, APPLICATION_LOCAL_STORAGE_KEY } from '../const';
+import { NAMESPACE_LOCAL_STORAGE_KEY, ALL_NAMESPACES_KEY } from '../const';
 import { FLAGS, featureReducerName, flagPending, setFlag, connectToFlags } from '../features';
 import { openshiftHelpBase } from './utils/documentation';
 import { createProjectMessageStateToProps } from '../ui/ui-reducers';
@@ -329,11 +329,7 @@ class NamespaceBarDropdowns_ extends React.Component {
         <ApplicationSwitcher
           namespace={activeNamespace}
           application={activeApplication}
-          allApplicationsKey={ALL_APPLICATIONS_KEY}
-          allNamespacesKey={ALL_NAMESPACES_KEY}
-          selectedKey={activeApplication || ALL_APPLICATIONS_KEY}
-          onChange={onApplicationChange}
-          storageKey={APPLICATION_LOCAL_STORAGE_KEY} />
+          onChange={onApplicationChange} />
       }
     </div>;
   }

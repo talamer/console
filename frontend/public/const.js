@@ -18,7 +18,7 @@ export const EVENTS = {
 // Use a key for the "all" namespaces option that would be an invalid namespace name to avoid a potential clash
 export const ALL_NAMESPACES_KEY = '#ALL_NS#';
 
-// Use a key for the "all" namespaces option that would be an invalid namespace name to avoid a potential clash
+// Use a key for the "all" applications option that would be an invalid application name to avoid a potential clash
 export const ALL_APPLICATIONS_KEY = '#ALL_APPS#';
 
 // Prefix our localStorage items to avoid conflicts if another app ever runs on the same domain.

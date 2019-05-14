@@ -98,18 +98,20 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
       );
     });
 
+    const sortedList = {};
+
     if (this.props.allSelectorItem && !_.isEmpty(unsortedList)) {
-      unsortedList[allSelectorItem.allSelectorKey] = {
+      sortedList[allSelectorItem.allSelectorKey] = {
         name: allSelectorItem.allSelectorTitle,
       };
     }
 
-    const sortedList = {};
     _.keys(unsortedList)
       .sort()
       .forEach((key) => {
         sortedList[key] = unsortedList[key];
       });
+    
     this.setState({ items: sortedList });
   }
 
