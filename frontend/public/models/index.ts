@@ -207,7 +207,7 @@ export const PipelinerunModel: K8sKind = {
   abbr: 'PLR',
   namespaced: true,
   kind: 'PipelineRun',
-  id: 'pipelineRun',
+  id: 'pipelinerun',
   labelPlural: 'PipelineRuns',
 };
 

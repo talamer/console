@@ -1,8 +1,20 @@
 import * as React from 'react';
 import { ResourceRow } from '../../../../components/factory';
-import { ResourceLink, StatusIcon, Timestamp } from '../../../../components/utils';
+import PipelineRowRun from './PipelineRowRun';
+import { ResourceLink, Firehose } from '../../../../components/utils';
 
 const PipelineRow = ({ obj: pipeline }) => {
+  const firehoseResources = [
+    {
+      kind: 'PipelineRun',
+      isList: true,
+      prop: 'pipelineruns',
+      namespace: pipeline.metadata.namespace,
+      selector: {
+        'tekton.dev/pipeline': pipeline.metadata.name,
+      },
+    },
+  ];
   return (
     <ResourceRow obj={pipeline}>
       <div className="col-lg-3 col-md-3 col-sm-4 col-xs-6">
@@ -13,29 +25,9 @@ const PipelineRow = ({ obj: pipeline }) => {
           title={pipeline.metadata.uid}
         />
       </div>
-      <div className="col-lg-3 col-md-3 col-sm-4 col-xs-6">
-        {pipeline.spec.runs && pipeline.spec.runs[pipeline.spec.runs.length - 1].name
-          ? pipeline.spec.runs[pipeline.spec.runs.length - 1].name
-          : '-'}
-      </div>
-      <div className="col-lg-3 col-md-3 col-sm-4 hidden-xs">
-        <StatusIcon
-          status={
-            pipeline.spec.runs && pipeline.spec.runs[pipeline.spec.runs.length - 1].status
-              ? pipeline.spec.runs[pipeline.spec.runs.length - 1].status
-              : '-'
-          }
-        />
-      </div>
-      <div className="col-lg-3 col-md-3 hidden-sm hidden-xs">
-        <Timestamp
-          timestamp={
-            pipeline.spec.runs && pipeline.spec.runs[pipeline.spec.runs.length - 1].lastrun
-              ? pipeline.spec.runs[pipeline.spec.runs.length - 1].lastrun
-              : '-'
-          }
-        />
-      </div>
+      <Firehose resources={firehoseResources}>
+        <PipelineRowRun />
+      </Firehose>
     </ResourceRow>
   );
 };
