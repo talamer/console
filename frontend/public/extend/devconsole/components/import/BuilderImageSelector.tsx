@@ -29,10 +29,6 @@ const BuilderImageSelector: React.FC<BuilderImageSelectorProps> = ({
   builderImageError,
   onImageChange,
 }) => {
-  if (loading) {
-    return <LoadingInline />;
-  }
-
   let showDetectBuildToolStatus;
   if (isGitUrlValidated && !recommendedImage && !builderImageError) {
     showDetectBuildToolStatus = (
@@ -50,20 +46,25 @@ const BuilderImageSelector: React.FC<BuilderImageSelectorProps> = ({
       {showDetectBuildToolStatus}
       {isBuilderImageDetected && (
         <HelpBlock>
-          (Recommended builder images are represented by <i className="fa fa-star" aria-hidden="true" /> icon)
+          (Recommended builder images are represented by{' '}
+          <i className="fa fa-star" aria-hidden="true" /> icon)
         </HelpBlock>
       )}
-      <div className="odc-builder-image-selector">
-        {_.values(builderImages).map((image) => (
-          <BuilderImageCard
-            key={`${image.name}-key`}
-            image={image}
-            selected={selectedImage === image.name}
-            recommended={recommendedImage === image.name}
-            onChange={onImageChange}
-          />
-        ))}
-      </div>
+      {loading ? (
+        <LoadingInline />
+      ) : (
+        <div className="odc-builder-image-selector">
+          {_.values(builderImages).map((image) => (
+            <BuilderImageCard
+              key={`${image.name}-key`}
+              image={image}
+              selected={selectedImage === image.name}
+              recommended={recommendedImage === image.name}
+              onChange={onImageChange}
+            />
+          ))}
+        </div>
+      )}
       <HelpBlock>{builderImageError}</HelpBlock>
     </FormGroup>
   );
