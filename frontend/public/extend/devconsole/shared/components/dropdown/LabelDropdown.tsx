@@ -87,9 +87,23 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
       _.reduce(
         data,
         (acc, resource) => {
-          if (resource.metadata.labels && resource.metadata.labels.hasOwnProperty(labelSelector)) {
+          if (
+            this.props.labelType === 'Application' &&
+            resource.metadata.labels &&
+            resource.metadata.labels.hasOwnProperty(labelSelector)
+          ) {
             acc[resource.metadata.labels[labelSelector]] = {
               name: resource.metadata.labels[labelSelector],
+            };
+          } else if (
+            this.props.labelType === 'Secret' &&
+            resource &&
+            resource.hasOwnProperty(labelSelector) &&
+            (resource[labelSelector] === 'kubernetes.io/basic-auth' ||
+              resource[labelSelector] === 'kubernetes.io/ssh-auth')
+          ) {
+            acc[resource.metadata.name] = {
+              name: resource.metadata.name,
             };
           }
           return acc;

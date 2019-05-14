@@ -36,7 +36,6 @@ export interface State {
   nameError: string;
   builderImageError: string;
   gitRepoUrlError: string;
-  gitRepoUrlInfo: string;
   gitSourceName: string;
   gitSourceAnalysisName: string;
   isGitSourceCreated: boolean;
@@ -71,7 +70,6 @@ const initialState: State = {
   recommendedImage: '',
   gitTypeError: '',
   gitRepoUrlError: '',
-  gitRepoUrlInfo: '',
   namespaceError: '',
   nameError: '',
   builderImageError: '',
@@ -120,7 +118,6 @@ export class ImportFlowForm extends React.Component<Props, State> {
       nameError: '',
       builderImageError: '',
       gitRepoUrlError: '',
-      gitRepoUrlInfo: '',
       gitSourceName: '',
       gitSourceAnalysisName: '',
       isGitSourceCreated: false,
@@ -192,7 +189,6 @@ export class ImportFlowForm extends React.Component<Props, State> {
       gitRepoUrl: event.target.value,
       lastEnteredGitUrl: '',
       gitRepoUrlError: '',
-      gitRepoUrlInfo: '',
       gitUrlValidationStatus: '',
       isGitSourceCreated: false,
       recommendedImage: '',
@@ -239,7 +235,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
       selectedSourceSecret: selectedKey,
       secretAuthType: authType,
       secretCredentials: credentials,
-      gitRepoUrlInfo: '',
+      gitRepoUrlError: '',
     });
   };
 
@@ -441,40 +437,9 @@ export class ImportFlowForm extends React.Component<Props, State> {
     };
   };
 
-  handleSubmit = (event) => {
-    event.preventDefault();
-    if (!this.disableSubmitButton()) {
-      if (this.state.selectedSourceSecret === 'create-source-secret') {
-        k8sCreate(SecretModel, this.sourceSecretParams())
-          .then(() => {
-            k8sCreate(
-              GitSourceModel,
-              this.gitSourceWithSecretParams(this.state.gitSourceName, this.state.sourceSecretName),
-            )
-              .then(() => {
-                k8sCreate(GitSourceComponentModel, this.catalogParams()).then(
-                  () => {
-                    this.setState({ isComponentCreated: true });
-                    history.push(
-                      pathWithPerspective('dev', `/topology/ns/${this.state.namespace}`),
-                    );
-                  },
-                  (err) => {
-                    this.setState({ nameError: err.message });
-                  },
-                );
-              })
-              .catch((err) => {
-                this.setState({ nameError: err.message });
-              });
-          })
-          .catch((err) => {
-            this.setState({ nameError: err.message });
-          });
-      } else if (
-        this.state.showSourceSecretDropDown &&
-        this.state.selectedSourceSecret === this.state.sourceSecretName
-      ) {
+  private createGitSourceComponentWithNewSecret = () => {
+    k8sCreate(SecretModel, this.sourceSecretParams())
+      .then(() => {
         k8sCreate(
           GitSourceModel,
           this.gitSourceWithSecretParams(this.state.gitSourceName, this.state.sourceSecretName),
@@ -493,6 +458,43 @@ export class ImportFlowForm extends React.Component<Props, State> {
           .catch((err) => {
             this.setState({ nameError: err.message });
           });
+      })
+      .catch((err) => {
+        this.setState({ nameError: err.message });
+      });
+  };
+
+  private createGitSourceComponentWithSecret = () => {
+    k8sCreate(
+      GitSourceModel,
+      this.gitSourceWithSecretParams(this.state.gitSourceName, this.state.sourceSecretName),
+    )
+      .then(() => {
+        k8sCreate(GitSourceComponentModel, this.catalogParams()).then(
+          () => {
+            this.setState({ isComponentCreated: true });
+            history.push(pathWithPerspective('dev', `/topology/ns/${this.state.namespace}`));
+          },
+          (err) => {
+            this.setState({ nameError: err.message });
+          },
+        );
+      })
+      .catch((err) => {
+        this.setState({ nameError: err.message });
+      });
+  };
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+    if (!this.disableSubmitButton()) {
+      if (this.state.selectedSourceSecret === 'create-source-secret') {
+        this.createGitSourceComponentWithNewSecret();
+      } else if (
+        this.state.showSourceSecretDropDown &&
+        this.state.selectedSourceSecret === this.state.sourceSecretName
+      ) {
+        this.createGitSourceComponentWithSecret();
       } else {
         k8sCreate(GitSourceComponentModel, this.catalogParams()).then(
           () => {
@@ -527,7 +529,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
             k8sKill(GitSourceModel, this.gitSourceParams(this.state.gitSourceName));
             this.setState({
               showSourceSecretDropDown: true,
-              gitRepoUrlInfo:
+              gitRepoUrlError:
                 'Unable to establish connection. Check the Git URL or provide more details if a private Git Repo.',
               gitUrlValidationStatus: res.status.connection.state,
             });
@@ -705,16 +707,16 @@ export class ImportFlowForm extends React.Component<Props, State> {
             <HelpBlock>{namespaceError}</HelpBlock>
           </FormGroup>
           {this.state.showSourceSecretDropDown ? (
-          <SourceSecretSelector
-            sourceSecret={sourceSecretName}
-            secretCredentials={secretCredentials}
-            namespace={namespace}
-            selectedKey={selectedSourceSecret}
-            onChange={this.onSourceSecretChange}
-          />
-        ) : (
-          ''
-        )}
+            <SourceSecretSelector
+              sourceSecret={sourceSecretName}
+              secretCredentials={secretCredentials}
+              namespace={namespace}
+              selectedKey={selectedSourceSecret}
+              onChange={this.onSourceSecretChange}
+            />
+          ) : (
+            ''
+          )}
           <AppNameSelector
             application={application}
             namespace={namespace}
@@ -739,7 +741,9 @@ export class ImportFlowForm extends React.Component<Props, State> {
         </div>
         <BuilderImageSelector
           loadingImageStream={!imageStreams.loaded}
-          loadingRecommendedImage={gitUrlValidationStatus === 'ok' && !recommendedImage && !builderImageError}
+          loadingRecommendedImage={
+            gitUrlValidationStatus === 'ok' && !recommendedImage && !builderImageError
+          }
           builderImages={this.builderImages}
           builderImageError={builderImageError}
           selectedImage={selectedImage}
@@ -756,11 +760,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
           />
         )}
         <div className="co-m-btn-bar">
-          <Button
-            type="submit"
-            bsStyle="primary"
-            disabled={this.disableSubmitButton()}
-          >
+          <Button type="submit" bsStyle="primary" disabled={this.disableSubmitButton()}>
             Create
           </Button>
           <Button type="button" onClick={this.handleCancel}>

@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { SecretModel } from '../../../../models';
-import SecretDropdown from './SecretDropdown';
+import LabelDropdown from '../../shared/components/dropdown/LabelDropdown';
 import { Firehose } from '../../../../components/utils';
 
 interface SourceSecretDropdownProps {
@@ -25,11 +25,11 @@ const SourceSecretDropdown: React.FC<SourceSecretDropdownProps> = (props) => {
   ];
   return (
     <Firehose resources={resources}>
-      <SecretDropdown
+      <LabelDropdown
         {...props}
         placeholder="Select Secret Name"
         labelType="Secret"
-        authTypeSelector="type"
+        labelSelector="type"
       />
     </Firehose>
   );
