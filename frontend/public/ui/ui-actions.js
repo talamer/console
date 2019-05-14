@@ -127,10 +127,6 @@ export const UIActions = {
       application = application.trim();
     }
 
-    // remember the most recently-viewed application, which is automatically
-    // selected when returning to the console
-    localStorage.setItem(LAST_APPLICATION_NAME_LOCAL_STORAGE_KEY, application);
-
     return {
       type: types.setActiveApplication,
       value: application,
