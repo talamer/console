@@ -25,7 +25,6 @@ interface LabelDropdownProps {
   titlePrefix?: string;
   allApplicationsKey?: string;
   storageKey?: string;
-  canFavorite?: boolean;
   disabled?: boolean;
   allSelectorItem?: {
     allSelectorKey?: string;
@@ -55,7 +54,7 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
   };
 
   autocompleteFilter(text, item) {
-    return fuzzy(text, item.props.name);
+    return fuzzy(text, item);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -150,7 +149,6 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
         title={this.props.title || this.state.title}
         autocompletePlaceholder={this.props.placeholder}
         storageKey={this.props.storageKey}
-        canFavorite={this.props.canFavorite}
         disabled={this.props.disabled}
       />
     );

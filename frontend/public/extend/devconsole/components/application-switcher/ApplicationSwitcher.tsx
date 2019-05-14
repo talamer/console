@@ -46,7 +46,6 @@ const ApplicationSwitcher: React.FC<ApplicationSwitcherProps> = (props) => {
       selectedKey={props.selectedKey}
       onChange={onApplicationChange}
       storageKey={props.storageKey}
-      canFavorite
       disabled={disabled}
     />
   );

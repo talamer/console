@@ -13,7 +13,6 @@ interface AppDropdownProps {
   titlePrefix?: string;
   allApplicationsKey?: string;
   storageKey?: string;
-  canFavorite?: boolean;
   disabled?: boolean;
   allSelectorItem?: {
     allSelectorKey?: string;

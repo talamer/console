@@ -149,10 +149,10 @@ export class Dropdown extends DropdownMixin {
 
     this.state.items = Object.assign({}, bookmarks, props.items);
 
+    const defaultTitle = React.isValidElement(props.title) ? props.title : <span className="btn-dropdown__item--placeholder">{props.title}</span>;
     this.state.title = props.noSelection
       ? props.title
-      : _.get(props.items, props.selectedKey, <span className="btn-dropdown__item--placeholder">{props.title}</span>);
-
+      : _.get(props.items, props.selectedKey, defaultTitle);
     this.onKeyDown = e => this.onKeyDown_(e);
     this.changeTextFilter = e => this.applyTextFilter_(e.target.value, this.props.items);
     const { shortCut } = this.props;
@@ -299,7 +299,6 @@ export class Dropdown extends DropdownMixin {
   render() {
     const {active, autocompleteText, selectedKey, items, title, bookmarks, keyboardHoverKey, favoriteKey} = this.state;
     const {autocompleteFilter, autocompletePlaceholder, actionItem, className, buttonClassName, menuClassName, storageKey, canFavorite, dropDownClassName, titlePrefix, describedBy, disabled} = this.props;
-
     const spacerBefore = this.props.spacerBefore || new Set();
     const headerBefore = this.props.headerBefore || {};
     const rows = [];
