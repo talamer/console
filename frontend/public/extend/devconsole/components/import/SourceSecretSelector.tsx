@@ -43,6 +43,8 @@ const SourceSecretSelector: React.FC<SourceSecretSelectorProps> = ({
       <FormGroup>
         <ControlLabel className="co-required">Source Secret</ControlLabel>
         <SourceSecretDropdown
+          dropDownClassName="dropdown--full-width"
+          menuClassName="dropdown-menu--text-wrap"
           namespace={namespace}
           actionItem={{
             actionTitle: 'Create New Secret',

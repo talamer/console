@@ -35,6 +35,7 @@ interface LabelDropdownProps {
     actionKey: string;
   };
   labelSelector: string;
+  labelType: string;
   loaded?: boolean;
   loadError?: string;
   placeholder?: string;

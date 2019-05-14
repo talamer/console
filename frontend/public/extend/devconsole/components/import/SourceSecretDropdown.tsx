@@ -5,6 +5,8 @@ import LabelDropdown from '../../shared/components/dropdown/LabelDropdown';
 import { Firehose } from '../../../../components/utils';
 
 interface SourceSecretDropdownProps {
+  dropDownClassName?: string;
+  menuClassName?: string;
   namespace?: string;
   actionItem?: {
     actionTitle: string;

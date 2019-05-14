@@ -47,6 +47,7 @@ const AppDropdown: React.FC<AppDropdownProps> = (props) => {
       <LabelDropdown
         {...props}
         placeholder="Select an Application"
+        labelType="Application"
         labelSelector="app.kubernetes.io/part-of"
       />
     </Firehose>

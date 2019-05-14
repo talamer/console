@@ -197,7 +197,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
       showSourceSecretDropDown: false,
       selectedSourceSecret: '',
     });
-    const urlRegex = /^(?:git|ssh|http(s)?(:\/\/)|(git@))?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
+    const urlRegex = /^(((ssh|git|https?):\/\/[\w]+)|(git@[\w]+.[\w]+:))([\w\-._~/?#[\]!$&'()*+,;=])+$/;
     if (!urlRegex.test(event.target.value)) {
       this.setState({
         gitRepoUrlError: ErrorMessage.GitUrlError,
