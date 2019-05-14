@@ -4,7 +4,7 @@ import * as _ from 'lodash-es';
 import { Dropdown, ResourceName } from '../../../../components/utils';
 import { FormGroup, ControlLabel } from 'patternfly-react';
 import ImageStreamInfo from '../source-to-image/ImageStreamInfo';
-import { ImageTag } from '../../utils/imagestream-utils';
+import { ImageTag, getTagDataWithDisplayName } from '../../utils/imagestream-utils';
 
 export interface BuilderImageTagSelectorProps {
   imageTags: ImageTag[];
@@ -25,12 +25,7 @@ const BuilderImageTagSelector: React.FC<BuilderImageTagSelectorProps> = ({
     ({ name }) => (tagItems[name] = <ResourceName kind="ImageStreamTag" name={name} />),
   );
 
-  const imageTag = _.find(imageTags, { name: selectedImageTag });
-  const displayName = _.get(
-    imageTag,
-    ['annotations', 'openshift.io/display-name'],
-    selectedImageDisplayName,
-  );
+  const [imageTag, displayName] = getTagDataWithDisplayName(imageTags, selectedImageTag, selectedImageDisplayName);
 
   return (
     <React.Fragment>
@@ -44,7 +39,7 @@ const BuilderImageTagSelector: React.FC<BuilderImageTagSelectorProps> = ({
           dropDownClassName="dropdown--full-width"
         />
       </FormGroup>
-      {selectedImageTag && (
+      {imageTag && (
         <FormGroup className="co-m-pane__form">
           <ImageStreamInfo displayName={displayName} tag={imageTag} />
         </FormGroup>

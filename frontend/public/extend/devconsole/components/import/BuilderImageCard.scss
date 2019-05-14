@@ -3,11 +3,10 @@
   height: 112px;
   width: 136px;
   margin: 4px;
-  text-align: center;
+  align-items: center;
 
   &__icon {
-    font-size: 36px;
-    height: 36px;
+    height: 32px;
     max-width: 80px;
     min-width: 40px;
   }
@@ -20,9 +19,9 @@
 
   &__recommended {
     position: absolute;
-    color: var(--pf-global--success-color--200);
+    color: var(--pf-global--success-color--100);
     font-size: var(--pf-global--FontSize--md);
-    top: 3px;
+    top: 0px;
     right: 3px;
   }
 
@@ -32,6 +31,6 @@
   }
 
   .pf-c-card__body {
-    padding: 5px;
+    padding: 5px !important;
   }
 }

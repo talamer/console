@@ -3,16 +3,15 @@ import * as React from 'react';
 import * as _ from 'lodash-es';
 import { LoadingInline } from '../../../../components/utils';
 import { FormGroup, ControlLabel, HelpBlock } from 'patternfly-react';
-import { CheckCircleIcon } from '@patternfly/react-icons';
+import { CheckCircleIcon, StarIcon } from '@patternfly/react-icons';
 import { NormalizedBuilderImages } from '../../utils/imagestream-utils';
 import BuilderImageCard from './BuilderImageCard';
 import './BuilderImageSelector.scss';
 
 export interface BuilderImageSelectorProps {
-  loading: boolean;
+  loadingImageStream: boolean;
+  loadingRecommendedImage: boolean;
   builderImages: NormalizedBuilderImages;
-  isBuilderImageDetected: boolean;
-  isGitUrlValidated: boolean;
   builderImageError: string;
   selectedImage: string;
   recommendedImage: string;
@@ -20,54 +19,43 @@ export interface BuilderImageSelectorProps {
 }
 
 const BuilderImageSelector: React.FC<BuilderImageSelectorProps> = ({
-  loading,
+  loadingImageStream,
+  loadingRecommendedImage,
   builderImages,
   selectedImage,
   recommendedImage,
-  isBuilderImageDetected,
-  isGitUrlValidated,
   builderImageError,
   onImageChange,
-}) => {
-  let showDetectBuildToolStatus;
-  if (isGitUrlValidated && !recommendedImage && !builderImageError) {
-    showDetectBuildToolStatus = (
-      <span className="odc-import-form__loader">
-        <LoadingInline />
-      </span>
-    );
-  } else if (isBuilderImageDetected) {
-    showDetectBuildToolStatus = <CheckCircleIcon className="odc-import-form__success-icon" />;
-  }
-
-  return (
-    <FormGroup controlId="import-builder-image" className={builderImageError ? 'has-error' : ''}>
-      <ControlLabel className="co-required">Builder Image</ControlLabel>
-      {showDetectBuildToolStatus}
-      {isBuilderImageDetected && (
+}) => (
+  <FormGroup controlId="import-builder-image" className={builderImageError ? 'has-error' : ''}>
+    <ControlLabel className="co-required">Builder Image</ControlLabel>
+    {loadingRecommendedImage && <LoadingInline />}
+    {recommendedImage && (
+      <React.Fragment>
+        <CheckCircleIcon className="odc-import-form__success-icon" />
         <HelpBlock>
-          (Recommended builder images are represented by{' '}
-          <i className="fa fa-star" aria-hidden="true" /> icon)
+          Recommended builder images are represented by{' '}
+          <StarIcon style={{ color: 'var(--pf-global--success-color--100)' }} /> icon
         </HelpBlock>
-      )}
-      {loading ? (
-        <LoadingInline />
-      ) : (
-        <div className="odc-builder-image-selector">
-          {_.values(builderImages).map((image) => (
-            <BuilderImageCard
-              key={`${image.name}-key`}
-              image={image}
-              selected={selectedImage === image.name}
-              recommended={recommendedImage === image.name}
-              onChange={onImageChange}
-            />
-          ))}
-        </div>
-      )}
-      <HelpBlock>{builderImageError}</HelpBlock>
-    </FormGroup>
-  );
-};
+      </React.Fragment>
+    )}
+    {loadingImageStream ? (
+      <LoadingInline />
+    ) : (
+      <div className="odc-builder-image-selector">
+        {_.values(builderImages).map((image) => (
+          <BuilderImageCard
+            key={`${image.name}-key`}
+            image={image}
+            selected={selectedImage === image.name}
+            recommended={recommendedImage === image.name}
+            onChange={onImageChange}
+          />
+        ))}
+      </div>
+    )}
+    <HelpBlock>{builderImageError}</HelpBlock>
+  </FormGroup>
+);
 
 export default BuilderImageSelector;

@@ -17,6 +17,7 @@ import {
   getSampleRepo,
   getSampleRef,
   getSampleContextDir,
+  getTagDataWithDisplayName,
 } from '../../utils/imagestream-utils';
 import ImageStreamInfo from './ImageStreamInfo';
 import {
@@ -38,7 +39,7 @@ const mapBuildSourceStateToProps = (state) => {
 class BuildSource extends React.Component<
   BuildSourceStateProps & BuildSourceProps,
   BuildSourceState
-  > {
+> {
   constructor(props) {
     super(props);
 
@@ -217,14 +218,12 @@ class BuildSource extends React.Component<
       );
     }
 
-    const tag = _.find(imageStream.spec.tags, { name: selectedTag });
-    const sampleRepo = getSampleRepo(tag);
-
-    const displayName = _.get(
-      tag,
-      ['annotations', 'openshift.io/display-name'],
+    const [tag, displayName] = getTagDataWithDisplayName(
+      imageStream.spec.tags,
+      selectedTag,
       imageStream.metadata.name,
     );
+    const sampleRepo = getSampleRepo(tag);
 
     const tagOptions = {};
     _.each(

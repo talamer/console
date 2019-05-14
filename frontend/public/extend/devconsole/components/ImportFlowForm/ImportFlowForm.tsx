@@ -461,6 +461,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
       recommendedImage,
       gitTypeError,
       gitRepoUrlError,
+      gitUrlValidationStatus,
       namespaceError,
       nameError,
       builderImageError,
@@ -558,10 +559,9 @@ export class ImportFlowForm extends React.Component<Props, State> {
           </FormGroup>
         </div>
         <BuilderImageSelector
-          loading={!imageStreams.loaded}
+          loadingImageStream={!imageStreams.loaded}
+          loadingRecommendedImage={gitUrlValidationStatus === 'ok' && !recommendedImage && !builderImageError}
           builderImages={this.builderImages}
-          isBuilderImageDetected={this.state.isBuilderImageDetected}
-          isGitUrlValidated={this.state.gitUrlValidationStatus === 'ok'}
           builderImageError={builderImageError}
           selectedImage={selectedImage}
           recommendedImage={recommendedImage}

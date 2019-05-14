@@ -112,3 +112,14 @@ export const normalizeBuilderImages = (
     return builderImages;
   }, {});
 };
+
+export const getTagDataWithDisplayName = (
+  imageTags: ImageTag[],
+  selectedTag: string,
+  defaultName: string,
+): [ImageTag, string] => {
+  const imageTag = _.find(imageTags, { name: selectedTag });
+  const displayName = _.get(imageTag, ['annotations', 'openshift.io/display-name'], defaultName);
+
+  return [imageTag, displayName];
+};
