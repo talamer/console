@@ -430,11 +430,11 @@ export class ImportFlowForm extends React.Component<Props, State> {
           if (!this.state.selectedImage) {
             this.setState({
               selectedImage: recommendedImage,
+              selectedImageTag: recentTag,
             });
           }
           this.setState({
             recommendedImage,
-            selectedImageTag: recentTag,
             isBuilderImageDetected: true,
             builderImageError: '',
           });
@@ -520,7 +520,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
               autoComplete="off"
               name="gitRepoUrl"
             />
-            <HelpBlock>{gitRepoUrlError ? gitRepoUrlError : ''}</HelpBlock>
+            <HelpBlock>{gitRepoUrlError}</HelpBlock>
           </FormGroup>
           {gitTypeField}
           <FormGroup
@@ -533,7 +533,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
               onChange={this.onNamespaceChange}
               data-test-id="import-application-name"
             />
-            <HelpBlock>{namespaceError ? namespaceError : ''}</HelpBlock>
+            <HelpBlock>{namespaceError}</HelpBlock>
           </FormGroup>
           <AppNameSelector
             application={application}
@@ -553,14 +553,15 @@ export class ImportFlowForm extends React.Component<Props, State> {
               data-test-id="import-name"
             />
             <HelpBlock>
-              {nameError ? nameError : 'Identifies the resources created for this application'}
+              {nameError || 'Identifies the resources created for this application'}
             </HelpBlock>
           </FormGroup>
         </div>
         <BuilderImageSelector
+          loading={!imageStreams.loaded}
           builderImages={this.builderImages}
           isBuilderImageDetected={this.state.isBuilderImageDetected}
-          gitUrlValidationStatus={this.state.gitUrlValidationStatus}
+          isGitUrlValidated={this.state.gitUrlValidationStatus === 'ok'}
           builderImageError={builderImageError}
           selectedImage={selectedImage}
           recommendedImage={recommendedImage}

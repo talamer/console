@@ -1,36 +1,34 @@
-.odc-builder-image-selector__card {
+.odc-builder-image-card {
   position: relative;
-  height: 110px;
-  width: 132px;
-  margin: 8px;
+  height: 112px;
+  width: 136px;
+  margin: 4px;
   text-align: center;
 
-  &-icon {
+  &__icon {
     font-size: 36px;
     height: 36px;
     max-width: 80px;
     min-width: 40px;
   }
 
-  &-title {
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 18px;
+  &__title {
+    font-size: var(--pf-global--FontSize--sm);
+    font-weight: var(--pf-global--FontWeight--bold);
+    line-height: var(--pf-global--LineHeight--sm);
   }
 
-  &-selected {
-    border: var(--pf-global--active-color--100) 2px solid;
-  }
-
-  &-recommended {
+  &__recommended {
     position: absolute;
-    color: #3f9c35;
+    color: var(--pf-global--success-color--200);
+    font-size: var(--pf-global--FontSize--md);
     top: 3px;
     right: 3px;
   }
 
+  &.is-selected,
   &:hover {
-    border: var(--pf-global--active-color--100) 2px solid;
+    outline: var(--pf-global--active-color--100) 3px solid;
   }
 
   .pf-c-card__body {

@@ -4,9 +4,10 @@ import * as _ from 'lodash-es';
 import { Dropdown, ResourceName } from '../../../../components/utils';
 import { FormGroup, ControlLabel } from 'patternfly-react';
 import ImageStreamInfo from '../source-to-image/ImageStreamInfo';
+import { ImageTag } from '../../utils/imagestream-utils';
 
 export interface BuilderImageTagSelectorProps {
-  imageTags: any[];
+  imageTags: ImageTag[];
   selectedImageTag: string;
   selectedImageDisplayName: string;
   onTagChange: (selectedTag: string) => void;

@@ -11,14 +11,22 @@ import {
   getImageForIconClass,
 } from '../../../components/catalog/catalog-item-icon';
 
+export interface ImageTag {
+  name: string;
+  annotations: {
+    [key: string]: string;
+  };
+  generation: number;
+  [key: string]: any;
+}
 export interface BuilderImage {
   obj: K8sResourceKind;
   name: string;
   displayName: string;
   title: string;
   iconUrl: string;
-  tags: any[];
-  recentTag: any;
+  tags: ImageTag[];
+  recentTag: ImageTag;
 }
 
 export interface NormalizedBuilderImages {
@@ -78,8 +86,8 @@ export const normalizeBuilderImages = (
   imageStreams: K8sResourceKind[],
 ): NormalizedBuilderImages => {
   const builderImageStreams = imageStreams.filter((imageStream) => isBuilder(imageStream));
-  const builderImages = {};
-  builderImageStreams.map((imageStream) => {
+
+  return builderImageStreams.reduce((builderImages, imageStream) => {
     const tags = getBuilderTagsSortedByVersion(imageStream);
     const recentTag = getMostRecentBuilderTag(imageStream);
     const name = imageStream.metadata.name;
@@ -101,7 +109,6 @@ export const normalizeBuilderImages = (
       tags,
       recentTag,
     };
-  });
-
-  return builderImages;
+    return builderImages;
+  }, {});
 };

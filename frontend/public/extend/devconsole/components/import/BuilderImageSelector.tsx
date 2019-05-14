@@ -9,9 +9,10 @@ import BuilderImageCard from './BuilderImageCard';
 import './BuilderImageSelector.scss';
 
 export interface BuilderImageSelectorProps {
+  loading: boolean;
   builderImages: NormalizedBuilderImages;
   isBuilderImageDetected: boolean;
-  gitUrlValidationStatus: string;
+  isGitUrlValidated: boolean;
   builderImageError: string;
   selectedImage: string;
   recommendedImage: string;
@@ -19,20 +20,21 @@ export interface BuilderImageSelectorProps {
 }
 
 const BuilderImageSelector: React.FC<BuilderImageSelectorProps> = ({
+  loading,
   builderImages,
   selectedImage,
   recommendedImage,
   isBuilderImageDetected,
-  gitUrlValidationStatus,
+  isGitUrlValidated,
   builderImageError,
   onImageChange,
 }) => {
-  if (!builderImages) {
+  if (loading) {
     return <LoadingInline />;
   }
 
   let showDetectBuildToolStatus;
-  if (gitUrlValidationStatus === 'ok' && !recommendedImage && !builderImageError) {
+  if (isGitUrlValidated && !recommendedImage && !builderImageError) {
     showDetectBuildToolStatus = (
       <span className="odc-import-form__loader">
         <LoadingInline />
@@ -46,6 +48,11 @@ const BuilderImageSelector: React.FC<BuilderImageSelectorProps> = ({
     <FormGroup controlId="import-builder-image" className={builderImageError ? 'has-error' : ''}>
       <ControlLabel className="co-required">Builder Image</ControlLabel>
       {showDetectBuildToolStatus}
+      {isBuilderImageDetected && (
+        <HelpBlock>
+          (Recommended builder images are represented by <i className="fa fa-star" aria-hidden="true" /> icon)
+        </HelpBlock>
+      )}
       <div className="odc-builder-image-selector">
         {_.values(builderImages).map((image) => (
           <BuilderImageCard
@@ -57,7 +64,7 @@ const BuilderImageSelector: React.FC<BuilderImageSelectorProps> = ({
           />
         ))}
       </div>
-      <HelpBlock>{builderImageError ? builderImageError : ''}</HelpBlock>
+      <HelpBlock>{builderImageError}</HelpBlock>
     </FormGroup>
   );
 };
