@@ -585,7 +585,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
           <Button
             type="submit"
             bsStyle="primary"
-            className={this.disableSubmitButton() ? 'disabled' : ''}
+            disabled={this.disableSubmitButton()}
           >
             Create
           </Button>
