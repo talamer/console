@@ -1,0 +1,23 @@
+/* eslint-disable no-unused-vars, no-undef */
+import * as React from 'react';
+import PipelineVisualizationGraph from './PipelineVisualizationGraph';
+import { getPipelineTasks } from '../../shared/utils/visualization';
+import { K8sResourceKind } from '../../../../module/k8s';
+
+interface PipelineVisualizationProps {
+  pipeline?: K8sResourceKind;
+}
+
+export default class PipelineVisualization extends React.PureComponent<PipelineVisualizationProps> {
+  render() {
+    if (!this.props.pipeline) {
+      return null;
+    }
+    return (
+      <PipelineVisualizationGraph
+        namespace={this.props.pipeline.metadata.namespace}
+        graph={getPipelineTasks(this.props.pipeline.spec.tasks)}
+      />
+    );
+  }
+}
