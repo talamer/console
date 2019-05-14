@@ -11,7 +11,6 @@ import { getBuilderTagsSortedByVersion } from '../../../../components/image-stre
 import { ButtonBar } from '../../../../components/utils/button-bar';
 import PerspectiveLink from '../../shared/components/PerspectiveLink';
 import { getActivePerspective } from '../../../../ui/ui-selectors';
-import { pathWithPerspective } from '../../../../components/utils/perspective';
 import {
   getPorts,
   getSampleRepo,
@@ -144,13 +143,14 @@ class BuildSource extends React.Component<
     const {
       name,
       namespace,
+      application,
       selectedTag,
       repository,
       createRoute: canCreateRoute,
       ports,
     } = this.state;
-    if (!name || !selectedTag || !namespace || !repository) {
-      this.setState({ error: 'Please complete all fields.' });
+    if (!name || !selectedTag || !namespace || !application || !repository) {
+      this.setState({ error: 'Please complete all required fields.' });
       return;
     }
 
@@ -174,9 +174,12 @@ class BuildSource extends React.Component<
       .then(() => {
         this.setState({ inProgress: false });
         if (!this.state.error) {
-          history.push(
-            pathWithPerspective(activePerspective, `/overview/ns/${this.state.namespace}`),
-          );
+          switch(activePerspective) {
+            case 'dev':
+              history.push(`/dev/topology/ns/${this.state.namespace}`);
+            default:
+              history.push(`/overview/ns/${this.state.namespace}`);
+          }
         }
       })
       .catch(() => this.setState({ inProgress: false }));
