@@ -26,11 +26,8 @@ import {
   ServiceModel,
 } from '../models';
 import PerspectiveLink from '../extend/devconsole/shared/components/PerspectiveLink';
-<<<<<<< HEAD
 import { getActivePerspective } from '../ui/ui-selectors';
-=======
 import AppNameSelector from '../extend/devconsole/shared/components/dropdown/AppNameSelector';
->>>>>>> add Application Dropdown in the deploy image form
 
 const getSuggestedName = name => {
   if (!name) {
@@ -164,7 +161,6 @@ export class DeployImage_ extends React.Component<DeployImageProps & DeployImage
 
   save = event => {
     event.preventDefault();
-
     this.setState({
       inProgress: true,
       error: null,
@@ -194,7 +190,11 @@ export class DeployImage_ extends React.Component<DeployImageProps & DeployImage
 
     const ports = getPorts(isi);
 
-    const labels = {app: name};
+    const labels = {
+      'app' : name,
+      'app.kubernetes.io/part-of': this.state.application,
+      'app.kubernetes.io/instance': name,
+    };
 
     const errorState = err => this.setState({error: this.state.error ? `${this.state.error}; ${err.message}` : err.message});
 
@@ -438,7 +438,7 @@ export class DeployImage_ extends React.Component<DeployImageProps & DeployImage
             </React.Fragment>}
           </div>
           <ButtonBar errorMessage={this.state.error} inProgress={this.state.inProgress}>
-            <button type="submit" className="btn btn-primary" disabled={!this.state.namespace || !this.state.imageName || !this.state.name}>Deploy</button>
+            <button type="submit" className="btn btn-primary" disabled={!this.state.namespace || !this.state.imageName || !this.state.name || !this.state.application}>Deploy</button>
             <PerspectiveLink to={formatNamespacedRouteForResource('deploymentconfigs')} className="btn btn-default">Cancel</PerspectiveLink>
           </ButtonBar>
         </form>
