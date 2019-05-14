@@ -41,6 +41,7 @@ export interface State {
   isComponentCreated: boolean;
   isBuilderImageDetected: boolean;
   gitUrlValidationStatus: string;
+  isGitTypeVisible: boolean;
 }
 
 export interface Props {
@@ -70,6 +71,7 @@ const initialState: State = {
   isComponentCreated: false,
   gitUrlValidationStatus: '',
   isBuilderImageDetected: false,
+  isGitTypeVisible: false,
 };
 
 enum ErrorMessage {
@@ -109,6 +111,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
       isComponentCreated: false,
       gitUrlValidationStatus: '',
       isBuilderImageDetected: false,
+      isGitTypeVisible: false,
     };
   }
   private randomString = this.generateRandomString();
@@ -297,9 +300,12 @@ export class ImportFlowForm extends React.Component<Props, State> {
         this.setState({
           gitType: this.detectGitType(this.state.gitRepoUrl),
           gitTypeError: ErrorMessage.GitTypeError,
+          isGitTypeVisible: true,
         });
       } else {
-        this.setState({ gitType: this.detectGitType(this.state.gitRepoUrl) });
+        this.setState({ gitType: this.detectGitType(this.state.gitRepoUrl),
+          isGitTypeVisible: false,
+        });
       }
     }
   };
@@ -476,6 +482,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
       namespaceError,
       nameError,
       builderImageError,
+      isGitTypeVisible,
     } = this.state;
 
     const { imageStreams } = this.props;
@@ -485,7 +492,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
     }
 
     let gitTypeField, showGitValidationStatus;
-    if (gitType || gitTypeError) {
+    if (isGitTypeVisible) {
       gitTypeField = (
         <FormGroup controlId="import-git-type" className={gitTypeError ? 'has-error' : ''}>
           <ControlLabel className="co-required">Git Type</ControlLabel>

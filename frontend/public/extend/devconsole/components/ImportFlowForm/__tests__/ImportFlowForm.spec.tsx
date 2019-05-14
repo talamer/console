@@ -133,6 +133,28 @@ describe('ImportFlowForm: ', () => {
     expect(importFlowForm.state().gitType).toBe('github');
   });
 
+  it('git-type should be hidden and state to be updated if able to detect git-type', () => {
+    const importFlowForm = shallow(<ImportFlowForm {...props} />);
+    const urlInput = importFlowForm.find('[data-test-id="import-git-repo-url"]');
+    urlInput.simulate('change', {
+      target: { value: 'https://github.com/vikram-raj/console/tree/import-flow' },
+    });
+    urlInput.simulate('blur');
+    expect(importFlowForm.state().gitType).toBe('github');
+    expect(importFlowForm.find('[controlId="import-git-type"]')).toHaveLength(0);
+  });
+
+  it('git-type should be shown if unable to detect git-type', () => {
+    const importFlowForm = shallow(<ImportFlowForm {...props} />);
+    const urlInput = importFlowForm.find('[data-test-id="import-git-repo-url"]');
+    urlInput.simulate('change', {
+      target: { value: 'https://source.ibm.com' },
+    });
+    urlInput.simulate('blur');
+    expect(importFlowForm.state().gitType).toBe('');
+    expect(importFlowForm.find('[controlId="import-git-type"]')).toHaveLength(1);
+  });
+
   it('validate URL', () => {
     const importFlowForm = shallow(<ImportFlowForm {...props} />);
     const urlInput = importFlowForm.find('[data-test-id="import-git-repo-url"]');
@@ -197,6 +219,7 @@ describe('ImportFlowForm: ', () => {
       selectedApplicationKey: '',
       selectedImage: 'perl',
       selectedImageTag: '5.16',
+      isGitTypeVisible: false,
     };
 
     expect(importFlowForm.state()).toEqual(importFormState);
