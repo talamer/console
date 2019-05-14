@@ -24,9 +24,9 @@ const PipelineRow = ({ obj: pipelinerun }) => {
         {' '}
         <StatusIcon
           status={
-            pipelinerun.status.conditions && pipelinerun.status.conditions[0].type
-              ? pipelinerun.status.conditions[0].type
-              : '-'
+            pipelinerun.status.conditions && pipelinerun.status.conditions[0].status === 'True'
+              ? 'Succeeded'
+              : 'Failed'
           }
         />
       </div>

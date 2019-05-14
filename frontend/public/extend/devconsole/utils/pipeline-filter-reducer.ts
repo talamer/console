@@ -6,8 +6,8 @@ export const pipelineFilterReducer = (pipeline): string => {
 };
 
 export const pipelineRunFilterReducer = (pipelineRun): string => {
-  if (!pipelineRun.status || !pipelineRun.status.conditions[0].type) {
-    return '';
+  if (pipelineRun.status && pipelineRun.status.conditions[0].status === 'True') {
+    return 'Succeeded';
   }
-  return pipelineRun.status.conditions[0].type;
+  return 'Failed';
 };
