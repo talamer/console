@@ -283,6 +283,15 @@ func main() {
 			Endpoint:        &url.URL{Scheme: "http", Host: openshiftDevConsoleAppServiceHost, Path: ""},
 		}
 
+		// TODO: remove this later
+		srv.DevConsoleAppServiceProxyConfig = &proxy.Config{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: *fK8sModeOffClusterSkipVerifyTLS,
+			},
+			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
+			Endpoint:        &url.URL{Scheme: "http", Host: openshiftDevConsoleAppServiceHost, Path: ""},
+		}
+
 	case "off-cluster":
 		k8sEndpoint = validateFlagIsURL("k8s-mode-off-cluster-endpoint", *fK8sModeOffClusterEndpoint)
 
@@ -293,14 +302,7 @@ func main() {
 			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
 			Endpoint:        k8sEndpoint,
 		}
-		// TODO: remove this later
-		srv.DevConsoleAppServiceProxyConfig = &proxy.Config{
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: *fK8sModeOffClusterSkipVerifyTLS,
-			},
-			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
-			Endpoint:        &url.URL{Scheme: "http", Host: openshiftDevConsoleAppServiceHost, Path: ""},
-		}
+
 	default:
 		flagFatalf("k8s-mode", "must be one of: in-cluster, off-cluster")
 	}

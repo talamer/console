@@ -40,25 +40,25 @@ var (
 )
 
 type jsGlobals struct {
-	ConsoleVersion           string `json:"consoleVersion"`
-	AuthDisabled             bool   `json:"authDisabled"`
-	KubectlClientID          string `json:"kubectlClientID"`
-	BasePath                 string `json:"basePath"`
-	LoginURL                 string `json:"loginURL"`
-	LoginSuccessURL          string `json:"loginSuccessURL"`
-	LoginErrorURL            string `json:"loginErrorURL"`
-	LogoutURL                string `json:"logoutURL"`
-	LogoutRedirect           string `json:"logoutRedirect"`
-	KubeAdminLogoutURL       string `json:"kubeAdminLogoutURL"`
-	KubeAPIServerURL         string `json:"kubeAPIServerURL"`
-	PrometheusBaseURL        string `json:"prometheusBaseURL"`
-	PrometheusTenancyBaseURL string `json:"prometheusTenancyBaseURL"`
-	AlertManagerBaseURL      string `json:"alertManagerBaseURL"`
-	Branding                 string `json:"branding"`
-	DocumentationBaseURL     string `json:"documentationBaseURL"`
-	GoogleTagManagerID       string `json:"googleTagManagerID"`
-	LoadTestFactor           int    `json:"loadTestFactor"`
-	AppServiceBaseURL        string `json:"appServiceBaseURL"`
+	ConsoleVersion              string `json:"consoleVersion"`
+	AuthDisabled                bool   `json:"authDisabled"`
+	KubectlClientID             string `json:"kubectlClientID"`
+	BasePath                    string `json:"basePath"`
+	LoginURL                    string `json:"loginURL"`
+	LoginSuccessURL             string `json:"loginSuccessURL"`
+	LoginErrorURL               string `json:"loginErrorURL"`
+	LogoutURL                   string `json:"logoutURL"`
+	LogoutRedirect              string `json:"logoutRedirect"`
+	KubeAdminLogoutURL          string `json:"kubeAdminLogoutURL"`
+	KubeAPIServerURL            string `json:"kubeAPIServerURL"`
+	PrometheusBaseURL           string `json:"prometheusBaseURL"`
+	PrometheusTenancyBaseURL    string `json:"prometheusTenancyBaseURL"`
+	AlertManagerBaseURL         string `json:"alertManagerBaseURL"`
+	Branding                    string `json:"branding"`
+	DocumentationBaseURL        string `json:"documentationBaseURL"`
+	GoogleTagManagerID          string `json:"googleTagManagerID"`
+	LoadTestFactor              int    `json:"loadTestFactor"`
+	DevConsoleAppServiceBaseURL string `json:"devConsoleAppService"`
 }
 
 type Server struct {
@@ -222,17 +222,17 @@ func (s *Server) HTTPHandler() http.Handler {
 	}
 
 	if s.devConsoleAppServiceProxyEnabled() {
-		appServiceProxyAPIPath := devConsoleAppServiceProxyEndpoint
-		appServiceProxy := proxy.NewProxy(s.DevConsoleAppServiceProxyConfig)
+		devConsoleAppServiceProxyAPIPath := devConsoleAppServiceProxyEndpoint
+		devConsoleAppServiceProxy := proxy.NewProxy(s.DevConsoleAppServiceProxyConfig)
 
-		handle(appServiceProxyAPIPath, http.StripPrefix(
-			proxy.SingleJoiningSlash(s.BaseURL.Path, appServiceProxyAPIPath),
+		handle(devConsoleAppServiceProxyAPIPath, http.StripPrefix(
+			proxy.SingleJoiningSlash(s.BaseURL.Path, devConsoleAppServiceProxyAPIPath),
 			authHandlerWithUser(func(user *auth.User, w http.ResponseWriter, r *http.Request) {
 				r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", user.Token))
-				appServiceProxy.ServeHTTP(w, r)
+				devConsoleAppServiceProxy.ServeHTTP(w, r)
 			})),
 		)
-		fmt.Println("enabling proxy for " + proxy.SingleJoiningSlash(s.BaseURL.Path, appServiceProxyAPIPath))
+		fmt.Println("enabling proxy for " + proxy.SingleJoiningSlash(s.BaseURL.Path, devConsoleAppServiceProxyAPIPath))
 	}
 
 	handle("/api/tectonic/version", authHandler(s.versionHandler))
@@ -294,8 +294,7 @@ func (s *Server) indexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if s.devConsoleAppServiceProxyEnabled() {
-		jsg.AppServiceBaseURL = proxy.SingleJoiningSlash(s.BaseURL.Path, devConsoleAppServiceProxyEndpoint)
-		fmt.Println(jsg.AppServiceBaseURL)
+		jsg.DevConsoleAppServiceBaseURL = proxy.SingleJoiningSlash(s.BaseURL.Path, devConsoleAppServiceProxyEndpoint)
 	}
 
 	if !s.authDisabled() {
