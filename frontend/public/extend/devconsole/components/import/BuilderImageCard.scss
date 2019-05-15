@@ -4,6 +4,7 @@
   width: 136px;
   margin: 4px;
   align-items: center;
+  border: 0;
 
   &__icon {
     height: 32px;
@@ -26,8 +27,11 @@
   }
 
   &.is-selected,
-  &:hover {
+  &:hover,
+  &:focus,
+  &:active {
     outline: var(--pf-global--active-color--100) 3px solid;
+    outline-offset: -3px;
   }
 
   .pf-c-card__body {

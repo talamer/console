@@ -23,6 +23,7 @@ const BuilderImageCard: React.FC<BuilderImageCardProps> = ({
   return (
     <Card
       component="button"
+      type="button"
       aria-label={image.title}
       className={classes}
       onClick={() => onChange(image.name)}
