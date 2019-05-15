@@ -84,7 +84,7 @@ export default class PodStatus extends React.PureComponent<PodStatusProps, PodSt
     const centerTransform = `translate(-63, -63)`;
     return (
       <VictoryPie
-        events={ showTooltip? [
+        events={showTooltip ? [
           {
             target: 'data',
             eventHandlers: {
@@ -122,8 +122,8 @@ export default class PodStatus extends React.PureComponent<PodStatusProps, PodSt
         data={this.state.data}
         height={height}
         width={width}
-        labelComponent={<Tooltip x={outerRadius + 2} y={-10} />}
-        padAngle={1}
+        labelComponent={<Tooltip x={outerRadius + 2} y={-12} />}
+        padAngle={2}
         style={{
           data: {
             fill: ({ x }) => podColor[x],
@@ -152,7 +152,6 @@ class Tooltip extends React.PureComponent<TooltipProps> {
     bb: null,
   };
 
-  textRef = React.createRef<SVGTextElement>();
   groupRef = React.createRef<SVGGElement>();
 
   componentDidMount() {
@@ -178,15 +177,6 @@ class Tooltip extends React.PureComponent<TooltipProps> {
     const paddingY = 5;
     return this.props.active ? (
       <g className={'odc-default-group__label'}>
-        <animate
-          attributeType="CSS"
-          attributeName="opacity"
-          from="0"
-          to="1"
-          dur="1s"
-          repeatCount="1"
-          fill="remove"
-        />
         <SvgDropShadowFilter id={FILTER_ID} />
         {bb && (
           <React.Fragment>
