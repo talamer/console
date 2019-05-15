@@ -3,24 +3,31 @@ interface Task {
   resources?: Resources;
   runAfter?: string[];
   name: string;
-  taskRef: { name: string };
+  taskRef?: { name: string };
+  params?: Param[];
 }
 
 interface Resources {
-  inputs: Resource[];
-  outputs: Resource[];
+  inputs?: Resource[];
+  outputs?: Resource[];
 }
 
 interface Resource {
   name: string;
-  resource: string;
-  from?: string;
+  resource?: string;
+  from?: string[];
+}
+
+interface Param {
+  name?: string;
+  value?: string;
 }
 
 export const conditions = {
   hasFromDependency: (task: Task): boolean =>
     task.hasOwnProperty('resources') &&
     task.resources.hasOwnProperty('inputs') &&
+    task.resources.inputs.length > 0 &&
     task.resources.inputs[0].hasOwnProperty('from'),
   hasRunAfterDependency: (task: Task): boolean =>
     task.hasOwnProperty('runAfter') && task.runAfter.length > 0,
@@ -31,57 +38,49 @@ const sortTasksByRunAfterAndFrom = (tasks: Task[]): Task[] => {
   //check and sort tasks by 'runAfter' and 'from' dependency
   const output = tasks;
   for (let i = 0; i < output.length; i++) {
+    let flag = -1;
     if (conditions.hasRunAfterDependency(output[i])) {
-      let flag = -1;
       for (let j = 0; j < output.length; j++) {
         if (i < j && output[j].taskRef.name === output[i].runAfter[output[i].runAfter.length - 1]) {
           flag = j;
         }
       }
-      if (flag > -1) {
-        //swap with last matching task
-        const temp = output[flag];
-        output[flag] = output[i];
-        output[i] = temp;
-      }
     } else if (conditions.hasFromDependency(output[i])) {
-      let flag = -1;
-      for (let j = 0; j < output.length; j++) {
-        if (i < j && output[j].taskRef.name === output[i].resources.inputs[0].from[0]) {
+      for (let j = i + 1; j < output.length; j++) {
+        if (output[j].taskRef.name === output[i].resources.inputs[0].from[0]) {
           flag = j;
         }
       }
-      if (flag > -1) {
-        //swap with last matching task
-        const temp = output[flag];
-        output[flag] = output[i];
-        output[i] = temp;
-      }
+    }
+    if (flag > -1) {
+      //swap with last matching task
+      const temp = output[flag];
+      output[flag] = output[i];
+      output[i] = temp;
     }
   }
   return output;
 };
 
-export const getPipelineTasks = (actualTasks: Task[]): Task[][] => {
-  //P.S: Each element in out array is referred to as stage
+export const getPipelineTasks = (taskList: Task[]): Task[][] => {
+  // Each unit in 'out' array is termed as stage | out = [stage1 = [task1], stage2 = [task2,task3], stage3 = [task4]]
   const out = [];
   //Step 1: Sort Tasks to get in correct order
-  const tasks = sortTasksByRunAfterAndFrom(actualTasks);
+  const tasks = sortTasksByRunAfterAndFrom(taskList);
 
   //Step 2: Push all nodes without any dependencies in different stages
-  tasks.map((task) => {
+  tasks.forEach((task) => {
     if (!conditions.hasFromDependency(task) && !conditions.hasRunAfterDependency(task)) {
       out.push([task]);
     }
-    return;
   });
 
   //Step 3: Push nodes with 'from' dependency and stack similar tasks in a stage
-  tasks.map((task) => {
+  tasks.forEach((task) => {
     if (!conditions.hasRunAfterDependency(task) && conditions.hasFromDependency(task)) {
       let flag = out.length - 1;
       for (let i = 0; i < out.length; i++) {
-        out[i].map((t) => {
+        out[i].forEach((t) => {
           if (t.taskRef.name === task.resources.inputs[0].from[0]) {
             flag = i;
           }
@@ -90,6 +89,12 @@ export const getPipelineTasks = (actualTasks: Task[]): Task[][] => {
       const nextToFlag = out[flag + 1] ? out[flag + 1] : null;
       if (
         nextToFlag &&
+        nextToFlag[0] &&
+        nextToFlag[0].resources &&
+        nextToFlag[0].resources.inputs &&
+        nextToFlag[0].resources.inputs[0] &&
+        nextToFlag[0].resources.inputs[0].from &&
+        nextToFlag[0].resources.inputs[0].from[0] &&
         nextToFlag[0].resources.inputs[0].from[0] === task.resources.inputs[0].from[0]
       ) {
         nextToFlag.push(task);
@@ -97,11 +102,10 @@ export const getPipelineTasks = (actualTasks: Task[]): Task[][] => {
         out.splice(flag + 1, 0, [task]);
       }
     }
-    return;
   });
 
   //Step 4: Push nodes with 'runAfter' dependencies and stack similar tasks in a stage
-  tasks.map((task) => {
+  tasks.forEach((task) => {
     if (conditions.hasRunAfterDependency(task)) {
       let flag = out.length - 1;
       for (let i = 0; i < out.length; i++) {
@@ -112,14 +116,17 @@ export const getPipelineTasks = (actualTasks: Task[]): Task[][] => {
         });
       }
       const nextToFlag = out[flag + 1] ? out[flag + 1] : null;
-
-      if (nextToFlag && nextToFlag[0].runAfter[0] === task.runAfter[0]) {
+      if (
+        nextToFlag &&
+        nextToFlag[0].runAfter &&
+        nextToFlag[0].runAfter[0] &&
+        nextToFlag[0].runAfter[0] === task.runAfter[0]
+      ) {
         nextToFlag.push(task);
       } else {
         out.splice(flag + 1, 0, [task]);
       }
     }
-    return;
   });
   return out;
 };
