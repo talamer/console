@@ -1,6 +1,37 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as _ from 'lodash-es';
-import { ContainerPort } from '../../../module/k8s';
+import { ContainerPort, K8sResourceKind } from '../../../module/k8s';
+import {
+  isBuilder,
+  getMostRecentBuilderTag,
+  getBuilderTagsSortedByVersion,
+} from '../../../components/image-stream';
+import {
+  getImageStreamIcon,
+  getImageForIconClass,
+} from '../../../components/catalog/catalog-item-icon';
+
+export interface ImageTag {
+  name: string;
+  annotations: {
+    [key: string]: string;
+  };
+  generation: number;
+  [key: string]: any;
+}
+export interface BuilderImage {
+  obj: K8sResourceKind;
+  name: string;
+  displayName: string;
+  title: string;
+  iconUrl: string;
+  tags: ImageTag[];
+  recentTag: ImageTag;
+}
+
+export interface NormalizedBuilderImages {
+  [builderImageName: string]: BuilderImage;
+}
 
 export const getSampleRepo = (tag) => _.get(tag, 'annotations.sampleRepo');
 export const getSampleRef = (tag) => _.get(tag, 'annotations.sampleRef');
@@ -44,3 +75,51 @@ export const getPorts = (imageStreamImage: object): ContainerPort[] => {
 // Use the same naming convention as the CLI.
 export const makePortName = (port: ContainerPort): string =>
   `${port.containerPort}-${port.protocol}`.toLowerCase();
+
+export const prettifyName = (name: string) => {
+  return name.replace(/(-|^)([^-]?)/g, (first, prep, letter) => {
+    return (prep && ' ') + letter.toUpperCase();
+  });
+};
+
+export const normalizeBuilderImages = (
+  imageStreams: K8sResourceKind[],
+): NormalizedBuilderImages => {
+  const builderImageStreams = imageStreams.filter((imageStream) => isBuilder(imageStream));
+
+  return builderImageStreams.reduce((builderImages, imageStream) => {
+    const tags = getBuilderTagsSortedByVersion(imageStream);
+    const recentTag = getMostRecentBuilderTag(imageStream);
+    const name = imageStream.metadata.name;
+    const displayName = _.get(imageStream, [
+      'metadata',
+      'annotations',
+      'openshift.io/display-name',
+    ]);
+    const title = displayName && displayName.length < 14 ? displayName : prettifyName(name);
+    const iconClass = getImageStreamIcon(recentTag);
+    const iconUrl = getImageForIconClass(iconClass);
+
+    builderImages[name] = {
+      obj: imageStream,
+      name,
+      displayName,
+      title,
+      iconUrl,
+      tags,
+      recentTag,
+    };
+    return builderImages;
+  }, {});
+};
+
+export const getTagDataWithDisplayName = (
+  imageTags: ImageTag[],
+  selectedTag: string,
+  defaultName: string,
+): [ImageTag, string] => {
+  const imageTag = _.find(imageTags, { name: selectedTag });
+  const displayName = _.get(imageTag, ['annotations', 'openshift.io/display-name'], defaultName);
+
+  return [imageTag, displayName];
+};

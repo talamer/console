@@ -11,12 +11,12 @@ import { getBuilderTagsSortedByVersion } from '../../../../components/image-stre
 import { ButtonBar } from '../../../../components/utils/button-bar';
 import PerspectiveLink from '../../shared/components/PerspectiveLink';
 import { getActivePerspective } from '../../../../ui/ui-selectors';
-import { pathWithPerspective } from '../../../../components/utils/perspective';
 import {
   getPorts,
   getSampleRepo,
   getSampleRef,
   getSampleContextDir,
+  getTagDataWithDisplayName,
 } from '../../utils/imagestream-utils';
 import ImageStreamInfo from './ImageStreamInfo';
 import {
@@ -27,6 +27,7 @@ import {
   createRoute,
 } from '../../utils/create-resource-utils';
 import AppNameSelector from '../../shared/components/dropdown/AppNameSelector';
+import SourceToImageResourceDetails from './SourceToImageResourceDetails';
 
 const mapBuildSourceStateToProps = (state) => {
   return {
@@ -37,7 +38,7 @@ const mapBuildSourceStateToProps = (state) => {
 class BuildSource extends React.Component<
   BuildSourceStateProps & BuildSourceProps,
   BuildSourceState
-  > {
+> {
   constructor(props) {
     super(props);
 
@@ -104,7 +105,9 @@ class BuildSource extends React.Component<
   };
 
   fillSample: React.ReactEventHandler<HTMLButtonElement> = (event) => {
-    const { obj: { data: imageStream } } = this.props;
+    const {
+      obj: { data: imageStream },
+    } = this.props;
     const { name: currentName, selectedTag } = this.state;
     const tag = _.find(imageStream.spec.tags, { name: selectedTag });
     const repository = getSampleRepo(tag);
@@ -120,7 +123,9 @@ class BuildSource extends React.Component<
       return;
     }
 
-    const { obj: { data: imageStream } } = this.props;
+    const {
+      obj: { data: imageStream },
+    } = this.props;
     const imageStreamTagName = `${imageStream.metadata.name}:${selectedTag}`;
     this.setState({ inProgress: true });
     k8sGet(ImageStreamTagModel, imageStreamTagName, imageStream.metadata.namespace).then(
@@ -140,17 +145,21 @@ class BuildSource extends React.Component<
 
   save = (event: React.FormEvent<EventTarget>) => {
     event.preventDefault();
-    const { activePerspective, obj: { data: imageStream } } = this.props;
+    const {
+      activePerspective,
+      obj: { data: imageStream },
+    } = this.props;
     const {
       name,
       namespace,
+      application,
       selectedTag,
       repository,
       createRoute: canCreateRoute,
       ports,
     } = this.state;
-    if (!name || !selectedTag || !namespace || !repository) {
-      this.setState({ error: 'Please complete all fields.' });
+    if (!name || !selectedTag || !namespace || !application || !repository) {
+      this.setState({ error: 'Please complete all required fields.' });
       return;
     }
 
@@ -174,9 +183,12 @@ class BuildSource extends React.Component<
       .then(() => {
         this.setState({ inProgress: false });
         if (!this.state.error) {
-          history.push(
-            pathWithPerspective(activePerspective, `/overview/ns/${this.state.namespace}`),
-          );
+          switch(activePerspective) {
+            case 'dev':
+              history.push(`/dev/topology/ns/${this.state.namespace}`);
+            default:
+              history.push(`/overview/ns/${this.state.namespace}`);
+          }
         }
       })
       .catch(() => this.setState({ inProgress: false }));
@@ -209,7 +221,11 @@ class BuildSource extends React.Component<
       );
     }
 
-    const tag = _.find(imageStream.spec.tags, { name: selectedTag });
+    const [tag, displayName] = getTagDataWithDisplayName(
+      imageStream.spec.tags,
+      selectedTag,
+      imageStream.metadata.name,
+    );
     const sampleRepo = getSampleRepo(tag);
 
     const tagOptions = {};
@@ -223,7 +239,8 @@ class BuildSource extends React.Component<
     return (
       <div className="row">
         <div className="col-md-7 col-md-push-5 co-catalog-item-info">
-          <ImageStreamInfo imageStream={imageStream} tag={tag} />
+          <ImageStreamInfo displayName={displayName} tag={tag} />
+          <SourceToImageResourceDetails />
         </div>
         <div className="col-md-5 col-md-pull-7">
           <form className="co-source-to-image-form" onSubmit={this.save}>

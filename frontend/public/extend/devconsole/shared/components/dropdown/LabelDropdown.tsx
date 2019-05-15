@@ -3,7 +3,7 @@ import * as _ from 'lodash-es';
 import * as React from 'react';
 import * as fuzzy from 'fuzzysearch';
 
-import { Dropdown, ResourceName, LoadingInline } from '../../../../../components/utils';
+import { Dropdown, LoadingInline } from '../../../../../components/utils';
 import { K8sResourceKind } from '../../../../../module/k8s';
 
 type FirehoseList = {
@@ -17,12 +17,24 @@ interface LabelDropdownState {
 }
 
 interface LabelDropdownProps {
+  className?: string;
+  dropDownClassName?: string;
+  menuClassName?: string;
+  buttonClassName?: string;
+  title?: React.ReactNode;
+  titlePrefix?: string;
+  allApplicationsKey?: string;
+  storageKey?: string;
+  disabled?: boolean;
+  allSelectorItem?: {
+    allSelectorKey?: string;
+    allSelectorTitle?: string;
+  };
   actionItem?: {
     actionTitle: string;
     actionKey: string;
   };
   labelSelector: string;
-  labelType: string;
   loaded?: boolean;
   loadError?: string;
   placeholder?: string;
@@ -42,7 +54,7 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
   };
 
   autocompleteFilter(text, item) {
-    return fuzzy(text, item.props.name);
+    return fuzzy(text, item);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -53,7 +65,7 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
   }
 
   componentWillReceiveProps(nextProps: LabelDropdownProps) {
-    const { labelSelector, resources, loaded, loadError, placeholder } = nextProps;
+    const { labelSelector, resources, loaded, loadError, placeholder, allSelectorItem } = nextProps;
     if (!loaded) {
       this.setState({ title: <LoadingInline /> });
       return;
@@ -87,23 +99,30 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
     });
 
     const sortedList = {};
+
+    if (this.props.allSelectorItem && !_.isEmpty(unsortedList)) {
+      sortedList[allSelectorItem.allSelectorKey] = {
+        name: allSelectorItem.allSelectorTitle,
+      };
+    }
+
     _.keys(unsortedList)
       .sort()
       .forEach((key) => {
         sortedList[key] = unsortedList[key];
       });
+    
     this.setState({ items: sortedList });
   }
 
   onChange = (key) => {
     const { name } = _.get(this.state, ['items', key], {});
-    const { labelType } = this.props;
-    const { actionKey, actionTitle } = this.props.actionItem;
+    const { actionItem } = this.props;
     let title;
-    if (key === actionKey) {
-      title = <span className="btn-dropdown__item--placeholder">{actionTitle}</span>;
+    if (actionItem && key === actionItem.actionKey) {
+      title = <span className="btn-dropdown__item--placeholder">{actionItem.actionTitle}</span>;
     } else {
-      title = <ResourceName kind={labelType} name={name} />;
+      title = <span>{name}</span>;
     }
     this.props.onChange(name, key);
     this.setState({ title });
@@ -111,22 +130,28 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
 
   render() {
     const items = {};
+
     _.keys(this.state.items).forEach((key) => {
       const item = this.state.items[key];
-      items[key] = <ResourceName kind={this.props.labelType} name={item.name} />;
+      items[key] = item.name;
     });
 
     return (
       <Dropdown
+        className={this.props.className}
+        dropDownClassName={this.props.dropDownClassName}
+        menuClassName={this.props.menuClassName}
+        buttonClassName={this.props.buttonClassName}
+        titlePrefix={this.props.titlePrefix}
         autocompleteFilter={this.autocompleteFilter}
         actionItem={this.props.actionItem}
         items={items}
         onChange={this.onChange}
         selectedKey={this.props.selectedKey}
-        title={this.state.title}
+        title={this.props.title || this.state.title}
         autocompletePlaceholder={this.props.placeholder}
-        dropDownClassName="dropdown--full-width"
-        menuClassName="dropdown-menu--text-wrap"
+        storageKey={this.props.storageKey}
+        disabled={this.props.disabled}
       />
     );
   }

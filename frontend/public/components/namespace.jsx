@@ -18,8 +18,9 @@ import { FLAGS, featureReducerName, flagPending, setFlag, connectToFlags } from 
 import { openshiftHelpBase } from './utils/documentation';
 import { createProjectMessageStateToProps } from '../ui/ui-reducers';
 import PerspectiveLink from '../extend/devconsole/shared/components/PerspectiveLink';
-import { getActivePerspective } from '../ui/ui-selectors';
+import { getActivePerspective, getActiveApplication } from '../ui/ui-selectors';
 import { pathWithPerspective } from './utils/perspective';
+import ApplicationSwitcher from '../extend/devconsole/components/application-switcher/ApplicationSwitcher';
 
 const getModel = useProjects => useProjects ? ProjectModel : NamespaceModel;
 const getDisplayName = obj => _.get(obj, ['metadata', 'annotations', 'openshift.io/display-name']);
@@ -244,6 +245,7 @@ const defaultBookmarks = {};
 const namespaceBarDropdownStateToProps = state => {
   return {
     activeNamespace: state.UI.get('activeNamespace'),
+    activeApplication: getActiveApplication(state),
     activePerspective: getActivePerspective(state),
     canListNS: state[featureReducerName].get(FLAGS.CAN_LIST_NS),
   };
@@ -260,7 +262,7 @@ class NamespaceBarDropdowns_ extends React.Component {
   }
 
   render() {
-    const { activeNamespace, activePerspective, dispatch, canListNS, useProjects } = this.props;
+    const { activeNamespace, activeApplication, activePerspective, dispatch, canListNS, useProjects } = this.props;
     if (flagPending(canListNS)) {
       return null;
     }
@@ -284,6 +286,8 @@ class NamespaceBarDropdowns_ extends React.Component {
     }
 
     const onChange = newNamespace => dispatch(UIActions.setActiveNamespace(newNamespace));
+
+    const onApplicationChange = (newApplication) => dispatch(UIActions.setActiveApplication(newApplication));
 
     const addActions = [
       {
@@ -316,13 +320,16 @@ class NamespaceBarDropdowns_ extends React.Component {
         defaultBookmarks={defaultBookmarks}
         storageKey={NAMESPACE_LOCAL_STORAGE_KEY}
         shortCut="n" />
-      {activePerspective !== 'dev' &&
+      {activePerspective !== 'dev' ?
         <ActionsMenu
           actions={addActions}
           title={<React.Fragment><span className="fa fa-plus-circle co-add-actions-selector__icon" aria-hidden="true"></span> Add</React.Fragment>}
           menuClassName="co-add-actions-selector__menu dropdown-menu--right"
-          buttonClassName="btn-link"
-        />
+          buttonClassName="btn-link" /> :
+        <ApplicationSwitcher
+          namespace={activeNamespace}
+          application={activeApplication}
+          onChange={onApplicationChange} />
       }
     </div>;
   }

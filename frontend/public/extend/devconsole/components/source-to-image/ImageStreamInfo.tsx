@@ -1,24 +1,17 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import * as _ from 'lodash-es';
-import { K8sResourceKind } from '../../../../module/k8s';
 import { getAnnotationTags } from '../../../../components/image-stream';
 import { ImageStreamIcon } from '../../../../components/catalog/catalog-item-icon';
 import { ExternalLink } from '../../../../components/utils';
-import SourceToImageResourceDetails from './SourceToImageResourceDetails';
 import { getSampleRepo } from '../../utils/imagestream-utils';
 
 export type ImageStreamInfoProps = {
-  imageStream: K8sResourceKind;
+  displayName: string;
   tag: object;
 };
 
-const ImageStreamInfo: React.FC<ImageStreamInfoProps> = ({ imageStream, tag }) => {
-  const displayName = _.get(
-    tag,
-    ['annotations', 'openshift.io/display-name'],
-    imageStream.metadata.name,
-  );
+const ImageStreamInfo: React.FC<ImageStreamInfoProps> = ({ displayName, tag }) => {
   const annotationTags = getAnnotationTags(tag);
   const description = _.get(tag, 'annotations.description');
   const sampleRepo = getSampleRepo(tag);
@@ -46,7 +39,6 @@ const ImageStreamInfo: React.FC<ImageStreamInfoProps> = ({ imageStream, tag }) =
           Sample repository: <ExternalLink href={sampleRepo} text={sampleRepo} />
         </p>
       )}
-      <SourceToImageResourceDetails />
     </div>
   );
 };

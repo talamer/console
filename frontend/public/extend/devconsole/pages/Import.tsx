@@ -2,8 +2,9 @@
 import * as React from 'react';
 import { match as RMatch } from 'react-router';
 import { Helmet } from 'react-helmet';
-import { ImportFlow } from './../components/import/ImportFlow';
-import { PageHeading } from '../../../components/utils';
+import { PageHeading, Firehose } from '../../../components/utils';
+import { ImageStreamModel } from '../../../models';
+import ImportFlowForm from '../components/ImportFlowForm/ImportFlowForm';
 
 export interface ImportPageProps {
   match: RMatch<{ ns?: string }>;
@@ -18,7 +19,9 @@ const ImportPage: React.FunctionComponent<ImportPageProps> = ({ match }) => {
       </Helmet>
       <PageHeading title="Git Import" />
       <div className="co-m-pane__body">
-        <ImportFlow namespace={namespace} />
+        <Firehose resources={[{ kind: ImageStreamModel.kind, prop: 'imageStreams', isList: true }]}>
+          <ImportFlowForm activeNamespace={namespace} />
+        </Firehose>
       </div>
     </React.Fragment>
   );

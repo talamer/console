@@ -3,6 +3,7 @@
 import * as React from 'react';
 import * as _ from 'lodash-es';
 import { Helmet } from 'react-helmet';
+import { connect } from 'react-redux';
 
 import { FieldLevelHelp } from 'patternfly-react';
 import { getPorts } from './source-to-image';
@@ -25,6 +26,7 @@ import {
   ServiceModel,
 } from '../models';
 import PerspectiveLink from '../extend/devconsole/shared/components/PerspectiveLink';
+import { getActivePerspective } from '../ui/ui-selectors';
 
 const getSuggestedName = name => {
   if (!name) {
@@ -49,7 +51,7 @@ const ImagePorts = ({ports, name}) => <React.Fragment>
   <div>Other containers can access this service through the hostname <strong>{name || '<name>'}</strong>.</div>
 </React.Fragment>;
 
-export class DeployImage extends React.Component<DeployImageProps, DeployImageState> {
+export class DeployImage_ extends React.Component<DeployImageProps & DeployImageStateProps, DeployImageState> {
   constructor(props) {
     super(props);
 
@@ -159,6 +161,7 @@ export class DeployImage extends React.Component<DeployImageProps, DeployImageSt
     });
 
     const { name, namespace, isi } = this.state;
+    const { activePerspective } = this.props;
 
     const annotations = {
       'openshift.io/generated-by': 'OpenShiftWebConsole',
@@ -299,7 +302,12 @@ export class DeployImage extends React.Component<DeployImageProps, DeployImageSt
       .then(() => {
         this.setState({inProgress: false});
         if (!this.state.error) {
-          history.push(`/overview/ns/${this.state.namespace}`);
+          switch(activePerspective) {
+            case 'dev':
+              history.push(`/dev/topology/ns/${this.state.namespace}`);
+            default:
+              history.push(`/overview/ns/${this.state.namespace}`);
+          }
         }
       });
   };
@@ -422,8 +430,20 @@ export class DeployImage extends React.Component<DeployImageProps, DeployImageSt
   }
 }
 
+const mapDeployImageStateToProps = (state): DeployImageStateProps => {
+  return {
+    activePerspective: getActivePerspective(state),
+  };
+};
+
+export const DeployImage = connect(mapDeployImageStateToProps)(DeployImage_);
+
 export type DeployImageProps = {
   location: any,
+};
+
+export type DeployImageStateProps = {
+  activePerspective: string;
 };
 
 export type DeployImageState = {

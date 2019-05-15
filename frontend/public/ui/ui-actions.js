@@ -76,6 +76,7 @@ export const types = {
   selectOverviewItem: 'selectOverviewItem',
   selectOverviewView: 'selectOverviewView',
   setActiveNamespace: 'setActiveNamespace',
+  setActiveApplication: 'setActiveApplication',
   setActivePerspective: 'setActivePerspective',
   setCreateProjectMessage: 'setCreateProjectMessage',
   setClusterID: 'setClusterID',
@@ -117,6 +118,17 @@ export const UIActions = {
     return {
       type: types.setActiveNamespace,
       value: namespace,
+    };
+  },
+
+  [types.setActiveApplication]: (application) => {
+    if (application) {
+      application = application.trim();
+    }
+
+    return {
+      type: types.setActiveApplication,
+      value: application,
     };
   },
 

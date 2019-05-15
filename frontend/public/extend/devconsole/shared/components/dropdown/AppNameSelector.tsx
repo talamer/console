@@ -35,6 +35,8 @@ const AppNameSelector: React.FC<AppNameSelectorProps> = ({
       <FormGroup>
         <ControlLabel className="co-required">Application</ControlLabel>
         <AppDropdown
+          dropDownClassName="dropdown--full-width"
+          menuClassName="dropdown-menu--text-wrap"
           namespace={namespace}
           actionItem={{
             actionTitle: 'Create New Application',
