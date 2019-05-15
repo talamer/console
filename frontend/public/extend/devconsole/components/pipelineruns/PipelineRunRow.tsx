@@ -16,7 +16,9 @@ const PipelineRow = ({ obj: pipelinerun }) => {
       <div className="col-lg-2 col-md-2 col-sm-3 col-xs-6">
         <Timestamp
           timestamp={
-            pipelinerun.status && pipelinerun.status.startTime ? pipelinerun.status.startTime : '-'
+            pipelinerun && pipelinerun.status && pipelinerun.status.startTime
+              ? pipelinerun.status.startTime
+              : '-'
           }
         />
       </div>
@@ -24,7 +26,13 @@ const PipelineRow = ({ obj: pipelinerun }) => {
         {' '}
         <StatusIcon
           status={
-            pipelinerun.status.conditions && pipelinerun.status.conditions[0].status === 'True'
+            !pipelinerun ||
+            !pipelinerun.status ||
+            !pipelinerun.status.conditions ||
+            !pipelinerun.status.conditions[0] ||
+            !pipelinerun.status.conditions[0].status
+              ? '-'
+              : pipelinerun.status.conditions[0].status === 'True'
               ? 'Succeeded'
               : 'Failed'
           }
@@ -33,7 +41,10 @@ const PipelineRow = ({ obj: pipelinerun }) => {
       <div className="col-lg-2 col-md-3 col-sm-sm hidden-xs"> 5 of 7 </div>
       <div className="col-lg-2 col-md-2 hidden-sm hidden-xs"> - </div>
       <div className="col-lg-2 col-md-2 hidden-3 hidden-xs">
-        {pipelinerun.spec.trigger && pipelinerun.spec.trigger.type
+        {pipelinerun &&
+        pipelinerun.spec &&
+        pipelinerun.spec.trigger &&
+        pipelinerun.spec.trigger.type
           ? pipelinerun.spec.trigger.type
           : '-'}
       </div>
