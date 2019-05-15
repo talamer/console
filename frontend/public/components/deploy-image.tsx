@@ -430,7 +430,7 @@ export class DeployImage_ extends React.Component<DeployImageProps & DeployImage
   }
 }
 
-const mapDeployImageStateToProps = state => {
+const mapDeployImageStateToProps = (state): DeployImageStateProps => {
   return {
     activePerspective: getActivePerspective(state),
   };
