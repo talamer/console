@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { ResourceRow } from '../../../../components/factory';
 import { ResourceLink, StatusIcon, Timestamp } from '../../../../components/utils';
+import { pipelineRunFilterReducer } from '../../utils/pipeline-filter-reducer';
 
 const PipelineRow = ({ obj: pipelinerun }) => {
   return (
@@ -26,15 +27,7 @@ const PipelineRow = ({ obj: pipelinerun }) => {
         {' '}
         <StatusIcon
           status={
-            !pipelinerun ||
-            !pipelinerun.status ||
-            !pipelinerun.status.conditions ||
-            !pipelinerun.status.conditions[0] ||
-            !pipelinerun.status.conditions[0].status
-              ? '-'
-              : pipelinerun.status.conditions[0].status === 'True'
-              ? 'Succeeded'
-              : 'Failed'
+            pipelineRunFilterReducer(pipelinerun)
           }
         />
       </div>

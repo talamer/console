@@ -10,13 +10,14 @@ export const pipelineRunFilterReducer = (pipelineRun): string => {
     !pipelineRun ||
     !pipelineRun.status ||
     !pipelineRun.status.conditions ||
-    !pipelineRun.status.conditions[0] ||
-    !pipelineRun.status.conditions[0].status
+    pipelineRun.status.conditions.length === 0
   ) {
     return '-';
   }
-  if (pipelineRun.status.conditions[0].status === 'True') {
-    return 'Succeeded';
-  }
-  return 'Failed';
+  const condition = pipelineRun.status.conditions.find((c) => c.type === 'Succeeded');
+  return !condition || !condition.status
+    ? '-'
+    : condition.status === 'True'
+      ? 'Succeeded'
+      : 'Failed';
 };
