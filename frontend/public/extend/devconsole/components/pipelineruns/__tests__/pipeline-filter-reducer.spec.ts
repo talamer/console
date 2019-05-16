@@ -1,4 +1,4 @@
-import { pipelineRunFilterReducer } from '../../utils/pipeline-filter-reducer';
+import { pipelineRunFilterReducer } from '../../../utils/pipeline-filter-reducer';
 
 const mockPipelineRuns = [
   { status: {} },
