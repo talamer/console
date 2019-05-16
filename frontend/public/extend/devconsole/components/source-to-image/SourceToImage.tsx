@@ -186,6 +186,7 @@ class BuildSource extends React.Component<
           switch(activePerspective) {
             case 'dev':
               history.push(`/dev/topology/ns/${this.state.namespace}`);
+              break;
             default:
               history.push(`/overview/ns/${this.state.namespace}`);
           }

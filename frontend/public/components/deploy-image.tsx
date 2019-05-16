@@ -305,6 +305,7 @@ export class DeployImage_ extends React.Component<DeployImageProps & DeployImage
           switch(activePerspective) {
             case 'dev':
               history.push(`/dev/topology/ns/${this.state.namespace}`);
+              break;
             default:
               history.push(`/overview/ns/${this.state.namespace}`);
           }
