@@ -24,12 +24,7 @@ const PipelineRow = ({ obj: pipelinerun }) => {
         />
       </div>
       <div className="col-lg-2 col-md-2 col-sm-3 hidden-xs">
-        {' '}
-        <StatusIcon
-          status={
-            pipelineRunFilterReducer(pipelinerun)
-          }
-        />
+        <StatusIcon status={pipelineRunFilterReducer(pipelinerun)} />
       </div>
       <div className="col-lg-2 col-md-3 col-sm-sm hidden-xs"> 5 of 7 </div>
       <div className="col-lg-2 col-md-2 hidden-sm hidden-xs"> - </div>
