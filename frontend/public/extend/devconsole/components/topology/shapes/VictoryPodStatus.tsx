@@ -4,6 +4,7 @@ import './DefaultGroup.scss';
 import SvgDropShadowFilter from './../../../shared/components/svg/SvgDropShadowFilter';
 import { createFilterIdUrl } from './../../../shared/utils/svg-utils';
 import { isEqual } from 'lodash-es';
+import { Pod } from '../topology-types';
 
 export const podColor = {
   Running: '#00b9e4',
@@ -34,11 +35,9 @@ const podStatus = [
 type PodStatusProps = {
   innerRadius: number;
   outerRadius: number;
-  x: number;
-  y: number;
-  height: number;
-  width: number;
-  data: any;
+  size: number;
+  standalone: boolean
+  data: Pod[];
   showTooltip?: boolean
 };
 
@@ -80,7 +79,7 @@ export default class PodStatus extends React.PureComponent<PodStatusProps, PodSt
   };
 
   render() {
-    let { innerRadius, outerRadius, height, width, showTooltip = true, } = this.props;
+    let { innerRadius, outerRadius, size, standalone, showTooltip = true, } = this.props;
     const centerTransform = `translate(-63, -63)`;
     return (
       <VictoryPie
@@ -114,14 +113,14 @@ export default class PodStatus extends React.PureComponent<PodStatusProps, PodSt
         animate={{
           duration: 2000,
         }}
-        standalone={false}
+        standalone={standalone}
         innerRadius={innerRadius}
         radius={outerRadius}
         // origin={{x: this.props.x, y: this.props.y}}
         groupComponent={<g transform={centerTransform} />}
         data={this.state.data}
-        height={height}
-        width={width}
+        height={size}
+        width={size}
         labelComponent={<Tooltip x={outerRadius + 2} y={-12} />}
         padAngle={2}
         style={{

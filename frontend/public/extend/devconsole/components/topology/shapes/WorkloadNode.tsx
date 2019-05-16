@@ -70,13 +70,11 @@ const WorkloadNode: React.FC<NodeProps<WorkloadData>> = ({
         pods={workload.data.donutStatus.pods}
       /> */}
       <VicPodStatus
+        standalone={false}
         innerRadius={podStatusInnerRadius}
         outerRadius={podStatusOuterRadius}
-        x={x}
-        y={y}
         data={workload.data.donutStatus.pods}
-        height={size}
-        width={size}
+        size={size}
       />
     </BaseNode>
   );
