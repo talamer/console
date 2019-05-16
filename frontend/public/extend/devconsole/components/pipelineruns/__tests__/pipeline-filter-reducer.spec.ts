@@ -25,6 +25,7 @@ const mockPipelineRuns = [
       ],
     },
   },
+  { status: { conditions: [{ status: 'Unknown', type: 'Succeeded' }] } },
 ];
 
 describe('Check PipelineRun Filter Reducer applied to the following:', () => {
@@ -59,5 +60,9 @@ describe('Check PipelineRun Filter Reducer applied to the following:', () => {
   it('8. Pipelinerun with second element of condition array with type as "Succeeded" & status as "True" and additional condition with type as "Failure"', () => {
     const reducerOutput = pipelineRunFilterReducer(mockPipelineRuns[7]);
     expect(reducerOutput).toBe('Succeeded');
+  });
+  it('9. Pipelinerun with first element of condition array with type as "Succeeded" & status as "Unknown"', () => {
+    const reducerOutput = pipelineRunFilterReducer(mockPipelineRuns[8]);
+    expect(reducerOutput).toBe('Running');
   });
 });

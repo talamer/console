@@ -19,5 +19,7 @@ export const pipelineRunFilterReducer = (pipelineRun): string => {
     ? '-'
     : condition.status === 'True'
       ? 'Succeeded'
-      : 'Failed';
+      : condition.status === 'False'
+        ? 'Failed'
+        : 'Running';
 };
