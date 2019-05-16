@@ -105,6 +105,43 @@ describe('ImportFlowForm: ', () => {
     expect(importFormWrapper.find('Button').at(0).prop('disabled')).toBeTruthy();
   });
 
+  it('it should render Source Secret Dropdown', () => {
+    const importFormWrapper = renderImportForm();
+    importFormWrapper.setState({
+      showSourceSecretDropDown: true,
+    });
+    expect(importFormWrapper.find('SourceSecretSelector')).toHaveLength(1);
+    importFormWrapper.setState({
+      selectedSourceSecret: 'create-source-secret',
+    });
+    expect(importFormWrapper.find('SourceSecretSelector').prop('sourceSecret')).toBe('');
+    expect(importFormWrapper.find('SourceSecretSelector').prop('secretCredentials')).toEqual({});
+    expect(
+      importFormWrapper
+        .find('SourceSecretSelector')
+        .dive()
+        .find('AuthenticationType')
+        .prop('secretType'),
+    ).toBe('kubernetes.io/basic-auth');
+    expect(importFormWrapper.find('SourceSecretSelector').dive);
+  });
+
+  it('it should render Basic Authentication SubForm', () => {
+    const importFormWrapper = renderImportForm();
+    importFormWrapper.setState({
+      showSourceSecretDropDown: true,
+      selectedSourceSecret: 'create-source-secret',
+    });
+    expect(
+      importFormWrapper
+        .find('SourceSecretSelector')
+        .dive()
+        .find('AuthenticationType')
+        .dive()
+        .find('BasicAuthSubform'),
+    ).toHaveLength(1);
+  });
+
   it('renders', () => {
     const importFlowForm = shallow(<ImportFlowForm {...props} />);
 

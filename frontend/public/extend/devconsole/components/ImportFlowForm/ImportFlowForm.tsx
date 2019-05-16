@@ -291,7 +291,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
         },
         type: this.state.secretAuthType,
         data: this.state.secretCredentials,
-        }
+      }
       : {
         apiVersion: 'v1',
         kind: 'Secret',

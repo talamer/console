@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
+import { FormControl, FormGroup, ControlLabel, HelpBlock } from 'patternfly-react';
 import { Base64 } from 'js-base64';
 
 export type BasicAuthSubFormProps = {
@@ -29,7 +30,7 @@ export default class BasicAuthSubform extends React.Component<
   changeData = (event) => {
     this.setState(
       {
-        [event.target.name]: Base64.encode(event.target.value) ,
+        [event.target.name]: Base64.encode(event.target.value),
       } as BasicAuthSubFormState,
       () => this.props.onChange(this.state),
     );
@@ -38,46 +39,38 @@ export default class BasicAuthSubform extends React.Component<
   render() {
     return (
       <React.Fragment>
-        <div className="form-group">
-          <label className="control-label" htmlFor="username">
-            Username
-          </label>
-          <div>
-            <input
-              className="form-control"
-              id="username"
-              aria-describedby="username-help"
-              type="text"
-              name="username"
-              onChange={this.changeData}
-              value={Base64.decode(this.state.username)}
-            />
-            <p className="help-block" id="username-help">
-              Optional username for Git authentication.
-            </p>
-          </div>
-        </div>
-        <div className="form-group">
-          <label className="control-label co-required" htmlFor="password">
-            Password or Token
-          </label>
-          <div>
-            <input
-              className="form-control"
-              id="password"
-              aria-describedby="password-help"
-              type="password"
-              name="password"
-              onChange={this.changeData}
-              value={Base64.decode(this.state.password)}
-              required
-            />
-            <p className="help-block" id="password-help">
-              Password or token for Git authentication. Required if a ca.crt or .gitconfig file is
-              not specified.
-            </p>
-          </div>
-        </div>
+        <FormGroup>
+          <ControlLabel>Username</ControlLabel>
+          <FormControl
+            className="form-control"
+            id="username"
+            aria-describedby="username-help"
+            type="text"
+            name="username"
+            onChange={this.changeData}
+            value={Base64.decode(this.state.username)}
+          />
+          <HelpBlock className="help-block" id="username-help">
+            Optional username for Git authentication.
+          </HelpBlock>
+        </FormGroup>
+        <FormGroup>
+          <ControlLabel className="co-required">Password or Token</ControlLabel>
+          <FormControl
+            className="form-control"
+            id="password"
+            aria-describedby="password-help"
+            type="password"
+            name="password"
+            onChange={this.changeData}
+            value={Base64.decode(this.state.password)}
+            required
+          />
+          <HelpBlock>
+            Password or token for Git authentication. Required if a ca.crt or .gitconfig file is not
+            specified.
+          </HelpBlock>
+        </FormGroup>
       </React.Fragment>
     );
   }
