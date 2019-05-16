@@ -48,7 +48,7 @@ const ApplicationSwitcher: React.FC<ApplicationSwitcherProps> = ({
         allSelectorKey: ALL_APPLICATIONS_KEY,
         allSelectorTitle: allApplicationsTitle,
       }}
-      selectedKey={application || ALL_APPLICATIONS_KEY}
+      selectedKey={application}
       onChange={onApplicationChange}
       storageKey={APPLICATION_LOCAL_STORAGE_KEY}
       disabled={disabled}

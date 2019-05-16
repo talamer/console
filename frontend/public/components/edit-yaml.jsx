@@ -35,6 +35,8 @@ const generateObjToLoad = (kind, templateName, namespace = 'default') => {
 };
 
 const stateToProps = ({k8s, UI}) => ({
+  activePerspective: UI.get('activePerspective'),
+  activeApplication: UI.get('activeApplication'),
   activeNamespace: UI.get('activeNamespace'),
   models: k8s.getIn(['RESOURCES', 'models']),
 });
@@ -245,6 +247,8 @@ export const EditYAML = connect(stateToProps)(
       if (!obj.metadata.namespace && model.namespaced) {
         obj.metadata.namespace = this.props.activeNamespace;
       }
+
+      obj.metadata.labels = { 'app.kubernetes.io/part-of': this.props.activeApplication, ...obj.metadata.labels };
 
       const { namespace: newNamespace, name: newName } = obj.metadata;
 
