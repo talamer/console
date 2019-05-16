@@ -283,25 +283,25 @@ export class ImportFlowForm extends React.Component<Props, State> {
   private sourceSecretParams() {
     return this.state.secretAuthType === 'kubernetes.io/basic-auth'
       ? {
-          apiVersion: 'v1',
-          kind: 'Secret',
-          metadata: {
-            name: this.state.sourceSecretName,
-            namespace: this.state.namespace,
-          },
-          type: this.state.secretAuthType,
-          data: this.state.secretCredentials,
+        apiVersion: 'v1',
+        kind: 'Secret',
+        metadata: {
+          name: this.state.sourceSecretName,
+          namespace: this.state.namespace,
+        },
+        type: this.state.secretAuthType,
+        data: this.state.secretCredentials,
         }
       : {
-          apiVersion: 'v1',
-          kind: 'Secret',
-          metadata: {
-            name: this.state.sourceSecretName,
-            namespace: this.state.namespace,
-          },
-          type: this.state.secretAuthType,
-          stringData: this.state.secretCredentials,
-        };
+        apiVersion: 'v1',
+        kind: 'Secret',
+        metadata: {
+          name: this.state.sourceSecretName,
+          namespace: this.state.namespace,
+        },
+        type: this.state.secretAuthType,
+        stringData: this.state.secretCredentials,
+      };
   }
 
   private gitSourceWithSecretParams(gitSourceName: string, gitSecretName: string) {
