@@ -43,7 +43,7 @@ $gutter: 1.8em;
       border-radius: 2em;
       background: $border-color;
       &::after {
-        content: 'Input';
+        content: '';
         position: absolute;
         transform: translateY(-100%);
         left: 2em;
@@ -61,8 +61,9 @@ $gutter: 1.8em;
       transform: translateY(-100%);
     }
 
-    & .duration {
+    & .stepcount {
       margin: 0 4px;
+      white-space: nowrap;
     }
 
     & .status {
@@ -200,10 +201,23 @@ $gutter: 1.8em;
 .odc-pipeline-steps-details {
   list-style: none;
   padding: 0;
+  width: 10em;
+  &.newClass{
+    background: red;
+  }
   & > li {
-    padding: 10px;
+   
+    padding: 5px;
     border-radius: 10px;
     margin-bottom: 10px;
     border: 1px solid $border-color;
+    background: #fafafa;
+    color: black;
+    justify-content: left;
+    align-items: center;
+    display: flex;
+    &:last-child {
+      margin-bottom: 0px;
+    }
   }
 }

@@ -1,21 +1,16 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { TaskModel } from '../../../../models';
-import { k8sGet } from '../../../../module/k8s';
-import { Link } from 'react-router-dom';
-import { resourcePath } from '../../../../components/utils';
-import { K8sResourceKind } from '../../../../module/k8s';
+import { K8sResourceKind, k8sGet } from '../../../../module/k8s';
+import { Tooltip } from '@patternfly/react-core';
 
-import { Popover } from '@patternfly/react-core';
-
-const PipelinePopover = (props) => {
+export const PipelineTooltip = (props) => {
   return (
-    <Popover position={props.position} bodyContent={props.bodyContent} aria-label="close">
-      <div className="truncate">{props.children}</div>
-    </Popover>
+    <Tooltip position={props.position} content={props.bodyContent}>
+      <span className="truncate">{props.children}</span>
+    </Tooltip>
   );
 };
-
 interface TaskProps {
   task: string;
   namespace: string;
@@ -24,7 +19,7 @@ interface TaskStates {
   taskDetails: K8sResourceKind;
 }
 
-export default class PipelineVisualization extends React.Component<TaskProps, TaskStates> {
+export class PipelineVisualizationTask extends React.Component<TaskProps, TaskStates> {
   constructor(props) {
     super(props);
     this.state = {
@@ -63,25 +58,6 @@ export default class PipelineVisualization extends React.Component<TaskProps, Ta
     );
   }
 
-  getTaskLink() {
-    const task = this.state.taskDetails.metadata;
-    const path = resourcePath('Task', task.name, task.namespace);
-    return path;
-  }
-
-  getTaskLinks() {
-    return (
-      <ul className="odc-pipeline-task-details-list">
-        <li>
-          <Link to={this.getTaskLink()} title={this.state.taskDetails.metadata.name}>
-            View Task Details
-          </Link>
-        </li>
-        <li>View Logs</li>
-      </ul>
-    );
-  }
-
   render() {
     const task = this.state.taskDetails;
     if (!task || !task.metadata) {
@@ -90,18 +66,13 @@ export default class PipelineVisualization extends React.Component<TaskProps, Ta
     return (
       <li className="odc-pipeline-task">
         <div className="title">
-          <PipelinePopover position="bottom" bodyContent={this.getTaskLinks()}>
-            {task.metadata.name}
-          </PipelinePopover>
+          <PipelineTooltip position="bottom" bodyContent={this.getStepsList()}>
+            {this.props.task}
+          </PipelineTooltip>
         </div>
-        {task.status && task.status.reason && <div className="status done" />}
+        {task.status && task.status.conditions && <div className="status done" />}
         {task.status &&
-          task.status.duration && <div className="duration">{task.status.duration}</div>}
-        <div className="steps">
-          <PipelinePopover position="right" bodyContent={this.getStepsList()}>
-            Steps - ({this.getStepCount()})
-          </PipelinePopover>
-        </div>
+          task.status.taskruns && <div className="stepcount">({this.getStepCount()})</div>}
       </li>
     );
   }

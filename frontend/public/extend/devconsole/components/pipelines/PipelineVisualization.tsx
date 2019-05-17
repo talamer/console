@@ -2,12 +2,7 @@
 import * as React from 'react';
 import PipelineVisualizationGraph from './PipelineVisualizationGraph';
 import { getPipelineTasks } from '../../shared/utils/visualization';
-import { K8sResourceKind } from '../../../../module/k8s';
-
-interface PipelineVisualizationProps {
-  pipeline?: K8sResourceKind;
-}
-
+import { PipelineVisualizationProps } from './pipeline-types';
 export default class PipelineVisualization extends React.PureComponent<PipelineVisualizationProps> {
   render() {
     if (!this.props.pipeline) {

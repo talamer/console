@@ -1,36 +1,23 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
-import PipelineVisualizationTask from './PipelineVisualizationTask';
-import { CaretRightIcon } from '@patternfly/react-icons';
+import { PipelineVisualizationTask } from './PipelineVisualizationTask';
 import './PipelineVisualization.scss';
+import { PipelineVisualizationTaskProp } from './pipeline-types';
 
-interface PipelineVisualizationTaskProp {
-  name: string;
-  resources?: {
-    inputs?: object;
-    outputs?: object;
-  };
-  runAfter?: string[];
-  taskRef: {
-    name: string;
-  };
-}
-interface PipelineVisualizationProps {
+export interface PipelineVisualizationGraphProps {
   graph: Array<PipelineVisualizationTaskProp[]>;
   namespace: string;
 }
 
 export default class PipelineVisualizationGraph extends React.PureComponent<
-  PipelineVisualizationProps
+  PipelineVisualizationGraphProps
   > {
   render() {
     return (
       <div className="odc-pipeline-graph">
         <div className="odc-pipeline-stages">
           <div className="odc-pipeline-stage">
-            <div className="odc-pipeline-task input-node">
-              <CaretRightIcon />
-            </div>
+            <div className="odc-pipeline-task input-node" />
           </div>
           {this.props.graph.map((stage, i) => {
             return (
