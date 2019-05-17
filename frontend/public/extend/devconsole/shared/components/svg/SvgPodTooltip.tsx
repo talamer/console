@@ -46,7 +46,7 @@ export default class PodTooltip extends React.PureComponent<TooltipProps> {
     const paddingX = 20;
     const paddingY = 5;
     return this.props.active ? (
-      <g className={'odc-default-group__label'}>
+      <g className={'odc-pod-tooltip__label'}>
         <SvgDropShadowFilter id={FILTER_ID} />
         {bb && (
           <React.Fragment>
