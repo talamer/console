@@ -19,8 +19,14 @@ import {
 } from './topology-types';
 import SvgDefsProvider from '../../shared/components/svg/SvgDefsProvider';
 
+const ZOOM_EXTENT: [number, number] = [0.25, 4];
+
 interface State {
-  zoomTransform?: string;
+  zoomTransform?: {
+    x: number;
+    y: number;
+    k: number;
+  };
   nodesById: {
     [id: string]: ViewNode;
   };
@@ -71,6 +77,7 @@ export default class D3ForceDirectedRenderer extends React.Component<
   private $svg: d3.Selection<SVGSVGElement, null, null, undefined>;
   private zoom: d3.ZoomBehavior<Element, {}>;
   private simulation: d3.Simulation<{}, undefined>;
+  private zoomGroup = React.createRef<SVGGElement>();
 
   refSvg = (node: SVGSVGElement) => {
     this.$svg = d3.select(node);
@@ -179,7 +186,7 @@ export default class D3ForceDirectedRenderer extends React.Component<
   componentDidMount() {
     this.zoom = d3
       .zoom()
-      .scaleExtent([0.4, 5])
+      .scaleExtent(ZOOM_EXTENT)
       .on('zoom', this.onZoom);
     this.zoom(this.$svg);
 
@@ -310,17 +317,61 @@ export default class D3ForceDirectedRenderer extends React.Component<
   api() {
     // eslint-disable-next-line consistent-this
     const self = this;
-    return {
+    const api = {
       zoomIn() {
-        self.zoom.scaleBy(self.$svg, 1.5);
+        self.zoom.scaleBy(self.$svg, 4 / 3);
       },
       zoomOut() {
         self.zoom.scaleBy(self.$svg, 0.75);
       },
-      resetView() {
+      zoomFit() {
+        const { width: fullWidth, height: fullHeight } = self.props;
+        const bounds = self.zoomGroup.current.getBBox();
+        const { width, height } = bounds;
+        const midX = bounds.x + width / 2;
+        const midY = bounds.y + height / 2;
+        if (width === 0 || height === 0) {
+          return;
+        }
+
+        // set the max scale to be the current zoom level or 1 if not defined
+        const maxScale = self.state.zoomTransform ? Math.max(self.state.zoomTransform.k, 1) : 1;
+
+        // set scale such that there is a 10% padding
+        const scale = Math.min(0.9 / Math.max(width / fullWidth, height / fullHeight), maxScale);
+
+        // translate to center
+        const translate = [fullWidth / 2 - midX * scale, fullHeight / 2 - midY * scale];
+        const t = d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale);
+
+        // update the min scaling value such that the user can zoom out to the new scale in case
+        // it is smaller than the default zoom out scale
+        self.zoom.scaleExtent([Math.min(scale, ZOOM_EXTENT[0]), ZOOM_EXTENT[1]]);
+
+        self.zoom.transform(self.$svg, t);
+      },
+      zoomReset() {
+        self.zoom.scaleExtent(ZOOM_EXTENT);
         self.zoom.transform(self.$svg, d3.zoomIdentity);
       },
+      resetLayout() {
+        const { width, height } = self.props;
+        const midX = width / 2;
+        const midY = height / 2;
+        // reset node positions
+        self.state.nodes.forEach((id) => {
+          const node = self.state.nodesById[id];
+          node.x = midX;
+          node.y = midY;
+        });
+        // reset zoom
+        api.zoomReset();
+        // run layout
+        self.simulation.alpha(1);
+        self.simulation.restart();
+      },
     };
+    return api;
   }
 
   deselect = (e: React.MouseEvent) => {
@@ -345,7 +396,7 @@ export default class D3ForceDirectedRenderer extends React.Component<
     return (
       <svg height={height} width={width} ref={this.refSvg} onClick={this.deselect}>
         <SvgDefsProvider>
-          <g transform={zoomTransform}>
+          <g transform={zoomTransform && zoomTransform.toString()} ref={this.zoomGroup}>
             <g>
               {groups.map((groupId) => {
                 const viewGroup = groupsById[groupId];

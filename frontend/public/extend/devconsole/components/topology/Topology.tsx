@@ -1,12 +1,17 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
-import { Button } from 'patternfly-react';
-import { ExpandIcon, SearchPlusIcon, SearchMinusIcon } from '@patternfly/react-icons';
+import {
+  ExpandIcon,
+  ExpandArrowsAltIcon,
+  SearchPlusIcon,
+  SearchMinusIcon,
+} from '@patternfly/react-icons';
 import { nodeProvider, edgeProvider, groupProvider } from './shape-providers';
 import Graph from './Graph';
 import GraphToolbar from './GraphToolbar';
 import { GraphApi, TopologyDataModel } from './topology-types';
 import TopologySideBar from './TopologySideBar';
+import GraphToolbarButton from './GraphToolbarButton';
 
 type State = {
   selected?: string;
@@ -17,9 +22,7 @@ export interface TopologyProps {
 }
 
 export default class Topology extends React.Component<TopologyProps, State> {
-  state: State = {
-    selected: null,
-  };
+  state: State = {};
 
   static getDerivedStateFromProps(nextProps: TopologyProps, prevState: State): State {
     const { selected } = prevState;
@@ -41,22 +44,23 @@ export default class Topology extends React.Component<TopologyProps, State> {
 
   renderToolbar = (graphApi: GraphApi) => (
     <GraphToolbar>
-      <Button onClick={graphApi.zoomIn} title="Zoom In" aria-label="Zoom In">
+      <GraphToolbarButton label="Zoom In" onClick={graphApi.zoomIn}>
         <SearchPlusIcon />
-      </Button>
-      <Button onClick={graphApi.zoomOut} title="Zoom Out" aria-label="Zoom Out">
+      </GraphToolbarButton>
+      <GraphToolbarButton label="Zoom Out" onClick={graphApi.zoomOut}>
         <SearchMinusIcon />
-      </Button>
-      <Button onClick={graphApi.resetView} title="Reset Zoom" aria-label="Reset Zoom">
+      </GraphToolbarButton>
+      <GraphToolbarButton label="Fit to Screen" onClick={graphApi.zoomFit}>
+        <ExpandArrowsAltIcon />
+      </GraphToolbarButton>
+      <GraphToolbarButton label="Reset Layout" onClick={graphApi.resetLayout}>
         <ExpandIcon />
-      </Button>
+      </GraphToolbarButton>
     </GraphToolbar>
   );
 
   render() {
-    const {
-      data: { graph, topology },
-    } = this.props;
+    const { data: { graph, topology } } = this.props;
     const { selected } = this.state;
     return (
       <React.Fragment>

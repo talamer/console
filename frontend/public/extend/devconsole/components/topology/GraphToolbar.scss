@@ -1,14 +1,10 @@
 .odc-graph-toolbar {
   position: absolute;
-  bottom: 12px;
-  left: 16px;
-  max-width: calc(100% - 32px);
+  bottom: calc(var(--pf-global--spacer--md) - var(--pf-global--spacer--xs));
+  left: var(--pf-global--spacer--md);
+  max-width: calc(100% - var(--pf-global--spacer--md) * 2);
 
   & > * {
-    margin: 0 4px 4px 0;
-    width: 32px;
-    height: 32px;
-    display: inline-flex;
-    justify-content: center;
+    margin: 0 var(--pf-global--spacer--xs) var(--pf-global--spacer--xs) 0;
   }
 }

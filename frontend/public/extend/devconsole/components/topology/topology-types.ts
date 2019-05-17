@@ -90,7 +90,9 @@ export interface WorkloadData {
 export interface GraphApi {
   zoomIn(): void;
   zoomOut(): void;
-  resetView(): void;
+  zoomReset(): void;
+  zoomFit(): void;
+  resetLayout(): void;
 }
 
 export interface Selectable {
