@@ -40,8 +40,8 @@ describe('Pipeline List', () => {
   });
 
   it('List renders Pipeline with default filter', () => {
-    expect(pipelineWrapper.find(ListPage).prop('rowFilters')[0]['type']).toEqual('pipeline-status');
-    expect(pipelineWrapper.find(ListPage).prop('rowFilters')[0]['items']).toHaveLength(3);
+    expect(pipelineWrapper.find(ListPage).prop('rowFilters')[0].type).toEqual('pipeline-status');
+    expect(pipelineWrapper.find(ListPage).prop('rowFilters')[0].items).toHaveLength(3);
   });
 });
 

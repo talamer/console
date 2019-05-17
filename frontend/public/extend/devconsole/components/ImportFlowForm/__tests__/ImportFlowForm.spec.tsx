@@ -13,71 +13,71 @@ describe('ImportFlowForm: ', () => {
           metadata: {
             annotations:
             {
-              "openshift.io/display-name":"Perl",
-              "openshift.io/image.dockerRepositoryCheck": "2019-05-14T17:59:32Z",
-              "samples.operator.openshift.io/version":"4.1.0-rc.3"
+              'openshift.io/display-name':'Perl',
+              'openshift.io/image.dockerRepositoryCheck': '2019-05-14T17:59:32Z',
+              'samples.operator.openshift.io/version':'4.1.0-rc.3',
             },
-            selfLink:"/apis/image.openshift.io/v1/namespaces/openshift/imagestreams/perl",
-            resourceVersion:"11512",
-            name:"perl",
-            uid:"eea7c7af-7671-11e9-a679-0a580a810011",
-            creationTimestamp:"2019-05-14T17:58:51Z",
+            selfLink:'/apis/image.openshift.io/v1/namespaces/openshift/imagestreams/perl',
+            resourceVersion:'11512',
+            name:'perl',
+            uid:'eea7c7af-7671-11e9-a679-0a580a810011',
+            creationTimestamp:'2019-05-14T17:58:51Z',
             generation:2,
-            namespace:"openshift",
+            namespace:'openshift',
             labels:{
-              "samples.operator.openshift.io/managed":"true"
-            }
+              'samples.operator.openshift.io/managed':'true',
+            },
           },
           spec:{
             lookupPolicy:{
-              local:false
+              local:false,
             },
             tags:[
               {
-                name:"5.16",
+                name:'5.16',
                 annotations: {
-                  description: "Build and run Perl 5.16 applications on RHEL 7. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-perl-container/blob/master/5.16/README.md.",
-                  iconClass:"icon-perl",
-                  "openshift.io/display-name":"Perl 5.16",
-                  "openshift.io/provider-display-name":"Red Hat, Inc.",
-                  sampleRepo:"https://github.com/sclorg/dancer-ex.git",
-                  supports:"perl:5.16,perl",
-                  tags:"builder,perl",
-                  version:"5.16"
+                  description: 'Build and run Perl 5.16 applications on RHEL 7. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-perl-container/blob/master/5.16/README.md.',
+                  iconClass:'icon-perl',
+                  'openshift.io/display-name':'Perl 5.16',
+                  'openshift.io/provider-display-name':'Red Hat, Inc.',
+                  sampleRepo:'https://github.com/sclorg/dancer-ex.git',
+                  supports:'perl:5.16,perl',
+                  tags:'builder,perl',
+                  version:'5.16',
                 },
                 from:{
-                  kind:"DockerImage",
-                  name:"registry.redhat.io/openshift3/perl-516-rhel7:latest"
+                  kind:'DockerImage',
+                  name:'registry.redhat.io/openshift3/perl-516-rhel7:latest',
                 },
                 generation:2,
                 importPolicy:{},
                 referencePolicy:{
-                  type:"Local"
-                }
+                  type:'Local',
+                },
               },
-            ]
+            ],
           },
           status: {
-            dockerImageRepository: "image-registry.openshift-image-registry.svc:5000/openshift/perl",
+            dockerImageRepository: 'image-registry.openshift-image-registry.svc:5000/openshift/perl',
             tags: [
               {
                 items: [
                   {
-                    created: "2019-05-14T17:59:32Z",
-                    dockerImageReference: "registry.redhat.io/openshift3/perl-516-rhel7@sha256:8d13f434065a54ab85c2134858d5cc218c1ebb1e423d194e664e4ee4a9f4641f",
+                    created: '2019-05-14T17:59:32Z',
+                    dockerImageReference: 'registry.redhat.io/openshift3/perl-516-rhel7@sha256:8d13f434065a54ab85c2134858d5cc218c1ebb1e423d194e664e4ee4a9f4641f',
                     generation: 2,
-                    image: "sha256:8d13f434065a54ab85c2134858d5cc218c1ebb1e423d194e664e4ee4a9f4641f",
-                  }
+                    image: 'sha256:8d13f434065a54ab85c2134858d5cc218c1ebb1e423d194e664e4ee4a9f4641f',
+                  },
                 ],
                 tag: 5.16,
-              }
-            ]
-          }
-        }
+              },
+            ],
+          },
+        },
       ],
       filters: {},
       kind: undefined,
-      loadError: "",
+      loadError: '',
       loaded: true,
       optional: undefined,
       selected: null,
@@ -89,20 +89,20 @@ describe('ImportFlowForm: ', () => {
     return shallow(<ImportFlowForm {...prop} />);
   }
 
-  it("shouldn't render git-type", () => {
+  it('shouldn\'t render git-type', () => {
     const importFormWrapper = renderImportForm();
-    expect(importFormWrapper.find("FormGroup[controlId='import-git-type']")).toHaveLength(0);
+    expect(importFormWrapper.find('FormGroup[controlId=\'import-git-type\']')).toHaveLength(0);
   });
 
-  it("AppNameSelector to be present", () => {
+  it('AppNameSelector to be present', () => {
     const importFormWrapper = renderImportForm();
-    expect(importFormWrapper.find("AppNameSelector")).toHaveLength(1);
-    expect(importFormWrapper.find("AppNameSelector").prop("namespace")).toBe("default");
+    expect(importFormWrapper.find('AppNameSelector')).toHaveLength(1);
+    expect(importFormWrapper.find('AppNameSelector').prop('namespace')).toBe('default');
   });
 
-  it("Form Submit Button should be disabled", () => {
+  it('Form Submit Button should be disabled', () => {
     const importFormWrapper = renderImportForm();
-    expect(importFormWrapper.find("Button").at(0).prop('disabled')).toBeTruthy();
+    expect(importFormWrapper.find('Button').at(0).prop('disabled')).toBeTruthy();
   });
 
   it('renders', () => {
@@ -175,7 +175,7 @@ describe('ImportFlowForm: ', () => {
     importFlowForm.find('[data-test-id="builder-image-selector"]')
       .shallow().find('BuilderImageCard').simulate('change', 'perl');
     importFlowForm.find('[data-test-id="import-form"]').simulate('submit', {preventDefault});
-    const importFormState =  {
+    const importFormState = {
       application: '',
       builderImageError: '',
       gitRepoUrl: 'https://github.com/vikram-raj/console/tree/import-flow',
@@ -197,7 +197,7 @@ describe('ImportFlowForm: ', () => {
       selectedApplicationKey: '',
       selectedImage: 'perl',
       selectedImageTag: '5.16',
-    }
+    };
 
     expect(importFlowForm.state()).toEqual(importFormState);
   });

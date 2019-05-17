@@ -38,7 +38,7 @@ const mapBuildSourceStateToProps = (state) => {
 class BuildSource extends React.Component<
   BuildSourceStateProps & BuildSourceProps,
   BuildSourceState
-> {
+  > {
   constructor(props) {
     super(props);
 
@@ -183,7 +183,7 @@ class BuildSource extends React.Component<
       .then(() => {
         this.setState({ inProgress: false });
         if (!this.state.error) {
-          switch(activePerspective) {
+          switch (activePerspective) {
             case 'dev':
               history.push(`/dev/topology/ns/${this.state.namespace}`);
               break;
