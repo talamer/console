@@ -5,7 +5,7 @@ import Decorator from './Decorator';
 import BaseNode from './BaseNode';
 // import PodStatus from './PodStatus';
 import { NodeProps, WorkloadData } from '../topology-types';
-import VicPodStatus from './VictoryPodStatus';
+import VicPodStatus from './PodStatus';
 
 const WorkloadNode: React.FC<NodeProps<WorkloadData>> = ({
   data: workload,

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { VictoryPie } from 'victory';
 import './DefaultGroup.scss';
 import { Pod } from '../topology-types';
-import Tooltip from '../../../shared/components/svg/SvgPodTooltip';
+import Tooltip from './../SvgPodTooltip';
 
 export const podColor = {
   Running: '#00b9e4',
