@@ -5,12 +5,20 @@ export interface PipelineVisualizationProps {
   pipeline?: K8sResourceKind;
 }
 
+interface Resources {
+  inputs?: Resource[];
+  outputs?: Resource[];
+}
+
+interface Resource {
+  name: string;
+  resource?: string;
+  from?: string[];
+}
+
 export interface PipelineVisualizationTaskProp {
   name: string;
-  resources?: {
-    inputs?: object;
-    outputs?: object;
-  };
+  resources?: Resources;
   params?: object;
   runAfter?: string[];
   taskRef: {
