@@ -1,8 +1,8 @@
 import * as React from 'react';
 import './SvgPodTooltip.scss';
-import SvgDropShadowFilter from './SvgDropShadowFilter';
-import { createFilterIdUrl } from '../../utils/svg-utils';
-import { podColor } from './../../../components/topology/shapes/VictoryPodStatus';
+import SvgDropShadowFilter from '../../shared/components/svg/SvgDropShadowFilter';
+import { createFilterIdUrl } from '../../shared/utils/svg-utils';
+import { podColor } from './shapes/PodStatus';
 
 type TooltipProps = {
   datum?: any;
