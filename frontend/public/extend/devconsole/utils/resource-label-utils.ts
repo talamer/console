@@ -1,4 +1,4 @@
-export const getAppLabels = (name: string, application: string, imageStreamName: string) => {
+export const getAppLabels = (name: string, application: string, imageStreamName?: string) => {
   return {
     app: name,
     'app.kubernetes.io/part-of': application,

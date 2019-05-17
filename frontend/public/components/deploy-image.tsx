@@ -28,6 +28,7 @@ import {
 import PerspectiveLink from '../extend/devconsole/shared/components/PerspectiveLink';
 import { getActivePerspective } from '../ui/ui-selectors';
 import AppNameSelector from '../extend/devconsole/shared/components/dropdown/AppNameSelector';
+import { getAppLabels } from '../extend/devconsole/utils/resource-label-utils';
 
 const getSuggestedName = name => {
   if (!name) {
@@ -190,11 +191,7 @@ export class DeployImage_ extends React.Component<DeployImageProps & DeployImage
 
     const ports = getPorts(isi);
 
-    const labels = {
-      'app' : name,
-      'app.kubernetes.io/part-of': this.state.application,
-      'app.kubernetes.io/instance': name,
-    };
+    const labels = getAppLabels(name, this.state.application);
 
     const errorState = err => this.setState({error: this.state.error ? `${this.state.error}; ${err.message}` : err.message});
 
