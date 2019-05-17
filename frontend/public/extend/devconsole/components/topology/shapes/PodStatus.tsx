@@ -1,8 +1,8 @@
-/* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
-import { TransitionMotion, Motion, spring } from 'react-motion';
-import { pie, arc } from 'd3';
+import { VictoryPie } from 'victory';
+import './DefaultGroup.scss';
 import { Pod } from '../topology-types';
+import Tooltip from '../../../shared/components/svg/SvgPodTooltip';
 
 export const podColor = {
   Running: '#00b9e4',
@@ -17,92 +17,103 @@ export const podColor = {
   Unknown: '#f9d67a',
 };
 
+const podStatus = [
+  'Running',
+  'Not Ready',
+  'Warning',
+  'Empty',
+  'Failed',
+  'Pulling',
+  'Pending',
+  'Succceeded',
+  'Terminating',
+  'Unknown',
+];
+
 type PodStatusProps = {
-  x?: number;
-  y?: number;
-  pods: Pod[];
   innerRadius: number;
   outerRadius: number;
+  size: number;
+  standalone: boolean;
+  x?: number;
+  y?: number;
+  data: Pod[];
+  showTooltip?: boolean;
 };
 
-export default class PodStatus extends React.PureComponent<PodStatusProps> {
-  willLeave = ({ style }) => {
-    return {
-      ...style,
-      startAngle: style.endAngle,
-    };
-  };
+const PodStatus: React.FunctionComponent<PodStatusProps> = ({
+  innerRadius,
+  outerRadius,
+  x,
+  y,
+  data,
+  size,
+  standalone,
+  showTooltip = true,
+}) => {
+  let vData = [];
+  podStatus.forEach((pod) => {
+    let podNumber = 0;
+    data.forEach((element) => {
+      if (element.status.phase === pod) {
+        podNumber += 1;
+      }
+    });
+    if (podNumber !== 0) vData.push({ x: pod, y: podNumber });
+  });
+  const centerTransform = `translate(${x}, ${y})`;
+  return (
+    <VictoryPie
+      events={
+        showTooltip
+          ? [
+              {
+                target: 'data',
+                eventHandlers: {
+                  onMouseOver: () => {
+                    return [
+                      {
+                        target: 'labels',
+                        mutation: (props) => {
+                          return { active: true };
+                        },
+                      },
+                    ];
+                  },
+                  onMouseOut: () => {
+                    return [
+                      {
+                        target: 'labels',
+                        mutation: (props) => {
+                          return { active: false };
+                        },
+                      },
+                    ];
+                  },
+                },
+              },
+            ]
+          : []
+      }
+      animate={{
+        duration: 2000,
+      }}
+      standalone={standalone}
+      innerRadius={innerRadius}
+      radius={outerRadius}
+      groupComponent={x && y ? <g transform={centerTransform} /> : <g />}
+      data={vData}
+      height={size}
+      width={size}
+      labelComponent={<Tooltip x={outerRadius + 2} y={-12} />}
+      padAngle={2}
+      style={{
+        data: {
+          fill: ({ x }) => podColor[x],
+        },
+      }}
+    />
+  );
+};
 
-  willEnter = ({ style }) => {
-    return {
-      ...style,
-      endAngle: style.startAngle,
-    };
-  };
-
-  chooseColor = (d) => {
-    return { fill: podColor[d.status.phase] };
-  };
-
-  render() {
-    const { pods, innerRadius, outerRadius, x = 0, y = 0 } = this.props;
-    const pieFunc = pie().sort(null);
-
-    const podData = pods.map(() => 100 / pods.length);
-
-    const arcFunc = arc()
-      .outerRadius(outerRadius)
-      .innerRadius(innerRadius)
-      .padAngle(0.02);
-
-    const pieData = pieFunc(podData);
-
-    const motionStyles = pieData.map((d, i) => ({
-      key: `${i}`,
-      data: { ...d, index: i, podData: this.props.pods[i] },
-      style: d,
-    }));
-
-    const defaultStyles = pieData.map((d, i) => ({
-      key: `${i}`,
-      data: { ...d, index: i, podData: this.props.pods[i] },
-      style: { ...d, endAngle: d.startAngle },
-    }));
-
-    const centerTransform = `translate(${x}, ${y})`;
-
-    return (
-      <g transform={centerTransform}>
-        <TransitionMotion
-          defaultStyles={defaultStyles}
-          styles={motionStyles}
-          willEnter={this.willEnter}
-          willLeave={this.willLeave}
-        >
-          {(interStyles) => (
-            <g>
-              {interStyles.map((c) => (
-                <Motion
-                  defaultStyle={{
-                    ...c.style,
-                    endAngle: c.data.startAngle,
-                  }}
-                  key={c.key}
-                  style={{
-                    ...c.style,
-                    startAngle: spring(c.style.startAngle),
-                    endAngle: spring(c.style.endAngle),
-                  }}
-                >
-                  {(interStyle) => (
-                    <path d={arcFunc(interStyle)} style={this.chooseColor(c.data.podData)} />
-                  )}
-                </Motion>
-              ))}
-            </g>
-          )}
-        </TransitionMotion>
-      </g>
-    );
-  }
-}
+export default PodStatus;
