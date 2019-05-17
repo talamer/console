@@ -18,8 +18,8 @@ export const pipelineRunFilterReducer = (pipelineRun): string => {
   return !condition || !condition.status
     ? '-'
     : condition.status === 'True'
-    ? 'Succeeded'
-    : condition.status === 'False'
-    ? 'Failed'
-    : 'Running';
+      ? 'Succeeded'
+      : condition.status === 'False'
+        ? 'Failed'
+        : 'Running';
 };
