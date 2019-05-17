@@ -34,75 +34,86 @@ type PodStatusProps = {
   innerRadius: number;
   outerRadius: number;
   size: number;
-  standalone: boolean
+  standalone: boolean;
+  x?: number;
+  y?: number;
   data: Pod[];
-  showTooltip?: boolean
+  showTooltip?: boolean;
 };
 
-export default class PodStatus extends React.PureComponent<PodStatusProps> {
-
-  render() {
-    let { innerRadius, outerRadius, data, size, standalone, showTooltip = true } = this.props;
-    let vData = [];
-    podStatus.forEach((pod) => {
-      let podNumber = 0;
-      data.forEach((element) => {
-        if (element.status.phase === pod) {
-          podNumber += 1;
-        }
-      });
-      if (podNumber !== 0)
-        vData.push({ x: pod, y: podNumber});
+const PodStatus: React.FunctionComponent<PodStatusProps> = ({
+  innerRadius,
+  outerRadius,
+  x,
+  y,
+  data,
+  size,
+  standalone,
+  showTooltip = true,
+}) => {
+  let vData = [];
+  podStatus.forEach((pod) => {
+    let podNumber = 0;
+    data.forEach((element) => {
+      if (element.status.phase === pod) {
+        podNumber += 1;
+      }
     });
-    const centerTransform = `translate(-63, -63)`;
-    return (
-      <VictoryPie
-        events={showTooltip ? [
-          {
-            target: 'data',
-            eventHandlers: {
-              onMouseOver: () => {
-                return [
-                  {
-                    target: 'labels',
-                    mutation: (props) => {
-                      return { active: true };
-                    },
+    if (podNumber !== 0) vData.push({ x: pod, y: podNumber });
+  });
+  const centerTransform = `translate(${x}, ${y})`;
+  return (
+    <VictoryPie
+      events={
+        showTooltip
+          ? [
+              {
+                target: 'data',
+                eventHandlers: {
+                  onMouseOver: () => {
+                    return [
+                      {
+                        target: 'labels',
+                        mutation: (props) => {
+                          return { active: true };
+                        },
+                      },
+                    ];
                   },
-                ];
-              },
-              onMouseOut: () => {
-                return [
-                  {
-                    target: 'labels',
-                    mutation: (props) => {
-                      return { active: false };
-                    },
+                  onMouseOut: () => {
+                    return [
+                      {
+                        target: 'labels',
+                        mutation: (props) => {
+                          return { active: false };
+                        },
+                      },
+                    ];
                   },
-                ];
+                },
               },
-            },
-          },
-        ]: []}
-        animate={{
-          duration: 2000,
-        }}
-        standalone={standalone}
-        innerRadius={innerRadius}
-        radius={outerRadius}
-        // origin={{x: this.props.x, y: this.props.y}}
-        groupComponent={<g transform={centerTransform} />}
-        data={vData}
-        height={size}
-        width={size}
-        labelComponent={<Tooltip x={outerRadius + 2} y={-12} />}
-        padAngle={2}
-        style={{
-          data: {
-            fill: ({ x }) => podColor[x],
-          }
-        }}
-      />
-    );
-  }
-}
+            ]
+          : []
+      }
+      animate={{
+        duration: 2000,
+      }}
+      standalone={standalone}
+      innerRadius={innerRadius}
+      radius={outerRadius}
+      groupComponent={x && y ? <g transform={centerTransform} /> : <g />}
+      data={vData}
+      height={size}
+      width={size}
+      labelComponent={<Tooltip x={outerRadius + 2} y={-12} />}
+      padAngle={2}
+      style={{
+        data: {
+          fill: ({ x }) => podColor[x],
+        },
+      }}
+    />
+  );
+};
+
+export default PodStatus;

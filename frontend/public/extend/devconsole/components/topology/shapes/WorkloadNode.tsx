@@ -15,6 +15,7 @@ const WorkloadNode: React.FC<NodeProps<WorkloadData>> = ({
   selected,
   onSelect,
 }) => {
+  console.log('########$#######$#$#$', x,y)
   const radius = size / 2;
   const podStatusStrokeWidth = 8 / 104 * size;
   const podStatusInset = 5 / 104 * size;
@@ -64,13 +65,10 @@ const WorkloadNode: React.FC<NodeProps<WorkloadData>> = ({
         ),
       ]}
     >
-      {/* <PodStatus
-        innerRadius={podStatusInnerRadius}
-        outerRadius={podStatusOuterRadius}
-        pods={workload.data.donutStatus.pods}
-      /> */}
       <VicPodStatus
         standalone={false}
+        x={-size/2}
+        y={-size/2}
         innerRadius={podStatusInnerRadius}
         outerRadius={podStatusOuterRadius}
         data={workload.data.donutStatus.pods}
