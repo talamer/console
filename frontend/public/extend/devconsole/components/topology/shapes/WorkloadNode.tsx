@@ -3,9 +3,8 @@ import * as React from 'react';
 import { PenIcon, ExternalLinkAltIcon } from '@patternfly/react-icons';
 import Decorator from './Decorator';
 import BaseNode from './BaseNode';
-// import PodStatus from './PodStatus';
+import PodStatus from './PodStatus';
 import { NodeProps, WorkloadData } from '../topology-types';
-import VicPodStatus from './PodStatus';
 
 const WorkloadNode: React.FC<NodeProps<WorkloadData>> = ({
   data: workload,
@@ -15,7 +14,6 @@ const WorkloadNode: React.FC<NodeProps<WorkloadData>> = ({
   selected,
   onSelect,
 }) => {
-  console.log('########$#######$#$#$', x,y)
   const radius = size / 2;
   const podStatusStrokeWidth = 8 / 104 * size;
   const podStatusInset = 5 / 104 * size;
@@ -65,7 +63,7 @@ const WorkloadNode: React.FC<NodeProps<WorkloadData>> = ({
         ),
       ]}
     >
-      <VicPodStatus
+      <PodStatus
         standalone={false}
         x={-size/2}
         y={-size/2}

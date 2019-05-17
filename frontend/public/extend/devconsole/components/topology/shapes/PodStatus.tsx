@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { VictoryPie } from 'victory';
 import './DefaultGroup.scss';
@@ -51,7 +52,7 @@ const PodStatus: React.FunctionComponent<PodStatusProps> = ({
   standalone,
   showTooltip = true,
 }) => {
-  let vData = [];
+  const vData = [];
   podStatus.forEach((pod) => {
     let podNumber = 0;
     data.forEach((element) => {
@@ -59,7 +60,9 @@ const PodStatus: React.FunctionComponent<PodStatusProps> = ({
         podNumber += 1;
       }
     });
-    if (podNumber !== 0) vData.push({ x: pod, y: podNumber });
+    if (podNumber !== 0) {
+      vData.push({ x: pod, y: podNumber });
+    }
   });
   const centerTransform = `translate(${x}, ${y})`;
   return (
@@ -67,32 +70,32 @@ const PodStatus: React.FunctionComponent<PodStatusProps> = ({
       events={
         showTooltip
           ? [
-              {
-                target: 'data',
-                eventHandlers: {
-                  onMouseOver: () => {
-                    return [
-                      {
-                        target: 'labels',
-                        mutation: (props) => {
-                          return { active: true };
-                        },
+            {
+              target: 'data',
+              eventHandlers: {
+                onMouseOver: () => {
+                  return [
+                    {
+                      target: 'labels',
+                      mutation: (props) => {
+                        return { active: true };
                       },
-                    ];
-                  },
-                  onMouseOut: () => {
-                    return [
-                      {
-                        target: 'labels',
-                        mutation: (props) => {
-                          return { active: false };
-                        },
+                    },
+                  ];
+                },
+                onMouseOut: () => {
+                  return [
+                    {
+                      target: 'labels',
+                      mutation: (props) => {
+                        return { active: false };
                       },
-                    ];
-                  },
+                    },
+                  ];
                 },
               },
-            ]
+            },
+          ]
           : []
       }
       animate={{

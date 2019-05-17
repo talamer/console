@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import './SvgPodTooltip.scss';
 import SvgDropShadowFilter from '../../shared/components/svg/SvgDropShadowFilter';
@@ -73,7 +74,6 @@ export default class PodTooltip extends React.PureComponent<TooltipProps> {
           </text>
         </g>
       </g>
-    ) :
-    null;
+    ) : null;
   }
 }
