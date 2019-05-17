@@ -3,7 +3,6 @@ import { VictoryPie } from 'victory';
 import './DefaultGroup.scss';
 import SvgDropShadowFilter from './../../../shared/components/svg/SvgDropShadowFilter';
 import { createFilterIdUrl } from './../../../shared/utils/svg-utils';
-import { isEqual } from 'lodash-es';
 import { Pod } from '../topology-types';
 
 export const podColor = {
@@ -41,45 +40,21 @@ type PodStatusProps = {
   showTooltip?: boolean
 };
 
-type PodStatusState = {
-  data: any;
-};
+export default class PodStatus extends React.PureComponent<PodStatusProps> {
 
-export default class PodStatus extends React.PureComponent<PodStatusProps, PodStatusState> {
-  constructor(props: PodStatusProps) {
-    super(props);
-    this.state = {
-      data: null,
-    };
-  }
-
-  componentWillMount() {
-    this.createDataForVisualization();
-  }
-
-  componentDidUpdate({ data }: PodStatusProps) {
-    if (!isEqual(this.props.data, data)) {
-      this.createDataForVisualization();
-    }
-  }
-
-  createDataForVisualization = () => {
+  render() {
+    let { innerRadius, outerRadius, data, size, standalone, showTooltip = true } = this.props;
     let vData = [];
     podStatus.forEach((pod) => {
       let podNumber = 0;
-      this.props.data.forEach((element) => {
+      data.forEach((element) => {
         if (element.status.phase === pod) {
           podNumber += 1;
         }
       });
       if (podNumber !== 0)
-        vData.push({ x: pod, y: podNumber, pods: podNumber, label: `${podNumber} pods` });
+        vData.push({ x: pod, y: podNumber});
     });
-    this.setState({ data: vData });
-  };
-
-  render() {
-    let { innerRadius, outerRadius, size, standalone, showTooltip = true, } = this.props;
     const centerTransform = `translate(-63, -63)`;
     return (
       <VictoryPie
@@ -118,7 +93,7 @@ export default class PodStatus extends React.PureComponent<PodStatusProps, PodSt
         radius={outerRadius}
         // origin={{x: this.props.x, y: this.props.y}}
         groupComponent={<g transform={centerTransform} />}
-        data={this.state.data}
+        data={vData}
         height={size}
         width={size}
         labelComponent={<Tooltip x={outerRadius + 2} y={-12} />}
