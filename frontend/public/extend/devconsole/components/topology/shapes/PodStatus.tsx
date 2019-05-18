@@ -10,7 +10,7 @@ const podStatus = Object.keys(podColor);
 type PodData = {
   x: string;
   y: number;
-}[]
+};
 
 type PodStatusProps = {
   innerRadius: number;
@@ -33,7 +33,7 @@ const PodStatus: React.FC<PodStatusProps> = ({
   standalone = false,
   showTooltip = true,
 }) => {
-  const vData: PodData = [];
+  const vData: PodData[] = [];
   podStatus.forEach((pod) => {
     let podNumber = 0;
     data.forEach((element) => {
