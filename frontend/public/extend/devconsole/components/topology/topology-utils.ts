@@ -10,6 +10,19 @@ import {
   WorkloadData,
 } from './topology-types';
 
+export const podColor = {
+  Running: '#0066CC',
+  'Not Ready': '#519DE9',
+  Warning: '#F0AB00',
+  Empty: '#FFFFFF',
+  Failed: '#CC0000',
+  Pulling: '#d1d1d1',
+  Pending: '#8BC1F7',
+  Succceeded: '#519149',
+  Terminating: '#002F5D',
+  Unknown: '#A18FFF',
+};
+
 export class TransformTopologyData {
   private _topologyData: TopologyDataModel = {
     graph: { nodes: [], edges: [], groups: [] },

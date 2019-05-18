@@ -64,7 +64,6 @@ const WorkloadNode: React.FC<NodeProps<WorkloadData>> = ({
       ]}
     >
       <PodStatus
-        standalone={false}
         x={-size/2}
         y={-size/2}
         innerRadius={podStatusInnerRadius}
