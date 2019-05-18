@@ -42,7 +42,7 @@ type PodStatusProps = {
   showTooltip?: boolean;
 };
 
-const PodStatus: React.FunctionComponent<PodStatusProps> = ({
+const PodStatus: React.FC<PodStatusProps> = ({
   innerRadius,
   outerRadius,
   x,
