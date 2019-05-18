@@ -1,6 +1,8 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { FormGroup, ControlLabel, FormControl, HelpBlock } from 'patternfly-react';
+import { Firehose } from '../../../../components/utils';
+import { SecretModel } from '../../../../models';
 import SourceSecretDropdown from './SourceSecretDropdown';
 import AuthenticationType, { SecretType } from './AuthenticationType';
 
@@ -38,21 +40,32 @@ const SourceSecretSelector: React.FC<SourceSecretSelectorProps> = ({
     onChange(event.currentTarget.value, selectedKey, SecretType.basicAuth, secretCredentials);
   };
 
+  const resources = [
+    {
+      isList: true,
+      namespace: namespace,
+      kind: SecretModel.kind,
+      prop: 'secrets',
+    },
+  ];
+
   return (
     <React.Fragment>
       <FormGroup>
         <ControlLabel className="co-required">Source Secret</ControlLabel>
-        <SourceSecretDropdown
-          dropDownClassName="dropdown--full-width"
-          menuClassName="dropdown-menu--text-wrap"
-          namespace={namespace}
-          actionItem={{
-            actionTitle: 'Create New Secret',
-            actionKey: CREATE_SOURCE_SECRET,
-          }}
-          selectedKey={selectedKey}
-          onChange={onDropdownChange}
-        />
+        <Firehose resources={resources}>
+          <SourceSecretDropdown
+            dropDownClassName="dropdown--full-width"
+            menuClassName="dropdown-menu--text-wrap"
+            namespace={namespace}
+            actionItem={{
+              actionTitle: 'Create New Secret',
+              actionKey: CREATE_SOURCE_SECRET,
+            }}
+            selectedKey={selectedKey}
+            onChange={onDropdownChange}
+          />
+        </Firehose>
       </FormGroup>
       {selectedKey === CREATE_SOURCE_SECRET ? (
         <React.Fragment>

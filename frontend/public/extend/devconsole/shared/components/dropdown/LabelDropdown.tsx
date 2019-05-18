@@ -4,15 +4,8 @@ import * as React from 'react';
 import * as fuzzy from 'fuzzysearch';
 
 import { Dropdown, LoadingInline } from '../../../../../components/utils';
-import { K8sResourceKind } from '../../../../../module/k8s';
-
-type FirehoseList = {
-  data?: K8sResourceKind[];
-  [key: string]: any;
-};
 
 interface LabelDropdownState {
-  items: {};
   title: React.ReactNode;
 }
 
@@ -26,27 +19,20 @@ interface LabelDropdownProps {
   allApplicationsKey?: string;
   storageKey?: string;
   disabled?: boolean;
-  allSelectorItem?: {
-    allSelectorKey?: string;
-    allSelectorTitle?: string;
-  };
   actionItem?: {
     actionTitle: string;
     actionKey: string;
   };
-  labelSelector: string;
-  labelType: string;
   loaded?: boolean;
   loadError?: string;
   placeholder?: string;
-  resources?: FirehoseList[];
   selectedKey: string;
+  sortedList: {};
   onChange?: (name: string, key: string) => void;
 }
 
 class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownState> {
   readonly state = {
-    items: {},
     title: this.props.loaded ? (
       <span className="btn-dropdown__item--placeholder">{this.props.placeholder}</span>
     ) : (
@@ -66,7 +52,7 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
   }
 
   componentWillReceiveProps(nextProps: LabelDropdownProps) {
-    const { labelSelector, resources, loaded, loadError, placeholder, allSelectorItem } = nextProps;
+    const { loaded, loadError, placeholder } = nextProps;
     if (!loaded) {
       this.setState({ title: <LoadingInline /> });
       return;
@@ -82,52 +68,6 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
         title: <span className="cos-error-title">Error Loading {placeholder}</span>,
       });
     }
-
-    const unsortedList = {};
-    _.each(resources, ({ data }) => {
-      _.reduce(
-        data,
-        (acc, resource) => {
-          if (
-            this.props.labelType === 'Application' &&
-            resource.metadata.labels &&
-            resource.metadata.labels.hasOwnProperty(labelSelector)
-          ) {
-            acc[resource.metadata.labels[labelSelector]] = {
-              name: resource.metadata.labels[labelSelector],
-            };
-          } else if (
-            this.props.labelType === 'Secret' &&
-            resource &&
-            resource.hasOwnProperty(labelSelector) &&
-            (resource[labelSelector] === 'kubernetes.io/basic-auth' ||
-              resource[labelSelector] === 'kubernetes.io/ssh-auth')
-          ) {
-            acc[resource.metadata.name] = {
-              name: resource.metadata.name,
-            };
-          }
-          return acc;
-        },
-        unsortedList,
-      );
-    });
-
-    const sortedList = {};
-
-    if (this.props.allSelectorItem && !_.isEmpty(unsortedList)) {
-      sortedList[allSelectorItem.allSelectorKey] = {
-        name: allSelectorItem.allSelectorTitle,
-      };
-    }
-
-    _.keys(unsortedList)
-      .sort()
-      .forEach((key) => {
-        sortedList[key] = unsortedList[key];
-      });
-
-    this.setState({ items: sortedList });
   }
 
   onChange = (key) => {
@@ -146,8 +86,8 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
   render() {
     const items = {};
 
-    _.keys(this.state.items).forEach((key) => {
-      const item = this.state.items[key];
+    _.keys(this.props.sortedList).forEach((key) => {
+      const item = this.props.sortedList[key];
       items[key] = item.name;
     });
 
