@@ -1,0 +1,19 @@
+/* eslint-disable no-undef  */
+import * as React from 'react';
+import { List } from '../../../../components/factory';
+import PipelineHeader from './PipelineHeader';
+import PipelineRow from './PipelineRow';
+import { PipelineListProps } from './PipelineList';
+import { augmentRunsToData } from '../../utils/pipeline-augment';
+
+export interface PipelineAugmentRunsProps extends PipelineListProps {
+  propsReferenceForRuns?: any;
+}
+
+const PipelineAugmentRuns = (props: PipelineAugmentRunsProps) => {
+  const newProps = Object.assign({}, props);
+  newProps.data = augmentRunsToData(props);
+  return <List {...newProps} Header={PipelineHeader} Row={PipelineRow} />;
+};
+
+export default PipelineAugmentRuns;

@@ -1,8 +1,13 @@
 export const pipelineFilterReducer = (pipeline): string => {
-  if (!pipeline || !pipeline.spec.runs) {
-    return '';
+  if (
+    !pipeline ||
+    !pipeline.latestRun ||
+    !pipeline.latestRun.status ||
+    !pipeline.latestRun.status.succeededCondition
+  ) {
+    return '-';
   }
-  return pipeline.spec.runs[pipeline.spec.runs.length - 1].status;
+  return pipeline.latestRun.status.succeededCondition;
 };
 
 export const pipelineRunFilterReducer = (pipelineRun): string => {

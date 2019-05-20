@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { ResourceRow } from '../../../../components/factory';
 import { ResourceLink, StatusIcon, Timestamp } from '../../../../components/utils';
+import { pipelineFilterReducer } from '../../utils/pipeline-filter-reducer';
 
 const PipelineRow = ({ obj: pipeline }) => {
   return (
@@ -14,24 +15,20 @@ const PipelineRow = ({ obj: pipeline }) => {
         />
       </div>
       <div className="col-lg-3 col-md-3 col-sm-4 col-xs-6">
-        {pipeline.spec.runs && pipeline.spec.runs[pipeline.spec.runs.length - 1].name
-          ? pipeline.spec.runs[pipeline.spec.runs.length - 1].name
+        {pipeline.latestRun && pipeline.latestRun.metadata && pipeline.latestRun.metadata.name
+          ? pipeline.latestRun.metadata.name
           : '-'}
       </div>
       <div className="col-lg-3 col-md-3 col-sm-4 hidden-xs">
-        <StatusIcon
-          status={
-            pipeline.spec.runs && pipeline.spec.runs[pipeline.spec.runs.length - 1].status
-              ? pipeline.spec.runs[pipeline.spec.runs.length - 1].status
-              : '-'
-          }
-        />
+        <StatusIcon status={pipelineFilterReducer(pipeline)} />
       </div>
       <div className="col-lg-3 col-md-3 hidden-sm hidden-xs">
         <Timestamp
           timestamp={
-            pipeline.spec.runs && pipeline.spec.runs[pipeline.spec.runs.length - 1].lastrun
-              ? pipeline.spec.runs[pipeline.spec.runs.length - 1].lastrun
+            pipeline.latestRun &&
+            pipeline.latestRun.status &&
+            pipeline.latestRun.status.completionTime
+              ? pipeline.latestRun.status.completionTime
               : '-'
           }
         />
