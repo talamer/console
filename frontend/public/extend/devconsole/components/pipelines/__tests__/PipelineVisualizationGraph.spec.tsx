@@ -2,8 +2,8 @@
 import * as React from 'react';
 import { shallow, ShallowWrapper } from 'enzyme';
 import * as Renderer from 'react-test-renderer';
-import PipelineVisualizationGraph from '../PipelineVisualizationGraph';
-import { PipelineVisualizationProps } from '../pipeline-types';
+import { PipelineVisualizationGraph } from '../PipelineVisualizationGraph';
+import { PipelineVisualizationProps } from '../PipelineVisualization';
 import { mockPipelineGraph } from '../__mocks__/PipelineMocks';
 
 jest.mock('react-dom', () => ({
@@ -26,7 +26,8 @@ describe('PipelineVisualizationGraph', () => {
   });
 
   it('should contain right number of stages', () => {
-    const noOfStages = wrapper.find('.odc-pipeline-stage').length - 1; // to exclude first static input node
+    const noOfStages = wrapper.find('.odc-pipeline__stage-column').length;
+
     expect(noOfStages).toEqual(mockPipelineGraph.length);
   });
 

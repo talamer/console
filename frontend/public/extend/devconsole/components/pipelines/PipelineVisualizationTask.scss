@@ -1,0 +1,114 @@
+$border-color: var(--pf-global--BorderColor--light);
+$gutter: 1.8em;
+
+.odc-pipeline__task {
+  position: relative;
+  width: 13em;
+  height: 2em;
+  white-space: normal;
+  border: 1px solid $border-color;
+  border-radius: 5px;
+  background-color: #fafafa;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.5em;
+  padding: 0.5em;
+
+  &.input-node {
+    width: 2em;
+    height: 2em;
+    border-radius: 2em;
+    background: $border-color;
+    &::after {
+      content: '';
+      position: absolute;
+      transform: translateY(-100%);
+      left: 2em;
+      bottom: -1em;
+    }
+  }
+
+  &:not(:first-child) {
+    margin-top: 3em;
+  }
+
+  & .steps {
+    position: absolute;
+    top: -4px;
+    transform: translateY(-100%);
+  }
+
+  & .stepcount {
+    margin: 0 4px;
+    white-space: nowrap;
+  }
+
+  & .status {
+    margin: 0 4px;
+    border-radius: 100%;
+    width: 1.5em;
+    height: 1.5em;
+    flex-grow: 0;
+    flex-shrink: 0;
+    order: -1;
+
+    &.done {
+      background: green;
+    }
+
+    &.running {
+      background: blue;
+    }
+
+    &.error {
+      background: red;
+    }
+
+    &.idle {
+      background: grey;
+    }
+  }
+
+  & .truncate {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  & .title {
+    flex-grow: 1;
+    flex-shrink: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    margin: 0px 8px;
+  }
+  // Connect each task
+  &:not(:first-child) {
+    &::after,
+    &::before {
+      content: '';
+      top: -4em;
+      position: absolute;
+      border-bottom: 1px solid $border-color;
+      width: $gutter / 2;
+      height: calc(5em + 1px);
+    }
+
+    // Right connecting lines
+    &::after {
+      right: 0;
+      transform: translateX(100%);
+      border-right: 1px solid $border-color;
+    }
+
+    // Left connecting lines
+    &::before {
+      left: 0;
+      transform: translateX(-100%);
+      border-left: 1px solid $border-color;
+    }
+  }
+}

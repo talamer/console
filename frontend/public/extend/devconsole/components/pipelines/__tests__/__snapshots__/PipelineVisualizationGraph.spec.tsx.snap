@@ -2,26 +2,26 @@
 
 exports[`PipelineVisualizationGraph should match the previous snapshot 1`] = `
 <div
-  className="odc-pipeline-graph"
+  className="odc-pipeline__graph"
 >
   <div
-    className="odc-pipeline-stages"
+    className="odc-pipeline__stages"
   >
     <div
-      className="odc-pipeline-stage"
+      className="odc-pipeline__stage"
     >
       <div
-        className="odc-pipeline-task input-node"
+        className="odc-pipeline__task input-node"
       />
     </div>
     <div
-      className="odc-pipeline-stage "
+      className="odc-pipeline__stage"
     >
       <ul
-        className="odc-pipeline-stage-column"
+        className="odc-pipeline__stage-column"
       >
         <li
-          className="odc-pipeline-task"
+          className="odc-pipeline__task"
         >
           <div
             className="title"
@@ -40,24 +40,20 @@ exports[`PipelineVisualizationGraph should match the previous snapshot 1`] = `
               />
               <div
                 className="pf-c-tooltip__content"
-              >
-                <ul
-                  className="odc-pipeline-steps-details"
-                />
-              </div>
+              />
             </div>
           </div>
         </li>
       </ul>
     </div>
     <div
-      className="odc-pipeline-stage parallel"
+      className="odc-pipeline__stage--is-parallel"
     >
       <ul
-        className="odc-pipeline-stage-column"
+        className="odc-pipeline__stage-column"
       >
         <li
-          className="odc-pipeline-task"
+          className="odc-pipeline__task"
         >
           <div
             className="title"
@@ -76,16 +72,12 @@ exports[`PipelineVisualizationGraph should match the previous snapshot 1`] = `
               />
               <div
                 className="pf-c-tooltip__content"
-              >
-                <ul
-                  className="odc-pipeline-steps-details"
-                />
-              </div>
+              />
             </div>
           </div>
         </li>
         <li
-          className="odc-pipeline-task"
+          className="odc-pipeline__task"
         >
           <div
             className="title"
@@ -104,24 +96,20 @@ exports[`PipelineVisualizationGraph should match the previous snapshot 1`] = `
               />
               <div
                 className="pf-c-tooltip__content"
-              >
-                <ul
-                  className="odc-pipeline-steps-details"
-                />
-              </div>
+              />
             </div>
           </div>
         </li>
       </ul>
     </div>
     <div
-      className="odc-pipeline-stage parallel"
+      className="odc-pipeline__stage--is-parallel"
     >
       <ul
-        className="odc-pipeline-stage-column"
+        className="odc-pipeline__stage-column"
       >
         <li
-          className="odc-pipeline-task"
+          className="odc-pipeline__task"
         >
           <div
             className="title"
@@ -140,16 +128,12 @@ exports[`PipelineVisualizationGraph should match the previous snapshot 1`] = `
               />
               <div
                 className="pf-c-tooltip__content"
-              >
-                <ul
-                  className="odc-pipeline-steps-details"
-                />
-              </div>
+              />
             </div>
           </div>
         </li>
         <li
-          className="odc-pipeline-task"
+          className="odc-pipeline__task"
         >
           <div
             className="title"
@@ -168,24 +152,20 @@ exports[`PipelineVisualizationGraph should match the previous snapshot 1`] = `
               />
               <div
                 className="pf-c-tooltip__content"
-              >
-                <ul
-                  className="odc-pipeline-steps-details"
-                />
-              </div>
+              />
             </div>
           </div>
         </li>
       </ul>
     </div>
     <div
-      className="odc-pipeline-stage "
+      className="odc-pipeline__stage"
     >
       <ul
-        className="odc-pipeline-stage-column"
+        className="odc-pipeline__stage-column"
       >
         <li
-          className="odc-pipeline-task"
+          className="odc-pipeline__task"
         >
           <div
             className="title"
@@ -204,11 +184,7 @@ exports[`PipelineVisualizationGraph should match the previous snapshot 1`] = `
               />
               <div
                 className="pf-c-tooltip__content"
-              >
-                <ul
-                  className="odc-pipeline-steps-details"
-                />
-              </div>
+              />
             </div>
           </div>
         </li>

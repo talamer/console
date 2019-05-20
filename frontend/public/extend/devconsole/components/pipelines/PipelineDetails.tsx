@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { SectionHeading, ResourceSummary } from '../../../../components/utils';
-import PipelineVisualization from './../pipelines/PipelineVisualization';
+import { PipelineVisualization } from './../pipelines/PipelineVisualization';
 
 const PipelineDetails = ({ obj: pipeline }) => (
   <div className="co-m-pane__body">

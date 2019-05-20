@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
-import { PipelineVisualizationTaskProp } from '../pipeline-types';
+import { PipelineVisualizationTaskItem } from '../PipelineVisualizationGraph';
 
-export const mockPipelineGraph: Array<PipelineVisualizationTaskProp[]> = [
+export const mockPipelineGraph: Array<PipelineVisualizationTaskItem[]> = [
   [
     {
       name: 'start-app',

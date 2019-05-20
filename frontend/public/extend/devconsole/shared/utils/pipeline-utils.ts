@@ -1,21 +1,21 @@
 /* eslint-disable no-unused-vars, no-undef */
 
-import { PipelineVisualizationTaskProp } from '../../components/pipelines/pipeline-types';
+import { PipelineVisualizationTaskItem } from '../../components/pipelines/PipelineVisualizationGraph';
 
 export const conditions = {
-  hasFromDependency: (task: PipelineVisualizationTaskProp): boolean =>
+  hasFromDependency: (task: PipelineVisualizationTaskItem): boolean =>
     task.hasOwnProperty('resources') &&
     task.resources.hasOwnProperty('inputs') &&
     task.resources.inputs.length > 0 &&
     task.resources.inputs[0].hasOwnProperty('from'),
-  hasRunAfterDependency: (task: PipelineVisualizationTaskProp): boolean =>
+  hasRunAfterDependency: (task: PipelineVisualizationTaskItem): boolean =>
     task.hasOwnProperty('runAfter') && task.runAfter.length > 0,
 };
 
 //to be used by both Pipeline and Pipelinerun visualisation
 const sortTasksByRunAfterAndFrom = (
-  tasks: PipelineVisualizationTaskProp[],
-): PipelineVisualizationTaskProp[] => {
+  tasks: PipelineVisualizationTaskItem[],
+): PipelineVisualizationTaskItem[] => {
   //check and sort tasks by 'runAfter' and 'from' dependency
   const output = tasks;
   for (let i = 0; i < output.length; i++) {
@@ -44,8 +44,8 @@ const sortTasksByRunAfterAndFrom = (
 };
 
 export const getPipelineTasks = (
-  taskList: PipelineVisualizationTaskProp[],
-): Array<PipelineVisualizationTaskProp[]> => {
+  taskList: PipelineVisualizationTaskItem[],
+): Array<PipelineVisualizationTaskItem[]> => {
   // Each unit in 'out' array is termed as stage | out = [stage1 = [task1], stage2 = [task2,task3], stage3 = [task4]]
   const out = [];
   //Step 1: Sort Tasks to get in correct order
