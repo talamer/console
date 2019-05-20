@@ -198,10 +198,14 @@ export const config: Config = {
       'tests/deploy-image.scenario.ts',
       'tests/operator-hub/operator-hub.scenario.ts',
       'tests/developer-catalog.scenario.ts',
+      'tests/devconsole/mega-menu.scenario.ts'
     ],
     login: [
       'tests/login.scenario.ts',
     ],
+    devconsole: [
+      'tests/devconsole/mega-menu.scenario.ts',
+    ]
   },
   params: {
     // Set to 'true' to enable OpenShift resources in the crud scenario.
