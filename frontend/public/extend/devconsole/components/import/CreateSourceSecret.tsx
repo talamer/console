@@ -2,15 +2,14 @@
 import * as React from 'react';
 import { FormGroup, ControlLabel } from 'patternfly-react';
 import { Dropdown } from '../../../../components/utils';
-import BasicAuthSubform from './BasicAuth';
-import SSHAuthSubform from './SshAuth';
+import { BasicAuthSubform, SSHAuthSubform} from '../../../../components/secrets/create-secret';
 
 export enum SecretType {
   basicAuth = 'kubernetes.io/basic-auth',
   sshAuth = 'kubernetes.io/ssh-auth',
 }
 
-export type AuthenticationTypeState = {
+export type CreateSourceSecretState = {
   type: SecretType;
   stringData: {
     [key: string]: string;
@@ -18,7 +17,7 @@ export type AuthenticationTypeState = {
   authType: SecretType.basicAuth | SecretType.sshAuth;
 };
 
-export type AuthenticationTypeProps = {
+export type CreateSourceSecretProps = {
   onChange: Function;
   selectedKey: string;
   secretType: SecretType;
@@ -28,9 +27,9 @@ export type AuthenticationTypeProps = {
   };
 };
 
-export default class AuthenticationType extends React.Component<
-  AuthenticationTypeProps,
-  AuthenticationTypeState
+export default class CreateSourceSecret extends React.Component<
+  CreateSourceSecretProps,
+  CreateSourceSecretState
   > {
   constructor(props) {
     super(props);
@@ -84,10 +83,10 @@ export default class AuthenticationType extends React.Component<
         {this.state.type === SecretType.basicAuth ? (
           <BasicAuthSubform
             onChange={this.onDataChange}
-            secretCredentials={this.state.stringData}
+            stringData={this.state.stringData}
           />
         ) : (
-          <SSHAuthSubform onChange={this.onDataChange} secretCredentials={this.state.stringData} />
+          <SSHAuthSubform onChange={this.onDataChange} stringData={this.state.stringData} />
         )}
       </React.Fragment>
     );

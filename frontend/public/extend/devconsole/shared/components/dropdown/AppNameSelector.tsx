@@ -2,7 +2,6 @@
 import * as React from 'react';
 import { FormGroup, ControlLabel, FormControl, HelpBlock } from 'patternfly-react';
 import AppDropdown from './AppDropdown';
-import { Firehose } from '../../../../../components/utils';
 
 const CREATE_APPLICATION_KEY = 'create-application-key';
 
@@ -31,38 +30,21 @@ const AppNameSelector: React.FC<AppNameSelectorProps> = ({
     onChange(event.currentTarget.value, selectedKey);
   };
 
-  const resources = [
-    {
-      isList: true,
-      namespace: namespace,
-      kind: 'DeploymentConfig',
-      prop: 'deploymentConfigs',
-    },
-    {
-      isList: true,
-      namespace: namespace,
-      kind: 'Deployment',
-      prop: 'deployments',
-    },
-  ];
-
   return (
     <React.Fragment>
       <FormGroup>
         <ControlLabel className="co-required">Application</ControlLabel>
-        <Firehose resources={resources}>
-          <AppDropdown
-            dropDownClassName="dropdown--full-width"
-            menuClassName="dropdown-menu--text-wrap"
-            namespace={namespace}
-            actionItem={{
-              actionTitle: 'Create New Application',
-              actionKey: CREATE_APPLICATION_KEY,
-            }}
-            selectedKey={selectedKey}
-            onChange={onDropdownChange}
-          />
-        </Firehose>
+        <AppDropdown
+          dropDownClassName="dropdown--full-width"
+          menuClassName="dropdown-menu--text-wrap"
+          namespace={namespace}
+          actionItem={{
+            actionTitle: 'Create New Application',
+            actionKey: CREATE_APPLICATION_KEY,
+          }}
+          selectedKey={selectedKey}
+          onChange={onDropdownChange}
+        />
       </FormGroup>
       {selectedKey === CREATE_APPLICATION_KEY ? (
         <FormGroup>

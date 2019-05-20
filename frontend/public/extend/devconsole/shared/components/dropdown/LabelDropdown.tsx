@@ -2,10 +2,17 @@
 import * as _ from 'lodash-es';
 import * as React from 'react';
 import * as fuzzy from 'fuzzysearch';
-
 import { Dropdown, LoadingInline } from '../../../../../components/utils';
+import { K8sResourceKind } from '../../../../../module/k8s';
+import { Many } from 'lodash';
+
+type FirehoseList = {
+  data?: K8sResourceKind[];
+  [key: string]: any;
+};
 
 interface LabelDropdownState {
+  items: {};
   title: React.ReactNode;
 }
 
@@ -19,20 +26,27 @@ interface LabelDropdownProps {
   allApplicationsKey?: string;
   storageKey?: string;
   disabled?: boolean;
+  allSelectorItem?: {
+    allSelectorKey?: string;
+    allSelectorTitle?: string;
+  };
   actionItem?: {
     actionTitle: string;
     actionKey: string;
   };
+  dataSelector: Many<string | number | symbol>;
   loaded?: boolean;
   loadError?: string;
   placeholder?: string;
+  resources?: FirehoseList[];
   selectedKey: string;
-  sortedList: {};
+  resourceFilter?: (resource: any) => boolean;
   onChange?: (name: string, key: string) => void;
 }
 
 class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownState> {
   readonly state = {
+    items: {},
     title: this.props.loaded ? (
       <span className="btn-dropdown__item--placeholder">{this.props.placeholder}</span>
     ) : (
@@ -52,7 +66,7 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
   }
 
   componentWillReceiveProps(nextProps: LabelDropdownProps) {
-    const { loaded, loadError, placeholder } = nextProps;
+    const { resources, loaded, loadError, placeholder, allSelectorItem } = nextProps;
     if (!loaded) {
       this.setState({ title: <LoadingInline /> });
       return;
@@ -68,6 +82,42 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
         title: <span className="cos-error-title">Error Loading {placeholder}</span>,
       });
     }
+
+    const unsortedList = {};
+    let labelValue = '';
+    _.each(resources, ({ data }) => {
+      _.reduce(
+        data,
+        (acc, resource) => {
+          if (this.props.resourceFilter && this.props.resourceFilter(resource)) {
+            labelValue = _.get(resource, this.props.dataSelector);
+          } else if (!this.props.resourceFilter) {
+            labelValue = _.get(resource, this.props.dataSelector);
+          }
+          if (labelValue) {
+            acc[labelValue] = { name: labelValue };
+          }
+          return acc;
+        },
+        unsortedList,
+      );
+    });
+
+    const sortedList = {};
+
+    if (this.props.allSelectorItem && !_.isEmpty(unsortedList)) {
+      sortedList[allSelectorItem.allSelectorKey] = {
+        name: allSelectorItem.allSelectorTitle,
+      };
+    }
+
+    _.keys(unsortedList)
+      .sort()
+      .forEach((key) => {
+        sortedList[key] = unsortedList[key];
+      });
+
+    this.setState({ items: sortedList });
   }
 
   onChange = (key) => {
@@ -86,8 +136,8 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
   render() {
     const items = {};
 
-    _.keys(this.props.sortedList).forEach((key) => {
-      const item = this.props.sortedList[key];
+    _.keys(this.state.items).forEach((key) => {
+      const item = this.state.items[key];
       items[key] = item.name;
     });
 
