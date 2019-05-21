@@ -26,6 +26,7 @@ interface Run {
   status?: {
     conditions?: object[];
     succeededCondition?: string;
+    creationTimeStamp?: string;
   };
 }
 

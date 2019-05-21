@@ -1,64 +1,10 @@
 /*eslint-disable no-unused-vars, no-undef */
+import { getResources, augmentRunsToData } from '../../../utils/pipeline-augment';
 import {
-  getResources,
-  Runs,
-} from '../../../utils/pipeline-augment';
-
-import { PipelineListProps } from '../PipelineList';
-import { PipelineAugmentRunsProps } from '../PipelineAugmentRuns';
-
-interface ExtendedPipelineAugmentRunsPropsWith extends PipelineAugmentRunsProps {
-  apple1Runs?: Runs;
-  apple2Runs?: Runs;
-}
-const listProps: PipelineListProps[] = [
-  {},
-  { data: [] },
-  {
-    data: [
-      {
-        metadata: {
-          name: 'apple1',
-          namespace: 'myproject',
-        },
-      },
-    ],
-  },
-  {
-    data: [
-      {
-        metadata: {
-          name: 'apple1',
-          namespace: 'myproject',
-        },
-      },
-      {
-        metadata: {
-          name: 'apple2',
-          namespace: 'myproject',
-        },
-      },
-    ],
-  },
-];
-
-// This will be added by Firehose and PipelineList to be passed to PipelineAugmentRuns
-const additionalProps = [
-  {},
-  {},
-  {
-    propsReferenceForRuns: ['apple1Runs'],
-    apple1Runs: { data: [{}] },
-  },
-  {
-    propsReferenceForRuns: ['apple1Runs', 'apple2Runs'],
-    apple1Runs: { data: [] },
-    apple2Runs: { data: [] },
-  },
-];
-
-const extendedProps: ExtendedPipelineAugmentRunsPropsWith[] = [];
-additionalProps.forEach((additional, i) => extendedProps.push({ ...listProps[i], ...additional }));
+  listProps,
+  additionalProps,
+  extendedProps,
+} from '../../__mocks__/pipelines/pipeline-augment-mocks';
 
 describe('1. PipelineAugment test getResources create correct resources for firehose', () => {
   it('1. expect resources to be null for no data', () => {
@@ -89,4 +35,22 @@ describe('1. PipelineAugment test getResources create correct resources for fire
   });
 });
 
-
+describe('2. PipelineAugment test gcorrect data is augmented', () => {
+  it('1. expect additional resources to be correctly added using augmentRunsToData', () => {
+    const newData = augmentRunsToData(extendedProps[0]);
+    expect(newData.length).toBe(1);
+    expect(newData[0].latestRun.metadata.name).toBe(
+      additionalProps[2].apple1Runs.data[0].metadata.name,
+    );
+  });
+  it('2. expect additional resources to be added using latest run', () => {
+    const newData = augmentRunsToData(extendedProps[1]);
+    expect(newData.length).toBe(2);
+    expect(newData[0].latestRun.metadata.name).toBe(
+      additionalProps[3].apple1Runs.data[1].metadata.name,
+    );
+    expect(newData[1].latestRun.metadata.name).toBe(
+      additionalProps[3].apple2Runs.data[0].metadata.name,
+    );
+  });
+});

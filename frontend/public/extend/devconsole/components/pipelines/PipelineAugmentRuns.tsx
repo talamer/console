@@ -6,12 +6,13 @@ import PipelineRow from './PipelineRow';
 import { PipelineListProps } from './PipelineList';
 import { augmentRunsToData } from '../../utils/pipeline-augment';
 
-
 export interface PipelineAugmentRunsProps extends PipelineListProps {
   propsReferenceForRuns?: string[];
 }
 
-const PipelineAugmentRuns: React.FC<PipelineAugmentRunsProps> = (props: PipelineAugmentRunsProps) => {
+const PipelineAugmentRuns: React.FC<PipelineAugmentRunsProps> = (
+  props: PipelineAugmentRunsProps,
+) => {
   const newProps = Object.assign({}, props);
   newProps.data = augmentRunsToData(props);
   return <List {...newProps} Header={PipelineHeader} Row={PipelineRow} />;
