@@ -196,12 +196,21 @@ const detectUser = dispatch => coFetchJSON('api/kubernetes/apis/user.openshift.i
       }
     },
   );
-
+  
+const consoleConfigPath = `${k8sBasePath}/api/v1/namespaces/openshift-config-managed/configmaps/console-public`;
 const detectDevConsole = dispatch => {
-  if ( process.env.REACT_APP_SHOW_DEV_CONSOLE == "true" ){
-    setFlag(dispatch, FLAGS.SHOW_DEV_CONSOLE, true);
-  }
-};
+  coFetchJSON(consoleConfigPath)
+  .then(
+    res => {
+      if (res.data.showDevConsole === "true") {
+        dispatch(setFlag(dispatch, FLAGS.SHOW_DEV_CONSOLE, true));
+      }
+    },
+    err => _.get(err, 'response.status') === 404 
+      ? setFlag(dispatch, FLAGS.SHOW_DEV_CONSOLE, false)
+      : handleError(err, FLAGS.SHOW_DEV_CONSOLE, dispatch, detectDevConsole)
+    );
+  };
 
 export const featureActions = [
   detectOpenShift,
