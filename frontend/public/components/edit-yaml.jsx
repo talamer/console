@@ -19,6 +19,7 @@ import { coFetchJSON } from '../co-fetch';
 import { ResourceSidebar } from './sidebars/resource-sidebar';
 import { yamlTemplates } from '../models/yaml-templates';
 import { SWAGGER_SESSION_STORAGE_KEY } from '../const';
+import { getAppLabels } from '../extend/devconsole/utils/resource-label-utils';
 
 const { snippetManager } = ace.acequire('ace/snippets');
 snippetManager.register([...snippets.values()], 'yaml');
@@ -248,7 +249,10 @@ export const EditYAML = connect(stateToProps)(
         obj.metadata.namespace = this.props.activeNamespace;
       }
 
-      obj.metadata.labels = { 'app.kubernetes.io/part-of': this.props.activeApplication, ...obj.metadata.labels };
+      if (['DeploymentConfig', 'Deployment', 'Pod', 'Service', 'Route'].includes(obj.kind)) {
+        const appLabels = getAppLabels(obj.metadata.name, this.props.activeApplication);
+        obj.metadata.labels = { ...appLabels, ...obj.metadata.labels };
+      }
 
       const { namespace: newNamespace, name: newName } = obj.metadata;
 
