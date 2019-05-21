@@ -1,6 +1,8 @@
 import * as React from 'react';
-import { SectionHeading, ResourceSummary } from '../../../../components/utils';
+import { Link } from 'react-router-dom';
+import { SectionHeading, ResourceSummary, resourcePath } from '../../../../components/utils';
 import { PipelineVisualization } from './../pipelines/PipelineVisualization';
+
 
 const PipelineDetails = ({ obj: pipeline }) => (
   <div className="co-m-pane__body">
@@ -15,10 +17,11 @@ const PipelineDetails = ({ obj: pipeline }) => (
         <SectionHeading text="Tasks" />
         <dl>
           {pipeline.spec.tasks.map((task) => {
+           const path = resourcePath('Task', task.name, pipeline.metadata.namespace);
             return (
               <React.Fragment key={task.name}>
                 <dt>Name: {task.name}</dt>
-                <dd>Ref: {task.taskRef.name}</dd>
+                <dd>Ref: <Link to={path}>{task.taskRef.name}</Link></dd>
               </React.Fragment>
             );
           })}
