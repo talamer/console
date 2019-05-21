@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
-import { SectionHeading, ResourceSummary, resourcePath } from '../../../../components/utils';
+import { SectionHeading, ResourceSummary, ResourceLink } from '../../../../components/utils';
 import { PipelineVisualization } from './../pipelines/PipelineVisualization';
-
+import { TaskModel } from '../../../../models';
+import { referenceForModel } from '../../../../module/k8s';
 
 const PipelineDetails = ({ obj: pipeline }) => (
   <div className="co-m-pane__body">
@@ -17,11 +17,20 @@ const PipelineDetails = ({ obj: pipeline }) => (
         <SectionHeading text="Tasks" />
         <dl>
           {pipeline.spec.tasks.map((task) => {
-           const path = resourcePath('Task', task.name, pipeline.metadata.namespace);
             return (
               <React.Fragment key={task.name}>
                 <dt>Name: {task.name}</dt>
-                <dd>Ref: <Link to={path}>{task.taskRef.name}</Link></dd>
+                <dd>
+                  <div style={{ display: 'flex' }}>
+                    <span style={{ marginRight: '5px' }}>Ref: </span>
+                    <ResourceLink
+                      kind={referenceForModel(TaskModel)}
+                      name={task.taskRef.name}
+                      namespace={pipeline.metadata.namespace}
+                      title={task.taskRef.name}
+                    />
+                  </div>
+                </dd>
               </React.Fragment>
             );
           })}
