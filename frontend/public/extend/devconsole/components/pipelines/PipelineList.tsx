@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable no-unused-vars, no-undef  */
 import * as React from 'react';
 import { Firehose } from '../../../../components/utils';
 import { List } from '../../../../components/factory';
@@ -7,12 +7,11 @@ import PipelineRow from './PipelineRow';
 import PipelineAugmentRuns from './PipelineAugmentRuns';
 import { getResources, PropPipelineData, Resource } from '../../utils/pipeline-augment';
 
-/* eslint-disable no-undef */
 export interface PipelineListProps {
   data?: PropPipelineData[];
 }
 
-const PipelineList = (props: PipelineListProps) => {
+const PipelineList: React.FC<PipelineListProps> = (props: PipelineListProps) => {
   const { propsReferenceForRuns, resources }: Resource = getResources(props);
   return resources && resources.length > 0 ? (
     <Firehose resources={resources}>
