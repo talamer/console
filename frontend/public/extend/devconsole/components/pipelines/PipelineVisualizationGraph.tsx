@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { PipelineVisualizationTask } from './PipelineVisualizationTask';
+import { ChevronCircleRightIcon } from '@patternfly/react-icons';
 import './PipelineVisualizationGraph.scss';
 import { Firehose } from '../../../../components/utils';
 
@@ -36,7 +37,9 @@ export const PipelineVisualizationGraph: React.FC<PipelineVisualizationGraphProp
     <div className="odc-pipeline__graph">
       <div className="odc-pipeline__stages">
         <div className="odc-pipeline__stage">
-          <div className="odc-pipeline__task input-node" />
+          <div className="odc-pipeline__task input-node" >
+          <ChevronCircleRightIcon/>
+          </div>
         </div>
         {graph.map((stage, i) => {
           const stageClassName = 'odc-pipeline__stage';

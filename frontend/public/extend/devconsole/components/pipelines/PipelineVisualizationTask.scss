@@ -20,6 +20,7 @@ $gutter: 1.8em;
     width: 2em;
     height: 2em;
     border-radius: 2em;
+    color: var(--pf-global--BackgroundColor--200);
     background: $border-color;
     &::after {
       content: '';
@@ -84,6 +85,9 @@ $gutter: 1.8em;
     overflow: hidden;
     white-space: nowrap;
     margin: 0px 8px;
+    &:hover {
+      cursor: pointer;
+    }
   }
   // Connect each task
   &:not(:first-child) {
