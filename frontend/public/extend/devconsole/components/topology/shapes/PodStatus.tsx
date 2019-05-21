@@ -4,6 +4,7 @@ import { VictoryPie } from 'victory';
 import { Pod } from '../topology-types';
 import Tooltip from './../SvgPodTooltip';
 import { podColor } from '../topology-utils';
+import { podPhase, podPhaseFilterReducer } from './../../../../../../public/module/k8s';
 
 const podStatus = Object.keys(podColor);
 
@@ -37,7 +38,7 @@ const PodStatus: React.FC<PodStatusProps> = ({
   podStatus.forEach((pod) => {
     let podNumber = 0;
     data.forEach((element) => {
-      if (element.status.phase === pod) {
+      if (podPhaseFilterReducer(element) === pod) {
         podNumber += 1;
       }
     });
