@@ -59,7 +59,7 @@ export const PipelineVisualizationGraph: React.FC<PipelineVisualizationGraphProp
                         },
                       ]}
                     >
-                      <PipelineVisualizationTask task={task.taskRef.name} namespace={namespace} />
+                      <PipelineVisualizationTask namespace={namespace} />
                     </Firehose>
                   );
                 })}

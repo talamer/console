@@ -3,10 +3,13 @@ import * as React from 'react';
 import { Tooltip } from '@patternfly/react-core';
 import { PipelineVisualizationStepList } from './PipelineVisualizationStepList';
 import './PipelineVisualizationTask.scss';
+import { K8sResourceKind } from 'public/module/k8s';
 interface TaskProps {
-  task: any;
-  namespace: string;
   loaded?: boolean;
+  task?: {
+    data: K8sResourceKind;
+  };
+  namespace: string;
 }
 
 export const PipelineVisualizationTask: React.FC<TaskProps> = (props) => {
