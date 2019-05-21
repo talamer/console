@@ -64,8 +64,8 @@ export const getLatestRun = (runs: Runs, field: string): Run => {
   if (!runs || !runs.data || !(runs.data.length > 0) || !field) {
     return {};
   }
+  let latestRun = runs.data[0];
   if (field === 'startTime' || field === 'completionTime') {
-    let latestRun = runs.data[0];
     for (let i = 1; i < runs.data.length; i++) {
       latestRun =
         runs.data[i] &&
@@ -75,13 +75,11 @@ export const getLatestRun = (runs: Runs, field: string): Run => {
           ? runs.data[i]
           : latestRun;
     }
-    latestRun.status.succeededCondition = pipelineRunFilterReducer(latestRun);
-    return latestRun;
   } else {
-    let latestRun = runs.data[runs.data.length - 1];
-    latestRun.status.succeededCondition = pipelineRunFilterReducer(latestRun);
-    return latestRun;
+    latestRun = runs.data[runs.data.length - 1];
   }
+  latestRun.status.succeededCondition = pipelineRunFilterReducer(latestRun);
+  return latestRun;
 };
 
 export const augmentRunsToData = (p: PipelineAugmentRunsProps) => {
