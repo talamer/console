@@ -15,9 +15,15 @@ const PipelineRow = ({ obj: pipeline }) => {
         />
       </div>
       <div className="col-lg-3 col-md-3 col-sm-4 col-xs-6">
-        {pipeline.latestRun && pipeline.latestRun.metadata && pipeline.latestRun.metadata.name
-          ? pipeline.latestRun.metadata.name
-          : '-'}
+        {pipeline.latestRun && pipeline.latestRun.metadata && pipeline.latestRun.metadata.name ? (
+          <ResourceLink
+            kind="PipelineRun"
+            name={pipeline.latestRun.metadata.name}
+            namespace={pipeline.latestRun.metadata.namespace}
+          />
+        ) : (
+          '-'
+        )}
       </div>
       <div className="col-lg-3 col-md-3 col-sm-4 hidden-xs">
         <StatusIcon status={pipelineFilterReducer(pipeline)} />
