@@ -198,7 +198,7 @@ export const samplePods: Resource = {
         },
       },
       spec: {
-        containers: []
+        containers: [],
       },
       status: {
         phase: 'Running',
@@ -237,7 +237,7 @@ export const samplePods: Resource = {
         },
       },
       spec: {
-        constainers: []
+        constainers: [],
       },
 
       status: {
@@ -277,7 +277,7 @@ export const samplePods: Resource = {
         },
       },
       spec: {
-        constainers: [  ]
+        constainers: [ ],
       },
 
       status: {
@@ -317,7 +317,7 @@ export const samplePods: Resource = {
         },
       },
       spec: {
-        containers: []
+        containers: [],
       },
 
       status: {

@@ -25,15 +25,8 @@ export const podColor = {
 
 export const podStatus = Object.keys(podColor);
 
-function isReady(pod) {
-  var numReady = numContainersReadyFilter(pod);
-  var total = _.size(pod.spec.containers);
-
-  return numReady === total;
-}
-
 function numContainersReadyFilter(pod) {
-  var numReady = 0;
+  let numReady = 0;
   _.forEach(pod.status.containerStatuses, function(status) {
     if (status.ready) {
       numReady++;
@@ -42,12 +35,11 @@ function numContainersReadyFilter(pod) {
   return numReady;
 }
 
-export function getPodStatus(pod) {
-  if(_.has(pod, 'metadata.deletionTimestamp')) return 'Terminating';
-  var warning = podWarnings(pod);
-  if (warning !== null) return warning;
-  if(pod.status.phase === 'Running' && !isReady(pod)) return 'Not Ready';
-  return _.get(pod, 'status.phase', 'Unknown');
+function isReady(pod) {
+  const numReady = numContainersReadyFilter(pod);
+  const total = _.size(pod.spec.containers);
+
+  return numReady === total;
 }
 
 function isContainerFailedFilter(containerStatus) {
@@ -55,7 +47,9 @@ function isContainerFailedFilter(containerStatus) {
 }
 
 function isContainerLoopingFilter(containerStatus) {
-  return containerStatus.state.waiting && containerStatus.state.waiting.reason === 'CrashLoopBackOff';
+  return (
+    containerStatus.state.waiting && containerStatus.state.waiting.reason === 'CrashLoopBackOff'
+  );
 }
 
 function podWarnings(pod) {
@@ -67,17 +61,31 @@ function podWarnings(pod) {
 
       if (isContainerFailedFilter(containerStatus)) {
         if (_.has(pod, 'metadata.deletionTimestamp')) {
-         return 'Failed'
-        } else {
-         return 'Warning'
+          return 'Failed';
         }
+        return 'Warning';
+
       }
       if (isContainerLoopingFilter(containerStatus)) {
-        return 'Failed'
+        return 'Failed';
       }
     });
   }
   return null;
+}
+
+export function getPodStatus(pod) {
+  if (_.has(pod, 'metadata.deletionTimestamp')) {
+    return 'Terminating';
+  }
+  const warning = podWarnings(pod);
+  if (warning !== null) {
+    return warning;
+  }
+  if (pod.status.phase === 'Running' && !isReady(pod)) {
+    return 'Not Ready';
+  }
+  return _.get(pod, 'status.phase', 'Unknown');
 }
 
 export class TransformTopologyData {
@@ -160,7 +168,7 @@ export class TransformTopologyData {
           return resource;
         }),
         data: {
-          url: !_.isEmpty(route.spec) ? getRouteWebURL(route): null,
+          url: !_.isEmpty(route.spec) ? getRouteWebURL(route) : null,
           editUrl: deploymentsAnnotations['app.openshift.io/edit-url'],
           builderImage: deploymentsLabels['app.kubernetes.io/name'],
           donutStatus: {
