@@ -5,6 +5,7 @@ import TopologyDataController, { TopologyDataControllerProps } from '../Topology
 import { resources } from '../__mocks__/TopologyDataMocks';
 import { renderTopology } from '../../../pages/Topology';
 import ODCEmptyState from '../../../shared/components/EmptyState/EmptyState';
+import { ALL_APPLICATIONS_KEY } from '../../../../../const';
 
 describe('TopologyDataController', () => {
   const props = {
@@ -15,7 +16,7 @@ describe('TopologyDataController', () => {
   };
   let wrapper: ShallowWrapper<TopologyDataControllerProps>;
   beforeEach(() => {
-    wrapper = shallow(<TopologyDataController namespace="namespace" {...props} />);
+    wrapper = shallow(<TopologyDataController application={ALL_APPLICATIONS_KEY} namespace="namespace" {...props} />);
   });
 
   it('renders a topologyDataController', () => {
