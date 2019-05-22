@@ -4,7 +4,6 @@ import * as cx from 'classnames';
 import { PipelineVisualizationTask } from './PipelineVisualizationTask';
 import { ChevronCircleRightIcon } from '@patternfly/react-icons';
 import './PipelineVisualizationGraph.scss';
-import { Firehose } from '../../../../components/utils';
 
 interface Resources {
   inputs?: Resource[];
@@ -26,7 +25,7 @@ export interface PipelineVisualizationTaskItem {
   };
 }
 export interface PipelineVisualizationGraphProps {
-  graph: Array<PipelineVisualizationTaskItem[]>;
+  graph: PipelineVisualizationTaskItem[][];
   namespace: string;
 }
 
@@ -51,19 +50,11 @@ export const PipelineVisualizationGraph: React.FC<PipelineVisualizationGraphProp
               <ul className="odc-pipeline-vis-graph__stage-column">
                 {stage.map((task, j) => {
                   return (
-                    <Firehose
+                    <PipelineVisualizationTask
                       key={`${task.taskRef.name}:${i + j}`}
-                      resources={[
-                        {
-                          kind: 'Task',
-                          name: task.taskRef.name,
-                          namespace,
-                          prop: 'task',
-                        },
-                      ]}
-                    >
-                      <PipelineVisualizationTask namespace={namespace} />
-                    </Firehose>
+                      task={task.name}
+                      namespace={namespace}
+                    />
                   );
                 })}
               </ul>

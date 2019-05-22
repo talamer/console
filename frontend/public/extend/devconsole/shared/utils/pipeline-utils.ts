@@ -45,7 +45,7 @@ const sortTasksByRunAfterAndFrom = (
 
 export const getPipelineTasks = (
   taskList: PipelineVisualizationTaskItem[],
-): Array<PipelineVisualizationTaskItem[]> => {
+): PipelineVisualizationTaskItem[][] => {
   // Each unit in 'out' array is termed as stage | out = [stage1 = [task1], stage2 = [task2,task3], stage3 = [task4]]
   const out = [];
   //Step 1: Sort Tasks to get in correct order

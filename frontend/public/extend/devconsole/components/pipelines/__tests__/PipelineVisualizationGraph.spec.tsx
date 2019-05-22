@@ -11,6 +11,7 @@ jest.mock('react-dom', () => ({
   createPortal: (node) => node,
 }));
 
+jest.mock('../PipelineVisualizationTask');
 describe('PipelineVisualizationGraph', () => {
   const props = {
     namespace: 'test',
@@ -26,7 +27,7 @@ describe('PipelineVisualizationGraph', () => {
   });
 
   it('should contain right number of stages', () => {
-    const noOfStages = wrapper.find('.odc-pipeline__stage-column').length;
+    const noOfStages = wrapper.find('.odc-pipeline-vis-graph__stage-column').length;
 
     expect(noOfStages).toEqual(mockPipelineGraph.length);
   });
