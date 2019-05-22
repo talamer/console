@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars, no-undef */
+/* eslint-disable no-unused-vars, no-undef, no-shadow */
 import * as React from 'react';
 import { VictoryPie } from 'victory';
 import { Pod } from '../topology-types';

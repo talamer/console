@@ -4,7 +4,6 @@ import * as React from 'react';
 import * as fuzzy from 'fuzzysearch';
 import { Dropdown, LoadingInline } from '../../../../../components/utils';
 import { K8sResourceKind } from '../../../../../module/k8s';
-import { Many } from 'lodash';
 
 type FirehoseList = {
   data?: K8sResourceKind[];
@@ -34,7 +33,7 @@ interface LabelDropdownProps {
     actionTitle: string;
     actionKey: string;
   };
-  dataSelector: Many<string | number | symbol>;
+  dataSelector: string | number | symbol;
   loaded?: boolean;
   loadError?: string;
   placeholder?: string;

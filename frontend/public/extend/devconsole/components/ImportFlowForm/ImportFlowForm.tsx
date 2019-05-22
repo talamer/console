@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+/* eslint-disable no-undef, dot-notation */
 import * as React from 'react';
 import * as fuzzy from 'fuzzysearch';
 import { Base64 } from 'js-base64';
@@ -291,9 +291,9 @@ export class ImportFlowForm extends React.Component<Props, State> {
     const encodedCredentials =
       this.state.secretAuthType && this.state.secretAuthType === 'kubernetes.io/basic-auth'
         ? {
-            username: Base64.encode(this.state.secretCredentials.username),
-            password: Base64.encode(this.state.secretCredentials.password),
-          }
+          username: Base64.encode(this.state.secretCredentials.username),
+          password: Base64.encode(this.state.secretCredentials.password),
+        }
         : this.state.secretCredentials;
     return {
       apiVersion: 'v1',
@@ -440,7 +440,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
   onSubmit = (event) => {
     event.preventDefault();
     if (!this.disableSubmitButton()) {
-      let promises = [this.createGitSourceComponent()];
+      const promises = [this.createGitSourceComponent()];
       if (this.state.showSourceSecretDropDown && this.state.selectedSourceSecret) {
         promises.unshift(this.createGitSource());
         if (this.state.selectedSourceSecret === 'create-source-secret') {
