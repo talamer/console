@@ -137,9 +137,10 @@ export class TransformTopologyData {
     }
     const targetDeploymentsKind = this._deploymentKindMap[targetDeployment].dcKind;
 
-    console.log('##########', this.resources[targetDeployment].data, this.application);
+    // filter data based on the active application
+    let resourceData = this.filterBasedOnActiveApplication(this.resources[targetDeployment].data);
 
-    _.forEach(this.resources[targetDeployment].data, (deploymentConfig) => {
+    _.forEach(resourceData, (deploymentConfig) => {
       deploymentConfig.kind = targetDeploymentsKind;
       const dcUID = _.get(deploymentConfig, 'metadata.uid');
 
@@ -186,6 +187,21 @@ export class TransformTopologyData {
       } as TopologyDataObject<WorkloadData>;
     });
     return this;
+  }
+
+  /**
+   * filter data based on the active application
+   * @param data
+   */
+  private filterBasedOnActiveApplication(data) {
+    const PART_OF = 'app.kubernetes.io/part-of'
+    if(this.application && this.application === '#ALL_APPS#') {
+      return data;
+    } else {
+      return data.filter(dc => {
+        return dc.metadata.labels[PART_OF] && dc.metadata.labels[PART_OF] === this.application;
+      });
+    }
   }
 
   /**
