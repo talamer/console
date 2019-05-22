@@ -15,7 +15,7 @@ const PipelineAugmentRuns: React.FC<PipelineAugmentRunsProps> = (
 ) => {
   const newProps = Object.assign({}, props);
   newProps.data = augmentRunsToData(props);
-  return <List {...newProps} Header={PipelineHeader} Row={PipelineRow} />;
+  return <List {...props} data={augmentRunsToData(props)} Header={PipelineHeader} Row={PipelineRow} />;
 };
 
 export default PipelineAugmentRuns;
