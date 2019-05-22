@@ -78,6 +78,9 @@ Object {
                 "uid": "19e6c6a5-680f-11e9-8c69-5254003f9382",
               },
               "name": "nodejs-1-2v82p",
+              "spec": Object {
+                "containers": Array [],
+              },
               "status": Object {
                 "phase": "Running",
               },
@@ -267,6 +270,9 @@ Object {
                 "uid": "5cec460e-680d-11e9-8c69-5254003f9382",
               },
               "name": "analytics-deployment-59dd7c47d4-2jp7t",
+              "spec": Object {
+                "containers": Array [],
+              },
               "status": Object {
                 "phase": "Running",
               },
