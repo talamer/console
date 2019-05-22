@@ -84,9 +84,9 @@ describe('TopologyUtils ', () => {
     transformTopologyData.transformDataBy('deploymentConfigs');
     transformTopologyData.transformDataBy('deployments');
     const result = transformTopologyData.getTopologyData();
-    let topologyData = result.topology;
-    let keys = Object.keys(topologyData);
-    let status = getPodStatus(topologyData[keys[0]].data['donutStatus'].pods[0]);
-    expect(podStatus.includes(status)).toBe(true)
+    const topologyTransformedData = result.topology;
+    const keys = Object.keys(topologyTransformedData);
+    const status = getPodStatus(topologyTransformedData[keys[0]].data["donutStatus"].pods[0]);
+    expect(podStatus.includes(status)).toBe(true);
   });
 });

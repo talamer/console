@@ -65,6 +65,6 @@ const mapStateToProps = (state) => {
   return {
     activeApplication: getActiveApplication(state),
   };
-}
+};
 
 export default connect(mapStateToProps)(TopologyPage);
