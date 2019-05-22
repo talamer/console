@@ -106,7 +106,7 @@ export class TransformTopologyData {
   private _selectorsByService;
   private _allServices;
 
-  constructor(public resources: TopologyDataResources) {
+  constructor(public resources: TopologyDataResources, public application: string) {
     this._allServices = _.keyBy(this.resources.services.data, 'metadata.name');
     this._selectorsByService = this.getSelectorsByService();
   }
@@ -136,6 +136,8 @@ export class TransformTopologyData {
       return this;
     }
     const targetDeploymentsKind = this._deploymentKindMap[targetDeployment].dcKind;
+
+    console.log('##########', this.resources[targetDeployment].data, this.application);
 
     _.forEach(this.resources[targetDeployment].data, (deploymentConfig) => {
       deploymentConfig.kind = targetDeploymentsKind;

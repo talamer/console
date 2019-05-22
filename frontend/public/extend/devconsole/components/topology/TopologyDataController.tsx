@@ -15,23 +15,25 @@ export interface ControllerProps {
   loadError?: any;
   resources?: TopologyDataResources;
   render(RenderProps): React.ReactNode;
+  application: string;
 }
 
 export interface TopologyDataControllerProps {
   namespace: string;
   render(RenderProps): React.ReactNode;
+  application: string;
 }
 
 // TODO cannot use React.FC due to typing issue
 class Controller extends React.PureComponent<ControllerProps> {
   render() {
-    const { render, resources, loaded, loadError } = this.props;
+    const { render, application, resources, loaded, loadError } = this.props;
 
     return render({
       loaded,
       loadError,
       data: loaded
-        ? new TransformTopologyData(resources)
+        ? new TransformTopologyData(resources, application)
           .transformDataBy('deployments')
           .transformDataBy('deploymentConfigs')
           .getTopologyData()
@@ -44,7 +46,7 @@ export default class TopologyDataController extends React.PureComponent<
   TopologyDataControllerProps
   > {
   render() {
-    const { namespace, render } = this.props;
+    const { namespace, render, application } = this.props;
     const resources = [
       {
         isList: true,
@@ -97,7 +99,7 @@ export default class TopologyDataController extends React.PureComponent<
     ];
     return (
       <Firehose resources={resources} forceUpdate>
-        <Controller render={render} />
+        <Controller application={application} render={render} />
       </Firehose>
     );
   }
