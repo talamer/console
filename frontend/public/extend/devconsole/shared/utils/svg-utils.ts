@@ -28,7 +28,7 @@ function roundedHull1(polyPoints: Point[], hp: HullPaddingGetter): string {
   const p1 = [polyPoints[0][0], polyPoints[0][1] - padding];
   const p2 = [polyPoints[0][0], polyPoints[0][1] + padding];
 
-  return `M ${p1} A ${padding},${padding},0,0,0,${p2} A ${padding},${padding},0,0,0,${p1}}`;
+  return `M ${p1} A ${padding},${padding},0,0,0,${p2} A ${padding},${padding},0,0,0,${p1}`;
 }
 
 // Returns the path for a rounded hull around two points (a "capsule" shape).
