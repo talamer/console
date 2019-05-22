@@ -3,21 +3,20 @@
 import { TransformTopologyData, getPodStatus, podStatus } from '../topology-utils';
 import { resources, topologyData } from '../__mocks__/TopologyDataMocks';
 import { MockResources } from '../__mocks__/TopologyResourcesMocks';
-import { ALL_APPLICATIONS_KEY } from '../../../../../const';
 
 describe('TopologyUtils ', () => {
   it('should be able to create an object', () => {
-    const transformTopologyData = new TransformTopologyData(resources, ALL_APPLICATIONS_KEY);
+    const transformTopologyData = new TransformTopologyData(resources, undefined);
     expect(transformTopologyData).toBeTruthy();
   });
 
   it('should have the resources object as a public member', () => {
-    const transformTopologyData = new TransformTopologyData(resources, ALL_APPLICATIONS_KEY);
+    const transformTopologyData = new TransformTopologyData(resources, undefined);
     expect(transformTopologyData.resources).toEqual(resources);
   });
 
   it('should throw an error, if the invalid target deployment string is provided', () => {
-    const transformTopologyData = new TransformTopologyData(resources, ALL_APPLICATIONS_KEY);
+    const transformTopologyData = new TransformTopologyData(resources, undefined);
     const invalidTargetDeployment = 'dconfig'; // valid values are 'deployments' or 'deploymentConfigs'
     expect(() => {
       transformTopologyData.transformDataBy(invalidTargetDeployment);
@@ -25,19 +24,19 @@ describe('TopologyUtils ', () => {
   });
 
   it('should not throw an error, if the valid target deployment string is provided', () => {
-    const transformTopologyData = new TransformTopologyData(resources, ALL_APPLICATIONS_KEY);
+    const transformTopologyData = new TransformTopologyData(resources, undefined);
     const validTargetDeployment = 'deployments'; // valid values are 'deployments' or 'deploymentConfigs'
     expect(() => {
       transformTopologyData.transformDataBy(validTargetDeployment);
     }).not.toThrowError(`Invalid target deployment resource: (${validTargetDeployment})`);
   });
   it('should return graph and topology data', () => {
-    const transformTopologyData = new TransformTopologyData(resources, ALL_APPLICATIONS_KEY);
+    const transformTopologyData = new TransformTopologyData(resources, undefined);
     transformTopologyData.transformDataBy('deployments');
     expect(transformTopologyData.getTopologyData()).toEqual(topologyData);
   });
   it('should return graph and topology data only for the deployment kind', () => {
-    const transformTopologyData = new TransformTopologyData(MockResources, ALL_APPLICATIONS_KEY);
+    const transformTopologyData = new TransformTopologyData(MockResources, undefined);
     transformTopologyData.transformDataBy('deployments');
     const result = transformTopologyData.getTopologyData();
 
@@ -46,7 +45,7 @@ describe('TopologyUtils ', () => {
   });
 
   it('should contain edges information for the deployment kind', () => {
-    const transformTopologyData = new TransformTopologyData(MockResources, ALL_APPLICATIONS_KEY);
+    const transformTopologyData = new TransformTopologyData(MockResources, undefined);
     transformTopologyData.transformDataBy('deployments');
     const result = transformTopologyData.getTopologyData();
     // check if edges are connected between analytics -> wit
@@ -56,7 +55,7 @@ describe('TopologyUtils ', () => {
   });
 
   it('should return graph and topology data only for the deploymentConfig kind', () => {
-    const transformTopologyData = new TransformTopologyData(MockResources, ALL_APPLICATIONS_KEY);
+    const transformTopologyData = new TransformTopologyData(MockResources, undefined);
     transformTopologyData.transformDataBy('deploymentConfigs');
     const result = transformTopologyData.getTopologyData();
 
@@ -67,14 +66,14 @@ describe('TopologyUtils ', () => {
   });
 
   it('should not have group information if the `part-of` label is missing', () => {
-    const transformTopologyData = new TransformTopologyData(MockResources, ALL_APPLICATIONS_KEY);
+    const transformTopologyData = new TransformTopologyData(MockResources, undefined);
     transformTopologyData.transformDataBy('deploymentConfigs');
     const result = transformTopologyData.getTopologyData();
     expect(result.graph.groups).toHaveLength(0);
   });
 
   it('should match the previous snapshot', () => {
-    const transformTopologyData = new TransformTopologyData(MockResources, ALL_APPLICATIONS_KEY);
+    const transformTopologyData = new TransformTopologyData(MockResources, undefined);
     transformTopologyData.transformDataBy('deploymentConfigs');
     transformTopologyData.transformDataBy('deployments');
     const result = transformTopologyData.getTopologyData();
@@ -82,7 +81,7 @@ describe('TopologyUtils ', () => {
   });
 
   it('should return a valid pod status', () => {
-    const transformTopologyData = new TransformTopologyData(MockResources, ALL_APPLICATIONS_KEY);
+    const transformTopologyData = new TransformTopologyData(MockResources, undefined);
     transformTopologyData.transformDataBy('deploymentConfigs');
     transformTopologyData.transformDataBy('deployments');
     const result = transformTopologyData.getTopologyData();

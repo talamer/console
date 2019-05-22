@@ -9,7 +9,6 @@ import {
   TopologyDataObject,
   WorkloadData,
 } from './topology-types';
-import { ALL_APPLICATIONS_KEY } from '../../../../const';
 
 export const podColor = {
   Running: '#0066CC',
@@ -195,7 +194,7 @@ export class TransformTopologyData {
    */
   private filterBasedOnActiveApplication(data) {
     const PART_OF = 'app.kubernetes.io/part-of';
-    if (this.application && this.application === ALL_APPLICATIONS_KEY) {
+    if (!this.application) {
       return data;
     }
     return data.filter(dc => {
