@@ -195,7 +195,10 @@ export default class D3ForceDirectedRenderer extends React.Component<
       .force(
         'link',
         d3
-          .forceLink(this.state.edges.map((d) => this.state.edgesById[d]))
+          .forceLink([
+            ...this.state.edges.map((d) => this.state.edgesById[d]),
+            ...this.createGroupLinks(),
+          ])
           .id((d: ViewNode) => d.id),
       )
       .on('tick', () => this.forceUpdate())
@@ -208,13 +211,20 @@ export default class D3ForceDirectedRenderer extends React.Component<
       this.simulation.force('center', d3.forceCenter(this.props.width / 2, this.props.height / 2));
       restart = true;
     }
-    if (prevState.nodes !== this.state.nodes || prevState.edges !== this.state.edges) {
+    if (
+      prevState.nodes !== this.state.nodes ||
+      prevState.edges !== this.state.edges ||
+      prevState.groups !== this.state.groups
+    ) {
       this.simulation
         .nodes(this.state.nodes.map((d) => this.state.nodesById[d]))
         .force(
           'link',
           d3
-            .forceLink(this.state.edges.map((d) => this.state.edgesById[d]))
+            .forceLink([
+              ...this.state.edges.map((d) => this.state.edgesById[d]),
+              ...this.createGroupLinks(),
+            ])
             .id((d: ViewNode) => d.id),
         )
         .alpha(0.2);
@@ -227,6 +237,24 @@ export default class D3ForceDirectedRenderer extends React.Component<
 
   componentWillUnmount() {
     this.simulation.stop();
+  }
+
+  createGroupLinks(): any[] {
+    const { groups, groupsById } = this.state;
+    const groupLinks = [];
+    // link each node within a group together to form group clusters
+    groups.forEach((g) => {
+      const { nodes } = groupsById[g];
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          groupLinks.push({
+            source: nodes[i],
+            target: nodes[j],
+          });
+        }
+      }
+    });
+    return groupLinks;
   }
 
   onZoom = () => {
