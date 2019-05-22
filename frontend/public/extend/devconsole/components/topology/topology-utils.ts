@@ -17,23 +17,11 @@ export const podColor = {
   Warning: '#F0AB00',
   Empty: '#FFFFFF',
   Failed: '#CC0000',
-  Pulling: '#d1d1d1',
   Pending: '#8BC1F7',
   Succceeded: '#519149',
   Terminating: '#002F5D',
   Unknown: '#A18FFF',
 };
-
-function isPullingImage (pod) {
-  if(!pod) return false;
-  if(_.get(pod, 'status.phase') !== 'Pending') return false;
-  let containerStatuses = _.get(pod, 'status.containerStatuses')
-  if(!containerStatuses) return false;
-  var containerPulling = function(containerStatus) {
-    return _.get(containerStatus, 'state.waiting.reason') === 'ContainerCreating';
-  };
-  return _.some(containerStatuses, containerPulling);
-}
 
 function isReady(pod) {
   var numReady = numContainersReadyFilter(pod);
@@ -56,7 +44,6 @@ export function getPodStatus(pod) {
   if(_.has(pod, 'metadata.deletionTimestamp')) return 'Terminating';
   var warning = podWarnings(pod);
   if (warning !== null) return warning;
-  if(isPullingImage(pod)) return 'Pulling';
   if(pod.status.phase === 'Running' && !isReady(pod)) return 'Not Ready';
   return _.get(pod, 'status.phase', 'Unknown');
 }
