@@ -23,6 +23,8 @@ export const podColor = {
   Unknown: '#A18FFF',
 };
 
+export const podStatus = Object.keys(podColor);
+
 function isReady(pod) {
   var numReady = numContainersReadyFilter(pod);
   var total = _.size(pod.spec.containers);

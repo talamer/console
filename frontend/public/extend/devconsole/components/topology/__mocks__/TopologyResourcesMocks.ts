@@ -197,7 +197,9 @@ export const samplePods: Resource = {
           'pod-template-hash': '1588370380',
         },
       },
-      spec: {},
+      spec: {
+        containers: []
+      },
       status: {
         phase: 'Running',
       },
@@ -234,7 +236,9 @@ export const samplePods: Resource = {
           'pod-template-hash': '1588370380',
         },
       },
-      spec: {},
+      spec: {
+        constainers: []
+      },
 
       status: {
         phase: 'Running',
@@ -272,7 +276,9 @@ export const samplePods: Resource = {
           'pod-template-hash': '1588370380',
         },
       },
-      spec: {},
+      spec: {
+        constainers: [  ]
+      },
 
       status: {
         phase: 'Running',
@@ -310,7 +316,9 @@ export const samplePods: Resource = {
           deploymentconfig: 'nodejs',
         },
       },
-      spec: {},
+      spec: {
+        containers: []
+      },
 
       status: {
         phase: 'Running',

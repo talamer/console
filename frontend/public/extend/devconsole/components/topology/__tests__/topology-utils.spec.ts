@@ -1,4 +1,4 @@
-import { TransformTopologyData } from '../topology-utils';
+import { TransformTopologyData, getPodStatus, podStatus } from '../topology-utils';
 import { resources, topologyData } from '../__mocks__/TopologyDataMocks';
 import { MockResources } from '../__mocks__/TopologyResourcesMocks';
 
@@ -77,4 +77,16 @@ describe('TopologyUtils ', () => {
     const result = transformTopologyData.getTopologyData();
     expect(result).toMatchSnapshot();
   });
+
+  it('should return a valid pod status', () => {
+    const transformTopologyData = new TransformTopologyData(MockResources);
+    transformTopologyData.transformDataBy('deploymentConfigs');
+    transformTopologyData.transformDataBy('deployments');
+    const result = transformTopologyData.getTopologyData();
+    let topologyData = result.topology;
+    let keys = Object.keys(topologyData);
+    let status = getPodStatus(topologyData[keys[0]].data['donutStatus'].pods[0]);
+    expect(podStatus.includes(status)).toBe(true)
+  });
+
 });

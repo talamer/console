@@ -3,9 +3,7 @@ import * as React from 'react';
 import { VictoryPie } from 'victory';
 import { Pod } from '../topology-types';
 import Tooltip from './../SvgPodTooltip';
-import { podColor, getPodStatus } from '../topology-utils';
-
-const podStatus = Object.keys(podColor);
+import { podColor, getPodStatus, podStatus } from '../topology-utils';
 
 type PodData = {
   x: string;
