@@ -1,17 +1,14 @@
-.odc-pipeline__steps {
+.odc-pipeline-vis-steps-list {
   list-style: none;
   padding: 0;
   width: 10em;
-  &.newClass {
-    background: red;
-  }
   & > li {
     padding: 5px;
     border-radius: 10px;
     margin-bottom: 10px;
     border: 1px solid var(--pf-global--BorderColor--light);
-    background: #fafafa;
-    color: black;
+    background: var(--pf-global--BackgroundColor--200);
+    color: var(--pf-global--Color--dark-100);
     justify-content: center;
     align-items: center;
     display: flex;

@@ -2,8 +2,8 @@
 import * as React from 'react';
 import { Tooltip } from '@patternfly/react-core';
 import { PipelineVisualizationStepList } from './PipelineVisualizationStepList';
+import { K8sResourceKind } from '../../../../module/k8s';
 import './PipelineVisualizationTask.scss';
-import { K8sResourceKind } from 'public/module/k8s';
 interface TaskProps {
   loaded?: boolean;
   task?: {
@@ -14,22 +14,29 @@ interface TaskProps {
 
 export const PipelineVisualizationTask: React.FC<TaskProps> = (props) => {
   const task = props.task.data;
-  if (!props.loaded || !Object.keys(task).length) {
-    return null;
-  }
   return (
-    <li className="odc-pipeline__task">
-      <div className="title">
-        <Tooltip
-          position="bottom"
-          content={<PipelineVisualizationStepList steps={task.spec.steps || []} />}
-        >
-          <span className="truncate">{task.metadata.name}</span>
-        </Tooltip>
-      </div>
-      {task.status && task.status.conditions && <div className="status done" />}
-      {task.status &&
-        task.status.taskruns && <div className="stepcount">({task.spec.steps.length})</div>}
+    <li className="odc-pipeline-vis-task">
+      <Tooltip
+        position="bottom"
+        enableFlip={false}
+        content={
+          <PipelineVisualizationStepList
+            steps={task.spec && task.spec.steps ? task.spec.steps : []}
+          />
+        }
+      >
+        <div className="odc-pipeline-vis-task__content">
+          <div className="odc-pipeline-vis-task__title">
+            <span className="">{task.metadata ? task.metadata.name : ''}</span>
+          </div>
+          {task.status &&
+            task.status.conditions && <div className="odc-pipeline-vis-task__status is-done" />}
+          {task.status &&
+            task.status.taskruns && (
+            <div className="odc-pipeline-vis-task__stepcount">({task.spec.steps.length})</div>
+          )}
+        </div>
+      </Tooltip>
     </li>
   );
 };

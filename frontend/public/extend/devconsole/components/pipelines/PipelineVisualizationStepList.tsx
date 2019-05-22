@@ -7,15 +7,10 @@ export interface PipelineVisualizationStepListProps {
 }
 export const PipelineVisualizationStepList: React.FC<PipelineVisualizationStepListProps> = ({
   steps,
-}) => {
-  if (steps.length === 0) {
-    return null;
-  }
-  return (
-    <ul className="odc-pipeline__steps">
-      {steps.map((step, i) => {
-        return <li key={step.name + i}>{step.name}</li>;
-      })}
-    </ul>
-  );
-};
+}) => (
+  <ul className="odc-pipeline-vis-steps-list">
+    {steps.map((step, i) => {
+      return <li key={step.name + i}>{step.name}</li>;
+    })}
+  </ul>
+);

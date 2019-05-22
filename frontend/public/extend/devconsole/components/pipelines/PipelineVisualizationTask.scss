@@ -1,22 +1,24 @@
 $border-color: var(--pf-global--BorderColor--light);
 $gutter: 1.8em;
-
-.odc-pipeline__task {
+.odc-pipeline-vis-task {
   position: relative;
   width: 13em;
   height: 2em;
   white-space: normal;
   border: 1px solid $border-color;
   border-radius: 5px;
-  background-color: #fafafa;
+  background-color: var(--pf-global--BackgroundColor--200);
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   margin-top: 1.5em;
   padding: 0.5em;
-
-  &.input-node {
+  &__content {
+    width: inherit;
+    display: flex;
+  }
+  &.is-input-node {
     width: 2em;
     height: 2em;
     border-radius: 2em;
@@ -35,18 +37,12 @@ $gutter: 1.8em;
     margin-top: 3em;
   }
 
-  & .steps {
-    position: absolute;
-    top: -4px;
-    transform: translateY(-100%);
-  }
-
-  & .stepcount {
+  &__stepcount {
     margin: 0 4px;
     white-space: nowrap;
   }
 
-  & .status {
+  &__status {
     margin: 0 4px;
     border-radius: 100%;
     width: 1.5em;
@@ -55,19 +51,19 @@ $gutter: 1.8em;
     flex-shrink: 0;
     order: -1;
 
-    &.done {
+    &.is-done {
       background: green;
     }
 
-    &.running {
+    &.is-running {
       background: blue;
     }
 
-    &.error {
+    &.is-error {
       background: red;
     }
 
-    &.idle {
+    &.is-idle {
       background: grey;
     }
   }
@@ -78,7 +74,7 @@ $gutter: 1.8em;
     white-space: nowrap;
   }
 
-  & .title {
+  &__title {
     flex-grow: 1;
     flex-shrink: 1;
     text-overflow: ellipsis;

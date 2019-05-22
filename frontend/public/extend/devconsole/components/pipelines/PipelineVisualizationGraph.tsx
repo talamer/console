@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
+import * as cx from 'classnames';
 import { PipelineVisualizationTask } from './PipelineVisualizationTask';
 import { ChevronCircleRightIcon } from '@patternfly/react-icons';
 import './PipelineVisualizationGraph.scss';
@@ -34,21 +35,20 @@ export const PipelineVisualizationGraph: React.FC<PipelineVisualizationGraphProp
   namespace,
 }) => {
   return (
-    <div className="odc-pipeline__graph">
-      <div className="odc-pipeline__stages">
-        <div className="odc-pipeline__stage">
-          <div className="odc-pipeline__task input-node" >
-          <ChevronCircleRightIcon/>
+    <div className="odc-pipeline-vis-graph">
+      <div className="odc-pipeline-vis-graph__stages">
+        <div className="odc-pipeline-vis-graph__stage">
+          <div className="odc-pipeline-vis-task is-input-node">
+            <ChevronCircleRightIcon />
           </div>
         </div>
         {graph.map((stage, i) => {
-          const stageClassName = 'odc-pipeline__stage';
           return (
             <div
-              className={stage.length <= 1 ? stageClassName : `${stageClassName}--is-parallel`}
+              className={cx('odc-pipeline-vis-graph__stage', { 'is-parallel': stage.length > 1 })}
               key={`stage:${i}`}
             >
-              <ul className="odc-pipeline__stage-column">
+              <ul className="odc-pipeline-vis-graph__stage-column">
                 {stage.map((task, j) => {
                   return (
                     <Firehose

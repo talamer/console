@@ -1,12 +1,12 @@
 $border-color: var(--pf-global--BorderColor--light);
 $gutter: 1.8em;
 
-.odc-pipeline__graph {
-  background: white;
-  padding: 10px;
-  margin: 10px 0;
-  width: 80vw;
+.odc-pipeline-vis-graph {
+  background: var(--pf-global--BackgroundColor--100);
+  padding: var(--pf-global--spacer--md);
+  margin: var(--pf-global--spacer--md) 0;
   height: 20em;
+  width: 75vw;
   overflow: auto;
   position: relative;
   -webkit-overflow-scrolling: touch;
@@ -18,16 +18,16 @@ $gutter: 1.8em;
     margin: 0;
   }
 
-  & .odc-pipeline__stages {
+  &__stages {
     display: inline-flex;
   }
 
-  & .odc-pipeline__stage,
-  .odc-pipeline__stage--is-parallel {
+  &__stage,
+  &__Stage.is-parallel {
     margin: 0 2em;
 
     &:not(:first-child) {
-      & .odc-pipeline__task:first-child {
+      & .odc-pipeline-vis-task:first-child {
         &::before {
           content: '';
           position: absolute;
@@ -41,8 +41,8 @@ $gutter: 1.8em;
     }
   }
 
-  .odc-pipeline__stage--is-parallel {
-    & .odc-pipeline__task {
+  &__stage.is-parallel {
+    & .odc-pipeline-vis-task {
       &:first-child {
         &::before,
         &::after {
@@ -50,7 +50,7 @@ $gutter: 1.8em;
           position: absolute;
           top: 1em;
           border-top: 1px solid $border-color;
-          width: $gutter / 2 + 1;
+          width: $gutter * 1.7 + 1;
           height: 0;
         }
         &::before {
@@ -64,7 +64,7 @@ $gutter: 1.8em;
       }
     }
     &:last-child {
-      & .odc-pipeline__task:first-child {
+      & .odc-pipeline-vis-task:first-child {
         &::after {
           content: '';
           width: $gutter / 2 + 0.05;
@@ -72,8 +72,8 @@ $gutter: 1.8em;
       }
     }
   }
-  &:not(.odc-pipeline__stage--is-parallel) {
-    & .odc-pipeline__task:first-child {
+  &__stage:not(.is-parallel) {
+    & .odc-pipeline-vis-task:first-child {
       &::before {
         left: 0;
         transform: translateX(-100%);

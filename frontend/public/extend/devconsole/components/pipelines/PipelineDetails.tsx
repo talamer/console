@@ -21,15 +21,14 @@ const PipelineDetails = ({ obj: pipeline }) => (
               <React.Fragment key={task.name}>
                 <dt>Name: {task.name}</dt>
                 <dd>
-                  <div style={{ display: 'flex' }}>
-                    <span style={{ marginRight: '5px' }}>Ref: </span>
-                    <ResourceLink
-                      kind={referenceForModel(TaskModel)}
-                      name={task.taskRef.name}
-                      namespace={pipeline.metadata.namespace}
-                      title={task.taskRef.name}
-                    />
-                  </div>
+                  Ref:{' '}
+                  <ResourceLink
+                    kind={referenceForModel(TaskModel)}
+                    name={task.taskRef.name}
+                    namespace={pipeline.metadata.namespace}
+                    title={task.taskRef.name}
+                    inline
+                  />
                 </dd>
               </React.Fragment>
             );
