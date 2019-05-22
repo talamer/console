@@ -9,6 +9,7 @@ import {
   TopologyDataObject,
   WorkloadData,
 } from './topology-types';
+import {} from 'moment';
 
 export const podColor = {
   Running: '#0066CC',
@@ -22,6 +23,73 @@ export const podColor = {
   Terminating: '#002F5D',
   Unknown: '#A18FFF',
 };
+
+function isPullingImage (pod) {
+  if(!pod) return false;
+  if(_.get(pod, 'status.phase') !== 'Pending') return false;
+  let containerStatuses = _.get(pod, 'status.containerStatuses')
+  if(!containerStatuses) return false;
+  var containerPulling = function(containerStatus) {
+    return _.get(containerStatus, 'state.waiting.reason') === 'ContainerCreating';
+  };
+  return _.some(containerStatuses, containerPulling);
+}
+
+function isReady(pod) {
+  var numReady = numContainersReadyFilter(pod);
+  var total = _.size(pod.spec.containers);
+
+  return numReady === total;
+}
+
+function numContainersReadyFilter(pod) {
+  var numReady = 0;
+  _.forEach(pod.status.containerStatuses, function(status) {
+    if (status.ready) {
+      numReady++;
+    }
+  });
+  return numReady;
+}
+
+export function getPodStatus(pod) {
+  if(_.has(pod, 'metadata.deletionTimestamp')) return 'Terminating';
+  var warning = podWarnings(pod);
+  if (warning !== null) return warning;
+  if(isPullingImage(pod)) return 'Pulling';
+  if(pod.status.phase === 'Running' && !isReady(pod)) return 'Not Ready';
+  return _.get(pod, 'status.phase', 'Unknown');
+}
+
+function isContainerFailedFilter(containerStatus) {
+  return containerStatus.state.terminated && containerStatus.state.terminated.exitCode !== 0;
+}
+
+function isContainerLoopingFilter(containerStatus) {
+  return containerStatus.state.waiting && containerStatus.state.waiting.reason === 'CrashLoopBackOff';
+}
+
+function podWarnings(pod) {
+  if (pod.status.phase === 'Running' && pod.status.containerStatuses) {
+    _.each(pod.status.containerStatuses, function(containerStatus) {
+      if (!containerStatus.state) {
+        return null;
+      }
+
+      if (isContainerFailedFilter(containerStatus)) {
+        if (_.has(pod, 'metadata.deletionTimestamp')) {
+         return 'Failed'
+        } else {
+         return 'Warning'
+        }
+      }
+      if (isContainerLoopingFilter(containerStatus)) {
+        return 'Failed'
+      }
+    });
+  }
+  return null;
+}
 
 export class TransformTopologyData {
   private _topologyData: TopologyDataModel = {
@@ -108,7 +176,7 @@ export class TransformTopologyData {
           builderImage: deploymentsLabels['app.kubernetes.io/name'],
           donutStatus: {
             pods: _.map(dcPods, (pod) =>
-              _.merge(_.pick(pod, 'metadata', 'status'), {
+              _.merge(_.pick(pod, 'metadata', 'status', 'spec.containers'), {
                 id: _.get(pod, 'metadata.uid'),
                 name: _.get(pod, 'metadata.name'),
                 kind: 'Pod',

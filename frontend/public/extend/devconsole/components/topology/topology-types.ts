@@ -68,6 +68,7 @@ export interface Pod {
   kind: string;
   metadata: {};
   status: {phase: string};
+  spec: {};
 }
 
 export interface TopologyDataObject<D = {}> {
