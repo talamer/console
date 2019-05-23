@@ -11,62 +11,65 @@ describe('ImportFlowForm: ', () => {
           apiVersion: '',
           kind: '',
           metadata: {
-            annotations:
-            {
-              'openshift.io/display-name':'Perl',
+            annotations: {
+              'openshift.io/display-name': 'Perl',
               'openshift.io/image.dockerRepositoryCheck': '2019-05-14T17:59:32Z',
-              'samples.operator.openshift.io/version':'4.1.0-rc.3',
+              'samples.operator.openshift.io/version': '4.1.0-rc.3',
             },
-            selfLink:'/apis/image.openshift.io/v1/namespaces/openshift/imagestreams/perl',
-            resourceVersion:'11512',
-            name:'perl',
-            uid:'eea7c7af-7671-11e9-a679-0a580a810011',
-            creationTimestamp:'2019-05-14T17:58:51Z',
-            generation:2,
-            namespace:'openshift',
-            labels:{
-              'samples.operator.openshift.io/managed':'true',
+            selfLink: '/apis/image.openshift.io/v1/namespaces/openshift/imagestreams/perl',
+            resourceVersion: '11512',
+            name: 'perl',
+            uid: 'eea7c7af-7671-11e9-a679-0a580a810011',
+            creationTimestamp: '2019-05-14T17:58:51Z',
+            generation: 2,
+            namespace: 'openshift',
+            labels: {
+              'samples.operator.openshift.io/managed': 'true',
             },
           },
-          spec:{
-            lookupPolicy:{
-              local:false,
+          spec: {
+            lookupPolicy: {
+              local: false,
             },
-            tags:[
+            tags: [
               {
-                name:'5.16',
+                name: '5.16',
                 annotations: {
-                  description: 'Build and run Perl 5.16 applications on RHEL 7. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-perl-container/blob/master/5.16/README.md.',
-                  iconClass:'icon-perl',
-                  'openshift.io/display-name':'Perl 5.16',
-                  'openshift.io/provider-display-name':'Red Hat, Inc.',
-                  sampleRepo:'https://github.com/sclorg/dancer-ex.git',
-                  supports:'perl:5.16,perl',
-                  tags:'builder,perl',
-                  version:'5.16',
+                  description:
+                    'Build and run Perl 5.16 applications on RHEL 7. For more information about using this builder image, including OpenShift considerations, see https://github.com/sclorg/s2i-perl-container/blob/master/5.16/README.md.',
+                  iconClass: 'icon-perl',
+                  'openshift.io/display-name': 'Perl 5.16',
+                  'openshift.io/provider-display-name': 'Red Hat, Inc.',
+                  sampleRepo: 'https://github.com/sclorg/dancer-ex.git',
+                  supports: 'perl:5.16,perl',
+                  tags: 'builder,perl',
+                  version: '5.16',
                 },
-                from:{
-                  kind:'DockerImage',
-                  name:'registry.redhat.io/openshift3/perl-516-rhel7:latest',
+                from: {
+                  kind: 'DockerImage',
+                  name: 'registry.redhat.io/openshift3/perl-516-rhel7:latest',
                 },
-                generation:2,
-                importPolicy:{},
-                referencePolicy:{
-                  type:'Local',
+                generation: 2,
+                importPolicy: {},
+                referencePolicy: {
+                  type: 'Local',
                 },
               },
             ],
           },
           status: {
-            dockerImageRepository: 'image-registry.openshift-image-registry.svc:5000/openshift/perl',
+            dockerImageRepository:
+              'image-registry.openshift-image-registry.svc:5000/openshift/perl',
             tags: [
               {
                 items: [
                   {
                     created: '2019-05-14T17:59:32Z',
-                    dockerImageReference: 'registry.redhat.io/openshift3/perl-516-rhel7@sha256:8d13f434065a54ab85c2134858d5cc218c1ebb1e423d194e664e4ee4a9f4641f',
+                    dockerImageReference:
+                      'registry.redhat.io/openshift3/perl-516-rhel7@sha256:8d13f434065a54ab85c2134858d5cc218c1ebb1e423d194e664e4ee4a9f4641f',
                     generation: 2,
-                    image: 'sha256:8d13f434065a54ab85c2134858d5cc218c1ebb1e423d194e664e4ee4a9f4641f',
+                    image:
+                      'sha256:8d13f434065a54ab85c2134858d5cc218c1ebb1e423d194e664e4ee4a9f4641f',
                   },
                 ],
                 tag: 5.16,
@@ -102,7 +105,7 @@ describe('ImportFlowForm: ', () => {
 
   it('Form Submit Button should be disabled', () => {
     const importFormWrapper = renderImportForm();
-    expect(importFormWrapper.find('Button').at(0).prop('disabled')).toBeTruthy();
+    expect(importFormWrapper.find('[data-test-id="submitButton"]').prop('disabled')).toBeTruthy();
   });
 
   it('it should render Source Secret Dropdown', () => {
@@ -120,10 +123,9 @@ describe('ImportFlowForm: ', () => {
       importFormWrapper
         .find('SourceSecretSelector')
         .dive()
-        .find('AuthenticationType')
+        .find('CreateSourceSecret')
         .prop('secretType'),
     ).toBe('kubernetes.io/basic-auth');
-    expect(importFormWrapper.find('SourceSecretSelector').dive);
   });
 
   it('it should render Basic Authentication SubForm', () => {
@@ -136,7 +138,7 @@ describe('ImportFlowForm: ', () => {
       importFormWrapper
         .find('SourceSecretSelector')
         .dive()
-        .find('AuthenticationType')
+        .find('CreateSourceSecret')
         .dive()
         .find('BasicAuthSubform'),
     ).toHaveLength(1);
@@ -220,7 +222,7 @@ describe('ImportFlowForm: ', () => {
     expect(importFlowForm.state().name).toBe('node-app');
   });
 
-  it ('form submission', () => {
+  it('form submission', () => {
     const preventDefault = jest.fn();
     const importFlowForm = shallow(<ImportFlowForm {...props} />);
     importFlowForm.find('[data-test-id="import-git-repo-url"]').simulate('change', {
@@ -231,9 +233,12 @@ describe('ImportFlowForm: ', () => {
     importFlowForm.find('[data-test-id="import-name"]').simulate('change', {
       target: { value: 'node-app' },
     });
-    importFlowForm.find('[data-test-id="builder-image-selector"]')
-      .shallow().find('BuilderImageCard').simulate('change', 'perl');
-    importFlowForm.find('[data-test-id="import-form"]').simulate('submit', {preventDefault});
+    importFlowForm
+      .find('[data-test-id="builder-image-selector"]')
+      .shallow()
+      .find('BuilderImageCard')
+      .simulate('change', 'perl');
+    importFlowForm.find('[data-test-id="import-form"]').simulate('submit', { preventDefault });
     const importFormState = {
       application: '',
       builderImageError: '',
@@ -253,9 +258,14 @@ describe('ImportFlowForm: ', () => {
       namespace: 'default',
       namespaceError: '',
       recommendedImage: '',
+      secretAuthType: '',
+      secretCredentials: {},
       selectedApplicationKey: '',
       selectedImage: 'perl',
       selectedImageTag: '5.16',
+      selectedSourceSecret: '',
+      showSourceSecretDropDown: false,
+      sourceSecretName: '',
       isGitTypeVisible: false,
     };
 

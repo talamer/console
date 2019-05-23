@@ -709,7 +709,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
           />
         )}
         <div className="co-m-btn-bar">
-          <Button type="submit" bsStyle="primary" disabled={this.disableSubmitButton()}>
+          <Button data-test-id="submitButton" type="submit" bsStyle="primary" disabled={this.disableSubmitButton()}>
             Create
           </Button>
           <Button type="button" onClick={this.onCancel}>
