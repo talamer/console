@@ -1,7 +1,13 @@
 .odc-empty-state {
-  padding: 25px;
-  background: var(--pf-global--Color--light-200);
-  box-shadow: var(--pf-global--BoxShadow--inset);
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+
+  &__content {
+    padding: 25px;
+    background: var(--pf-global--Color--light-200);
+    flex: 1;
+  }
 
   &__card {
     height: 100%;
