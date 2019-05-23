@@ -105,7 +105,7 @@ export class TransformTopologyData {
   private _selectorsByService;
   private _allServices;
 
-  constructor(public resources: TopologyDataResources, public application: string) {
+  constructor(public resources: TopologyDataResources, public application?: string) {
     this._allServices = _.keyBy(this.resources.services.data, 'metadata.name');
     this._selectorsByService = this.getSelectorsByService();
   }
