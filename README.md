@@ -10,7 +10,7 @@ The console is a more friendly `kubectl` in the form of a single page webapp.  I
 - Proxying the Kubernetes API under `/api/kubernetes`
 - Providing additional non-Kubernetes APIs for interacting with the cluster
 - Serving all frontend static assets
-- User Authentication
+- User Authentication 
 
 ## Quickstart
 
