@@ -142,6 +142,7 @@ export default class D3ForceDirectedRenderer extends React.Component<
             ...edgesById[id],
             id,
             type: d.type,
+            nodeSize: nextProps.nodeSize,
             source: newNodesById[d.source],
             target: newNodesById[d.target],
           };

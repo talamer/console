@@ -335,6 +335,7 @@ export class TransformTopologyData {
           if (targetNode) {
             this._topologyData.graph.edges.push({
               id: `${currentNode.id}_${targetNode}`,
+              type: 'connects-to',
               source: currentNode.id,
               target: targetNode,
             });

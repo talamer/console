@@ -115,6 +115,7 @@ export type ViewNode = {
 export type ViewEdge = {
   id: string;
   type?: string;
+  nodeSize: number;
   source: ViewNode;
   target: ViewNode;
 };
