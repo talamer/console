@@ -15,7 +15,6 @@ import BuilderImageSelector from '../import/BuilderImageSelector';
 import { normalizeBuilderImages, NormalizedBuilderImages } from '../../utils/imagestream-utils';
 import BuilderImageTagSelector from '../import/BuilderImageTagSelector';
 import SourceSecretSelector from '../import/SourceSecretSelector';
-import Scaling from '../import/Scaling';
 
 export type FirehoseList = {
   data?: K8sResourceKind[];
@@ -52,8 +51,6 @@ export interface State {
     [key: string]: string;
   };
   showSourceSecretDropDown: boolean;
-  autoScaleType: string;
-  replicas: string;
 }
 
 export interface Props {
@@ -89,8 +86,6 @@ const initialState: State = {
   secretAuthType: '',
   secretCredentials: {},
   showSourceSecretDropDown: false,
-  autoScaleType: '',
-  replicas: '1',
 };
 
 enum ErrorMessage {
@@ -136,8 +131,6 @@ export class ImportFlowForm extends React.Component<Props, State> {
       secretAuthType: '',
       secretCredentials: {},
       showSourceSecretDropDown: false,
-      autoScaleType: '',
-      replicas: '1',
     };
   }
   private randomString = this.generateRandomString();
@@ -260,16 +253,6 @@ export class ImportFlowForm extends React.Component<Props, State> {
 
   onBuilderImageTagChange = (selectedImageTag: string) => {
     this.setState({ selectedImageTag });
-  };
-
-  onScaleChange = (
-    autoScaleType: string,
-    replicas?: string,
-  ) => {
-    this.setState({
-      autoScaleType: autoScaleType,
-      replicas: replicas
-    });
   };
 
   private generateRandomString() {
@@ -604,8 +587,6 @@ export class ImportFlowForm extends React.Component<Props, State> {
       sourceSecretName,
       secretCredentials,
       isBuilderImageDetected,
-      autoScaleType,
-      replicas,
     } = this.state;
 
     const { imageStreams } = this.props;
@@ -727,9 +708,6 @@ export class ImportFlowForm extends React.Component<Props, State> {
             onTagChange={this.onBuilderImageTagChange}
           />
         )}
-        <div className="co-m-pane__form">
-        <Scaling autoScaleType= {autoScaleType} replicas= {replicas} onChange= {this.onScaleChange} />
-        </div>
         <div className="co-m-btn-bar">
           <Button data-test-id="submitButton" type="submit" bsStyle="primary" disabled={this.disableSubmitButton()}>
             Create
