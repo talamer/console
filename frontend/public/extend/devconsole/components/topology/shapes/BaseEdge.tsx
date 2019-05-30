@@ -4,7 +4,6 @@ import SvgArrowMarker from './../../../shared/components/svg/SvgArrowMarker';
 import { createFilterIdUrl } from '../../../shared/utils/svg-utils';
 
 type BaseEdgeProps = {
-  nodeSize: number;
   source: any;
   target: any;
   sourceArrow?: boolean;
@@ -14,7 +13,7 @@ type BaseEdgeProps = {
 const SOURCE_ARROW_MARKER_ID = 'sourceArrowMarker';
 const TARGET_ARROW_MARKER_ID = 'targetArrowMarker';
 
-const BaseEdge: React.SFC<BaseEdgeProps> = ({ source, target, sourceArrow = false, targetArrow = false, nodeSize }) => (
+const BaseEdge: React.SFC<BaseEdgeProps> = ({ source, target, sourceArrow = false, targetArrow = false }) => (
   <g>
     {sourceArrow ? <SvgArrowMarker id={SOURCE_ARROW_MARKER_ID}  /> : null}
     {targetArrow ? <SvgArrowMarker id={TARGET_ARROW_MARKER_ID}  /> : null}

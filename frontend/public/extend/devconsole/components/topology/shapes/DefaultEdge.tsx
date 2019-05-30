@@ -5,8 +5,8 @@ import BaseEdge from './BaseEdge';
 
 export type DefaultEdgeProps = EdgeProps;
 
-const DefaultEdge: React.SFC<DefaultEdgeProps> = ({ source, target, nodeSize }) => (
-  <BaseEdge source={source} target={target} nodeSize={nodeSize}/>
+const DefaultEdge: React.SFC<DefaultEdgeProps> = ({ source, target }) => (
+  <BaseEdge source={source} target={target} />
 );
 
 export default DefaultEdge;
