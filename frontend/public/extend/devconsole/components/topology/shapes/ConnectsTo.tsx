@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { EdgeProps } from '../topology-types';
 import BaseEdge from './BaseEdge';
-import SvgArrowMarker from '../../../shared/components/svg/SvgArrowMarker';
+import SvgArrowMarker from './SvgArrowMarker';
 
 type ConnectsToProps = EdgeProps;
 

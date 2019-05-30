@@ -1,5 +1,5 @@
 import * as React from 'react';
-import SvgDefs from './SvgDefs';
+import SvgDefs from '../../../shared/components/svg/SvgDefs';
 
 type SvgArrowMarkerProps = {
   id: string;
