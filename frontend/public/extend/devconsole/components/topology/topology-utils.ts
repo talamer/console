@@ -173,6 +173,7 @@ export class TransformTopologyData {
           url: !_.isEmpty(route.spec) ? getRouteWebURL(route) : null,
           editUrl: deploymentsAnnotations['app.openshift.io/edit-url'],
           builderImage: deploymentsLabels['app.kubernetes.io/name'],
+          isKnativeResource : deploymentsLabels['serving.knative.dev/configuration'] ? true : false,
           donutStatus: {
             pods: _.map(dcPods, (pod) =>
               _.merge(_.pick(pod, 'metadata', 'status', 'spec.containers'), {

@@ -83,6 +83,7 @@ export interface WorkloadData {
   url?: string;
   editUrl?: string;
   builderImage?: string;
+  isKnativeResource?: boolean;
   donutStatus: {
     pods: Pod[];
   };

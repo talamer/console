@@ -5,6 +5,7 @@ import Decorator from './Decorator';
 import BaseNode from './BaseNode';
 import PodStatus from './PodStatus';
 import { NodeProps, WorkloadData } from '../topology-types';
+import { getImageForIconClass } from '../../../../../components/catalog/catalog-item-icon';
 
 const WorkloadNode: React.FC<NodeProps<WorkloadData>> = ({
   data: workload,
@@ -31,6 +32,25 @@ const WorkloadNode: React.FC<NodeProps<WorkloadData>> = ({
       selected={selected}
       onSelect={onSelect}
       attachments={[
+        workload.data.isKnativeResource && (
+          <Decorator
+            key="knative"
+            x={0}
+            y={- radius * 0.75}
+            radius={0}
+            title="Knative Resource"
+          >
+            <image
+            x={- decoratorRadius}
+            y={-(radius - decoratorRadius * 3)}
+            width={decoratorRadius * 2}
+            height={decoratorRadius * 2}
+            xlinkHref={
+              getImageForIconClass('icon-knative')
+            }
+            />
+          </Decorator>
+        ),
         workload.data.editUrl && (
           <Decorator
             key="edit"
