@@ -2,7 +2,7 @@
 import * as React from 'react';
 import SvgDropShadowFilter from '../../../shared/components/svg/SvgDropShadowFilter';
 import { getImageForIconClass } from '../../../../../components/catalog/catalog-item-icon';
-import { createFilterIdUrl } from '../../../shared/utils/svg-utils';
+import { createSvgIdUrl } from '../../../shared/utils/svg-utils';
 import './BaseNode.scss';
 
 export interface State {
@@ -74,7 +74,7 @@ export default class BaseNode extends React.Component<BaseNodeProps, State> {
             cx={0}
             cy={0}
             r={outerRadius}
-            filter={hover ? createFilterIdUrl(FILTER_ID_HOVER) : createFilterIdUrl(FILTER_ID)}
+            filter={hover ? createSvgIdUrl(FILTER_ID_HOVER) : createSvgIdUrl(FILTER_ID)}
           />
           <image
             x={-innerRadius}

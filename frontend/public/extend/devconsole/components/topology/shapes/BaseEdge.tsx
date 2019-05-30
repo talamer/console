@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './BaseEdge.scss';
 import SvgArrowMarker from './../../../shared/components/svg/SvgArrowMarker';
-import { createFilterIdUrl } from '../../../shared/utils/svg-utils';
+import { createSvgIdUrl } from '../../../shared/utils/svg-utils';
 
 type BaseEdgeProps = {
   source: any;
@@ -23,8 +23,8 @@ const BaseEdge: React.SFC<BaseEdgeProps> = ({ source, target, sourceArrow = fals
       y1={source.y}
       x2={target.x}
       y2={target.y}
-      markerStart={sourceArrow ? createFilterIdUrl(SOURCE_ARROW_MARKER_ID) : undefined}
-      markerEnd={targetArrow ? createFilterIdUrl(TARGET_ARROW_MARKER_ID) : undefined}
+      markerStart={sourceArrow ? createSvgIdUrl(SOURCE_ARROW_MARKER_ID) : undefined}
+      markerEnd={targetArrow ? createSvgIdUrl(TARGET_ARROW_MARKER_ID) : undefined}
     />
   </g>
 );
