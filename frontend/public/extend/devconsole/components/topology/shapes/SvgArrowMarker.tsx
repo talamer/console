@@ -3,23 +3,32 @@ import SvgDefs from '../../../shared/components/svg/SvgDefs';
 
 type SvgArrowMarkerProps = {
   id: string;
-  arrowColor?: string;
+  nodeSize: number;
+  markerSize: number;
+  className: string;
 };
 
-const SvgArrowMarker: React.FC<SvgArrowMarkerProps> = ({ id, arrowColor = "#282D33" }) => (
-  <SvgDefs id={id}>
-    <marker
-      id={id}
-      markerWidth="10"
-      markerHeight="10"
-      refX={31.5}
-      refY="3"
-      orient="auto"
-      markerUnits="strokeWidth"
-    >
-      <path d="M0,0 L0,6 L6,3 z" fill={arrowColor} />
-    </marker>
-  </SvgDefs>
-);
+const SvgArrowMarker: React.FC<SvgArrowMarkerProps> = ({ id, nodeSize, markerSize, className }) => {
+  const lengthOfEachSideOfMarker = markerSize * 0.6;
+  return (
+    <SvgDefs id={id}>
+      <marker
+        id={id}
+        markerWidth={markerSize}
+        markerHeight={markerSize}
+        refX={nodeSize / 2 + markerSize / 2}
+        refY={lengthOfEachSideOfMarker / 2}
+        orient="auto"
+        markerUnits="userSpaceOnUse"
+      >
+        <path
+          d={`M0,0 L0,${lengthOfEachSideOfMarker} L${lengthOfEachSideOfMarker},${lengthOfEachSideOfMarker /
+            2} z`}
+          className={className}
+        />
+      </marker>
+    </SvgDefs>
+  );
+};
 
 export default SvgArrowMarker;
