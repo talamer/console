@@ -14,7 +14,7 @@ const ConnectsTo: React.FC<ConnectsToProps> = ({ source, target }) => (
       id={TARGET_ARROW_MARKER_ID}
       nodeSize={source.size}
       markerSize={12}
-      className={'odc-edge-marker'}
+      className={'odc-connects-to-marker'}
     />
     <BaseEdge source={source} target={target} targetMarkerId={TARGET_ARROW_MARKER_ID} />
   </React.Fragment>
