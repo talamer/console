@@ -8,27 +8,20 @@ type SvgArrowMarkerProps = {
   className: string;
 };
 
-const SvgArrowMarker: React.FC<SvgArrowMarkerProps> = ({ id, nodeSize, markerSize, className }) => {
-  const lengthOfEachSideOfMarker = markerSize * 0.6;
-  return (
-    <SvgDefs id={id}>
-      <marker
-        id={id}
-        markerWidth={markerSize}
-        markerHeight={markerSize}
-        refX={nodeSize / 2 + markerSize / 2}
-        refY={lengthOfEachSideOfMarker / 2}
-        orient="auto"
-        markerUnits="userSpaceOnUse"
-      >
-        <path
-          d={`M0,0 L0,${lengthOfEachSideOfMarker} L${lengthOfEachSideOfMarker},${lengthOfEachSideOfMarker /
-            2} z`}
-          className={className}
-        />
-      </marker>
-    </SvgDefs>
-  );
-};
+const SvgArrowMarker: React.FC<SvgArrowMarkerProps> = ({ id, nodeSize, markerSize, className }) => (
+  <SvgDefs id={id}>
+    <marker
+      id={id}
+      markerWidth={markerSize}
+      markerHeight={markerSize}
+      refX={nodeSize / 2 + markerSize}
+      refY={markerSize / 2}
+      orient="auto"
+      markerUnits="userSpaceOnUse"
+    >
+      <path d={`M0,0 L0,${markerSize} L${markerSize},${markerSize / 2} z`} className={className} />
+    </marker>
+  </SvgDefs>
+);
 
 export default SvgArrowMarker;
