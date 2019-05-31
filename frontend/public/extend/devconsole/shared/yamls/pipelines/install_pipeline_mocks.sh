@@ -1,3 +1,5 @@
+oc create namespace tekton-pipelines
+oc project tekton-pipelines
 oc delete -f base.yaml
 oc delete -f resources.yaml
 oc create -f base.yaml

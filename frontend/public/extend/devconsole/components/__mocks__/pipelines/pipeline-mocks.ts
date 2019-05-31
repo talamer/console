@@ -1,5 +1,6 @@
 /*eslint-disable no-unused-vars, no-undef */
-import { Runs } from '../../../utils/pipeline-augment';
+import { PipelineRun, Runs } from '../../../utils/pipeline-augment';
+import { Pipeline } from '../../../utils/pipeline-actions';
 import { PipelineListProps } from '../../pipelines/PipelineList';
 import { PipelineAugmentRunsProps } from '../../pipelines/PipelineAugmentRuns';
 
@@ -53,6 +54,8 @@ export const additionalProps: AdditionalProps[] = [
     apple1Runs: {
       data: [
         {
+          apiVersion: 'abhiapi/v1',
+          kind: 'PipelineRun',
           metadata: { name: 'apple-1-run1' },
           status: { creationTimeStamp: '21', conditions: [{ type: 'Succeeded', status: 'True' }] },
         },
@@ -64,10 +67,14 @@ export const additionalProps: AdditionalProps[] = [
     apple1Runs: {
       data: [
         {
+          apiVersion: 'abhiapi/v1',
+          kind: 'PipelineRun',
           metadata: { name: 'apple-1-run1' },
           status: { creationTimeStamp: '21', conditions: [{ type: 'Succeeded', status: 'True' }] },
         },
         {
+          apiVersion: 'abhiapi/v1',
+          kind: 'PipelineRun',
           metadata: { name: 'apple-1-run2' },
           status: { creationTimeStamp: '31', conditions: [{ type: 'Succeeded', status: 'True' }] },
         },
@@ -76,6 +83,8 @@ export const additionalProps: AdditionalProps[] = [
     apple2Runs: {
       data: [
         {
+          apiVersion: 'abhiapi/v1',
+          kind: 'PipelineRun',
           metadata: { name: 'apple-2-run1' },
           status: { creationTimeStamp: '31', conditions: [{ type: 'Succeeded', status: 'True' }] },
         },
@@ -87,4 +96,32 @@ export const additionalProps: AdditionalProps[] = [
 export const extendedProps: ExtendedPipelineAugmentRunsPropsWith[] = [
   { ...listProps[2], ...additionalProps[2] },
   { ...listProps[3], ...additionalProps[3] },
+];
+
+export const actionPipelines: Pipeline[] = [
+  {
+    apiVersion: 'abhiapi/v1',
+    kind: 'Pipeline',
+    metadata: { name: 'sansa-stark', namespace: 'corazon' },
+  },
+  {
+    apiVersion: 'abhiapi/v1',
+    kind: 'Pipeline',
+    metadata: { name: 'danaerys-targaeryen', namespace: 'corazon' },
+  },
+];
+
+export const actionPipelineRuns: PipelineRun[] = [
+  {
+    apiVersion: 'abhiapi/v1',
+    kind: 'PipelineRun',
+    metadata: { name: 'winterfell', namespace: 'corazon' },
+    status: { creationTimeStamp: '31', conditions: [{ type: 'Succeeded', status: 'True' }] },
+  },
+  {
+    apiVersion: 'abhiapi/v1',
+    kind: 'Pipeline',
+    metadata: { name: 'dragonstone', namespace: 'corazon' },
+    status: { creationTimeStamp: '31', conditions: [{ type: 'Succeeded', status: 'Unknown' }] },
+  },
 ];

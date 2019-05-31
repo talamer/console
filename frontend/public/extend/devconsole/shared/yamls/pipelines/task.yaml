@@ -253,3 +253,250 @@ spec:
         - --dockerfile=${inputs.params.pathToDockerFile}
         - --destination=${outputs.resources.builtImage.url}
         - --context=${inputs.params.pathToContext}
+---
+apiVersion: v1
+items:
+- apiVersion: tekton.dev/v1alpha1
+  kind: Task
+  metadata:
+    creationTimestamp: 2019-05-07T18:43:16Z
+    generation: 1
+    name: buildah
+    resourceVersion: "27351246"
+    uid: f9eeeac5-70f7-11e9-930c-0a6516152954
+  spec:
+    inputs:
+      params:
+      - default: Dockerfile
+        description: The path to the dockerfile to build
+        name: dockerfile
+      - default: "true"
+        description: Verify registry certificates
+        name: verifyTLS
+      - default: .
+        description: The path of the context to build
+        name: contextFolder
+      resources:
+      - name: workspace-git
+        targetPath: /
+        type: git
+    outputs:
+      resources:
+      - name: image
+        targetPath: ""
+        type: image
+    steps:
+    - args:
+      - bud
+      - --layers
+      - --tls-verify=${inputs.params.verifyTLS}
+      - -f
+      - ${inputs.params.dockerfile}
+      - -t
+      - ${outputs.resources.image.url}
+      - ${inputs.params.contextFolder}
+      command:
+      - buildah
+      image: quay.io/openshift-pipeline/buildah:testing
+      name: build
+      resources: {}
+      securityContext:
+        privileged: true
+      volumeMounts:
+      - mountPath: /var/lib/containers
+        name: libcontainers
+    - args:
+      - push
+      - --tls-verify=${inputs.params.verifyTLS}
+      - ${outputs.resources.image.url}
+      command:
+      - buildah
+      image: quay.io/openshift-pipeline/buildah:testing
+      name: push
+      resources: {}
+      securityContext:
+        privileged: true
+      volumeMounts:
+      - mountPath: /var/lib/containers
+        name: libcontainers
+    volumes:
+    - emptyDir: {}
+      name: libcontainers
+- apiVersion: tekton.dev/v1alpha1
+  kind: Task
+  metadata:
+    creationTimestamp: 2019-05-07T18:43:16Z
+    generation: 1
+    name: mvn-build
+    resourceVersion: "27351248"
+    uid: f9f4516c-70f7-11e9-930c-0a6516152954
+  spec:
+    inputs:
+      params:
+      - default: .
+        description: Path to build
+        name: folder
+      resources:
+      - name: workspace-git
+        targetPath: /
+        type: git
+    outputs:
+      resources:
+      - name: workspace-git
+        targetPath: ""
+        type: git
+    steps:
+    - args:
+      - --file=${inputs.params.folder}
+      - dependency:resolve
+      - verify
+      command:
+      - /usr/bin/mvn
+      image: maven:3.6.0-jdk-8-slim
+      name: build
+      resources: {}
+- apiVersion: tekton.dev/v1alpha1
+  kind: Task
+  metadata:
+    creationTimestamp: 2019-05-07T18:43:16Z
+    generation: 1
+    name: mvn-test
+    resourceVersion: "27351249"
+    uid: f9f835cd-70f7-11e9-930c-0a6516152954
+  spec:
+    inputs:
+      params:
+      - default: .
+        description: Path to build
+        name: folder
+      resources:
+      - name: workspace-git
+        targetPath: /
+        type: git
+    steps:
+    - args:
+      - --file=${inputs.params.folder}
+      - package
+      - -DskipTests
+      command:
+      - /usr/bin/mvn
+      image: maven:3.6.0-jdk-8-slim
+      name: build
+      resources: {}
+    - args:
+      - --file=${inputs.params.folder}
+      - verify
+      command:
+      - /usr/bin/mvn
+      image: maven:3.6.0-jdk-8-slim
+      name: test
+      resources: {}
+- apiVersion: tekton.dev/v1alpha1
+  kind: Task
+  metadata:
+    creationTimestamp: 2019-05-07T18:43:16Z
+    generation: 1
+    name: openshift-cli
+    resourceVersion: "27351253"
+    uid: fa090141-70f7-11e9-930c-0a6516152954
+  spec:
+    inputs:
+      params:
+      - description: The OpenShift CLI commands to run
+        name: command
+    steps:
+    - args:
+      - ${inputs.params.command}
+      command:
+      - /usr/local/bin/oc
+      image: quay.io/openshift-pipeline/openshift-cli
+      name: oc
+      resources: {}
+- apiVersion: tekton.dev/v1alpha1
+  kind: Task
+  metadata:
+    creationTimestamp: 2019-05-07T18:43:16Z
+    generation: 1
+    name: openshift-cli-apply
+    resourceVersion: "27351250"
+    uid: f9fc4e7b-70f7-11e9-930c-0a6516152954
+  spec:
+    inputs:
+      params:
+      - description: the yaml(s) to apply
+        name: yamls
+      resources:
+      - name: workspace-git
+        targetPath: /
+        type: git
+    steps:
+    - args:
+      - apply
+      - -f
+      - ${inputs.params.yamls}
+      command:
+      - /usr/local/bin/oc
+      image: quay.io/openshift-pipeline/openshift-cli
+      name: oc
+      resources: {}
+- apiVersion: tekton.dev/v1alpha1
+  kind: Task
+  metadata:
+    creationTimestamp: 2019-05-07T18:43:16Z
+    generation: 1
+    name: openshift-cli-rollout
+    resourceVersion: "27351252"
+    uid: fa04b7c2-70f7-11e9-930c-0a6516152954
+  spec:
+    inputs:
+      params:
+      - description: Name of the app to rollout
+        name: app
+    steps:
+    - args:
+      - rollout
+      - latest
+      - ${inputs.params.app}
+      command:
+      - /usr/local/bin/oc
+      image: quay.io/openshift-pipeline/openshift-cli
+      name: rollout
+      resources: {}
+- apiVersion: tekton.dev/v1alpha1
+  kind: Task
+  metadata:
+    creationTimestamp: 2019-05-07T18:43:16Z
+    generation: 1
+    name: static-analysis
+    resourceVersion: "27351254"
+    uid: fa0d683b-70f7-11e9-930c-0a6516152954
+  spec:
+    inputs:
+      params:
+      - default: .
+        description: Path to build
+        name: folder
+      resources:
+      - name: workspace-git
+        targetPath: /
+        type: git
+    steps:
+    - args:
+      - pmd
+      command:
+      - echo
+      image: ubuntu
+      name: pmd
+      resources: {}
+    - args:
+      - sonar
+      command:
+      - echo
+      image: ubuntu
+      name: sonar
+      resources: {}
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""
+---

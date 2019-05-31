@@ -43,84 +43,158 @@ spec:
         - name: yamlPathToImage
           value: "spec.template.spec.containers[0].image"
 ---
-apiVersion: tekton.dev/v1alpha1
-kind: Pipeline
+apiVersion: v1
+items:
+- apiVersion: tekton.dev/v1alpha1
+  kind: Pipeline
+  metadata:
+    creationTimestamp: 2019-05-07T18:46:44Z
+    generation: 1
+    name: voting-deploy-pipeline
+    resourceVersion: "27353752"
+    uid: 75b4f77c-70f8-11e9-930c-0a6516152954
+  spec:
+    params: null
+    resources:
+    - name: samples-git
+      type: git
+    - name: voting-vote-image
+      type: image
+    - name: voting-worker-image
+      type: image
+    - name: voting-result-image
+      type: image
+    tasks:
+    - name: create-apps
+      params:
+      - name: yamls
+        value: /workspace/vote/apps
+      resources:
+        inputs:
+        - name: workspace-git
+          resource: samples-git
+        outputs: null
+      taskRef:
+        name: openshift-cli-apply
+    - name: build-worker
+      params:
+      - name: folder
+        value: /workspace/vote/worker/
+      resources:
+        inputs:
+        - name: workspace-git
+          resource: samples-git
+        outputs:
+        - name: workspace-git
+          resource: samples-git
+      taskRef:
+        name: mvn-build
+    - name: test-worker
+      params:
+      - name: folder
+        value: /workspace/vote/worker/
+      resources:
+        inputs:
+        - from:
+          - build-worker
+          name: workspace-git
+          resource: samples-git
+        outputs: null
+      taskRef:
+        name: mvn-test
+    - name: analyse-code-worker
+      params:
+      - name: folder
+        value: /workspace/vote/worker/
+      resources:
+        inputs:
+        - from:
+          - build-worker
+          name: workspace-git
+          resource: samples-git
+        outputs: null
+      taskRef:
+        name: static-analysis
+    - name: build-worker-image
+      params:
+      - name: dockerfile
+        value: Dockerfile
+      - name: contextFolder
+        value: ./vote/worker/
+      - name: verifyTLS
+        value: "false"
+      resources:
+        inputs:
+        - from:
+          - build-worker
+          name: workspace-git
+          resource: samples-git
+        outputs:
+        - name: image
+          resource: voting-worker-image
+      runAfter:
+      - analyse-code-worker
+      - test-worker
+      taskRef:
+        name: buildah
+    - name: build-vote-image
+      params:
+      - name: contextFolder
+        value: ./vote/vote/
+      - name: verifyTLS
+        value: "false"
+      resources:
+        inputs:
+        - name: workspace-git
+          resource: samples-git
+        outputs:
+        - name: image
+          resource: voting-vote-image
+      taskRef:
+        name: buildah
+    - name: build-result-image
+      params:
+      - name: contextFolder
+        value: ./vote/result/
+      - name: verifyTLS
+        value: "false"
+      resources:
+        inputs:
+        - name: workspace-git
+          resource: samples-git
+        outputs:
+        - name: image
+          resource: voting-result-image
+      taskRef:
+        name: buildah
+    - name: deploy-worker
+      params:
+      - name: app
+        value: voting-worker
+      runAfter:
+      - build-worker-image
+      - create-apps
+      taskRef:
+        name: openshift-cli-rollout
+    - name: deploy-vote
+      params:
+      - name: app
+        value: voting-vote
+      runAfter:
+      - build-vote-image
+      - create-apps
+      taskRef:
+        name: openshift-cli-rollout
+    - name: deploy-result
+      params:
+      - name: app
+        value: voting-result
+      runAfter:
+      - build-result-image
+      - create-apps
+      taskRef:
+        name: openshift-cli-rollout
+kind: List
 metadata:
-  name: complex-pipeline-visuals
-spec:
-  resources:
-  - name: mapit-git
-    type: git
-  - name: mapit-image
-    type: image
-  tasks:
-  - name: start-app
-    taskRef:
-      name: start-app
-    resources:
-      inputs:
-      - name: workspace-git
-        resource: mapit-git
-      outputs:
-      - name: workspace-git
-        resource: mapit-git
-  - name: lint
-    taskRef:
-      name: lint
-    resources:
-      inputs:
-      - name: workspace-git
-        resource: mapit-git
-        from: [start-app]
-  - name: analyze-code
-    taskRef:
-      name: analyze-code
-    resources:
-      inputs:
-      - name: workspace-git
-        resource: mapit-git
-        from: [start-app]
-  - name: build-image-1
-    taskRef:
-      name: build-image-1
-    runAfter:
-      - lint
-      - analyze-code
-    params:
-    - name: dockerfile
-      value: Dockerfile.openjdk
-    - name: verifyTLS
-      value: "false"
-    resources:
-      inputs:
-      - name: workspace-git
-        resource: mapit-git
-        from: [build-app]
-      outputs:
-      - name: image
-        resource: mapit-image
-  - name: build-image-2
-    taskRef:
-      name: build-image-2
-    runAfter:
-      - lint
-      - analyze-code
-    params:
-    - name: dockerfile
-      value: Dockerfile.openjdk
-    - name: verifyTLS
-      value: "false"
-    resources:
-      inputs:
-      - name: workspace-git
-        resource: mapit-git
-        from: [build-app]
-      outputs:
-      - name: image
-        resource: mapit-image
-  - name: deploy
-    taskRef:
-      name: deploy
-    runAfter:
-      - build-image-1
-      - build-image-2
+  resourceVersion: ""
+  selfLink: ""

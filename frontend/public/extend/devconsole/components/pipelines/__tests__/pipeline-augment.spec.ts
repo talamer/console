@@ -4,7 +4,7 @@ import {
   listProps,
   additionalProps,
   extendedProps,
-} from '../../__mocks__/pipelines/pipeline-augment-mocks';
+} from '../../__mocks__/pipelines/pipeline-mocks';
 
 describe('1. PipelineAugment test getResources create correct resources for firehose', () => {
   it('1. expect resources to be null for no data', () => {
