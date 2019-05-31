@@ -44,7 +44,7 @@ class PipelineRow extends React.PureComponent<Props, States> {
             title={pipeline.metadata.uid}
           />
         </div>
-        <div className="col-lg-2 col-md-2 col-sm-3 col-xs-5">
+        <div className="col-lg-2 col-md-2 col-sm-4 col-xs-5">
           {pipeline.latestRun && pipeline.latestRun.metadata && pipeline.latestRun.metadata.name ? (
             <ResourceLink
               kind="PipelineRun"
@@ -58,7 +58,7 @@ class PipelineRow extends React.PureComponent<Props, States> {
         <div className="col-lg-2 col-md-2 col-sm-3 hidden-xs">
           <StatusIcon status={status} />
         </div>
-        <div className="col-lg-2 col-md-2 col-sm-3 hidden-xs">-</div>
+        <div className="col-lg-2 col-md-2 hidden-sm hidden-xs">-</div>
         <div className="col-lg-2 col-md-2 hidden-sm hidden-xs">
           <Timestamp
             timestamp={
@@ -70,7 +70,7 @@ class PipelineRow extends React.PureComponent<Props, States> {
             }
           />
         </div>
-        <div className="col-lg-2 col-md-2 col-sm-3 col-xs-2">
+        <div className="col-lg-2 col-md-2 col-sm-2 col-xs-2">
           <div className="dropdown-kebab-pf">
             <ResourceKebab actions={menuActions} kind="Pipeline" resource={pipeline} />
           </div>

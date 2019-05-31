@@ -6,7 +6,7 @@ const PipelineHeader = (props) => (
     <ColHead {...props} className="col-lg-2 col-md-2 col-sm-3 col-xs-5" sortField="metadata.name">
       Name
     </ColHead>
-    <ColHead {...props} className="col-lg-2 col-md-2 col-sm-3 col-xs-5" sortField="latestRun.metadata.name">
+    <ColHead {...props} className="col-lg-2 col-md-2 col-sm-4 col-xs-5" sortField="latestRun.metadata.name">
       Last Run
     </ColHead>
     <ColHead {...props} className="col-lg-2 col-md-2 col-sm-3 hidden-xs" sortField="latestRun.status.succeededCondition">
