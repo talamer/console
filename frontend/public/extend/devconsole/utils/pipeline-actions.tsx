@@ -1,5 +1,7 @@
 /*eslint-disable no-undef, no-unused-vars */
 import * as React from 'react';
+import { ALL_NAMESPACES_KEY } from '../../../const';
+import { getNamespace, getPerspective } from '../../../components/utils/link';
 import { PipelineModel, PipelinerunModel } from '../../../models';
 import { PipelineRun, Param, getLatestRun } from '../utils/pipeline-augment';
 import { pipelineRunFilterReducer } from '../utils/pipeline-filter-reducer';
@@ -10,10 +12,23 @@ export interface Pipeline extends K8sResourceKind {
   spec?: { pipelineRef?: { name: string }; params: Param[] };
 }
 
+const redirectToResourceList = (url: string, resource: string) => {
+  let basePath = 'k8s/';
+  if (getPerspective(url) === 'dev') {
+    basePath = 'dev/k8s';
+  }
+  const activeNamespace = getNamespace(url);
+  const resourceUrl =
+    activeNamespace === ALL_NAMESPACES_KEY
+      ? `${basePath}/all-namespaces/${resource}`
+      : `${basePath}/ns/${activeNamespace}/${resource}`;
+  location.href = resourceUrl;
+};
+
 export const newPipelineRun = (pipeline: Pipeline, latestRun: PipelineRun): PipelineRun => {
   if (!pipeline || !pipeline.metadata || !pipeline.metadata.name || !pipeline.metadata.namespace) {
     // eslint-disable-next-line no-console
-    console.error('Unable to create new PipelineRun. Mising \'metadata\' in ', pipeline);
+    console.error('Unable to create new PipelineRun. Mising "metadata" in ', pipeline);
     return null;
   }
   return {
@@ -55,8 +70,11 @@ export const triggerPipeline = (pipeline: Pipeline, latestRun: PipelineRun): Fun
     label: 'Trigger',
     callback: () => {
       k8sCreate(PipelinerunModel, newPipelineRun(pipeline, latestRun)).then(() => {
-        if (!location.href.endsWith('/pipelines')) {
-          location.href = '../';
+        if (
+          !window.location.pathname.endsWith('/pipelines') &&
+          !window.location.href.endsWith('/Runs')
+        ) {
+          redirectToResourceList(window.location.pathname, 'pipelines');
         }
       });
     },
@@ -115,6 +133,12 @@ export const rerunPipeline = (pipeline: Pipeline, latestRun: PipelineRun): Funct
     label: 'Trigger Last Run',
     callback: () => {
       k8sCreate(PipelinerunModel, newPipelineRun(pipeline, latestRun));
+      if (
+        !window.location.pathname.endsWith('/pipelines') &&
+        !window.location.href.endsWith('/Runs')
+      ) {
+        redirectToResourceList(window.location.pathname, 'pipelines');
+      }
     },
   });
 };

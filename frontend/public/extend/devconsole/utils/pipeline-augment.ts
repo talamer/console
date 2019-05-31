@@ -91,23 +91,24 @@ export const getLatestRun = (runs: Runs, field: string): PipelineRun => {
         runs.data[i] &&
         runs.data[i].metadata &&
         runs.data[i].metadata.hasOwnProperty(field) &&
-        runs.data[i].metadata[field] > latestRun.metadata[field]
-          ? runs.data[i]
-          : latestRun;
-    }
-  }
-  if (field === 'startTime' || field === 'completionTime') {
-    for (let i = 1; i < runs.data.length; i++) {
-      latestRun =
-        runs.data[i] &&
-        runs.data[i].status &&
-        runs.data[i].status.hasOwnProperty(field) &&
-        runs.data[i].status[field] > latestRun.status[field]
+        new Date(runs.data[i].metadata[field]) > new Date(latestRun.metadata[field])
           ? runs.data[i]
           : latestRun;
     }
   } else {
-    latestRun = runs.data[runs.data.length - 1];
+    if (field === 'startTime' || field === 'completionTime') {
+      for (let i = 1; i < runs.data.length; i++) {
+        latestRun =
+          runs.data[i] &&
+          runs.data[i].status &&
+          runs.data[i].status.hasOwnProperty(field) &&
+          new Date(runs.data[i].status[field]) > new Date(latestRun.status[field])
+            ? runs.data[i]
+            : latestRun;
+      }
+    } else {
+      latestRun = runs.data[runs.data.length - 1];
+    }
   }
   if (!latestRun.status) {
     latestRun = { ...latestRun, status: {} };
