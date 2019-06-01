@@ -16,6 +16,7 @@ export interface BaseNodeProps {
   innerRadius?: number;
   selected?: boolean;
   onSelect?: Function;
+  isKnative?: boolean;
   icon?: string;
   label?: string;
   children?: React.ReactNode;
@@ -48,6 +49,7 @@ export default class BaseNode extends React.Component<BaseNodeProps, State> {
       icon,
       label,
       onSelect,
+      isKnative,
       children,
       attachments,
     } = this.props;
@@ -79,12 +81,23 @@ export default class BaseNode extends React.Component<BaseNodeProps, State> {
           <image
             x={-innerRadius}
             y={-innerRadius}
-            width={innerRadius * 2}
-            height={innerRadius * 2}
+            width={innerRadius * 1.8}
+            height={innerRadius * 1.8}
             xlinkHref={
               getImageForIconClass(`icon-${icon}`) || getImageForIconClass('icon-openshift')
             }
           />
+          {isKnative && (
+            <image
+              x={-innerRadius * 0.2}
+              y={-innerRadius * 1.35}
+              width={innerRadius * 0.4}
+              height={innerRadius * 0.4}
+              xlinkHref={
+                getImageForIconClass('icon-knative')
+              }
+            />
+          )}
           {label != null && (
             <text
               className="odc-base-node__label"
