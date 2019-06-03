@@ -11,14 +11,15 @@ import {
 import { Pipeline, triggerPipeline, rerunPipeline } from '../../utils/pipeline-actions';
 import { pipelineFilterReducer } from '../../utils/pipeline-filter-reducer';
 
-interface Props {
+interface PipelineRowProps {
   obj: Pipeline;
 }
 
-interface States {
+interface PipelineRowStates {
   modalMode: string;
 }
-class PipelineRow extends React.PureComponent<Props, States> {
+
+class PipelineRow extends React.PureComponent<PipelineRowProps, PipelineRowStates> {
   constructor(props) {
     super(props);
   }

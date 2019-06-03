@@ -15,6 +15,7 @@ import { PipelineRun } from '../../utils/pipeline-augment';
 interface PipelineRowProps {
   obj: PipelineRun;
 }
+
 const PipelineRow = (props: PipelineRowProps) => {
   const pipelinerun = props.obj;
   const menuActions = [
