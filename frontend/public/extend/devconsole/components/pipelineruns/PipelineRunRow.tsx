@@ -12,11 +12,11 @@ import { pipelineRunFilterReducer } from '../../utils/pipeline-filter-reducer';
 import { fetchAndReRun, stopPipelineRun } from '../../utils/pipeline-actions';
 import { PipelineRun } from '../../utils/pipeline-augment';
 
-interface PipelineRowProps {
+interface PipelineRunRowProps {
   obj: PipelineRun;
 }
 
-const PipelineRow = (props: PipelineRowProps) => {
+const PipelineRunRow: React.FC<PipelineRunRowProps> = (props) => {
   const pipelinerun = props.obj;
   const menuActions = [
     fetchAndReRun(pipelinerun),
@@ -24,7 +24,6 @@ const PipelineRow = (props: PipelineRowProps) => {
     Kebab.factory.Edit,
     Kebab.factory.ModifyLabels,
     Kebab.factory.ModifyAnnotations,
-    Kebab.factory.EditEnvironment,
     Kebab.factory.Delete,
   ];
   return (
@@ -68,4 +67,4 @@ const PipelineRow = (props: PipelineRowProps) => {
   );
 };
 
-export default PipelineRow;
+export default PipelineRunRow;

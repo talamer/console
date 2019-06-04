@@ -32,7 +32,7 @@ export interface PipelineRun extends K8sResourceKind {
   };
   status?: {
     succeededCondition?: string;
-    creationTimeStamp?: string;
+    creationTimestamp?: string;
     conditions?: Condition[];
     startTime?: string;
     completionTime?: string;

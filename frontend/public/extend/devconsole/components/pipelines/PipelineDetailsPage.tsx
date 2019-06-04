@@ -31,12 +31,11 @@ class PipelineDetailsPage extends React.Component<
       }).then((listres) => {
         this.setState({
           menuActions: [
-            triggerPipeline(res, getLatestRun({ data: listres }, 'creationTimestamp')),
-            rerunPipeline(res, getLatestRun({ data: listres }, 'creationTimestamp')),
+            triggerPipeline(res, getLatestRun({ data: listres }, 'creationTimestamp'), 'pipelines'),
+            rerunPipeline(res, getLatestRun({ data: listres }, 'creationTimestamp'), 'pipelines'),
             Kebab.factory.Edit,
             Kebab.factory.ModifyLabels,
             Kebab.factory.ModifyAnnotations,
-            Kebab.factory.EditEnvironment,
             Kebab.factory.Delete,
           ],
         });

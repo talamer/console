@@ -1,34 +1,50 @@
 /*eslint-disable no-undef, no-unused-vars */
 import * as React from 'react';
 import { ALL_NAMESPACES_KEY } from '../../../const';
+import { history } from '../../../components/utils';
 import { getNamespace, getPerspective } from '../../../components/utils/link';
 import { PipelineModel, PipelinerunModel } from '../../../models';
 import { PipelineRun, Param, getLatestRun } from '../utils/pipeline-augment';
 import { pipelineRunFilterReducer } from '../utils/pipeline-filter-reducer';
-import { k8sCreate, k8sGet, k8sList, K8sResourceKind, k8sUpdate } from '../../../module/k8s';
+import {
+  k8sCreate,
+  k8sGet,
+  k8sList,
+  K8sKind,
+  K8sResourceKind,
+  k8sUpdate,
+} from '../../../module/k8s';
 
 export interface Pipeline extends K8sResourceKind {
   latestRun?: PipelineRun;
   spec?: { pipelineRef?: { name: string }; params: Param[] };
 }
 
-const redirectToResourceList = (url: string, resource: string) => {
-  let basePath = 'k8s/';
+interface Action {
+  label: string | Object;
+  callback: () => void;
+}
+
+type ActionFunction = (kind: K8sKind, obj: K8sResourceKind) => Action;
+
+const redirectToResourceList = (resource: string) => {
+  const url = location.pathname;
+  let basePath = '/k8s/';
   if (getPerspective(url) === 'dev') {
-    basePath = 'dev/k8s';
+    basePath = '/dev/k8s';
   }
   const activeNamespace = getNamespace(url);
   const resourceUrl =
     activeNamespace === ALL_NAMESPACES_KEY
       ? `${basePath}/all-namespaces/${resource}`
       : `${basePath}/ns/${activeNamespace}/${resource}`;
-  location.href = resourceUrl;
+  history.push(resourceUrl);
 };
 
 export const newPipelineRun = (pipeline: Pipeline, latestRun: PipelineRun): PipelineRun => {
   if (!pipeline || !pipeline.metadata || !pipeline.metadata.name || !pipeline.metadata.namespace) {
     // eslint-disable-next-line no-console
-    console.error('Unable to create new PipelineRun. Mising "metadata" in ', pipeline);
+    console.error('Unable to create new PipelineRun. Missing "metadata" in ', pipeline);
     return null;
   }
   return {
@@ -64,26 +80,27 @@ export const newPipelineRun = (pipeline: Pipeline, latestRun: PipelineRun): Pipe
   };
 };
 
-export const triggerPipeline = (pipeline: Pipeline, latestRun: PipelineRun): Function => {
+export const triggerPipeline = (
+  pipeline: Pipeline,
+  latestRun: PipelineRun,
+  redirectURL: string,
+): ActionFunction => {
   //The returned function will be called using the 'kind' and 'obj' in Kebab Actions
-  return (kind, obj) => ({
+  return (kind: K8sKind, obj: K8sResourceKind): Action => ({
     label: 'Trigger',
     callback: () => {
       k8sCreate(PipelinerunModel, newPipelineRun(pipeline, latestRun)).then(() => {
-        if (
-          !window.location.pathname.endsWith('/pipelines') &&
-          !window.location.href.endsWith('/Runs')
-        ) {
-          redirectToResourceList(window.location.pathname, 'pipelines');
+        if (redirectURL && redirectURL !== '') {
+          redirectToResourceList(redirectURL);
         }
       });
     },
   });
 };
 
-export const fetchAndReRun = (pipelineRun: PipelineRun): Function => {
+export const fetchAndReRun = (pipelineRun: PipelineRun): ActionFunction => {
   //The returned function will be called using the 'kind' and 'obj' in Kebab Actions
-  return (kind, obj) => ({
+  return (kind: K8sKind, obj: K8sResourceKind): Action => ({
     label: 'Trigger',
     callback: () => {
       if (
@@ -120,39 +137,40 @@ export const fetchAndReRun = (pipelineRun: PipelineRun): Function => {
   });
 };
 
-export const rerunPipeline = (pipeline: Pipeline, latestRun: PipelineRun): Function => {
+export const rerunPipeline = (
+  pipeline: Pipeline,
+  latestRun: PipelineRun,
+  redirectURL: string,
+): ActionFunction => {
   if (!latestRun || !latestRun.metadata) {
     //The returned function will be called using the 'kind' and 'obj' in Kebab Actions
-    return (kind, obj) => ({
+    return (kind: K8sKind, obj: K8sResourceKind): Action => ({
       label: <div className="dropdown__disabled">Trigger Last Run</div>,
       callback: null,
     });
   }
   //The returned function will be called using the 'kind' and 'obj' in Kebab Actions
-  return (kind, obj) => ({
+  return (kind: K8sKind, obj: K8sResourceKind): Action => ({
     label: 'Trigger Last Run',
     callback: () => {
       k8sCreate(PipelinerunModel, newPipelineRun(pipeline, latestRun));
-      if (
-        !window.location.pathname.endsWith('/pipelines') &&
-        !window.location.href.endsWith('/Runs')
-      ) {
-        redirectToResourceList(window.location.pathname, 'pipelines');
+      if (redirectURL && redirectURL !== '') {
+        redirectToResourceList(redirectURL);
       }
     },
   });
 };
 
-export const stopPipelineRun = (pipelineRun: PipelineRun): Function => {
+export const stopPipelineRun = (pipelineRun: PipelineRun): ActionFunction => {
   if (!pipelineRun || pipelineRunFilterReducer(pipelineRun) !== 'Running') {
     //The returned function will be called using the 'kind' and 'obj' in Kebab Actions
-    return (kind, obj) => ({
+    return (kind: K8sKind, obj: K8sResourceKind): Action => ({
       label: <div className="dropdown__disabled">Stop Pipeline</div>,
       callback: null,
     });
   }
   //The returned function will be called using the 'kind' and 'obj' in Kebab Actions
-  return (kind, obj) => ({
+  return (kind: K8sKind, obj: K8sResourceKind): Action => ({
     label: 'Stop Pipeline Run',
     callback: () => {
       k8sUpdate(PipelinerunModel, pipelineRun, {
