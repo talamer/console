@@ -56,23 +56,28 @@ export const newPipelineRun = (pipeline: Pipeline, latestRun: PipelineRun): Pipe
           ? isNaN(parseInt(latestRun.metadata.name[latestRun.metadata.name.length - 1], 10))
             ? `${latestRun.metadata.name}-1`
             : [
-              latestRun.metadata.name.slice(0, -1),
-              parseInt(latestRun.metadata.name[latestRun.metadata.name.length - 1], 10) + 1,
-            ].join('')
+                latestRun.metadata.name.slice(0, -1),
+                parseInt(latestRun.metadata.name[latestRun.metadata.name.length - 1], 10) + 1,
+              ].join('')
           : `${pipeline.metadata.name}-run-1`,
       namespace: pipeline.metadata.namespace || '',
       labels:
         latestRun && latestRun.metadata && latestRun.metadata.labels
           ? latestRun.metadata.labels
           : {
-            'tekton.dev/pipeline': pipeline.metadata.name,
-          },
+              'tekton.dev/pipeline': pipeline.metadata.name,
+            },
     },
     spec: {
       pipelineRef: {
         name: pipeline.metadata.name,
       },
-      params: pipeline.spec && pipeline.spec.params ? pipeline.spec.params : null,
+      params:
+        latestRun.spec && latestRun.spec.params
+          ? latestRun.spec.params
+          : pipeline.spec && pipeline.spec.params
+          ? pipeline.spec.params
+          : null,
       trigger: {
         type: 'manual',
       },
