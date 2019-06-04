@@ -122,9 +122,14 @@ export const fetchAndReRun = (pipelineRun: PipelineRun): ActionFunction => {
       }
       k8sGet(PipelineModel, pipelineRun.spec.pipelineRef.name, pipelineRun.metadata.namespace).then(
         (res) => {
-          k8sList(PipelinerunModel, {
-            labelSelector: { 'tekton.dev/pipeline': res.metadata.name },
-          }).then((listres) => {
+          k8sList(
+            PipelinerunModel,
+            res.metadata.name === pipelineRun.spec.pipelineRef.name
+              ? {
+                  labelSelector: { 'tekton.dev/pipeline': res.metadata.name },
+                }
+              : {},
+          ).then((listres) => {
             k8sCreate(
               PipelinerunModel,
               newPipelineRun(res, {
