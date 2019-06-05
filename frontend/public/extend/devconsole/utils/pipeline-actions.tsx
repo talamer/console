@@ -6,14 +6,7 @@ import { getNamespace, getPerspective } from '../../../components/utils/link';
 import { PipelineModel, PipelinerunModel } from '../../../models';
 import { PipelineRun, Param, getLatestRun } from '../utils/pipeline-augment';
 import { pipelineRunFilterReducer } from '../utils/pipeline-filter-reducer';
-import {
-  k8sCreate,
-  k8sGet,
-  k8sList,
-  K8sKind,
-  K8sResourceKind,
-  k8sUpdate,
-} from '../../../module/k8s';
+import { k8sCreate, k8sList, K8sKind, K8sResourceKind, k8sUpdate } from '../../../module/k8s';
 
 export interface Pipeline extends K8sResourceKind {
   latestRun?: PipelineRun;
@@ -42,9 +35,21 @@ const redirectToResourceList = (resource: string) => {
 };
 
 export const newPipelineRun = (pipeline: Pipeline, latestRun: PipelineRun): PipelineRun => {
-  if (!pipeline || !pipeline.metadata || !pipeline.metadata.name || !pipeline.metadata.namespace) {
+  if (
+    (!pipeline || !pipeline.metadata || !pipeline.metadata.name || !pipeline.metadata.namespace) &&
+    (!latestRun ||
+      !latestRun.metadata ||
+      !latestRun.spec ||
+      !latestRun.spec.pipelineRef ||
+      !latestRun.spec.pipelineRef.name)
+  ) {
     // eslint-disable-next-line no-console
-    console.error('Unable to create new PipelineRun. Missing "metadata" in ', pipeline);
+    console.error(
+      'Unable to create new PipelineRun. Missing "metadata" in ',
+      pipeline,
+      ' and spec.pipelineRef in ',
+      latestRun,
+    );
     return null;
   }
   return {
@@ -56,28 +61,39 @@ export const newPipelineRun = (pipeline: Pipeline, latestRun: PipelineRun): Pipe
           ? isNaN(parseInt(latestRun.metadata.name[latestRun.metadata.name.length - 1], 10))
             ? `${latestRun.metadata.name}-1`
             : [
-              latestRun.metadata.name.slice(0, -1),
-              parseInt(latestRun.metadata.name[latestRun.metadata.name.length - 1], 10) + 1,
-            ].join('')
+                latestRun.metadata.name.slice(0, -1),
+                parseInt(latestRun.metadata.name[latestRun.metadata.name.length - 1], 10) + 1,
+              ].join('')
           : `${pipeline.metadata.name}-run-1`,
-      namespace: pipeline.metadata.namespace || '',
+      namespace:
+        latestRun && latestRun.metadata && latestRun.metadata.namespace
+          ? latestRun.metadata.namespace
+          : pipeline.metadata.namespace || '',
       labels:
         latestRun && latestRun.metadata && latestRun.metadata.labels
           ? latestRun.metadata.labels
           : {
-            'tekton.dev/pipeline': pipeline.metadata.name,
-          },
+              'tekton.dev/pipeline': pipeline.metadata.name,
+            },
     },
     spec: {
       pipelineRef: {
-        name: pipeline.metadata.name,
+        name:
+          latestRun &&
+          latestRun.spec &&
+          latestRun.spec.pipelineRef &&
+          latestRun.spec.pipelineRef.name
+            ? latestRun.spec.pipelineRef.name
+            : pipeline && pipeline.metadata && pipeline.metadata.name
+            ? pipeline.metadata.name
+            : null,
       },
       params:
         latestRun && latestRun.spec && latestRun.spec.params
           ? latestRun.spec.params
           : pipeline.spec && pipeline.spec.params
-            ? pipeline.spec.params
-            : null,
+          ? pipeline.spec.params
+          : null,
       trigger: {
         type: 'manual',
       },
@@ -120,29 +136,29 @@ export const fetchAndReRun = (pipelineRun: PipelineRun): ActionFunction => {
         console.error('Improper PipelineRun metadata');
         return;
       }
-      k8sGet(PipelineModel, pipelineRun.spec.pipelineRef.name, pipelineRun.metadata.namespace).then(
-        (res) => {
-          k8sList(
-            PipelinerunModel,
-            res.metadata.name === pipelineRun.spec.pipelineRef.name
-              ? {
-                labelSelector: { 'tekton.dev/pipeline': res.metadata.name },
-              }
-              : {},
-          ).then((listres) => {
-            k8sCreate(
-              PipelinerunModel,
-              newPipelineRun(res, {
-                ...pipelineRun,
-                metadata: {
-                  ...pipelineRun.metadata,
-                  name: getLatestRun({ data: listres }, 'creationTimestamp').metadata.name,
-                },
-              }),
-            );
-          });
-        },
-      );
+      k8sList(PipelinerunModel, {
+        labelSelector: { 'tekton.dev/pipeline': pipelineRun.spec.pipelineRef.name },
+      }).then((listres) => {
+        k8sCreate(
+          PipelinerunModel,
+          newPipelineRun(
+            {
+              apiVersion: `${PipelineModel.apiGroup}/${PipelineModel.apiVersion}`,
+              kind: 'Pipeline',
+              metadata: {
+                name: pipelineRun.spec.pipelineRef.name,
+              },
+            },
+            {
+              ...pipelineRun,
+              metadata: {
+                ...pipelineRun.metadata,
+                name: getLatestRun({ data: listres }, 'creationTimestamp').metadata.name,
+              },
+            },
+          ),
+        );
+      });
     },
   });
 };
