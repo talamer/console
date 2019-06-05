@@ -175,7 +175,7 @@ export const stopPipelineRun = (pipelineRun: PipelineRun): ActionFunction => {
   if (!pipelineRun || pipelineRunFilterReducer(pipelineRun) !== 'Running') {
     //The returned function will be called using the 'kind' and 'obj' in Kebab Actions
     return (kind: K8sKind, obj: K8sResourceKind): Action => ({
-      label: <div className="dropdown__disabled">Stop Pipeline</div>,
+      label: <div className="dropdown__disabled">Stop Pipeline Run</div>,
       callback: null,
     });
   }
