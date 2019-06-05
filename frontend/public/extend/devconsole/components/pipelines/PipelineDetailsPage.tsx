@@ -1,4 +1,4 @@
-/*eslint-disable no-undef */
+/*eslint-disable no-undef, no-unused-vars */
 import * as React from 'react';
 import { DetailsPage, DetailsPageProps } from '../../../../components/factory';
 import { Kebab, navFactory } from '../../../../components/utils';
@@ -10,16 +10,11 @@ import { k8sGet, k8sList } from '../../../../module/k8s';
 import { triggerPipeline, rerunPipeline } from '../../utils/pipeline-actions';
 import { getLatestRun } from '../../utils/pipeline-augment';
 
-interface PipelineDetailsPageProps extends DetailsPageProps {}
-
 interface PipelineDetailsPageStates {
   menuActions: Function[];
 }
 
-class PipelineDetailsPage extends React.Component<
-  PipelineDetailsPageProps,
-  PipelineDetailsPageStates
-  > {
+class PipelineDetailsPage extends React.Component<DetailsPageProps, PipelineDetailsPageStates> {
   constructor(props) {
     super(props);
     this.state = { menuActions: [] };
