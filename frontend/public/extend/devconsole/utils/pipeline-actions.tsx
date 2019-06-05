@@ -73,7 +73,7 @@ export const newPipelineRun = (pipeline: Pipeline, latestRun: PipelineRun): Pipe
         name: pipeline.metadata.name,
       },
       params:
-        latestRun.spec && latestRun.spec.params
+        latestRun && latestRun.spec && latestRun.spec.params
           ? latestRun.spec.params
           : pipeline.spec && pipeline.spec.params
             ? pipeline.spec.params
