@@ -37,8 +37,7 @@ class PodStatus extends React.PureComponent<PodStatusProps> {
     const vData: PodData[] = podStatus.map((pod) => ({
       x: pod,
       y: _.sumBy(data, (d) => +(getPodStatus(d) === pod)) || 0,
-    }))
-      .filter((data) => data.y > 0);
+    }));
     const tooltipEvent = showTooltip
       ? [
         {
@@ -86,7 +85,7 @@ class PodStatus extends React.PureComponent<PodStatusProps> {
         style={{
           data: {
             fill: (d: PodData) => podColor[d.x],
-            stroke: (d: PodData) => (d.x === 'Scale To 0' ? '#CCCCCC' : 'none'),
+            stroke: (d: PodData) => (d.x === 'Scale To 0' && d.y >0 ? '#BBBBBB' : 'none'),
             strokeWidth: 1,
           },
         }}

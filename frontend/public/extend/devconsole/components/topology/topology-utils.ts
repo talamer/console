@@ -64,7 +64,6 @@ function podWarnings(pod) {
           return 'Failed';
         }
         return 'Warning';
-
       }
       if (isContainerLoopingFilter(containerStatus)) {
         return 'Failed';
@@ -174,7 +173,7 @@ export class TransformTopologyData {
           url: !_.isEmpty(route.spec) ? getRouteWebURL(route) : null,
           editUrl: deploymentsAnnotations['app.openshift.io/edit-url'],
           builderImage: deploymentsLabels['app.kubernetes.io/name'],
-          isKnativeResource : this.isKnativeServing(deploymentConfig, 'metadata.labels'),
+          isKnativeResource: this.isKnativeServing(deploymentConfig, 'metadata.labels'),
           donutStatus: {
             pods: _.map(dcPods, (pod) =>
               _.merge(_.pick(pod, 'metadata', 'status', 'spec.containers'), {
@@ -202,7 +201,6 @@ export class TransformTopologyData {
     return data.filter(dc => {
       return dc.metadata.labels[PART_OF] && dc.metadata.labels[PART_OF] === this.application;
     });
-
   }
 
   /**
@@ -277,8 +275,17 @@ export class TransformTopologyData {
         controller: true,
       });
     });
-    if (dcPodsData && !dcPodsData.length && this.isKnativeServing(replicationController, 'metadata.labels')) {
-      return [{..._.pick(replicationController, 'metadata', 'status', 'spec'), 'status': {'phase':'Scale To 0'}}];
+    if (
+      dcPodsData &&
+      !dcPodsData.length &&
+      this.isKnativeServing(replicationController, 'metadata.labels')
+    ) {
+      return [
+        {
+          ..._.pick(replicationController, 'metadata', 'status', 'spec'),
+          status: { phase: 'Scale To 0' },
+        },
+      ];
     }
     return dcPodsData;
   }

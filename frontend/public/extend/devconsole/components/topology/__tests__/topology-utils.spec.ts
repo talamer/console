@@ -90,4 +90,15 @@ describe('TopologyUtils ', () => {
     const status = getPodStatus(topologyTransformedData[keys[0]].data['donutStatus'].pods[0]);
     expect(podStatus.includes(status)).toBe(true);
   });
+
+  it('should return empty pod list in TopologyData in case of no pods', () => {
+    const knativeMockResp = { ...MockResources, pods: { data: [] } };
+    const transformTopologyData = new TransformTopologyData(knativeMockResp);
+    transformTopologyData.transformDataBy('deploymentConfigs');
+    transformTopologyData.transformDataBy('deployments');
+    const result = transformTopologyData.getTopologyData();
+    const topologyTransformedData = result.topology;
+    const keys = Object.keys(topologyTransformedData);
+    expect(topologyTransformedData[keys[0]].data['donutStatus'].pods).toHaveLength(0);
+  });
 });
