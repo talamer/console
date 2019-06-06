@@ -35,7 +35,7 @@ const WorkloadNode: React.FC<NodeProps<WorkloadData>> = ({
         workload.data.isKnativeResource && (
           <image
             key="knative"
-            x={-radius * 0.11}
+            x={-radius * 0.15}
             y={-radius * 0.65}
             width={radius * 0.39}
             height={radius * 0.31}
