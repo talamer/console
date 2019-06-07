@@ -4,4 +4,9 @@
   flex-flow: wrap;
   background: var(--pf-global--Color--light-200);
   padding: 4px;
+  &__success-icon {
+    color: var(--pf-global--success-color--100);
+    font-size: 15px;
+    margin-left: 5px;
+  }
 }

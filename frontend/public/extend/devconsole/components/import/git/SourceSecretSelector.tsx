@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { FormGroup, ControlLabel, FormControl, HelpBlock } from 'patternfly-react';
-import SourceSecretDropdown from './SourceSecretDropdown';
+import SourceSecretDropdown from '../../dropdown/SourceSecretDropdown';
 import CreateSourceSecret, { SecretType } from './CreateSourceSecret';
 
 const CREATE_SOURCE_SECRET = 'create-source-secret';

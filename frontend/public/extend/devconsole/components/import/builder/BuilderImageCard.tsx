@@ -2,7 +2,7 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
 import { Card, CardHeader, CardBody } from '@patternfly/react-core';
-import { BuilderImage } from '../../utils/imagestream-utils';
+import { BuilderImage } from '../../../utils/imagestream-utils';
 import { StarIcon } from '@patternfly/react-icons';
 import './BuilderImageCard.scss';
 
