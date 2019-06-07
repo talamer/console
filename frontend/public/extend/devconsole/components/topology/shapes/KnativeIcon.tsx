@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { getImageForIconClass } from '../../../../../components/catalog/catalog-item-icon';
-import SvgDropShadowFilter from '../../../shared/components/svg/SvgDropShadowFilter';
+import SvgDefs from '../../../shared/components/svg/SvgDefs';
 import { createSvgIdUrl } from '../../../shared/utils/svg-utils';
 
 type KnativeIconProps = {
@@ -15,7 +15,26 @@ const FILTER_ID = 'KnativeIconOutlineFilterId';
 
 const KnativeIcon: React.FC<KnativeIconProps> = ({ x, y, width, height }) => (
   <React.Fragment>
-    <SvgDropShadowFilter id={FILTER_ID} floodOpacity={0.8} stdDeviation={1} floodColor="#FFFFFF" />
+    <SvgDefs id={FILTER_ID}>
+      <filter id={FILTER_ID}>
+        <feOffset result="nw" in="SourceAlpha" dx="-0.5" dy="-0.5" />
+        <feOffset result="ne" in="SourceAlpha" dx="0.5" dy="-0.5" />
+        <feOffset result="se" in="SourceAlpha" dx="0.5" dy="0.5" />
+        <feOffset result="sw" in="SourceAlpha" dx="-0.5" dy="0.5" />
+        <feMerge result="blackborder">
+          <feMergeNode in="nw" />
+          <feMergeNode in="ne" />
+          <feMergeNode in="se" />
+          <feMergeNode in="sw" />
+        </feMerge>
+        <feFlood floodColor="#FFFFFF" />
+        <feComposite in2="blackborder" operator="in" result="offsetColor" />
+        <feMerge>
+          <feMergeNode in="offsetColor" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+    </SvgDefs>
     <image
       x={x}
       y={y}
