@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
-import { SectionHeading } from '../../../../../components/utils';
-import { InputField, NSDropdownField } from '../../formik/CustomFormikFields';
-import ApplicationSelector from './ApplicationSelector';
+import { InputField, NSDropdownField } from '../../formik-fields';
 import { ProjectData } from '../import-types';
+import { FormSection } from '../section/FormSection';
+import ApplicationSelector from './ApplicationSelector';
 
 export interface AppSectionProps {
   project: ProjectData;
@@ -11,13 +11,12 @@ export interface AppSectionProps {
 
 const AppSection: React.FC<AppSectionProps> = ({ project }) => {
   return (
-    <React.Fragment>
-      <SectionHeading text="App" style={{ fontWeight: '500' }} />
+    <FormSection title="App" divider>
       <NSDropdownField
         name="project.name"
         label="Project"
         selectedKey={project.name}
-        dropDownClassName="dropdown--full-width"
+        fullWidth
         required
       />
       <ApplicationSelector namespace={project.name} />
@@ -28,7 +27,7 @@ const AppSection: React.FC<AppSectionProps> = ({ project }) => {
         helpText="Identifies the resources created for this application."
         required
       />
-    </React.Fragment>
+    </FormSection>
   );
 };
 

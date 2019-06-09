@@ -5,7 +5,7 @@ import { ResourceName } from '../../../../../components/utils';
 import { FormGroup } from 'patternfly-react';
 import ImageStreamInfo from '../../source-to-image/ImageStreamInfo';
 import { ImageTag, getTagDataWithDisplayName } from '../../../utils/imagestream-utils';
-import { DropdownField } from '../../formik/CustomFormikFields';
+import { DropdownField } from '../../formik-fields';
 
 export interface BuilderImageTagSelectorProps {
   imageTags: ImageTag[];
@@ -32,19 +32,18 @@ const BuilderImageTagSelector: React.FC<BuilderImageTagSelectorProps> = ({
 
   return (
     <React.Fragment>
-      <DropdownField
-        name="image.tag"
-        label="Builder Image Version"
-        items={tagItems}
-        selectedKey={selectedImageTag}
-        title={tagItems[selectedImageTag]}
-        dropDownClassName="dropdown--full-width"
-      />
-      {imageTag && (
-        <FormGroup className="co-m-pane__form">
-          <ImageStreamInfo displayName={displayName} tag={imageTag} />
-        </FormGroup>
-      )}
+      <FormGroup>
+        <DropdownField
+          name="image.tag"
+          label="Builder Image Version"
+          items={tagItems}
+          selectedKey={selectedImageTag}
+          title={tagItems[selectedImageTag]}
+          fullWidth
+          required
+        />
+        {imageTag && <ImageStreamInfo displayName={displayName} tag={imageTag} />}
+      </FormGroup>
     </React.Fragment>
   );
 };

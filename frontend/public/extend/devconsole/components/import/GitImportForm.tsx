@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { Form, Button } from 'patternfly-react';
 import { FormikProps, FormikValues } from 'formik';
-import { GitImportFormProps } from './import-types';
-import { SectionDivider } from './SectionDivider';
 import { ButtonBar } from '../../../../components/utils';
+import { NormalizedBuilderImages } from '../../utils/imagestream-utils';
 import GitSection from './git/GitSection';
 import BuilderSection from './builder/BuilderSection';
 import AppSection from './app/AppSection';
+
+export interface GitImportFormProps {
+  builderImages?: NormalizedBuilderImages;
+}
 
 const GitImportForm: React.FC<FormikProps<FormikValues> & GitImportFormProps> = ({
   values,
@@ -19,12 +22,10 @@ const GitImportForm: React.FC<FormikProps<FormikValues> & GitImportFormProps> = 
 }) => {
   console.log('errors', errors);
   return (
-    <Form onReset={handleReset} onSubmit={handleSubmit} className="co-m-pane__body-group">
+    <Form onReset={handleReset} onSubmit={handleSubmit}>
       <div className="co-m-pane__form">
         <GitSection />
-        <SectionDivider />
         <AppSection project={values.project} />
-        <SectionDivider />
         <BuilderSection image={values.image} builderImages={builderImages} />
       </div>
       <ButtonBar

@@ -1,15 +1,9 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
-import { SectionHeading } from '../../../../../components/utils';
-import { InputField, DropdownField } from '../../formik/CustomFormikFields';
+import { InputField, DropdownField } from '../../formik-fields';
 import { useFormikContext, FormikValues } from 'formik';
-
-enum GitTypes {
-  '' = 'Please choose Git type',
-  github = 'GitHub',
-  gitlab = 'GitLab',
-  bitbucket = 'Bitbucket',
-}
+import { FormSection } from '../section/FormSection';
+import { GitTypes } from '../import-types';
 
 const detectGitType = (url: string): string => {
   if (url.includes('github.com')) {
@@ -24,7 +18,7 @@ const detectGitType = (url: string): string => {
 
 const GitSection: React.FC = () => {
   const { values, setFieldValue, setFieldTouched } = useFormikContext<FormikValues>();
-  const handleGitUrlBlur = (e) => {
+  const handleGitUrlBlur = () => {
     const gitType = detectGitType(values.git.url);
     setFieldTouched('git.url', true);
     setFieldValue('git.type', gitType);
@@ -37,8 +31,7 @@ const GitSection: React.FC = () => {
   };
 
   return (
-    <React.Fragment>
-      <SectionHeading text="Git" style={{ fontWeight: '500' }} />
+    <FormSection title="Git" divider>
       <InputField
         type="text"
         name="git.url"
@@ -53,11 +46,11 @@ const GitSection: React.FC = () => {
           items={GitTypes}
           selectedKey={values.git.type}
           title={GitTypes[values.git.type]}
-          dropDownClassName="dropdown--full-width"
+          fullWidth
           required
         />
       )}
-    </React.Fragment>
+    </FormSection>
   );
 };
 

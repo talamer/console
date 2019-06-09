@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-export const SectionDivider: React.FC = () => (
+export const FormSectionDivider: React.FC = () => (
   <hr
     style={{
       marginTop: '30px',

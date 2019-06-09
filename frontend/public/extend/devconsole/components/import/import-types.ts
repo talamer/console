@@ -1,20 +1,9 @@
 import { K8sResourceKind, ContainerPort } from '../../../../module/k8s';
-import { NormalizedBuilderImages } from '../../utils/imagestream-utils';
 
 export type FirehoseList = {
   data?: K8sResourceKind[];
   [key: string]: any;
 };
-
-export interface GitImportProps {
-  activeNamespace: string;
-  imageStreams?: FirehoseList;
-}
-
-export interface GitImportFormProps {
-  builderImages?: NormalizedBuilderImages;
-}
-
 export interface GitImportFormData {
   name: string;
   project: ProjectData;
@@ -49,4 +38,11 @@ export interface GitData {
 
 export interface VisibilityData {
   gitType: boolean;
+}
+
+export enum GitTypes {
+  '' = 'Please choose Git type',
+  github = 'GitHub',
+  gitlab = 'GitLab',
+  bitbucket = 'Bitbucket',
 }

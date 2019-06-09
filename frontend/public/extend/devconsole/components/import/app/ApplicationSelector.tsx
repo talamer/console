@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
-import cx from 'classnames';
 import { FormGroup, ControlLabel, HelpBlock } from 'patternfly-react';
-import ApplicationDropdown from '../../dropdown/ApplicationDropdown';
-import { InputField } from '../../formik/CustomFormikFields';
+import { InputField } from '../../formik-fields';
 import { useFormikContext, FormikValues, useField } from 'formik';
+import { getValidationState } from '../../formik-fields/field-utils';
+import ApplicationDropdown from '../../dropdown/ApplicationDropdown';
 
 export const CREATE_APPLICATION_KEY = 'create-application-key';
 
@@ -28,7 +28,10 @@ const ApplicationSelector: React.FC<ApplicationSelectorProps> = ({ namespace }) 
 
   return (
     <React.Fragment>
-      <FormGroup controlId="app-selector-field" className={cx({ 'has-error': touched && error })}>
+      <FormGroup
+        controlId="app-selector-field"
+        validationState={getValidationState(error, touched)}
+      >
         <ControlLabel className="co-required">Application</ControlLabel>
         <ApplicationDropdown
           dropDownClassName="dropdown--full-width"

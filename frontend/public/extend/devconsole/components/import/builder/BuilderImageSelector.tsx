@@ -5,9 +5,9 @@ import { LoadingInline } from '../../../../../components/utils';
 import { FormGroup, ControlLabel, HelpBlock } from 'patternfly-react';
 import { CheckCircleIcon, StarIcon } from '@patternfly/react-icons';
 import { NormalizedBuilderImages } from '../../../utils/imagestream-utils';
-import BuilderImageCard from './BuilderImageCard';
 import { useField, useFormikContext, FormikValues } from 'formik';
-import cx from 'classnames';
+import { getValidationState } from '../../formik-fields/field-utils';
+import BuilderImageCard from './BuilderImageCard';
 import './BuilderImageSelector.scss';
 
 export interface BuilderImageSelectorProps {
@@ -23,15 +23,19 @@ const BuilderImageSelector: React.FC<BuilderImageSelectorProps> = ({
 }) => {
   const [selected, { error: selectedError, touched: selectedTouched }] = useField('image.selected');
   const [recommended] = useField('image.recommended');
-  const { setFieldValue } = useFormikContext<FormikValues>();
+  const { setFieldValue, setFieldTouched } = useFormikContext<FormikValues>();
 
   const handleImageChange = (image: string) => {
     setFieldValue('image.selected', image);
     setFieldValue('image.tag', builderImages[image].recentTag.name);
+    setFieldTouched('image.selected', true);
   };
 
   return (
-    <FormGroup controlId="builder-image-selector-field" className={cx({ 'has-error': selectedError })}>
+    <FormGroup
+      controlId="builder-image-selector-field"
+      validationState={getValidationState(selectedError, selectedTouched)}
+    >
       <ControlLabel className="co-required">Builder Image</ControlLabel>
       {loadingRecommendedImage && <LoadingInline />}
       {recommended.value && (
@@ -46,10 +50,10 @@ const BuilderImageSelector: React.FC<BuilderImageSelectorProps> = ({
       {loadingImageStream ? (
         <LoadingInline />
       ) : (
-        <div id={"builder-image-selector-field"} className="odc-builder-image-selector">
+        <div id="builder-image-selector-field" className="odc-builder-image-selector">
           {_.values(builderImages).map((image) => (
             <BuilderImageCard
-              key={`${image.name}-key`}
+              key={`${image.name}`}
               image={image}
               selected={selected.value === image.name}
               recommended={recommended.value === image.name}

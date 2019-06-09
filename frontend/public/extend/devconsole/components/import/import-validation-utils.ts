@@ -1,7 +1,24 @@
 import * as _ from 'lodash-es';
-import { GitData, ImageData, VisibilityData, ApplicationData } from './import-types';
+import {
+  GitData,
+  ImageData,
+  VisibilityData,
+  ApplicationData,
+  GitImportFormData,
+} from './import-types';
 
 const urlRegex = /^(((ssh|git|https?):\/\/[\w]+)|(git@[\w]+.[\w]+:))([\w\-._~/?#[\]!$&'()*+,;=])+$/;
+
+export const validateForm = (values: GitImportFormData) => {
+  const errors = {
+    name: validateName(values.name),
+    git: validateGitUrl(values.git, values.visibility),
+    image: validateBuilderImage(values.image),
+    application: validateApplication(values.application),
+  };
+
+  return _.pickBy(errors);
+};
 
 export const validateGitUrl = (git: GitData, visibility: VisibilityData): GitData | null => {
   const errors = {} as GitData;

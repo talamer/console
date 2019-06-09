@@ -2,7 +2,7 @@
 import * as React from 'react';
 import * as _ from 'lodash-es';
 import { Formik } from 'formik';
-import { GitImportProps, GitImportFormData } from './import-types';
+import { GitImportFormData, FirehoseList } from './import-types';
 import { NormalizedBuilderImages, normalizeBuilderImages } from '../../utils/imagestream-utils';
 import {
   createDeploymentConfig,
@@ -12,13 +12,13 @@ import {
   createRoute,
 } from './import-submit-utils';
 import { history } from '../../../../components/utils';
-import {
-  validateGitUrl,
-  validateName,
-  validateBuilderImage,
-  validateApplication,
-} from './import-validation-utils';
+import { validateForm } from './import-validation-utils';
 import GitImportForm from './GitImportForm';
+
+export interface GitImportProps {
+  activeNamespace: string;
+  imageStreams?: FirehoseList;
+}
 
 const GitImport: React.FC<GitImportProps> = ({ activeNamespace, imageStreams }) => {
   const initialValues: GitImportFormData = {
@@ -86,23 +86,12 @@ const GitImport: React.FC<GitImportProps> = ({ activeNamespace, imageStreams }) 
       });
   };
 
-  const validate = (values: GitImportFormData) => {
-    const errors = {
-      name: validateName(values.name),
-      git: validateGitUrl(values.git, values.visibility),
-      image: validateBuilderImage(values.image),
-      application: validateApplication(values.application),
-    };
-
-    return _.pickBy(errors);
-  };
-
   return (
     <Formik
       initialValues={initialValues}
       onSubmit={handleSubmit}
       onReset={history.goBack}
-      validate={validate}
+      validate={validateForm}
       render={(props) => <GitImportForm {...props} builderImages={builderImages} />}
     />
   );
