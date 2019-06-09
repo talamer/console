@@ -12,7 +12,7 @@ import {
   createRoute,
 } from './import-submit-utils';
 import { history } from '../../../../components/utils';
-import { validateForm } from './import-validation-utils';
+import { validationSchema } from './import-validation-utils';
 import GitImportForm from './GitImportForm';
 
 export interface GitImportProps {
@@ -35,15 +35,13 @@ const GitImport: React.FC<GitImportProps> = ({ activeNamespace, imageStreams }) 
       type: '',
       ref: '',
       dir: '',
+      showGitType: false,
     },
     image: {
       selected: '',
       recommended: '',
       tag: '',
       ports: [],
-    },
-    visibility: {
-      gitType: false,
     },
   };
 
@@ -91,7 +89,7 @@ const GitImport: React.FC<GitImportProps> = ({ activeNamespace, imageStreams }) 
       initialValues={initialValues}
       onSubmit={handleSubmit}
       onReset={history.goBack}
-      validate={validateForm}
+      validationSchema={validationSchema}
       render={(props) => <GitImportForm {...props} builderImages={builderImages} />}
     />
   );

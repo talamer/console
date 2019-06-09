@@ -106,7 +106,8 @@
     "url-search-params-polyfill": "2.x",
     "victory": "^32.2.2",
     "whatwg-fetch": "2.x",
-    "xterm": "~3.8.1"
+    "xterm": "~3.8.1",
+    "yup": "^0.27.0"
   },
   "devDependencies": {
     "@types/enzyme": "3.x",

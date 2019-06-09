@@ -1,61 +1,44 @@
-import * as _ from 'lodash-es';
-import {
-  GitData,
-  ImageData,
-  VisibilityData,
-  ApplicationData,
-  GitImportFormData,
-} from './import-types';
+import * as yup from 'yup';
 
 const urlRegex = /^(((ssh|git|https?):\/\/[\w]+)|(git@[\w]+.[\w]+:))([\w\-._~/?#[\]!$&'()*+,;=])+$/;
 
-export const validateForm = (values: GitImportFormData) => {
-  const errors = {
-    name: validateName(values.name),
-    git: validateGitUrl(values.git, values.visibility),
-    image: validateBuilderImage(values.image),
-    application: validateApplication(values.application),
-  };
+export const validationSchema = yup.object().shape({
+  name: yup.string().required('Required'),
+  project: yup.object().shape({
+    name: yup.string().required('Required'),
+  }),
+  application: yup.object().shape({
+    name: yup.string().required('Required'),
+    selectedKey: yup.string().required('Required'),
+  }),
+  image: yup.object().shape({
+    selected: yup.string().required('Required'),
+    tag: yup.string().required('Required'),
+  }),
+  git: yup.object().shape({
+    url: yup
+      .string()
+      .url()
+      .matches(urlRegex, 'Invalid Git URL')
+      .required('Required'),
+    type: yup.string().when('showGitType', {
+      is: true,
+      then: yup.string().required('We failed to detect the git type. Please choose a git type.'),
+    }),
+    showGitType: yup.boolean(),
+  }),
+});
 
-  return _.pickBy(errors);
-};
-
-export const validateGitUrl = (git: GitData, visibility: VisibilityData): GitData | null => {
-  const errors = {} as GitData;
-  if (!git.url) {
-    errors.url = 'Required.';
-  } else if (!urlRegex.test(git.url)) {
-    errors.url = 'Invalid Git URL.';
+export const detectGitType = (url: string): string => {
+  if (!urlRegex.test(url)) {
+    return;
   }
-
-  if (!git.type && visibility.gitType) {
-    errors.type = 'We failed to detect the git type. Please choose a git type.';
+  if (url.includes('github.com')) {
+    return 'github';
+  } else if (url.includes('bitbucket.org')) {
+    return 'bitbucket';
+  } else if (url.includes('gitlab.com')) {
+    return 'gitlab';
   }
-
-  return !_.isEmpty(errors) ? errors : null;
-};
-
-export const validateName = (name: string): string | null => {
-  return !name ? 'Required.' : null;
-};
-
-export const validateBuilderImage = (image: ImageData): ImageData | null => {
-  const errors = {} as ImageData;
-  if (!image.selected) {
-    errors.selected = 'Please select a Builder Image.';
-  }
-  return !_.isEmpty(errors) ? errors : null;
-};
-
-export const validateApplication = (application: ApplicationData): ApplicationData | null => {
-  const errors = {} as ApplicationData;
-  if (!application.selectedKey) {
-    errors.selectedKey = 'Required';
-  }
-
-  if (!application.name) {
-    errors.name = 'Required';
-  }
-
-  return !_.isEmpty(errors) ? errors : null;
+  return '';
 };

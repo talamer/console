@@ -23,12 +23,21 @@ const BuilderImageSelector: React.FC<BuilderImageSelectorProps> = ({
 }) => {
   const [selected, { error: selectedError, touched: selectedTouched }] = useField('image.selected');
   const [recommended] = useField('image.recommended');
-  const { setFieldValue, setFieldTouched } = useFormikContext<FormikValues>();
+  const { values, setValues, setFieldTouched, validateForm } = useFormikContext<FormikValues>();
 
   const handleImageChange = (image: string) => {
-    setFieldValue('image.selected', image);
-    setFieldValue('image.tag', builderImages[image].recentTag.name);
+    const newValues = {
+      ...values,
+      image: {
+        ...values.image,
+        selected: image,
+        tag: builderImages[image].recentTag.name,
+      },
+    };
+    setValues(newValues);
     setFieldTouched('image.selected', true);
+    setFieldTouched('image.tag', true);
+    validateForm(newValues);
   };
 
   return (

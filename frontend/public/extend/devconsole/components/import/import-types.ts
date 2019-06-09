@@ -10,7 +10,6 @@ export interface GitImportFormData {
   application: ApplicationData;
   git: GitData;
   image: ImageData;
-  visibility: VisibilityData;
 }
 
 export interface ApplicationData {
@@ -34,10 +33,7 @@ export interface GitData {
   type: string;
   ref: string;
   dir: string;
-}
-
-export interface VisibilityData {
-  gitType: boolean;
+  showGitType: boolean;
 }
 
 export enum GitTypes {

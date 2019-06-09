@@ -13,33 +13,29 @@ export interface GitImportFormProps {
 
 const GitImportForm: React.FC<FormikProps<FormikValues> & GitImportFormProps> = ({
   values,
-  errors,
   handleSubmit,
   handleReset,
   builderImages,
   status,
   isSubmitting,
-}) => {
-  console.log('errors', errors);
-  return (
-    <Form onReset={handleReset} onSubmit={handleSubmit}>
-      <div className="co-m-pane__form">
-        <GitSection />
-        <AppSection project={values.project} />
-        <BuilderSection image={values.image} builderImages={builderImages} />
-      </div>
-      <ButtonBar
-        className="co-source-to-image-form__button-bar"
-        errorMessage={status && status.submitError}
-        inProgress={isSubmitting}
-      >
-        <Button type="submit" bsStyle="primary">
-          Create
-        </Button>
-        <Button type="reset">Cancel</Button>
-      </ButtonBar>
-    </Form>
-  );
-};
+}) => (
+  <Form onReset={handleReset} onSubmit={handleSubmit}>
+    <div className="co-m-pane__form">
+      <GitSection />
+      <AppSection project={values.project} />
+      <BuilderSection image={values.image} builderImages={builderImages} />
+    </div>
+    <ButtonBar
+      className="co-source-to-image-form__button-bar"
+      errorMessage={status && status.submitError}
+      inProgress={isSubmitting}
+    >
+      <Button type="submit" bsStyle="primary">
+        Create
+      </Button>
+      <Button type="reset">Cancel</Button>
+    </ButtonBar>
+  </Form>
+);
 
 export default GitImportForm;
