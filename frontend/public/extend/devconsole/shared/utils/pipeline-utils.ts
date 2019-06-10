@@ -79,14 +79,19 @@ const appendPipelineRunStatus = (pipeline, pipelineRun) => {
       _task.status = { reason: 'Idle' };
     } else if (_task.status && _task.status.conditions) {
       const statusCondition = _task.status.conditions.pop();
-      if (statusCondition.status === 'True') {
-        _task.status.reason = 'Succeeded';
-      } else if (statusCondition.status === 'Unknown') {
-        _task.status.reason = 'In Progress';
-      } else if (statusCondition.status === 'False') {
-        _task.status.reason = 'Failed';
-      } else {
-        _task.status.reason = 'Idle';
+      switch (statusCondition.status) {
+        case 'True':
+          _task.status.reason = 'Succeeded';
+          break;
+        case 'Unknown':
+          _task.status.reason = 'In Progress';
+          break;
+        case 'False':
+          _task.status.reason = 'Failed';
+          break;
+        default:
+          _task.status.reason = 'Idle';
+          break;
       }
     }
 
