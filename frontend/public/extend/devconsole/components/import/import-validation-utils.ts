@@ -18,7 +18,6 @@ export const validationSchema = yup.object().shape({
   git: yup.object().shape({
     url: yup
       .string()
-      .url()
       .matches(urlRegex, 'Invalid Git URL')
       .required('Required'),
     type: yup.string().when('showGitType', {
