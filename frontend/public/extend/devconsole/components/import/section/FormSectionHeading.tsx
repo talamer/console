@@ -6,5 +6,5 @@ export interface FormSectionHeadingProps {
 }
 
 export const FormSectionHeading: React.FC<FormSectionHeadingProps> = ({ title }) => (
-  <SectionHeading text={title} style={{ fontWeight: '500' }} />
+  <SectionHeading text={title} style={{ fontWeight: 'var(--pf-global--FontWeight--semi-bold)' }} />
 );

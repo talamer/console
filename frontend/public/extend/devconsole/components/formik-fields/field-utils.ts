@@ -6,5 +6,5 @@ export const getValidationState = (error: string, touched: boolean, warning?: st
     error: touched && error,
     warning: touched && warning,
   });
-  return state || null
+  return state || null;
 };

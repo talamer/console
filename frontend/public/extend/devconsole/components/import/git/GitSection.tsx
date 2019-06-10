@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
-import { InputField, DropdownField } from '../../formik-fields';
 import { useFormikContext, FormikValues } from 'formik';
+import { InputField, DropdownField } from '../../formik-fields';
 import { FormSection } from '../section/FormSection';
 import { GitTypes } from '../import-types';
 import { detectGitType } from '../import-validation-utils';

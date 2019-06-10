@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
-
-import LabelDropdown from './ResourceDropdown';
 import { Firehose } from '../../../../components/utils';
+import ResourceDropdown from './ResourceDropdown';
 
 interface ApplicationDropdownProps {
   className?: string;
@@ -27,7 +26,7 @@ interface ApplicationDropdownProps {
   onChange?: (name: string, key: string) => void;
 }
 
-const AppDropdown: React.FC<ApplicationDropdownProps> = (props) => {
+const ApplicationDropdown: React.FC<ApplicationDropdownProps> = (props) => {
   const resources = [
     {
       isList: true,
@@ -44,7 +43,7 @@ const AppDropdown: React.FC<ApplicationDropdownProps> = (props) => {
   ];
   return (
     <Firehose resources={resources}>
-      <LabelDropdown
+      <ResourceDropdown
         {...props}
         placeholder="Select an Application"
         dataSelector={['metadata', 'labels', 'app.kubernetes.io/part-of']}
@@ -53,4 +52,4 @@ const AppDropdown: React.FC<ApplicationDropdownProps> = (props) => {
   );
 };
 
-export default AppDropdown;
+export default ApplicationDropdown;

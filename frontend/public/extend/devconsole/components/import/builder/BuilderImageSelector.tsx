@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import * as _ from 'lodash-es';
+import { useField, useFormikContext, FormikValues } from 'formik';
 import { LoadingInline } from '../../../../../components/utils';
 import { FormGroup, ControlLabel, HelpBlock } from 'patternfly-react';
 import { CheckCircleIcon, StarIcon } from '@patternfly/react-icons';
 import { NormalizedBuilderImages } from '../../../utils/imagestream-utils';
-import { useField, useFormikContext, FormikValues } from 'formik';
 import { getValidationState } from '../../formik-fields/field-utils';
 import BuilderImageCard from './BuilderImageCard';
 import './BuilderImageSelector.scss';
