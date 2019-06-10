@@ -37,10 +37,9 @@ export const isPositive = (value: number) => {
   return value >= 0 ? '' : 'Can\'t be negative.';
 };
 
-export const convertValueToBase = (value, unitLabel) => {
+export const convertValueToBase = (value: number, unitLabel: string) => {
   let val: number;
   switch (unitLabel) {
-    //millicores
     case 'millicores':
       val = convertToBaseValue(`${value} m`);
       break;
@@ -63,8 +62,8 @@ export const convertValueToBase = (value, unitLabel) => {
   return val;
 };
 
-export const validateLimit = (min, max, unitOfMin, unitOfMax) => {
-  if (isPositive(max) !== '') {
+export const validateLimit = (min: number, max: number, unitOfMin: string, unitOfMax: string) => {
+  if (isPositive(max)) {
     return isPositive(max);
   }
   const minInBase = convertValueToBase(min, unitOfMin);
@@ -105,10 +104,10 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
     memory: memoryUnits.MiB,
   };
 
-  const firstLabel = 'MiB';
-  const secondLabel = 'MB';
+  const binaryUnitLabel = 'MiB';
+  const decimalUnitLabel = 'MB';
 
-  const onChangeCpuRequestData: React.ReactEventHandler<HTMLInputElement> = (event) => {
+  const onChangeCpuRequestData: React.ReactEventHandler<HTMLInputElement> = (event: React.SyntheticEvent<HTMLInputElement>) => {
     const val = event.currentTarget.value === '' ? 0 : event.currentTarget.valueAsNumber;
     onCpuRequestChange({
       [event.currentTarget.name]: val,
@@ -116,7 +115,7 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
     });
   };
 
-  const onChangeCpuLimitData: React.ReactEventHandler<HTMLInputElement> = (event) => {
+  const onChangeCpuLimitData: React.ReactEventHandler<HTMLInputElement> = (event: React.SyntheticEvent<HTMLInputElement>) => {
     const val = event.currentTarget.value === '' ? 0 : event.currentTarget.valueAsNumber;
     onCpuLimitChange({
       [event.currentTarget.name]: val,
@@ -124,7 +123,7 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
     });
   };
 
-  const onChangeMemoryRequestData: React.ReactEventHandler<HTMLInputElement> = (event) => {
+  const onChangeMemoryRequestData: React.ReactEventHandler<HTMLInputElement> = (event: React.SyntheticEvent<HTMLInputElement>) => {
     const val = event.currentTarget.value === '' ? 0 : event.currentTarget.valueAsNumber;
     onMemoryRequestChange({
       [event.currentTarget.name]: val,
@@ -132,7 +131,7 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
     });
   };
 
-  const onChangeMemoryLimitData: React.ReactEventHandler<HTMLInputElement> = (event) => {
+  const onChangeMemoryLimitData: React.ReactEventHandler<HTMLInputElement> = (event: React.SyntheticEvent<HTMLInputElement>) => {
     const val = event.currentTarget.value === '' ? 0 : event.currentTarget.valueAsNumber;
     onMemoryLimitChange({
       [event.currentTarget.name]: val,
@@ -140,56 +139,56 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
     });
   };
 
-  const onChangeCpuRequest = (operation) => {
+  const onChangeCpuRequest = (operation : number) => {
     onCpuRequestChange({
       ['request']: _.toInteger(cpuRequest.request) + operation,
       ['requestUnit']: cpuRequest.requestUnit || defaultUnit.cpu,
     });
   };
 
-  const onCpuRequestUnitChange = (val) => {
+  const onCpuRequestUnitChange = (val: string) => {
     onCpuRequestChange({
       ['request']: cpuRequest.request,
       ['requestUnit']: cpuUnits[val],
     });
   };
 
-  const onChangeCpuLimit = (operation) => {
+  const onChangeCpuLimit = (operation: number) => {
     onCpuLimitChange({
       ['limit']: _.toInteger(cpuLimit.limit) + operation,
       ['limitUnit']: cpuLimit.limitUnit || defaultUnit.cpu,
     });
   };
 
-  const onCpuLimitUnitChange = (val) => {
+  const onCpuLimitUnitChange = (val: string) => {
     onCpuLimitChange({
       ['limit']: cpuLimit.limit,
       ['limitUnit']: cpuUnits[val],
     });
   };
 
-  const onChangeMemoryRequest = (operation) => {
+  const onChangeMemoryRequest = (operation: number) => {
     onMemoryRequestChange({
       ['request']: _.toInteger(memoryRequest.request) + operation,
       ['requestUnit']: memoryRequest.requestUnit || defaultUnit.memory,
     });
   };
 
-  const onMemoryRequestUnitChange = (val) => {
+  const onMemoryRequestUnitChange = (val: string) => {
     onMemoryRequestChange({
       ['request']: memoryRequest.request,
       ['requestUnit']: memoryUnits[val],
     });
   };
 
-  const onChangeMemoryLimit = (operation) => {
+  const onChangeMemoryLimit = (operation: number) => {
     onMemoryLimitChange({
       ['limit']: _.toInteger(memoryLimit.limit) + operation,
       ['limitUnit']: memoryLimit.limitUnit || defaultUnit.memory,
     });
   };
 
-  const onMemoryLimitUnitChange = (val) => {
+  const onMemoryLimitUnitChange = (val: string) => {
     onMemoryLimitChange({
       ['limit']: memoryLimit.limit,
       ['limitUnit']: memoryUnits[val],
@@ -200,9 +199,9 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
     <React.Fragment>
       <div className="co-section-heading">Resource Limits</div>
       <div className="co-section-heading-tertiary">CPU</div>
-      <FormGroup controlId="cpu-request" className={cpuRequestError ? 'has-error' : ''}>
-        <div className="odc-resource-limit-row">
-          <div>
+      <FormGroup controlId="cpu-request" className={cpuRequestError && 'has-error'}>
+        <div className="co-m-table-grid__body row">
+          <div className="col-sm-3">
             <ControlLabel>Request</ControlLabel>
             <NumberSpinner
               id="cpu-request"
@@ -213,10 +212,9 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
               changeValueBy={onChangeCpuRequest}
             />
           </div>
-          <div className="odc-resource-limit-unit">
+          <div className="col-sm-2">
             <ControlLabel>Unit</ControlLabel>
             <Dropdown
-              // className="odc-resource-limits-dropdown"
               dropDownClassName="dropdown--full-width"
               items={cpuUnits}
               selectedKey={cpuUnits.millicores}
@@ -228,9 +226,9 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
         <HelpBlock>The minimum amount of CPU the container is guaranteed.</HelpBlock>
         <HelpBlock>{cpuRequestError}</HelpBlock>
       </FormGroup>
-      <FormGroup controlId="cpu-limit" className={cpuLimitError ? 'has-error' : ''}>
-        <div className="odc-resource-limit-row">
-          <div>
+      <FormGroup controlId="cpu-limit" className={cpuLimitError && 'has-error'}>
+        <div className="co-m-table-grid__body row">
+          <div  className="col-sm-3">
             <ControlLabel>Limit</ControlLabel>
             <NumberSpinner
               id="cpu-limit"
@@ -241,10 +239,9 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
               changeValueBy={onChangeCpuLimit}
             />
           </div>
-          <div className="odc-resource-limit-unit">
+          <div className="col-sm-2">
             <ControlLabel>Unit</ControlLabel>
             <Dropdown
-              // className="odc-resource-limits-dropdown"
               dropDownClassName="dropdown--full-width"
               items={cpuUnits}
               selectedKey={cpuUnits.millicores}
@@ -259,9 +256,9 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
         <HelpBlock>{cpuLimitError}</HelpBlock>
       </FormGroup>
       <div className="co-section-heading-tertiary">Memory</div>
-      <FormGroup controlId="memory-request" className={memoryRequestError ? 'has-error' : ''}>
-        <div className="odc-resource-limit-row">
-          <div>
+      <FormGroup controlId="memory-request" className={memoryRequestError && 'has-error'}>
+        <div className="co-m-table-grid__body row">
+          <div className="col-sm-3">
             <ControlLabel>Request</ControlLabel>
             <NumberSpinner
               id="memory-request"
@@ -272,18 +269,17 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
               changeValueBy={onChangeMemoryRequest}
             />
           </div>
-          <div className="odc-resource-limit-unit">
+          <div className="col-sm-2">
             <ControlLabel>Unit</ControlLabel>
             <Dropdown
-              // className="odc-resource-limits-dropdown"
               dropDownClassName="dropdown--full-width"
               items={memoryUnits}
               selectedKey={memoryUnits.MiB}
               title={memoryUnits.MiB}
-              spacerBefore={new Set([secondLabel])}
+              spacerBefore={new Set([decimalUnitLabel])}
               headerBefore={{
-                [firstLabel]: 'Binary Units',
-                [secondLabel]: 'Decimal Units',
+                [binaryUnitLabel]: 'Binary Units',
+                [decimalUnitLabel]: 'Decimal Units',
               }}
               onChange={onMemoryRequestUnitChange}
             />
@@ -292,9 +288,9 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
         <HelpBlock>The minimum amount of Memory the container is guaranteed.</HelpBlock>
         <HelpBlock>{memoryRequestError}</HelpBlock>
       </FormGroup>
-      <FormGroup controlId="memory-limit" className={memoryLimitError ? 'has-error' : ''}>
-        <div className="odc-resource-limit-row">
-          <div>
+      <FormGroup controlId="memory-limit" className={memoryLimitError && 'has-error'}>
+        <div className="co-m-table-grid__body row">
+          <div className="col-sm-3">
             <ControlLabel>Limit</ControlLabel>
             <NumberSpinner
               id="memory-limit"
@@ -305,18 +301,17 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
               changeValueBy={onChangeMemoryLimit}
             />
           </div>
-          <div className="odc-resource-limit-unit">
+          <div className="col-sm-2">
             <ControlLabel>Unit</ControlLabel>
             <Dropdown
-              // className="odc-resource-limits-dropdown"
               dropDownClassName="dropdown--full-width"
               items={memoryUnits}
               selectedKey={memoryUnits.MiB}
               title={memoryUnits.MiB}
-              spacerBefore={new Set([secondLabel])}
+              spacerBefore={new Set([decimalUnitLabel])}
               headerBefore={{
-                [firstLabel]: 'Binary Units',
-                [secondLabel]: 'Decimal Units',
+                [binaryUnitLabel]: 'Binary Units',
+                [decimalUnitLabel]: 'Decimal Units',
               }}
               onChange={onMemoryLimitUnitChange}
             />
