@@ -198,7 +198,7 @@ export const PipelineModel: K8sKind = {
   labelPlural: 'Pipelines',
 };
 
-export const PipelinerunModel: K8sKind = {
+export const PipelineRunModel: K8sKind = {
   apiGroup: 'tekton.dev',
   apiVersion: 'v1alpha1',
   label: 'Pipelinerun',

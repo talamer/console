@@ -4,7 +4,7 @@ import { DetailsPage, DetailsPageProps } from '../../../../components/factory';
 import { Kebab, navFactory } from '../../../../components/utils';
 import PipelinEnvironmentComponent from './PipelineEnvironment';
 import PipelineDetails from './PipelineDetails';
-import { PipelineModel, PipelinerunModel } from '../../../../models';
+import { PipelineModel, PipelineRunModel } from '../../../../models';
 import PipelineRuns from './PipelineRuns';
 import { k8sGet, k8sList } from '../../../../module/k8s';
 import { triggerPipeline, rerunPipeline } from '../../utils/pipeline-actions';
@@ -21,7 +21,7 @@ class PipelineDetailsPage extends React.Component<DetailsPageProps, PipelineDeta
   }
   componentDidMount() {
     k8sGet(PipelineModel, this.props.name, this.props.namespace).then((res) => {
-      k8sList(PipelinerunModel, {
+      k8sList(PipelineRunModel, {
         labelSelector: { 'tekton.dev/pipeline': res.metadata.name },
       }).then((listres) => {
         this.setState({

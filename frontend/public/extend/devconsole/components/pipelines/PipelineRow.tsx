@@ -62,10 +62,8 @@ const PipelineRow: React.FC<PipelineRowProps> = (props) => {
           }
         />
       </div>
-      <div className="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-        <div className="dropdown-kebab-pf">
-          <ResourceKebab actions={menuActions} kind="Pipeline" resource={pipeline} />
-        </div>
+      <div className="dropdown-kebab-pf">
+        <ResourceKebab actions={menuActions} kind="Pipeline" resource={pipeline} />
       </div>
     </ResourceRow>
   );

@@ -3,14 +3,15 @@ import * as React from 'react';
 import { ALL_NAMESPACES_KEY } from '../../../const';
 import { history } from '../../../components/utils';
 import { getNamespace, getPerspective } from '../../../components/utils/link';
-import { PipelineModel, PipelinerunModel } from '../../../models';
-import { PipelineRun, Param, getLatestRun } from '../utils/pipeline-augment';
+import { PipelineModel, PipelineRunModel } from '../../../models';
+import { PipelineRun, Param } from '../utils/pipeline-augment';
 import { pipelineRunFilterReducer } from '../utils/pipeline-filter-reducer';
-import { k8sCreate, k8sList, K8sKind, K8sResourceKind, k8sUpdate } from '../../../module/k8s';
+import { k8sCreate, k8sKill, K8sKind, K8sResourceKind, k8sUpdate } from '../../../module/k8s';
 
 export interface Pipeline extends K8sResourceKind {
   latestRun?: PipelineRun;
   spec?: { pipelineRef?: { name: string }; params: Param[] };
+  rerun?: Boolean;
 }
 
 interface Action {
@@ -53,18 +54,20 @@ export const newPipelineRun = (pipeline: Pipeline, latestRun: PipelineRun): Pipe
     return null;
   }
   return {
-    apiVersion: `${PipelinerunModel.apiGroup}/${PipelinerunModel.apiVersion}`,
-    kind: PipelinerunModel.kind,
+    apiVersion: `${PipelineRunModel.apiGroup}/${PipelineRunModel.apiVersion}`,
+    kind: PipelineRunModel.kind,
     metadata: {
       name:
-        latestRun && latestRun.metadata && latestRun.metadata.name
-          ? isNaN(parseInt(latestRun.metadata.name[latestRun.metadata.name.length - 1], 10))
-            ? `${latestRun.metadata.name}-1`
-            : [
-              latestRun.metadata.name.slice(0, -1),
-              parseInt(latestRun.metadata.name[latestRun.metadata.name.length - 1], 10) + 1,
-            ].join('')
-          : `${pipeline.metadata.name}-run-1`,
+        pipeline && pipeline.rerun
+          ? latestRun.metadata.name
+          : latestRun && latestRun.metadata && latestRun.metadata.name
+            ? isNaN(parseInt(latestRun.metadata.name[latestRun.metadata.name.length - 1], 10))
+              ? `${latestRun.metadata.name}-1`
+              : [
+                latestRun.metadata.name.slice(0, -1),
+                parseInt(latestRun.metadata.name[latestRun.metadata.name.length - 1], 10) + 1,
+              ].join('')
+            : `${pipeline.metadata.name}-run-1`,
       namespace:
         latestRun && latestRun.metadata && latestRun.metadata.namespace
           ? latestRun.metadata.namespace
@@ -110,8 +113,8 @@ export const triggerPipeline = (
   return (kind: K8sKind, obj: K8sResourceKind): Action => ({
     label: 'Trigger',
     callback: () => {
-      k8sCreate(PipelinerunModel, newPipelineRun(pipeline, latestRun)).then(() => {
-        if (redirectURL && redirectURL !== '') {
+      k8sCreate(PipelineRunModel, newPipelineRun(pipeline, latestRun)).then(() => {
+        if (redirectURL) {
           redirectToResourceList(redirectURL);
         }
       });
@@ -119,10 +122,10 @@ export const triggerPipeline = (
   });
 };
 
-export const fetchAndReRun = (pipelineRun: PipelineRun): ActionFunction => {
+export const reRunPipelineRun = (pipelineRun: PipelineRun): ActionFunction => {
   //The returned function will be called using the 'kind' and 'obj' in Kebab Actions
   return (kind: K8sKind, obj: K8sResourceKind): Action => ({
-    label: 'Trigger',
+    label: 'Rerun',
     callback: () => {
       if (
         !pipelineRun ||
@@ -136,11 +139,9 @@ export const fetchAndReRun = (pipelineRun: PipelineRun): ActionFunction => {
         console.error('Improper PipelineRun metadata');
         return;
       }
-      k8sList(PipelinerunModel, {
-        labelSelector: { 'tekton.dev/pipeline': pipelineRun.spec.pipelineRef.name },
-      }).then((listres) => {
+      k8sKill(PipelineRunModel, pipelineRun).then(() => {
         k8sCreate(
-          PipelinerunModel,
+          PipelineRunModel,
           newPipelineRun(
             {
               apiVersion: `${PipelineModel.apiGroup}/${PipelineModel.apiVersion}`,
@@ -148,14 +149,9 @@ export const fetchAndReRun = (pipelineRun: PipelineRun): ActionFunction => {
               metadata: {
                 name: pipelineRun.spec.pipelineRef.name,
               },
+              rerun: true,
             },
-            {
-              ...pipelineRun,
-              metadata: {
-                ...pipelineRun.metadata,
-                name: getLatestRun({ data: listres }, 'creationTimestamp').metadata.name,
-              },
-            },
+            pipelineRun,
           ),
         );
       });
@@ -179,7 +175,7 @@ export const rerunPipeline = (
   return (kind: K8sKind, obj: K8sResourceKind): Action => ({
     label: 'Trigger Last Run',
     callback: () => {
-      k8sCreate(PipelinerunModel, newPipelineRun(pipeline, latestRun));
+      k8sCreate(PipelineRunModel, newPipelineRun(pipeline, latestRun));
       if (redirectURL && redirectURL !== '') {
         redirectToResourceList(redirectURL);
       }
@@ -199,7 +195,7 @@ export const stopPipelineRun = (pipelineRun: PipelineRun): ActionFunction => {
   return (kind: K8sKind, obj: K8sResourceKind): Action => ({
     label: 'Stop Pipeline Run',
     callback: () => {
-      k8sUpdate(PipelinerunModel, pipelineRun, {
+      k8sUpdate(PipelineRunModel, pipelineRun, {
         spec: { ...pipelineRun.spec, status: 'PipelineRunCancelled' },
       });
     },

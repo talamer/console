@@ -9,7 +9,7 @@ import {
   ResourceKebab,
 } from '../../../../components/utils';
 import { pipelineRunFilterReducer } from '../../utils/pipeline-filter-reducer';
-import { fetchAndReRun, stopPipelineRun } from '../../utils/pipeline-actions';
+import { reRunPipelineRun, stopPipelineRun } from '../../utils/pipeline-actions';
 import { PipelineRun } from '../../utils/pipeline-augment';
 
 interface PipelineRunRowProps {
@@ -19,7 +19,7 @@ interface PipelineRunRowProps {
 const PipelineRunRow: React.FC<PipelineRunRowProps> = (props) => {
   const pipelinerun = props.obj;
   const menuActions = [
-    fetchAndReRun(pipelinerun),
+    reRunPipelineRun(pipelinerun),
     stopPipelineRun(pipelinerun),
     Kebab.factory.Edit,
     Kebab.factory.ModifyLabels,
@@ -58,10 +58,8 @@ const PipelineRunRow: React.FC<PipelineRunRowProps> = (props) => {
           ? pipelinerun.spec.trigger.type
           : '-'}
       </div>
-      <div className="col-lg-1 col-md-1 col-sm-2 col-xs-2">
-        <div className="dropdown-kebab-pf">
-          <ResourceKebab actions={menuActions} kind="PipelineRun" resource={pipelinerun} />
-        </div>
+      <div className="dropdown-kebab-pf">
+        <ResourceKebab actions={menuActions} kind="PipelineRun" resource={pipelinerun} />
       </div>
     </ResourceRow>
   );
