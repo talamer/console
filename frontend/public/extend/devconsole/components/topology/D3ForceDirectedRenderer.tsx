@@ -488,7 +488,7 @@ class ViewWrapper extends React.Component<ViewWrapperProps> {
 
   componentDidMount() {
     // eslint-disable-next-line react/no-find-dom-node
-    this.$node = d3.select(ReactDOM.findDOMNode(this)).datum(this.props.view);
+    this.$node = d3.select(ReactDOM.findDOMNode(this) as Element).datum(this.props.view);
     this.props.onEnter && this.props.onEnter(this.$node);
   }
 
@@ -518,7 +518,7 @@ class GroupWrapper extends React.Component<GroupWrapperProps> {
 
   componentDidMount() {
     // eslint-disable-next-line react/no-find-dom-node
-    this.$group = d3.select(ReactDOM.findDOMNode(this)).datum(this.props.view);
+    this.$group = d3.select(ReactDOM.findDOMNode(this) as Element).datum(this.props.view);
     this.props.onEnter && this.props.onEnter(this.$group);
   }
 
