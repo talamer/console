@@ -11,6 +11,6 @@ export interface PipelineVisualizationProps {
 export const PipelineVisualization: React.FC<PipelineVisualizationProps> = ({ pipeline }) => (
   <PipelineVisualizationGraph
     namespace={pipeline.metadata.namespace}
-    graph={getPipelineTasks(pipeline.spec.tasks)}
+    graph={getPipelineTasks(pipeline)}
   />
 );

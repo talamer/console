@@ -5,6 +5,9 @@ import * as Renderer from 'react-test-renderer';
 import { PipelineVisualizationGraph } from '../PipelineVisualizationGraph';
 import { PipelineVisualizationProps } from '../PipelineVisualization';
 import { mockPipelineGraph } from '../__mocks__/PipelineMocks';
+import { getPipelineTasks } from '../../../shared/utils/pipeline-utils';
+import { mockPipeline } from '../../pipelines/__mocks__/pipeline';
+import { mockPipelineRun } from '../../pipelineruns/__mocks__/pipelineRun';
 
 jest.mock('react-dom', () => ({
   findDOMNode: () => ({}),
@@ -32,8 +35,16 @@ describe('PipelineVisualizationGraph', () => {
     expect(noOfStages).toEqual(mockPipelineGraph.length);
   });
 
-  it('should match the previous snapshot', () => {
+  it('should match the previous pipeline snapshot', () => {
     const tree = Renderer.create(<PipelineVisualizationGraph {...props} />).toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('should match the previous pipelineRun snapshot', () => {
+    const graph = getPipelineTasks(mockPipeline, mockPipelineRun);
+    const tree = Renderer.create(
+      <PipelineVisualizationGraph namespace={props.namespace} graph={graph} />,
+    ).toJSON();
     expect(tree).toMatchSnapshot();
   });
 });

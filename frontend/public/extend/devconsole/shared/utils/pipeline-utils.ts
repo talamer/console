@@ -1,7 +1,15 @@
 /* eslint-disable no-unused-vars, no-undef */
-
+import * as _ from 'lodash-es';
 import { PipelineVisualizationTaskItem } from '../../components/pipelines/PipelineVisualizationGraph';
+import { formatDuration } from '../../../../components/utils/datetime';
+import { K8sResourceKind } from '../../../../module/k8s';
 
+export const TaskStatusClassNameMap = {
+  'In Progress': 'is-running',
+  Succeeded: 'is-done',
+  Failed: 'is-error',
+  Idle: 'is-idle',
+};
 export const conditions = {
   hasFromDependency: (task: PipelineVisualizationTaskItem): boolean =>
     task.hasOwnProperty('resources') &&
@@ -43,11 +51,59 @@ const sortTasksByRunAfterAndFrom = (
   return output;
 };
 
+/**
+ * Appends the pipeline run status to each tasks in the pipeline.
+ * @param pipeline
+ * @param pipelineRun
+ */
+const appendPipelineRunStatus = (pipeline, pipelineRun) => {
+  return _.map(pipeline.spec.tasks, (task) => {
+    if (!pipelineRun.status) {
+      return task;
+    }
+    if (pipelineRun.status && !pipelineRun.status.taskRuns) {
+      return _.merge(task, { status: { reason: 'Failed' } });
+    }
+    const _task = _.merge(task, {
+      status: _.get(_.find(pipelineRun.status.taskRuns, { pipelineTaskName: task.name }), 'status'),
+    });
+    // append task duration
+    if (_task.status && _task.status.completionTime && _task.status.startTime) {
+      const date =
+        new Date(_task.status.completionTime).getTime() -
+        new Date(_task.status.startTime).getTime();
+      _task.status.duration = formatDuration(date);
+    }
+    // append task status
+    if (!_task.status) {
+      _task.status = { reason: 'Idle' };
+    } else if (_task.status && _task.status.conditions) {
+      const statusCondition = _task.status.conditions.pop();
+      if (statusCondition.status === 'True') {
+        _task.status.reason = 'Succeeded';
+      } else if (statusCondition.status === 'Unknown') {
+        _task.status.reason = 'In Progress';
+      } else if (statusCondition.status === 'False') {
+        _task.status.reason = 'Failed';
+      } else {
+        _task.status.reason = 'Idle';
+      }
+    }
+
+    return _task;
+  });
+};
+
 export const getPipelineTasks = (
-  taskList: PipelineVisualizationTaskItem[],
+  pipeline: K8sResourceKind,
+  pipelineRun: K8sResourceKind = { apiVersion: '', metadata: {}, kind: 'PipelineRun' },
 ): PipelineVisualizationTaskItem[][] => {
   // Each unit in 'out' array is termed as stage | out = [stage1 = [task1], stage2 = [task2,task3], stage3 = [task4]]
   const out = [];
+  if (!pipeline.spec || !pipeline.spec.tasks) {
+    return out;
+  }
+  const taskList = appendPipelineRunStatus(pipeline, pipelineRun);
   //Step 1: Sort Tasks to get in correct order
   const tasks = sortTasksByRunAfterAndFrom(taskList);
 

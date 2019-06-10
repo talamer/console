@@ -18,6 +18,23 @@ $gutter: 1.8em;
     width: inherit;
     display: flex;
   }
+
+  &.is-done {
+    color: var(--pf-global--success-color--200);
+  }
+
+  &.is-running {
+    color: var(--pf-global--primary-color--dark-100);
+  }
+
+  &.is-error {
+    color: var(--pf-global--danger-color--100);
+  }
+
+  &.is-idle {
+    color: var(--pf-global--disabled-color--100);
+  }
+
   &.is-input-node {
     width: 2em;
     height: 2em;
@@ -44,28 +61,14 @@ $gutter: 1.8em;
 
   &__status {
     margin: 0 4px;
-    border-radius: 100%;
     width: 1.5em;
-    height: 1.5em;
     flex-grow: 0;
     flex-shrink: 0;
     order: -1;
-
-    &.is-done {
-      background: green;
-    }
-
-    &.is-running {
-      background: blue;
-    }
-
-    &.is-error {
-      background: red;
-    }
-
-    &.is-idle {
-      background: grey;
-    }
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
   }
 
   &__title {
@@ -74,7 +77,7 @@ $gutter: 1.8em;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    margin: 0px 8px;
+    margin: 0px 4px;
     &:hover {
       cursor: pointer;
     }
