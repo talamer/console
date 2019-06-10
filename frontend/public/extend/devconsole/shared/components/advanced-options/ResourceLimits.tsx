@@ -8,7 +8,6 @@ import {
   units,
   convertToBaseValue,
 } from '../../../../../components/utils';
-import './ResourceLimits.scss';
 
 interface ResourceLimitProps {
   cpuRequest?: {
@@ -200,8 +199,8 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
       <div className="co-section-heading">Resource Limits</div>
       <div className="co-section-heading-tertiary">CPU</div>
       <FormGroup controlId="cpu-request" className={cpuRequestError && 'has-error'}>
-        <div className="co-m-table-grid__body row">
-          <div className="col-sm-3">
+        <div className="row">
+          <div className="col-lg-4 col-md-4 col-xs-7 col-sm-6">
             <ControlLabel>Request</ControlLabel>
             <NumberSpinner
               id="cpu-request"
@@ -212,10 +211,9 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
               changeValueBy={onChangeCpuRequest}
             />
           </div>
-          <div className="col-sm-2">
+          <div className="col-lg-8 col-md-8 col-xs-5 col-sm-6">
             <ControlLabel>Unit</ControlLabel>
             <Dropdown
-              dropDownClassName="dropdown--full-width"
               items={cpuUnits}
               selectedKey={cpuUnits.millicores}
               title={cpuUnits.millicores}
@@ -224,11 +222,11 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
           </div>
         </div>
         <HelpBlock>The minimum amount of CPU the container is guaranteed.</HelpBlock>
-        <HelpBlock>{cpuRequestError}</HelpBlock>
+        {cpuRequestError && <HelpBlock>{cpuRequestError}</HelpBlock>}
       </FormGroup>
       <FormGroup controlId="cpu-limit" className={cpuLimitError && 'has-error'}>
-        <div className="co-m-table-grid__body row">
-          <div  className="col-sm-3">
+        <div className="row">
+          <div  className="col-lg-4 col-md-4 col-xs-7 col-sm-6">
             <ControlLabel>Limit</ControlLabel>
             <NumberSpinner
               id="cpu-limit"
@@ -239,10 +237,9 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
               changeValueBy={onChangeCpuLimit}
             />
           </div>
-          <div className="col-sm-2">
+          <div className="col-lg-8 col-md-8 col-xs-5 col-sm-6">
             <ControlLabel>Unit</ControlLabel>
             <Dropdown
-              dropDownClassName="dropdown--full-width"
               items={cpuUnits}
               selectedKey={cpuUnits.millicores}
               title={cpuUnits.millicores}
@@ -253,12 +250,12 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
         <HelpBlock>
           The maximum amount of CPU the container is allowed to use when running.
         </HelpBlock>
-        <HelpBlock>{cpuLimitError}</HelpBlock>
+        {cpuLimitError && <HelpBlock>{cpuLimitError}</HelpBlock>}
       </FormGroup>
       <div className="co-section-heading-tertiary">Memory</div>
       <FormGroup controlId="memory-request" className={memoryRequestError && 'has-error'}>
-        <div className="co-m-table-grid__body row">
-          <div className="col-sm-3">
+        <div className="row">
+          <div className="col-lg-4 col-md-4 col-xs-7 col-sm-6">
             <ControlLabel>Request</ControlLabel>
             <NumberSpinner
               id="memory-request"
@@ -269,10 +266,9 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
               changeValueBy={onChangeMemoryRequest}
             />
           </div>
-          <div className="col-sm-2">
+          <div className="col-lg-8 col-md-8 col-xs-5 col-sm-6">
             <ControlLabel>Unit</ControlLabel>
             <Dropdown
-              dropDownClassName="dropdown--full-width"
               items={memoryUnits}
               selectedKey={memoryUnits.MiB}
               title={memoryUnits.MiB}
@@ -286,11 +282,11 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
           </div>
         </div>
         <HelpBlock>The minimum amount of Memory the container is guaranteed.</HelpBlock>
-        <HelpBlock>{memoryRequestError}</HelpBlock>
+        {memoryRequestError && <HelpBlock>{memoryRequestError}</HelpBlock>}
       </FormGroup>
       <FormGroup controlId="memory-limit" className={memoryLimitError && 'has-error'}>
-        <div className="co-m-table-grid__body row">
-          <div className="col-sm-3">
+        <div className="row">
+          <div className="col-lg-4 col-md-4 col-xs-7 col-sm-6">
             <ControlLabel>Limit</ControlLabel>
             <NumberSpinner
               id="memory-limit"
@@ -301,10 +297,9 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
               changeValueBy={onChangeMemoryLimit}
             />
           </div>
-          <div className="col-sm-2">
+          <div className="col-lg-8 col-md-8 col-xs-5 col-sm-6">
             <ControlLabel>Unit</ControlLabel>
             <Dropdown
-              dropDownClassName="dropdown--full-width"
               items={memoryUnits}
               selectedKey={memoryUnits.MiB}
               title={memoryUnits.MiB}
@@ -320,7 +315,7 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
         <HelpBlock>
           The maximum amount of Memory the container is allowed to use when running.
         </HelpBlock>
-        <HelpBlock>{memoryLimitError}</HelpBlock>
+        {memoryLimitError && <HelpBlock>{memoryLimitError}</HelpBlock>}
       </FormGroup>
     </React.Fragment>
   );
