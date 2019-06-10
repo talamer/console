@@ -30,7 +30,7 @@ export type CreateSourceSecretProps = {
 export default class CreateSourceSecret extends React.Component<
   CreateSourceSecretProps,
   CreateSourceSecretState
-> {
+  > {
   constructor(props) {
     super(props);
     this.state = {

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { shallow } from 'enzyme';
 import { Defs, DefsState } from '../SvgDefsProvider';

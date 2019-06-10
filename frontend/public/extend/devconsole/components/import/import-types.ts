@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, no-undef */
 import { K8sResourceKind, ContainerPort } from '../../../../module/k8s';
 
 export type FirehoseList = {

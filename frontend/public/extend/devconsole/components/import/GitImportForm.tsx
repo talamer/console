@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, no-undef, dot-notation */
 import * as React from 'react';
 import { Form, Button } from 'patternfly-react';
 import { FormikProps, FormikValues } from 'formik';

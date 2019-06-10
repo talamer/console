@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, no-undef */
 import { validationSchema, detectGitType } from '../import-validation-utils';
 import { GitImportFormData } from '../import-types';
 
@@ -42,11 +43,11 @@ describe('ValidationUtils', () => {
       },
     };
 
-    it('should validate the form data', async () => {
+    it('should validate the form data', async() => {
       await validationSchema.isValid(mockFormData).then((valid) => expect(valid).toEqual(true));
     });
 
-    it('should throw an error if url is invalid', async () => {
+    it('should throw an error if url is invalid', async() => {
       mockFormData.git.url = 'something.com';
       await validationSchema.isValid(mockFormData).then((valid) => expect(valid).toEqual(false));
       await validationSchema
@@ -54,7 +55,7 @@ describe('ValidationUtils', () => {
         .catch((err) => expect(err.message).toBe('Invalid Git URL'));
     });
 
-    it('should throw an error if url is valid but git type is not valid', async () => {
+    it('should throw an error if url is valid but git type is not valid', async() => {
       mockFormData.git.url = 'https://something.com/test/repo';
       mockFormData.git.type = '';
       await validationSchema.isValid(mockFormData).then((valid) => expect(valid).toEqual(true));
@@ -64,7 +65,7 @@ describe('ValidationUtils', () => {
       });
     });
 
-    it('should throw an error for required fields if empty', async () => {
+    it('should throw an error for required fields if empty', async() => {
       mockFormData.name = '';
       await validationSchema.isValid(mockFormData).then((valid) => expect(valid).toEqual(false));
       await validationSchema.validate(mockFormData).catch((err) => {

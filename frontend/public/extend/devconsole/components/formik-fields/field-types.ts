@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, no-undef */
 export interface InputFieldProps {
   type?: string;
   name: string;

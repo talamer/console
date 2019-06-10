@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { FormGroup, ControlLabel, HelpBlock, CheckBox } from 'patternfly-react';
 import { AsyncComponent, Dropdown } from '../../../../components/utils';
@@ -104,13 +105,12 @@ const SecureRouteForm: React.FC<SecureRouteFormProps> = (props: SecureRouteFormP
               Policy for traffic on insecure schemes like HTTP.
             </HelpBlock>
           </FormGroup>
-          {termination &&
-            termination !== 'passthrough' && (
+          {termination && termination !== 'passthrough' && (
             <React.Fragment>
               <h3>Certificates</h3>
               <HelpBlock>
-                  TLS certificates for edge and re-encrypt termination. If not specified, the
-                  router's default certificate is used.
+                TLS certificates for edge and re-encrypt termination. If not specified, the router&apos;s
+                default certificate is used.
               </HelpBlock>
               <FormGroup controlId="certificate">
                 <DroppableFileInput

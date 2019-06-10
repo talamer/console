@@ -62,7 +62,7 @@ const BuilderImageSelector: React.FC<BuilderImageSelectorProps> = ({
         <div id="builder-image-selector-field" className="odc-builder-image-selector">
           {_.values(builderImages).map((image) => (
             <BuilderImageCard
-              key={`${image.name}`}
+              key={image.name}
               image={image}
               selected={selected.value === image.name}
               recommended={recommended.value === image.name}
