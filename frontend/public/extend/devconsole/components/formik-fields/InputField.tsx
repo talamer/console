@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import cx from 'classnames';
 import { useField } from 'formik';
@@ -5,7 +6,7 @@ import { FormGroup, ControlLabel, FormControl, HelpBlock } from 'patternfly-reac
 import { InputFieldProps } from './field-types';
 import { getValidationState } from './field-utils';
 
-export const InputField: React.FC<InputFieldProps> = ({ label, helpText, ...props }) => {
+const InputField: React.FC<InputFieldProps> = ({ label, helpText, ...props }) => {
   const [field, { touched, error }] = useField(props.name);
   return (
     <FormGroup
@@ -19,3 +20,5 @@ export const InputField: React.FC<InputFieldProps> = ({ label, helpText, ...prop
     </FormGroup>
   );
 };
+
+export default InputField;

@@ -20,7 +20,7 @@ const ImportPage: React.FunctionComponent<ImportPageProps> = ({ match }) => {
       <PageHeading title="Git Import" />
       <div className="co-m-pane__body">
         <Firehose resources={[{ kind: ImageStreamModel.kind, prop: 'imageStreams', isList: true }]}>
-          <GitImport activeNamespace={namespace} />
+          <GitImport namespace={namespace} />
         </Firehose>
       </div>
     </React.Fragment>

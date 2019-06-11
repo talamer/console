@@ -1,3 +1,3 @@
-export * from './InputField';
-export * from './DropdownField';
-export * from './NSDropdownField';
+export { default as InputField } from './InputField';
+export { default as DropdownField } from './DropdownField';
+export { default as NSDropdownField } from './NSDropdownField';

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import cx from 'classnames';
 import { useField, useFormikContext, FormikValues } from 'formik';
@@ -6,7 +7,7 @@ import { DropdownFieldProps } from './field-types';
 import { NsDropdown } from '../../../../components/utils';
 import { getValidationState } from './field-utils';
 
-export const NSDropdownField: React.FC<DropdownFieldProps> = ({ label, helpText, ...props }) => {
+const NSDropdownField: React.FC<DropdownFieldProps> = ({ label, helpText, ...props }) => {
   const [field, { touched, error }] = useField(props.name);
   const { setFieldValue, setFieldTouched } = useFormikContext<FormikValues>();
   return (
@@ -28,3 +29,5 @@ export const NSDropdownField: React.FC<DropdownFieldProps> = ({ label, helpText,
     </FormGroup>
   );
 };
+
+export default NSDropdownField;

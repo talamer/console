@@ -26,11 +26,7 @@ const GitImportForm: React.FC<FormikProps<FormikValues> & GitImportFormProps> = 
       <AppSection project={values.project} />
       <BuilderSection image={values.image} builderImages={builderImages} />
     </div>
-    <ButtonBar
-      className="co-source-to-image-form__button-bar"
-      errorMessage={status && status.submitError}
-      inProgress={isSubmitting}
-    >
+    <ButtonBar errorMessage={status && status.submitError} inProgress={isSubmitting}>
       <Button type="submit" bsStyle="primary">
         Create
       </Button>

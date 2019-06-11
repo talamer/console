@@ -16,15 +16,15 @@ import { validationSchema } from './import-validation-utils';
 import GitImportForm from './GitImportForm';
 
 export interface GitImportProps {
-  activeNamespace: string;
+  namespace: string;
   imageStreams?: FirehoseList;
 }
 
-const GitImport: React.FC<GitImportProps> = ({ activeNamespace, imageStreams }) => {
+const GitImport: React.FC<GitImportProps> = ({ namespace, imageStreams }) => {
   const initialValues: GitImportFormData = {
     name: '',
     project: {
-      name: activeNamespace || '',
+      name: namespace || '',
     },
     application: {
       name: '',
