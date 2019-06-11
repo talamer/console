@@ -17,6 +17,8 @@ $gutter: 1.8em;
   &__content {
     width: inherit;
     display: flex;
+    position: relative;
+    top: 1px;
   }
 
   &.is-done {
@@ -68,7 +70,7 @@ $gutter: 1.8em;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.2em;
+    font-size: 1.1em;
   }
 
   &__title {
@@ -80,6 +82,9 @@ $gutter: 1.8em;
     margin: 0px 4px;
     &:hover {
       cursor: pointer;
+    }
+    &.is-text-center {
+      text-align: center;
     }
   }
   // Connect each task

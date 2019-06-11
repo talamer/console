@@ -78,7 +78,7 @@ const TaskComponent: React.FC<TaskProps> = (props) => {
         content={<PipelineVisualizationStepList steps={(task.spec && task.spec.steps) || []} />}
       >
         <div className="odc-pipeline-vis-task__content">
-          <div className="odc-pipeline-vis-task__title">
+          <div className={cx('odc-pipeline-vis-task__title', { 'is-text-center': !status})}>
             {task.metadata ? task.metadata.name : ''}
           </div>
           {status &&
