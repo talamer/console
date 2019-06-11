@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { useFormikContext, FormikValues } from 'formik';
+import { ExpandCollapse } from 'patternfly-react';
 import { InputField, DropdownField } from '../../formik-fields';
 import { FormSection } from '../section/FormSection';
 import { GitTypes } from '../import-types';
@@ -45,6 +46,23 @@ const GitSection: React.FC = () => {
           required
         />
       )}
+      <ExpandCollapse
+        textExpanded="Hide Advanced Git Options"
+        textCollapased="Show Advanced Git Options"
+      >
+        <InputField
+          type="text"
+          name="git.ref"
+          label="Git Reference"
+          helpText="Optional branch, tag or commit."
+        />
+        <InputField
+          type="text"
+          name="git.dir"
+          label="Context Dir"
+          helpText="Optional subdirectory for the application source code, used as a context directory for build."
+        />
+      </ExpandCollapse>
     </FormSection>
   );
 };

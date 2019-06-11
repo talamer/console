@@ -34,7 +34,7 @@ const GitImport: React.FC<GitImportProps> = ({ namespace, imageStreams }) => {
       url: '',
       type: '',
       ref: '',
-      dir: '',
+      dir: '/',
       showGitType: false,
     },
     image: {
