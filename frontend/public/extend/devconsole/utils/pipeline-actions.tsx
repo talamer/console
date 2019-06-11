@@ -180,7 +180,7 @@ export const rerunPipeline = (
     label: 'Trigger Last Run',
     callback: () => {
       k8sCreate(PipelineRunModel, newPipelineRun(pipeline, latestRun));
-      if (redirectURL && redirectURL !== '') {
+      if (redirectURL) {
         redirectToResourceList(redirectURL);
       }
     },
