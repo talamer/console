@@ -18,13 +18,24 @@ interface TaskProps {
   task?: {
     data: K8sResourceKind;
   };
-  status?: any;
+  status?: {
+    reason: string;
+    duration: string;
+  };
   namespace: string;
 }
 
 interface PipelineVisualizationTaskProp {
   namespace: string;
-  task: any;
+  task: {
+    taskRef: {
+      name: string;
+    };
+    status?: {
+      reason: string;
+      duration: string;
+    };
+  };
   taskRun?: string;
 }
 
@@ -34,7 +45,7 @@ interface StatusIconProps {
 export const StatusIcon: React.FC<StatusIconProps> = ({ status }) => {
   switch (status) {
     case 'In Progress':
-      return <SyncAltIcon className=" fa-spin" />;
+      return <SyncAltIcon className="fa-spin" />;
 
     case 'Succeeded':
       return <CheckCircleIcon className="is-done" />;
@@ -84,7 +95,7 @@ const TaskComponent: React.FC<TaskProps> = (props) => {
           {status &&
             status.reason && (
             <div className="odc-pipeline-vis-task__status">
-              <StatusIcon status={status.reason} />{' '}
+              <StatusIcon status={status.reason} />
             </div>
           )}
           {status &&
