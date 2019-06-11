@@ -48,7 +48,7 @@ const GitSection: React.FC = () => {
       )}
       <ExpandCollapse
         textExpanded="Hide Advanced Git Options"
-        textCollapased="Show Advanced Git Options"
+        textCollapsed="Show Advanced Git Options"
       >
         <InputField
           type="text"
