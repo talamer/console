@@ -104,7 +104,7 @@ export const newPipelineRun = (pipeline: Pipeline, latestRun: PipelineRun): Pipe
 export const triggerPipeline = (
   pipeline: Pipeline,
   latestRun: PipelineRun,
-  redirectURL: string,
+  redirectURL?: string,
 ): ActionFunction => {
   //The returned function will be called using the 'kind' and 'obj' in Kebab Actions
   return (kind: K8sKind, obj: K8sResourceKind): Action => ({
