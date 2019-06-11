@@ -11,6 +11,7 @@ export interface GitImportFormData {
   application: ApplicationData;
   git: GitData;
   image: ImageData;
+  route: RouteData;
 }
 
 export interface ApplicationData {
@@ -35,6 +36,10 @@ export interface GitData {
   ref: string;
   dir: string;
   showGitType: boolean;
+}
+
+export interface RouteData {
+  create: boolean;
 }
 
 export enum GitTypes {

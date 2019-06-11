@@ -5,8 +5,10 @@ import { useField, useFormikContext, FormikValues } from 'formik';
 import { LoadingInline } from '../../../../../components/utils';
 import { FormGroup, ControlLabel, HelpBlock } from 'patternfly-react';
 import { CheckCircleIcon, StarIcon } from '@patternfly/react-icons';
-import { NormalizedBuilderImages } from '../../../utils/imagestream-utils';
+import { NormalizedBuilderImages, getPorts } from '../../../utils/imagestream-utils';
 import { getValidationState } from '../../formik-fields/field-utils';
+import { K8sResourceKind, k8sGet } from '../../../../../module/k8s';
+import { ImageStreamTagModel } from '../../../../../models';
 import BuilderImageCard from './BuilderImageCard';
 import './BuilderImageSelector.scss';
 
@@ -23,18 +25,28 @@ const BuilderImageSelector: React.FC<BuilderImageSelectorProps> = ({
 }) => {
   const [selected, { error: selectedError, touched: selectedTouched }] = useField('image.selected');
   const [recommended] = useField('image.recommended');
-  const { values, setValues, setFieldTouched, validateForm } = useFormikContext<FormikValues>();
+  const { values, setValues, setFieldValue, setFieldTouched, validateForm } = useFormikContext<
+    FormikValues
+  >();
 
-  const handleImageChange = (image: string) => {
+  const handleImageChange = async (image: string) => {
+    const recentTag = builderImages[image].recentTag.name;
+    const imageStreamNamespace = builderImages[image].imageStreamNamespace;
     const newValues = {
       ...values,
       image: {
         ...values.image,
         selected: image,
-        tag: builderImages[image].recentTag.name,
+        tag: recentTag,
       },
     };
     setValues(newValues);
+    await k8sGet(ImageStreamTagModel, `${image}:${recentTag}`, imageStreamNamespace).then(
+      (imageStreamTag: K8sResourceKind) => {
+        const ports = getPorts(imageStreamTag);
+        setFieldValue('image.ports', ports);
+      },
+    );
     setFieldTouched('image.selected', true);
     setFieldTouched('image.tag', true);
     validateForm(newValues);
