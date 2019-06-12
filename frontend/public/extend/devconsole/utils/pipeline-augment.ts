@@ -2,6 +2,8 @@
 import { pipelineRunFilterReducer } from './pipeline-filter-reducer';
 import { PipelineListProps } from '../components/pipelines/PipelineList';
 import { PipelineAugmentRunsProps } from '../components/pipelines/PipelineAugmentRuns';
+import { PipelineResource } from './pipeline-actions';
+import { K8sResourceKind } from '../../../module/k8s';
 
 interface Metadata {
   name: string;
@@ -9,7 +11,7 @@ interface Metadata {
 }
 export interface PropPipelineData {
   metadata: Metadata;
-  latestRun?: Run;
+  latestRun?: PipelineRun;
 }
 
 export interface Resource {
@@ -18,16 +20,36 @@ export interface Resource {
 }
 
 export interface Runs {
-  data?: Run[];
+  data?: PipelineRun[];
 }
 
-interface Run {
-  metadata?: Metadata;
-  status?: {
-    conditions?: object[];
-    succeededCondition?: string;
-    creationTimeStamp?: string;
+export interface PipelineRun extends K8sResourceKind {
+  spec?: {
+    pipelineRef?: { name: string };
+    params: Param[];
+    trigger: {
+      type: string;
+    };
+    resources: PipelineResource[];
   };
+  status?: {
+    succeededCondition?: string;
+    creationTimestamp?: string;
+    conditions?: Condition[];
+    startTime?: string;
+    completionTime?: string;
+  };
+}
+
+interface Condition {
+  type: string;
+  status: string;
+}
+
+export interface Param {
+  input: string;
+  output: string;
+  resource?: object;
 }
 
 interface FirehoseResource {
@@ -60,23 +82,41 @@ export const getResources = (p: PipelineListProps): Resource => {
   return { propsReferenceForRuns: null, resources: null };
 };
 
-export const getLatestRun = (runs: Runs, field: string): Run => {
+export const getLatestRun = (runs: Runs, field: string): PipelineRun => {
   if (!runs || !runs.data || !(runs.data.length > 0) || !field) {
-    return {};
+    return null;
   }
   let latestRun = runs.data[0];
-  if (field === 'startTime' || field === 'completionTime') {
+  if (field === 'creationTimestamp') {
     for (let i = 1; i < runs.data.length; i++) {
       latestRun =
         runs.data[i] &&
-        runs.data[i].status &&
-        runs.data[i].hasOwnProperty(field) &&
-        runs.data[i][field] > latestRun[field]
+        runs.data[i].metadata &&
+        runs.data[i].metadata.hasOwnProperty(field) &&
+        new Date(runs.data[i].metadata[field]) > new Date(latestRun.metadata[field])
           ? runs.data[i]
           : latestRun;
     }
   } else {
-    latestRun = runs.data[runs.data.length - 1];
+    if (field === 'startTime' || field === 'completionTime') {
+      for (let i = 1; i < runs.data.length; i++) {
+        latestRun =
+          runs.data[i] &&
+          runs.data[i].status &&
+          runs.data[i].status.hasOwnProperty(field) &&
+          new Date(runs.data[i].status[field]) > new Date(latestRun.status[field])
+            ? runs.data[i]
+            : latestRun;
+      }
+    } else {
+      latestRun = runs.data[runs.data.length - 1];
+    }
+  }
+  if (!latestRun.status) {
+    latestRun = { ...latestRun, status: {} };
+  }
+  if (!latestRun.status.succeededCondition) {
+    latestRun.status = { ...latestRun.status, succeededCondition: '' };
   }
   latestRun.status.succeededCondition = pipelineRunFilterReducer(latestRun);
   return latestRun;
@@ -88,7 +128,7 @@ export const augmentRunsToData = (p: PipelineAugmentRunsProps) => {
     return p.data;
   }
   p.propsReferenceForRuns.forEach(
-    (reference, i) => (newData[i].latestRun = getLatestRun(p[reference], 'creationTimeStamp')),
+    (reference, i) => (newData[i].latestRun = getLatestRun(p[reference], 'creationTimestamp')),
   );
   return newData;
 };

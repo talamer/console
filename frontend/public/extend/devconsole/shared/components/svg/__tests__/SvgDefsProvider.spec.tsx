@@ -19,17 +19,8 @@ describe('Defs', () => {
     };
     wrapper.setState(state);
     const defsWrapper = wrapper.find('defs');
-    expect(
-      defsWrapper
-        .childAt(0)
-        .first()
-        .props().children,
-    ).toBe(state.defs.first.node);
-    expect(
-      defsWrapper
-        .childAt(1)
-        .first()
-        .props().children,
-    ).toBe(state.defs.second.node);
+    expect(defsWrapper.exists()).toBeTruthy();
+    expect(defsWrapper.childAt(0).getElement()).toEqual(state.defs.first.node);
+    expect(defsWrapper.childAt(1).getElement()).toEqual(state.defs.second.node);
   });
 });

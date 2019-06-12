@@ -85,6 +85,8 @@ class PodStatus extends React.PureComponent<PodStatusProps> {
         style={{
           data: {
             fill: (d: PodData) => podColor[d.x],
+            stroke: (d: PodData) => (d.x === 'Scale To 0' && d.y >0 ? '#BBBBBB' : 'none'),
+            strokeWidth: 1,
           },
         }}
       />

@@ -83,6 +83,7 @@ export interface WorkloadData {
   url?: string;
   editUrl?: string;
   builderImage?: string;
+  isKnativeResource?: boolean;
   donutStatus: {
     pods: Pod[];
   };
@@ -115,6 +116,7 @@ export type ViewNode = {
 export type ViewEdge = {
   id: string;
   type?: string;
+  nodeSize: number;
   source: ViewNode;
   target: ViewNode;
 };

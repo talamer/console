@@ -3,13 +3,13 @@ import { ColHead, ListHeader } from '../../../../components/factory';
 
 const PipelineHeader = (props) => (
   <ListHeader>
-    <ColHead {...props} className="col-lg-2 col-md-2 col-sm-3 col-xs-6" sortField="metadata.name">
+    <ColHead {...props} className="col-lg-2 col-md-2 col-sm-4 col-xs-4" sortField="metadata.name">
       Name
     </ColHead>
-    <ColHead {...props} className="col-lg-2 col-md-2 col-sm-3 col-xs-6" sortField="metadata.labels">
+    <ColHead {...props} className="col-lg-2 col-md-2 col-sm-4 col-xs-4" sortField="metadata.labels">
       Started
     </ColHead>
-    <ColHead {...props} className="col-lg-2 col-md-2 col-sm-3 hidden-xs" sortFunc="podPhase">
+    <ColHead {...props} className="col-lg-2 col-md-2 col-sm-2 col-xs-2" sortFunc="podPhase">
       Status
     </ColHead>
     <ColHead {...props} className="col-lg-2 col-md-2 hidden-sm hidden-xs" sortFunc="podReadiness">
@@ -18,7 +18,7 @@ const PipelineHeader = (props) => (
     <ColHead {...props} className="col-lg-2 col-md-2 hidden-sm hidden-xs" sortFunc="podPhase">
       Duration
     </ColHead>
-    <ColHead {...props} className="col-lg-2 col-md-2 col-sm-3 hidden-xs" sortFunc="podReadiness">
+    <ColHead {...props} className="col-lg-1 col-md-1 hidden-sm hidden-xs" sortFunc="podReadiness">
       Trigger
     </ColHead>
   </ListHeader>

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars, no-undef */
-import { createFilterIdUrl } from '../svg-utils';
+import { createSvgIdUrl } from '../svg-utils';
 
 const mockLocation = (location?: {
 hash?: string;
@@ -21,12 +21,12 @@ origin?: string;
     }
   })(window);
 
-describe('svg-utils#createFilterIdUrl', () => {
+describe('svg-utils#createSvgIdUrl', () => {
   it('should return absolute url based on pathname and search', () => {
     mockLocation({
       pathname: '/foo/bar',
       search: '?key=value',
     });
-    expect(createFilterIdUrl('testid')).toBe('url(/foo/bar?key=value#testid)');
+    expect(createSvgIdUrl('testid')).toBe('url(/foo/bar?key=value#testid)');
   });
 });

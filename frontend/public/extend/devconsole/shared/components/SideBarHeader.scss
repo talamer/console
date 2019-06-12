@@ -1,0 +1,14 @@
+@import '~patternfly/dist/sass/patternfly/color-variables';
+
+.odc-side-bar-header {
+  border-bottom: 1px solid $color-pf-black;
+  padding: var(--pf-global--spacer--md) var(--pf-global--spacer--xl) var(--pf-global--spacer--md)
+    var(--pf-global--spacer--xl);
+  &__title {
+    color: var(--pf-global--Color--light-100) !important;
+  }
+  &__description {
+    font-size: var(--pf-global--FontSize--sm);
+    color: $color-pf-black-300;
+  }
+}

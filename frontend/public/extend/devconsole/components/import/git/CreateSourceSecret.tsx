@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { FormGroup, ControlLabel } from 'patternfly-react';
-import { Dropdown } from '../../../../components/utils';
-import { BasicAuthSubform, SSHAuthSubform} from '../../../../components/secrets/create-secret';
+import { Dropdown } from '../../../../../components/utils';
+import { BasicAuthSubform, SSHAuthSubform } from '../../../../../components/secrets/create-secret';
 
 export enum SecretType {
   basicAuth = 'kubernetes.io/basic-auth',
@@ -81,10 +81,7 @@ export default class CreateSourceSecret extends React.Component<
           />
         </FormGroup>
         {this.state.type === SecretType.basicAuth ? (
-          <BasicAuthSubform
-            onChange={this.onDataChange}
-            stringData={this.state.stringData}
-          />
+          <BasicAuthSubform onChange={this.onDataChange} stringData={this.state.stringData} />
         ) : (
           <SSHAuthSubform onChange={this.onDataChange} stringData={this.state.stringData} />
         )}

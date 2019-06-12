@@ -20,6 +20,7 @@ export const podColor = {
   Succceeded: '#519149',
   Terminating: '#002F5D',
   Unknown: '#A18FFF',
+  'Scale To 0': '#FFFFFF',
 };
 
 export const podStatus = Object.keys(podColor);
@@ -63,7 +64,6 @@ function podWarnings(pod) {
           return 'Failed';
         }
         return 'Warning';
-
       }
       if (isContainerLoopingFilter(containerStatus)) {
         return 'Failed';
@@ -173,6 +173,7 @@ export class TransformTopologyData {
           url: !_.isEmpty(route.spec) ? getRouteWebURL(route) : null,
           editUrl: deploymentsAnnotations['app.openshift.io/edit-url'],
           builderImage: deploymentsLabels['app.kubernetes.io/name'],
+          isKnativeResource: this.isKnativeServing(deploymentConfig, 'metadata.labels'),
           donutStatus: {
             pods: _.map(dcPods, (pod) =>
               _.merge(_.pick(pod, 'metadata', 'status', 'spec.containers'), {
@@ -200,7 +201,6 @@ export class TransformTopologyData {
     return data.filter(dc => {
       return dc.metadata.labels[PART_OF] && dc.metadata.labels[PART_OF] === this.application;
     });
-
   }
 
   /**
@@ -256,16 +256,38 @@ export class TransformTopologyData {
     return service;
   }
   /**
+   * check if config is knative serving resource.
+   * @param configRes
+   * @param properties
+   */
+  private isKnativeServing(configRes: ResourceProps, properties: string): boolean {
+    const deploymentsLabels = _.get(configRes, properties) || {};
+    return deploymentsLabels['serving.knative.dev/configuration'] ? true : false;
+  }
+  /**
    * Get all the pods from a replication controller or a replicaset.
    * @param replicationController
    */
   private getPods(replicationController: ResourceProps) {
-    return _.filter(this.resources.pods.data, (pod) => {
+    const dcPodsData = _.filter(this.resources.pods.data, (pod) => {
       return _.some(_.get(pod, 'metadata.ownerReferences'), {
         uid: _.get(replicationController, 'metadata.uid'),
         controller: true,
       });
     });
+    if (
+      dcPodsData &&
+      !dcPodsData.length &&
+      this.isKnativeServing(replicationController, 'metadata.labels')
+    ) {
+      return [
+        {
+          ..._.pick(replicationController, 'metadata', 'status', 'spec'),
+          status: { phase: 'Scale To 0' },
+        },
+      ];
+    }
+    return dcPodsData;
   }
   /**
    * fetches all the replication controllers from the deployment
@@ -335,6 +357,7 @@ export class TransformTopologyData {
           if (targetNode) {
             this._topologyData.graph.edges.push({
               id: `${currentNode.id}_${targetNode}`,
+              type: 'connects-to',
               source: currentNode.id,
               target: targetNode,
             });

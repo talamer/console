@@ -2,7 +2,7 @@
 import * as React from 'react';
 import './SvgPodTooltip.scss';
 import SvgDropShadowFilter from '../../shared/components/svg/SvgDropShadowFilter';
-import { createFilterIdUrl } from '../../shared/utils/svg-utils';
+import { createSvgIdUrl } from '../../shared/utils/svg-utils';
 import { podColor } from './topology-utils';
 
 type TooltipProps = {
@@ -52,7 +52,7 @@ export default class PodTooltip extends React.PureComponent<TooltipProps> {
         {bb && (
           <React.Fragment>
             <rect
-              filter={createFilterIdUrl(FILTER_ID)}
+              filter={createSvgIdUrl(FILTER_ID)}
               x={x - paddingX - bb.width / 2}
               width={bb.width + paddingX * 2}
               y={y - paddingY - bb.height / 2}

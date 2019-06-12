@@ -1,255 +1,156 @@
 apiVersion: tekton.dev/v1alpha1
 kind: Task
 metadata:
-  name: deploy-web
-spec:
-  inputs:
-    resources:
-      - name: docker-source
-        type: git
-    params:
-      - name: pathToDockerFile
-        description: The path to the dockerfile to build
-        default: /workspace/docker-source/Dockerfile
-      - name: pathToContext
-        description: The build context used by Kaniko
-          (https://github.com/GoogleContainerTools/kaniko#kaniko-build-contexts)
-        default: /workspace/docker-source
-  outputs:
-    resources:
-      - name: builtImage
-        type: image
-  steps:
-    - name: deploy-webapp
-      image: gcr.io/kaniko-project/executor
-      command:
-        - /kaniko/executor
-      args:
-        - --dockerfile=${inputs.params.pathToDockerFile}
-        - --destination=${outputs.resources.builtImage.url}
-        - --context=${inputs.params.pathToContext}
+  name: echo-hello-world
 ---
 apiVersion: tekton.dev/v1alpha1
 kind: Task
 metadata:
-  name: build-skaffold-web
-spec:
-  inputs:
-    resources:
-      - name: docker-source
-        type: git
-    params:
-      - name: pathToDockerFile
-        description: The path to the dockerfile to build
-        default: /workspace/docker-source/Dockerfile
-      - name: pathToContext
-        description: The build context used by Kaniko
-          (https://github.com/GoogleContainerTools/kaniko#kaniko-build-contexts)
-        default: /workspace/docker-source
-  outputs:
-    resources:
-      - name: builtImage
-        type: image
-  steps:
-    - name: build-and-push
-      image: gcr.io/kaniko-project/executor
-      command:
-        - /kaniko/executor
-      args:
-        - --dockerfile=${inputs.params.pathToDockerFile}
-        - --destination=${outputs.resources.builtImage.url}
-        - --context=${inputs.params.pathToContext}
+  name: echo-hello-world-2
 ---
 apiVersion: tekton.dev/v1alpha1
 kind: Task
 metadata:
-  name: start-app
+  name: mvn-build
 spec:
   inputs:
     resources:
-      - name: docker-source
-        type: git
-    params:
-      - name: pathToDockerFile
-        description: The path to the dockerfile to build
-        default: /workspace/docker-source/Dockerfile
-      - name: pathToContext
-        description: The build context used by Kaniko
-          (https://github.com/GoogleContainerTools/kaniko#kaniko-build-contexts)
-        default: /workspace/docker-source
+    - name: workspace-git
+      targetPath: /
+      type: git
   outputs:
     resources:
-      - name: builtImage
-        type: image
+    - name: workspace-git
+      type: git
   steps:
-    - name: pull-code
-      image: gcr.io/kaniko-project/executor
-      command:
-        - /kaniko/executor
-      args:
-        - --dockerfile=${inputs.params.pathToDockerFile}
-        - --destination=${outputs.resources.builtImage.url}
-        - --context=${inputs.params.pathToContext}
+  - name: build
+    image: maven:3.6.0-jdk-8-slim
+    command:
+    - /usr/bin/mvn
+    args:
+    - verify
 ---
 apiVersion: tekton.dev/v1alpha1
 kind: Task
 metadata:
-  name: lint
+  name: buildah
 spec:
   inputs:
     resources:
-      - name: docker-source
-        type: git
+    - name: workspace-git
+      targetPath: /
+      type: git
     params:
-      - name: pathToDockerFile
-        description: The path to the dockerfile to build
-        default: /workspace/docker-source/Dockerfile
-      - name: pathToContext
-        description: The build context used by Kaniko
-          (https://github.com/GoogleContainerTools/kaniko#kaniko-build-contexts)
-        default: /workspace/docker-source
+    - name: dockerfile
+      description: The path to the dockerfile to build
+      default: ./Dockerfile
+    - name: verifyTLS
+      description: Verify registry certificates
+      default: "true"
   outputs:
     resources:
-      - name: builtImage
-        type: image
+    - name: image
+      type: image
   steps:
-    - name: lint
-      image: gcr.io/kaniko-project/executor
-      command:
-        - /kaniko/executor
-      args:
-        - --dockerfile=${inputs.params.pathToDockerFile}
-        - --destination=${outputs.resources.builtImage.url}
-        - --context=${inputs.params.pathToContext}
+  - name: build
+    image: quay.io/openshift-pipeline/buildah:testing
+    command:
+      - buildah
+    args: 
+      - bud
+      - --layers
+      - --tls-verify=${inputs.params.verifyTLS}
+      - -f
+      - ${inputs.params.dockerfile}
+      - -t
+      - ${outputs.resources.image.url}
+      - .
+    volumeMounts:
+    - name: libcontainers
+      mountPath: /var/lib/containers
+    securityContext:
+      privileged: true
+  - name: push
+    image: quay.io/openshift-pipeline/buildah:testing
+    command:
+      - buildah
+    args: 
+      - push
+      - --tls-verify=${inputs.params.verifyTLS}
+      - ${outputs.resources.image.url}
+    volumeMounts:
+    - name: libcontainers
+      mountPath: /var/lib/containers
+    securityContext:
+      privileged: true
+  volumes:
+    - name: libcontainers
+      emptyDir: {}
 ---
 apiVersion: tekton.dev/v1alpha1
 kind: Task
 metadata:
-  name: analyze-code
+  name: mvn-test
 spec:
   inputs:
     resources:
-      - name: docker-source
-        type: git
-    params:
-      - name: pathToDockerFile
-        description: The path to the dockerfile to build
-        default: /workspace/docker-source/Dockerfile
-      - name: pathToContext
-        description: The build context used by Kaniko
-          (https://github.com/GoogleContainerTools/kaniko#kaniko-build-contexts)
-        default: /workspace/docker-source
-  outputs:
-    resources:
-      - name: builtImage
-        type: image
+    - name: workspace-git
+      targetPath: /
+      type: git
   steps:
-    - name: analyze
-      image: gcr.io/kaniko-project/executor
-      command:
-        - /kaniko/executor
-      args:
-        - --dockerfile=${inputs.params.pathToDockerFile}
-        - --destination=${outputs.resources.builtImage.url}
-        - --context=${inputs.params.pathToContext}
+  - name: build
+    image: maven:3.6.0-jdk-8-slim
+    command:
+    - /usr/bin/mvn
+    args:
+    - package
+    - -DskipTests
+  - name: test
+    image: maven:3.6.0-jdk-8-slim
+    command:
+    - /usr/bin/mvn
+    args:
+    - verify
 ---
+
 apiVersion: tekton.dev/v1alpha1
 kind: Task
 metadata:
-  name: build-image-1
+  name: openshift-cli
 spec:
   inputs:
-    resources:
-      - name: docker-source
-        type: git
     params:
-      - name: pathToDockerFile
-        description: The path to the dockerfile to build
-        default: /workspace/docker-source/Dockerfile
-      - name: pathToContext
-        description: The build context used by Kaniko
-          (https://github.com/GoogleContainerTools/kaniko#kaniko-build-contexts)
-        default: /workspace/docker-source
-  outputs:
-    resources:
-      - name: builtImage
-        type: image
+    - name: command
+      description: The OpenShift CLI commands to run
   steps:
-    - name: build-1
-      image: gcr.io/kaniko-project/executor
-      command:
-        - /kaniko/executor
-      args:
-        - --dockerfile=${inputs.params.pathToDockerFile}
-        - --destination=${outputs.resources.builtImage.url}
-        - --context=${inputs.params.pathToContext}
+  - name: oc
+    image: quay.io/openshift-pipeline/openshift-cli
+    command: ["/usr/local/bin/oc"]
+    args:
+    - "${inputs.params.command}"
 ---
+
 apiVersion: tekton.dev/v1alpha1
 kind: Task
 metadata:
-  name: build-image-2
+  name: static-analysis
 spec:
   inputs:
     resources:
-      - name: docker-source
-        type: git
-    params:
-      - name: pathToDockerFile
-        description: The path to the dockerfile to build
-        default: /workspace/docker-source/Dockerfile
-      - name: pathToContext
-        description: The build context used by Kaniko
-          (https://github.com/GoogleContainerTools/kaniko#kaniko-build-contexts)
-        default: /workspace/docker-source
-  outputs:
-    resources:
-      - name: builtImage
-        type: image
+    - name: workspace-git
+      targetPath: /
+      type: git
   steps:
-    - name: build-2
-      image: gcr.io/kaniko-project/executor
+    - name: pmd
+      image: ubuntu
       command:
-        - /kaniko/executor
+        - echo
       args:
-        - --dockerfile=${inputs.params.pathToDockerFile}
-        - --destination=${outputs.resources.builtImage.url}
-        - --context=${inputs.params.pathToContext}
----
-apiVersion: tekton.dev/v1alpha1
-kind: Task
-metadata:
-  name: deploy
-spec:
-  inputs:
-    resources:
-      - name: docker-source
-        type: git
-    params:
-      - name: pathToDockerFile
-        description: The path to the dockerfile to build
-        default: /workspace/docker-source/Dockerfile
-      - name: pathToContext
-        description: The build context used by Kaniko
-          (https://github.com/GoogleContainerTools/kaniko#kaniko-build-contexts)
-        default: /workspace/docker-source
-  outputs:
-    resources:
-      - name: builtImage
-        type: image
-  steps:
-    - name: deploy
-      image: gcr.io/kaniko-project/executor
+        - "pmd"
+    - name: sonar
+      image: ubuntu
       command:
-        - /kaniko/executor
+        - echo
       args:
-        - --dockerfile=${inputs.params.pathToDockerFile}
-        - --destination=${outputs.resources.builtImage.url}
-        - --context=${inputs.params.pathToContext}
-    - name: post-deploy-script
-      image: gcr.io/kaniko-project/executor
-      command:
-        - /kaniko/executor
-      args:
-        - --dockerfile=${inputs.params.pathToDockerFile}
-        - --destination=${outputs.resources.builtImage.url}
-        - --context=${inputs.params.pathToContext}
+        - "sonar"
+

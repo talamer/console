@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 
-import AppDropdown from '../../shared/components/dropdown/AppDropdown';
+import ApplicationDropdown from '../dropdown/ApplicationDropdown';
 import {
   ALL_NAMESPACES_KEY,
   ALL_APPLICATIONS_KEY,
@@ -37,7 +37,7 @@ const ApplicationSwitcher: React.FC<ApplicationSwitcherProps> = ({
   }
 
   return (
-    <AppDropdown
+    <ApplicationDropdown
       className="co-namespace-selector"
       menuClassName="co-namespace-selector__menu dropdown-menu--right"
       buttonClassName="btn-link"

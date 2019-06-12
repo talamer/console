@@ -4,6 +4,7 @@ import { PenIcon, ExternalLinkAltIcon } from '@patternfly/react-icons';
 import Decorator from './Decorator';
 import BaseNode from './BaseNode';
 import PodStatus from './PodStatus';
+import KnativeIcon from './KnativeIcon';
 import { NodeProps, WorkloadData } from '../topology-types';
 
 const WorkloadNode: React.FC<NodeProps<WorkloadData>> = ({
@@ -71,6 +72,14 @@ const WorkloadNode: React.FC<NodeProps<WorkloadData>> = ({
         data={workload.data.donutStatus.pods}
         size={size}
       />
+      {workload.data.isKnativeResource && (
+        <KnativeIcon
+          x={-radius * 0.15}
+          y={-radius * 0.65}
+          width={radius * 0.39}
+          height={radius * 0.31}
+        />
+      )}
     </BaseNode>
   );
 };

@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import SvgDropShadowFilter from './SvgDropShadowFilter';
-import { createFilterIdUrl } from '../../utils/svg-utils';
+import { createSvgIdUrl } from '../../utils/svg-utils';
 
 export interface State {
   bb: { width: number; height: number };
@@ -63,7 +63,7 @@ export default class SvgBoxedText extends React.PureComponent<SvgBoxedTextProps,
         <SvgDropShadowFilter id={FILTER_ID} />
         {bb && (
           <rect
-            filter={createFilterIdUrl(FILTER_ID)}
+            filter={createSvgIdUrl(FILTER_ID)}
             x={x - paddingX - bb.width / 2}
             width={bb.width + paddingX * 2}
             y={y - paddingY - bb.height / 2}

@@ -3,50 +3,18 @@ kind: Pipeline
 metadata:
   name: simple-pipeline
 spec:
-  resources:
-    - name: source-repo
-      type: git
-    - name: web-image
-      type: image
   tasks:
-    - name: build-skaffold-web
+    - name: echo-hello-world
       taskRef:
-        name: build-skaffold-web
-      params:
-        - name: pathToDockerFile
-          value: Dockerfile
-        - name: pathToContext
-          value: /workspace/docker-source/examples/microservices/leeroy-web #configure: may change according to your source
-      resources:
-        inputs:
-          - name: docker-source
-            resource: source-repo
-        outputs:
-          - name: builtImage
-            resource: web-image
-    - name: deploy-web
+        name: echo-hello-world
+    - name: echo-hello-world-2
       taskRef:
-        name: deploy-web
-      resources:
-        inputs:
-          - name: source
-            resource: source-repo
-          - name: image
-            resource: web-image
-            from:
-              - build-skaffold-web
-      params:
-        - name: path
-          value: /workspace/source/examples/microservices/leeroy-web/kubernetes/deployment.yaml #configure: may change according to your source
-        - name: yqArg
-          value: "-d1"
-        - name: yamlPathToImage
-          value: "spec.template.spec.containers[0].image"
+        name: echo-hello-world-2
 ---
 apiVersion: tekton.dev/v1alpha1
 kind: Pipeline
 metadata:
-  name: complex-pipeline-visuals
+  name: mapit-deploy-pipeline
 spec:
   resources:
   - name: mapit-git
@@ -54,9 +22,9 @@ spec:
   - name: mapit-image
     type: image
   tasks:
-  - name: start-app
+  - name: build-app
     taskRef:
-      name: start-app
+      name: mvn-build
     resources:
       inputs:
       - name: workspace-git
@@ -64,47 +32,28 @@ spec:
       outputs:
       - name: workspace-git
         resource: mapit-git
-  - name: lint
+  - name: test-app
     taskRef:
-      name: lint
-    resources:
-      inputs:
-      - name: workspace-git
-        resource: mapit-git
-        from: [start-app]
-  - name: analyze-code
-    taskRef:
-      name: analyze-code
-    resources:
-      inputs:
-      - name: workspace-git
-        resource: mapit-git
-        from: [start-app]
-  - name: build-image-1
-    taskRef:
-      name: build-image-1
-    runAfter:
-      - lint
-      - analyze-code
-    params:
-    - name: dockerfile
-      value: Dockerfile.openjdk
-    - name: verifyTLS
-      value: "false"
+      name: mvn-test
     resources:
       inputs:
       - name: workspace-git
         resource: mapit-git
         from: [build-app]
-      outputs:
-      - name: image
-        resource: mapit-image
-  - name: build-image-2
+  - name: analyse-code
     taskRef:
-      name: build-image-2
+      name: static-analysis
+    resources:
+      inputs:
+      - name: workspace-git
+        resource: mapit-git
+        from: [build-app]
+  - name: build-image
+    taskRef:
+      name: buildah
     runAfter:
-      - lint
-      - analyze-code
+      - test-app
+      - analyse-code
     params:
     - name: dockerfile
       value: Dockerfile.openjdk
@@ -120,7 +69,47 @@ spec:
         resource: mapit-image
   - name: deploy
     taskRef:
-      name: deploy
+      name: openshift-cli-deploy-mapit
     runAfter:
-      - build-image-1
-      - build-image-2
+      - build-image
+---
+
+---
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: mapit-build-pipeline
+spec:
+  resources:
+  - name: mapit-git
+    type: git
+  - name: mapit-image
+    type: image
+  tasks:
+  - name: build-app
+    taskRef:
+      name: mvn-build
+    resources:
+      inputs:
+      - name: workspace-git
+        resource: mapit-git
+      outputs:
+      - name: workspace-git
+        resource: mapit-git
+  - name: build-image
+    taskRef:
+      name: buildah
+    params:
+    - name: dockerfile
+      value: Dockerfile.openjdk
+    - name: verifyTLS
+      value: "false"
+    resources:
+      inputs:
+      - name: workspace-git
+        resource: mapit-git
+        from: [build-app]
+      outputs:
+      - name: image
+        resource: mapit-image
+     
