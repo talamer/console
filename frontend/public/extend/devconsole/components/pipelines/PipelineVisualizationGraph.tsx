@@ -52,7 +52,7 @@ export const PipelineVisualizationGraph: React.FC<PipelineVisualizationGraphProp
                   return (
                     <PipelineVisualizationTask
                       key={`${task.taskRef.name}:${i + j}`}
-                      task={task.name}
+                      task={task.taskRef.name}
                       namespace={namespace}
                     />
                   );

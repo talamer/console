@@ -5,13 +5,13 @@ import { PipelineModel, PipelineRunModel } from '../../../../../models';
 
 describe('PipelineAction testing rerunPipeline create correct labels and callbacks', () => {
   it('expect label to be "Trigger Last Run" when latestRun is available', () => {
-    const rerunAction = rerunPipeline(actionPipelines[0], actionPipelineRuns[0], '');
+    const rerunAction = rerunPipeline(actionPipelines[0], actionPipelineRuns[0]);
     const rerunResult = rerunAction(PipelineModel, actionPipelines[1]);
     expect(rerunResult.label).toBe('Trigger Last Run');
     expect(rerunResult.callback).not.toBeNull();
   });
   it('expect label not to be "Trigger" when latestRun is unavailable', () => {
-    const rerunAction = rerunPipeline(actionPipelines[1], null, '');
+    const rerunAction = rerunPipeline(actionPipelines[1], null);
     const rerunResult = rerunAction(PipelineModel, actionPipelines[1]);
     expect(rerunResult.label).not.toBe('Trigger Last Run');
     expect(rerunResult.callback).toBeNull();
