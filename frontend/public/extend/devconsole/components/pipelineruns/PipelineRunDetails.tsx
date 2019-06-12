@@ -10,11 +10,10 @@ interface pipelineRunDetailsProps {
 export const PipelineRunDetails: React.FC<pipelineRunDetailsProps> = ({ obj: pipelineRun }) => {
   return (
     <div className="co-m-pane__body">
-      <SectionHeading text="Pipeline Run Visualization" />
+      <SectionHeading text="Pipeline Run Overview" />
       <PipelineRunVisualization pipelineRun={pipelineRun} />
       <div className="row">
         <div className="col-sm-6">
-          <SectionHeading text="Pipeline Run Overview" />
           <ResourceSummary resource={pipelineRun} />
         </div>
       </div>

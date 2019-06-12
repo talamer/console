@@ -6,11 +6,10 @@ import { referenceForModel } from '../../../../module/k8s';
 
 const PipelineDetails = ({ obj: pipeline }) => (
   <div className="co-m-pane__body">
-    <SectionHeading text="Pipeline Visualization" />
+    <SectionHeading text="Pipeline Overview" />
     <PipelineVisualization pipeline={pipeline} />
     <div className="row">
       <div className="col-sm-6">
-        <SectionHeading text="Pipeline Overview" />
         <ResourceSummary resource={pipeline} />
       </div>
       <div className="col-sm-6">
