@@ -60,7 +60,7 @@ import {
   SubscriptionModel,
   PackageManifestModel,
   PipelineModel,
-  PipelinerunModel,
+  PipelineRunModel,
 } from '../models';
 
 export const resourceDetailPages = ImmutableMap<GroupVersionKind | string, () => Promise<React.ComponentType<any>>>()
@@ -96,7 +96,7 @@ export const resourceDetailPages = ImmutableMap<GroupVersionKind | string, () =>
   .set(referenceForModel(ServiceBindingModel), () => import('./service-binding' /* webpackChunkName: "service-binding" */).then(m => m.ServiceBindingDetailsPage))
   .set(referenceForModel(ServiceModel), () => import('./service' /* webpackChunkName: "service" */).then(m => m.ServicesDetailsPage))
   .set(referenceForModel(PipelineModel), () => import('../extend/devconsole/components/pipelines/PipelineDetailsPage' /* webpackChunkName: "PipelineDetailsPage" */).then(m => m.default))
-  .set(referenceForModel(PipelinerunModel), () => import('../extend/devconsole/components/pipelineruns/PipelineRunDetailsPage' /* webpackChunkName: "PipelineDetailsPage" */).then(m => m.default))
+  .set(referenceForModel(PipelineRunModel), () => import('../extend/devconsole/components/pipelineruns/PipelineRunDetailsPage' /* webpackChunkName: "PipelineDetailsPage" */).then(m => m.default))
   .set(referenceForModel(IngressModel), () => import('./ingress' /* webpackChunkName: "ingress" */).then(m => m.IngressesDetailsPage))
   .set(referenceForModel(RouteModel), () => import('./routes' /* webpackChunkName: "routes" */).then(m => m.RoutesDetailsPage))
   .set(referenceForModel(ClusterRoleModel), () => import('./RBAC/role' /* webpackChunkName: "role" */).then(m => m.ClusterRolesDetailsPage))
