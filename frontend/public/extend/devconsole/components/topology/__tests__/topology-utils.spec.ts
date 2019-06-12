@@ -3,6 +3,7 @@
 import { TransformTopologyData, getPodStatus, podStatus } from '../topology-utils';
 import { resources, topologyData } from '../__mocks__/TopologyDataMocks';
 import { MockResources } from '../__mocks__/TopologyResourcesMocks';
+import { MockKnativeResources } from '../__mocks__/TopologyResourcesKnativeMocks';
 
 describe('TopologyUtils ', () => {
   it('should be able to create an object', () => {
@@ -100,5 +101,38 @@ describe('TopologyUtils ', () => {
     const topologyTransformedData = result.topology;
     const keys = Object.keys(topologyTransformedData);
     expect(topologyTransformedData[keys[0]].data['donutStatus'].pods).toHaveLength(0);
+  });
+
+  it('should return false for non knative resource', () => {
+    const mockResources = { ...MockResources, pods: { data: [] } };
+    const transformTopologyData = new TransformTopologyData(mockResources);
+    transformTopologyData.transformDataBy('deploymentConfigs');
+    transformTopologyData.transformDataBy('deployments');
+    const result = transformTopologyData.getTopologyData();
+    const topologyTransformedData = result.topology;
+    const keys = Object.keys(topologyTransformedData);
+    expect(topologyTransformedData[keys[0]].data['isKnativeResource']).toBeFalsy();
+  });
+
+  it('should return a valid pod status for scale to 0', () => {
+    const transformTopologyData = new TransformTopologyData(MockKnativeResources);
+    transformTopologyData.transformDataBy('deploymentConfigs');
+    transformTopologyData.transformDataBy('deployments');
+    const result = transformTopologyData.getTopologyData();
+    const topologyTransformedData = result.topology;
+    const keys = Object.keys(topologyTransformedData);
+    const status = getPodStatus(topologyTransformedData[keys[0]].data['donutStatus'].pods[0]);
+    expect(podStatus.includes(status)).toBe(true);
+    expect(status).toEqual('Scale To 0');
+  });
+
+  it('should return true for knative resource', () => {
+    const transformTopologyData = new TransformTopologyData(MockKnativeResources);
+    transformTopologyData.transformDataBy('deploymentConfigs');
+    transformTopologyData.transformDataBy('deployments');
+    const result = transformTopologyData.getTopologyData();
+    const topologyTransformedData = result.topology;
+    const keys = Object.keys(topologyTransformedData);
+    expect(topologyTransformedData[keys[0]].data['isKnativeResource']).toBeTruthy();
   });
 });
