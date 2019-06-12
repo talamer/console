@@ -2,6 +2,7 @@
 import { pipelineRunFilterReducer } from './pipeline-filter-reducer';
 import { PipelineListProps } from '../components/pipelines/PipelineList';
 import { PipelineAugmentRunsProps } from '../components/pipelines/PipelineAugmentRuns';
+import { PipelineResource } from './pipeline-actions';
 import { K8sResourceKind } from '../../../module/k8s';
 
 interface Metadata {
@@ -29,6 +30,7 @@ export interface PipelineRun extends K8sResourceKind {
     trigger: {
       type: string;
     };
+    resources: PipelineResource[];
   };
   status?: {
     succeededCondition?: string;

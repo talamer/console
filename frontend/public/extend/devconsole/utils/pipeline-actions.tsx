@@ -10,7 +10,15 @@ import { k8sCreate, K8sKind, K8sResourceKind, k8sUpdate } from '../../../module/
 
 export interface Pipeline extends K8sResourceKind {
   latestRun?: PipelineRun;
-  spec?: { pipelineRef?: { name: string }; params: Param[] };
+  spec?: { pipelineRef?: { name: string }; params: Param[]; resources: PipelineResource[] };
+}
+
+export interface PipelineResource {
+  name?: string;
+  type?: string;
+  resourceRef?: {
+    name?: string;
+  };
 }
 
 interface Action {
@@ -59,18 +67,18 @@ export const newPipelineRun = (pipeline: Pipeline, latestRun: PipelineRun): Pipe
       name:
         pipeline && pipeline.metadata && pipeline.metadata.name
           ? `${pipeline.metadata.name}-${Math.random()
-              .toString(36)
-              .replace(/[^a-z0-9]+/g, '')
-              .substr(1, 6)}`
+            .toString(36)
+            .replace(/[^a-z0-9]+/g, '')
+            .substr(1, 6)}`
           : latestRun &&
             latestRun.spec &&
             latestRun.spec.pipelineRef &&
             latestRun.spec.pipelineRef.name
-          ? `${latestRun.spec.pipelineRef.name}-${Math.random()
+            ? `${latestRun.spec.pipelineRef.name}-${Math.random()
               .toString(36)
               .replace(/[^a-z0-9]+/g, '')
               .substr(1, 6)}`
-          : `PipelineRun-${Math.random()
+            : `PipelineRun-${Math.random()
               .toString(36)
               .replace(/[^a-z0-9]+/g, '')
               .substr(1, 6)}`,
@@ -83,8 +91,8 @@ export const newPipelineRun = (pipeline: Pipeline, latestRun: PipelineRun): Pipe
         latestRun && latestRun.metadata && latestRun.metadata.labels
           ? latestRun.metadata.labels
           : {
-              'tekton.dev/pipeline': pipeline.metadata.name,
-            },
+            'tekton.dev/pipeline': pipeline.metadata.name,
+          },
     },
     spec: {
       pipelineRef: {
@@ -95,15 +103,21 @@ export const newPipelineRun = (pipeline: Pipeline, latestRun: PipelineRun): Pipe
           latestRun.spec.pipelineRef.name
             ? latestRun.spec.pipelineRef.name
             : pipeline && pipeline.metadata && pipeline.metadata.name
-            ? pipeline.metadata.name
-            : null,
+              ? pipeline.metadata.name
+              : null,
       },
+      resources:
+        latestRun && latestRun.spec && latestRun.spec.resources
+          ? latestRun.spec.resources
+          : pipeline && pipeline.spec && pipeline.spec.resources
+            ? pipeline.spec.resources
+            : [],
       params:
         latestRun && latestRun.spec && latestRun.spec.params
           ? latestRun.spec.params
           : pipeline.spec && pipeline.spec.params
-          ? pipeline.spec.params
-          : null,
+            ? pipeline.spec.params
+            : null,
       trigger: {
         type: 'manual',
       },
