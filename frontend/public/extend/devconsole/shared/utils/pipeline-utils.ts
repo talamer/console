@@ -125,7 +125,7 @@ export const getPipelineTasks = (
       let flag = out.length - 1;
       for (let i = 0; i < out.length; i++) {
         out[i].forEach((t) => {
-          if (t.taskRef.name === task.resources.inputs[0].from[0]) {
+          if (t.taskRef.name === task.resources.inputs[0].from[0] || t.name === task.resources.inputs[0].from[0]) {
             flag = i;
           }
         });
@@ -154,7 +154,7 @@ export const getPipelineTasks = (
       let flag = out.length - 1;
       for (let i = 0; i < out.length; i++) {
         out[i].map((t) => {
-          if (t.taskRef.name === task.runAfter[0]) {
+          if (t.taskRef.name === task.runAfter[0] || t.name === task.runAfter[0]) {
             flag = i;
           }
         });
