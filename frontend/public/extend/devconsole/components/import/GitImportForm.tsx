@@ -8,6 +8,7 @@ import GitSection from './git/GitSection';
 import BuilderSection from './builder/BuilderSection';
 import AppSection from './app/AppSection';
 import RouteSection from './route/RouteSection';
+import ScalingSection from './scaling/ScalingSection';
 
 export interface GitImportFormProps {
   builderImages?: NormalizedBuilderImages;
@@ -30,6 +31,7 @@ const GitImportForm: React.FC<FormikProps<FormikValues> & GitImportFormProps> = 
       <BuilderSection image={values.image} builderImages={builderImages} />
       <ExpandCollapse>
         <RouteSection />
+        <ScalingSection />
       </ExpandCollapse>
     </div>
     <br />

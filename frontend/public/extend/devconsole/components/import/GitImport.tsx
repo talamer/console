@@ -46,6 +46,7 @@ const GitImport: React.FC<GitImportProps> = ({ namespace, imageStreams }) => {
     route: {
       create: true,
     },
+    replicas: 1,
   };
 
   const builderImages: NormalizedBuilderImages =

@@ -105,6 +105,7 @@ export const createDeploymentConfig = (
     project: { name: namespace },
     application: { name: application },
     image: { ports },
+    replicas,
   } = formData;
 
   const labels = getAppLabels(name, application, imageStream.metadata.name);
@@ -119,7 +120,7 @@ export const createDeploymentConfig = (
     },
     spec: {
       selector: podLabels,
-      replicas: 1,
+      replicas,
       template: {
         metadata: {
           labels: podLabels,

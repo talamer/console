@@ -12,6 +12,7 @@ export interface GitImportFormData {
   git: GitData;
   image: ImageData;
   route: RouteData;
+  replicas: number;
 }
 
 export interface ApplicationData {

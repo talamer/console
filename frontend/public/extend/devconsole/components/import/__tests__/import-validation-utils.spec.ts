@@ -43,7 +43,8 @@ describe('ValidationUtils', () => {
       },
       route: {
         create: false,
-      }
+      },
+      replicas: 1,
     };
 
     it('should validate the form data', async() => {
