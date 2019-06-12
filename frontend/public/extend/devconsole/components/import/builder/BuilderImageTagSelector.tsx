@@ -39,15 +39,14 @@ const BuilderImageTagSelector: React.FC<BuilderImageTagSelectorProps> = ({
     imageDisplayName,
   );
 
-  const handleImageTagChange = async (tag: string) => {
-    setFieldValue('image.tag', tag);
-    await k8sGet(ImageStreamTagModel, `${imageName}:${tag}`, imageStreamNamespace).then(
+  React.useEffect(() => {
+    k8sGet(ImageStreamTagModel, `${imageName}:${selectedImageTag}`, imageStreamNamespace).then(
       (imageStreamTag: K8sResourceKind) => {
         const ports = getPorts(imageStreamTag);
         setFieldValue('image.ports', ports);
       },
     );
-  };
+  }, [selectedImageTag]);
 
   return (
     <React.Fragment>
@@ -57,7 +56,6 @@ const BuilderImageTagSelector: React.FC<BuilderImageTagSelectorProps> = ({
         items={tagItems}
         selectedKey={selectedImageTag}
         title={tagItems[selectedImageTag]}
-        onChange={handleImageTagChange}
         fullWidth
         required
       />

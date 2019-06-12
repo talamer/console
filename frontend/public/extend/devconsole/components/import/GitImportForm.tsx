@@ -20,6 +20,8 @@ const GitImportForm: React.FC<FormikProps<FormikValues> & GitImportFormProps> = 
   builderImages,
   status,
   isSubmitting,
+  isValid,
+  dirty,
 }) => (
   <Form onReset={handleReset} onSubmit={handleSubmit}>
     <div className="co-m-pane__form">
@@ -32,7 +34,7 @@ const GitImportForm: React.FC<FormikProps<FormikValues> & GitImportFormProps> = 
     </div>
     <br />
     <ButtonBar errorMessage={status && status.submitError} inProgress={isSubmitting}>
-      <Button type="submit" bsStyle="primary">
+      <Button disabled={!dirty || !isValid} type="submit" bsStyle="primary">
         Create
       </Button>
       <Button type="reset">Cancel</Button>

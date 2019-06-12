@@ -19,10 +19,10 @@ const NSDropdownField: React.FC<DropdownFieldProps> = ({ label, helpText, ...pro
       <NsDropdown
         id={`${props.name}-field`}
         {...field}
+        {...props}
         dropDownClassName={cx({ 'dropdown--full-width': props.fullWidth })}
         onChange={(value: string) => setFieldValue(props.name, value)}
         onBlur={() => setFieldTouched(props.name, true)}
-        {...props}
       />
       {helpText && <HelpBlock id={`${props.name}-help`}>{helpText}</HelpBlock>}
       {touched && error && <HelpBlock>{error}</HelpBlock>}

@@ -110,7 +110,7 @@ export const normalizeBuilderImages = (
       iconUrl,
       tags,
       recentTag,
-      imageStreamNamespace
+      imageStreamNamespace,
     };
     return builderImages;
   }, {});
