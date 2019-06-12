@@ -4,7 +4,7 @@ import { ALL_NAMESPACES_KEY } from '../../../const';
 import { history } from '../../../components/utils';
 import { getNamespace, getPerspective } from '../../../components/utils/link';
 import { PipelineModel, PipelineRunModel } from '../../../models';
-import { PipelineRun, Param  } from '../utils/pipeline-augment';
+import { PipelineRun, Param } from '../utils/pipeline-augment';
 import { pipelineRunFilterReducer } from '../utils/pipeline-filter-reducer';
 import { k8sCreate, K8sKind, K8sResourceKind, k8sUpdate } from '../../../module/k8s';
 
@@ -22,7 +22,7 @@ type ActionFunction = (kind: K8sKind, obj: K8sResourceKind) => Action;
 
 const redirectToResourceList = (resource: string) => {
   const url = location.pathname;
-  let basePath = '/k8s/';
+  let basePath = '/k8s';
   if (getPerspective(url) === 'dev') {
     basePath = '/dev/k8s';
   }
@@ -61,7 +61,7 @@ export const newPipelineRun = (pipeline: Pipeline, latestRun: PipelineRun): Pipe
           ? `${pipeline.metadata.name}-${Math.random()
               .toString(36)
               .replace(/[^a-z0-9]+/g, '')
-              .substr(0, 5)}`
+              .substr(1, 6)}`
           : latestRun &&
             latestRun.spec &&
             latestRun.spec.pipelineRef &&
@@ -69,11 +69,11 @@ export const newPipelineRun = (pipeline: Pipeline, latestRun: PipelineRun): Pipe
           ? `${latestRun.spec.pipelineRef.name}-${Math.random()
               .toString(36)
               .replace(/[^a-z0-9]+/g, '')
-              .substr(0, 5)}`
+              .substr(1, 6)}`
           : `PipelineRun-${Math.random()
               .toString(36)
               .replace(/[^a-z0-9]+/g, '')
-              .substr(0, 5)}`,
+              .substr(1, 6)}`,
 
       namespace:
         latestRun && latestRun.metadata && latestRun.metadata.namespace
@@ -179,10 +179,11 @@ export const rerunPipeline = (
   return (kind: K8sKind, obj: K8sResourceKind): Action => ({
     label: 'Trigger Last Run',
     callback: () => {
-      k8sCreate(PipelineRunModel, newPipelineRun(pipeline, latestRun));
-      if (redirectURL) {
-        redirectToResourceList(redirectURL);
-      }
+      k8sCreate(PipelineRunModel, newPipelineRun(pipeline, latestRun)).then(() => {
+        if (redirectURL) {
+          redirectToResourceList(redirectURL);
+        }
+      });
     },
   });
 };
