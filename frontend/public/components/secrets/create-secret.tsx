@@ -6,11 +6,12 @@ import { Base64 } from 'js-base64';
 
 import { k8sCreate, k8sUpdate, K8sResourceKind, referenceFor } from '../../module/k8s';
 import { ButtonBar, Firehose, history, StatusBox, LoadingBox, Dropdown, resourceObjPath } from '../utils';
+import { ModalBody, ModalTitle, ModalSubmitFooter } from '../factory/modal';
 import { AsyncComponent } from '../utils/async';
 import { SecretModel } from '../../models';
 import { WebHookSecretKey } from '../secret';
 
-enum SecretTypeAbstraction {
+export enum SecretTypeAbstraction {
   generic = 'generic',
   source = 'source',
   image = 'image',
@@ -88,7 +89,7 @@ const generateSecret = () => {
 };
 
 // withSecretForm returns SubForm which is a Higher Order Component for all the types of secret forms.
-const withSecretForm = (SubForm) => class SecretFormComponent extends React.Component<BaseEditSecretProps_, BaseEditSecretState_> {
+export const withSecretForm = (SubForm, renderinModal?:boolean) => class SecretFormComponent extends React.Component<BaseEditSecretProps_, BaseEditSecretState_> {
   constructor(props) {
     super(props);
     const existingSecret = _.pick(props.obj, ['metadata', 'type']);
@@ -158,7 +159,36 @@ const withSecretForm = (SubForm) => class SecretFormComponent extends React.Comp
     const { secretTypeAbstraction } = this.state;
     const { onCancel = history.goBack } = this.props;
     const title = `${this.props.titleVerb} ${secretDisplayType(secretTypeAbstraction)} Secret`;
-    return <div className="co-m-pane__body">
+    return (renderinModal) ? <form className="co-create-secret-form modal-content" onSubmit={this.save}>
+    <ModalTitle>{title}</ModalTitle>
+      <ModalBody className="modal-content">
+      <fieldset disabled={!this.props.isCreate}>
+            <div className="form-group">
+              <label className="control-label co-required" htmlFor="secret-name">Secret Name</label>
+              <div>
+                <input className="form-control"
+                  type="text"
+                  onChange={this.onNameChanged}
+                  value={this.state.secret.metadata.name}
+                  aria-describedby="secret-name-help"
+                  id="secret-name"
+                  required />
+                <p className="help-block" id="secret-name-help">Unique name of the new secret.</p>
+              </div>
+            </div>
+        </fieldset>
+        <SubForm
+            onChange={this.onDataChanged}
+            onError={this.onError}
+            onFormDisable={this.onFormDisable}
+            stringData={this.state.stringData}
+            secretType={this.state.secret.type}
+            isCreate={this.props.isCreate}
+        />
+        <ModalSubmitFooter errorMessage={this.state.error || ''} inProgress={this.state.inProgress} submitText="Create" cancel={this.props.onCancel} />
+      </ModalBody>
+    </form> :
+    (<div className="co-m-pane__body">
       <Helmet>
         <title>{title}</title>
       </Helmet>
@@ -194,7 +224,7 @@ const withSecretForm = (SubForm) => class SecretFormComponent extends React.Comp
           <button type="button" className="btn btn-default" id="cancel" onClick={onCancel}>Cancel</button>
         </ButtonBar>
       </form>
-    </div>;
+    </div>);
   }
 };
 
@@ -579,7 +609,7 @@ class WebHookSecretForm extends React.Component<WebHookSecretFormProps, WebHookS
   }
 }
 
-class SourceSecretForm extends React.Component<SourceSecretFormProps, SourceSecretFormState> {
+export class SourceSecretForm extends React.Component<SourceSecretFormProps, SourceSecretFormState> {
   constructor(props) {
     super(props);
     this.state = {

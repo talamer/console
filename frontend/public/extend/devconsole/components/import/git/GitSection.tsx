@@ -1,13 +1,18 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { useFormikContext, FormikValues } from 'formik';
-import { ExpandCollapse } from 'patternfly-react';
+import { ExpandCollapse, HelpBlock } from 'patternfly-react';
 import { InputField, DropdownField } from '../../formik-fields';
-import { GitTypes } from '../import-types';
+import { GitTypes, ProjectData } from '../import-types';
 import { detectGitType } from '../import-validation-utils';
 import FormSection from '../section/FormSection';
+import SourceSecretSelector from './SourceSecretSelector';
 
-const GitSection: React.FC = () => {
+export interface GitSectionProps {
+  project: ProjectData;
+}
+
+const GitSection: React.FC<GitSectionProps> = ({ project }) => {
   const { values, setValues, setFieldTouched } = useFormikContext<FormikValues>();
   const handleGitUrlBlur = () => {
     const gitType = detectGitType(values.git.url);
@@ -61,6 +66,8 @@ const GitSection: React.FC = () => {
           label="Context Dir"
           helpText="Optional subdirectory for the application source code, used as a context directory for build."
         />
+        <SourceSecretSelector namespace={project.name} />
+        <HelpBlock>Secret with credentials for pulling your source code.</HelpBlock>
       </ExpandCollapse>
     </FormSection>
   );

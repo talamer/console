@@ -1,46 +1,91 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
-import { FormGroup, ControlLabel, FormControl, HelpBlock } from 'patternfly-react';
+import { FormGroup, ControlLabel } from 'patternfly-react';
+import { useFormikContext, FormikValues, useField } from 'formik';
+import { createModalLauncher } from '../../../../../components/factory/modal';
+import { getValidationState } from '../../formik-fields/field-utils';
 import SourceSecretDropdown from '../../dropdown/SourceSecretDropdown';
-import CreateSourceSecret, { SecretType } from './CreateSourceSecret';
+import {
+  withSecretForm,
+  SourceSecretForm,
+  SecretTypeAbstraction,
+} from '../../../../../components/secrets/create-secret';
 
 const CREATE_SOURCE_SECRET = 'create-source-secret';
 
 interface SourceSecretSelectorProps {
-  namespace?: string;
-  sourceSecret: string;
-  selectedKey: string;
-  secretCredentials: { [key: string]: string };
-  onChange: (
+  namespace: string;
+  // sourceSecret: string;
+  /* onChange: (
     name: string,
     key: string,
     authType?: string,
     credentials?: { [key: string]: string },
-  ) => void;
+  ) => void; */
 }
 
+interface CreateSourceSecretModalProps {
+  cancel: (e: Event) => void;
+  close: () => null;
+  namespace: string;
+  // onChange: () => void;
+  /* secretName: string;*/
+}
+
+const CreateSourceSecretModal: React.FC<CreateSourceSecretModalProps> = ({ close,namespace }) => {
+  const CreateSourceSecretForm = withSecretForm(SourceSecretForm, true);
+  const { setFieldValue } = useFormikContext<FormikValues>();
+  const onClose = () => {
+    close();
+    // setFieldValue('git.secret.selectedKey', '');
+    return null;
+  }
+  return (
+    <CreateSourceSecretForm
+      onCancel={onClose}
+      fixed={{ metadata: { namespace } }}
+      secretTypeAbstraction={SecretTypeAbstraction.source}
+      explanation={'Source secrets let you authenticate against a Git server.'}
+      titleVerb="Create"
+      isCreate={true}
+    />
+  );
+};
+
+const sourceSecretModalLauncher = createModalLauncher<CreateSourceSecretModalProps>(
+  CreateSourceSecretModal,
+);
+
 const SourceSecretSelector: React.FC<SourceSecretSelectorProps> = ({
-  sourceSecret,
+  // sourceSecret,
   namespace,
-  secretCredentials,
-  selectedKey,
-  onChange,
+  // onChange,
 }) => {
-  const onDropdownChange = (secretName: string, key: string) => {
+  const [selectedKey, { touched, error }] = useField('git.secret.selectedKey');
+  const { setFieldValue, setFieldTouched } = useFormikContext<FormikValues>();
+  console.log('!!!!!!!!!!!!!!!! ' , selectedKey);
+  const onDropdownChange = (key: string) => {
+    setFieldTouched('git.secret.selectedKey', true);
     if (key === CREATE_SOURCE_SECRET) {
-      onChange('', key, SecretType.basicAuth, {});
+      /*setFieldValue('git.secretName', '');
+      setFieldValue('git.selectedSecret', key);*/
+      setFieldValue('git.secret.selectedKey', key);
+      sourceSecretModalLauncher({ namespace });
     } else {
-      onChange(secretName, key);
+      setFieldValue('git.secret.selectedKey', key);
     }
   };
 
-  const onInputChange: React.ReactEventHandler<HTMLInputElement> = (event) => {
-    onChange(event.currentTarget.value, selectedKey, SecretType.basicAuth, secretCredentials);
-  };
+  /* const onInputChange: () => React.ReactEventHandler<HTMLInputElement> = (event) => {
+    onChange(event.currentTarget.value, selectedKey.value, SecretType.basicAuth, secretCredentials);
+  }; */
 
   return (
     <React.Fragment>
-      <FormGroup>
+      <FormGroup
+        controlId="source-secret-selector-field"
+        validationState={getValidationState(error, touched)}
+      >
         <ControlLabel className="co-required">Source Secret</ControlLabel>
         <SourceSecretDropdown
           dropDownClassName="dropdown--full-width"
@@ -50,35 +95,10 @@ const SourceSecretSelector: React.FC<SourceSecretSelectorProps> = ({
             actionTitle: 'Create New Secret',
             actionKey: CREATE_SOURCE_SECRET,
           }}
-          selectedKey={selectedKey}
-          onChange={onDropdownChange}
+          selectedKey={selectedKey.value}
+          onChange={onDropdownChange} 
         />
       </FormGroup>
-      {selectedKey === CREATE_SOURCE_SECRET ? (
-        <React.Fragment>
-          <FormGroup>
-            <ControlLabel className="co-required">Secret Name</ControlLabel>
-            <FormControl
-              className="form-control"
-              type="text"
-              onChange={onInputChange}
-              value={sourceSecret}
-              aria-describedby="name-help"
-              required
-            />
-            <HelpBlock>Unique name of the new secret.</HelpBlock>
-          </FormGroup>
-          <FormGroup>
-            <CreateSourceSecret
-              onChange={onChange}
-              selectedKey={selectedKey}
-              secretType={SecretType.basicAuth}
-              secretName={sourceSecret}
-              secretCredentials={secretCredentials}
-            />
-          </FormGroup>
-        </React.Fragment>
-      ) : null}
     </React.Fragment>
   );
 };

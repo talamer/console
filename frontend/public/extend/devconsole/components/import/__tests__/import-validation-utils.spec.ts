@@ -34,6 +34,9 @@ describe('ValidationUtils', () => {
         ref: '',
         dir: '',
         showGitType: false,
+        secret: {
+          selectedKey: '',
+        }
       },
       image: {
         selected: 'nodejs',
