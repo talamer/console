@@ -27,6 +27,7 @@ export interface BuilderImage {
   iconUrl: string;
   tags: ImageTag[];
   recentTag: ImageTag;
+  imageStreamNamespace: string;
 }
 
 export interface NormalizedBuilderImages {
@@ -96,6 +97,7 @@ export const normalizeBuilderImages = (
       'annotations',
       'openshift.io/display-name',
     ]);
+    const imageStreamNamespace = imageStream.metadata.namespace;
     const title = displayName && displayName.length < 14 ? displayName : prettifyName(name);
     const iconClass = getImageStreamIcon(recentTag);
     const iconUrl = getImageForIconClass(iconClass);
@@ -108,6 +110,7 @@ export const normalizeBuilderImages = (
       iconUrl,
       tags,
       recentTag,
+      imageStreamNamespace,
     };
     return builderImages;
   }, {});

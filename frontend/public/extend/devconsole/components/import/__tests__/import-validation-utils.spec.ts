@@ -41,6 +41,9 @@ describe('ValidationUtils', () => {
         tag: 'latest',
         ports: [],
       },
+      route: {
+        create: false,
+      }
     };
 
     it('should validate the form data', async() => {

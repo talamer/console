@@ -6,7 +6,7 @@ export const FormSectionDivider: React.FC = () => (
     style={{
       marginTop: '30px',
       marginBottom: '30px',
-      border: '0.8px solid var(--pf-global--Color--400)',
+      borderBottom: '0.8px solid var(--pf-global--Color--400)',
     }}
   />
 );

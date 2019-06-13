@@ -7,5 +7,11 @@ export interface FormSectionHeadingProps {
 }
 
 export const FormSectionHeading: React.FC<FormSectionHeadingProps> = ({ title }) => (
-  <SectionHeading text={title} style={{ fontWeight: 'var(--pf-global--FontWeight--semi-bold)' }} />
+  <SectionHeading
+    text={title}
+    style={{
+      marginTop: 'var(--pf-global--spacer--lg)',
+      fontWeight: 'var(--pf-global--FontWeight--semi-bold)',
+    }}
+  />
 );

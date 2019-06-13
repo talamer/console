@@ -13,13 +13,12 @@ export interface ImageSectionProps {
 
 const BuilderSection: React.FC<ImageSectionProps> = ({ image, builderImages }) => {
   return (
-    <FormSection title="Builder">
+    <FormSection title="Builder" divider>
       <BuilderImageSelector loadingImageStream={!builderImages} builderImages={builderImages} />
       {image.tag && (
         <BuilderImageTagSelector
-          imageTags={builderImages[image.selected].tags}
+          selectedBuilderImage={builderImages[image.selected]}
           selectedImageTag={image.tag}
-          selectedImageDisplayName={builderImages[image.selected].displayName}
         />
       )}
     </FormSection>

@@ -43,19 +43,21 @@ const GitImport: React.FC<GitImportProps> = ({ namespace, imageStreams }) => {
       tag: '',
       ports: [],
     },
+    route: {
+      create: true,
+    },
   };
 
   const builderImages: NormalizedBuilderImages =
     imageStreams && imageStreams.loaded && normalizeBuilderImages(imageStreams.data);
 
   const handleSubmit = (values, actions) => {
-    event.preventDefault();
     const imageStream = builderImages[values.image.selected].obj;
 
     const {
       project: { name: namespace },
-      createRoute: canCreateRoute = false,
-      ports,
+      route: { create: canCreateRoute },
+      image: { ports },
     } = values;
 
     const requests = [
