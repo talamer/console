@@ -15,3 +15,8 @@ export interface DropdownFieldProps extends InputFieldProps {
   title?: React.ReactNode;
   fullWidth?: boolean;
 }
+
+export interface EnvironmentFieldProps extends InputFieldProps {
+  obj?: object;
+  envPath: Array<string>
+}

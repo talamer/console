@@ -226,7 +226,7 @@ const ResourceLimits: React.FC<ResourceLimitProps> = ({
       </FormGroup>
       <FormGroup controlId="cpu-limit" className={cpuLimitError && 'has-error'}>
         <div className="row">
-          <div  className="col-lg-4 col-md-4 col-xs-7 col-sm-6">
+          <div className="col-lg-4 col-md-4 col-xs-7 col-sm-6">
             <ControlLabel>Limit</ControlLabel>
             <NumberSpinner
               id="cpu-limit"

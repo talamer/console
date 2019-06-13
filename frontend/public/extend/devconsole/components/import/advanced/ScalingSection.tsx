@@ -11,7 +11,7 @@ const ScalingSection: React.FC = () => {
       divider
     >
       <NumberSpinnerField
-        name="replicas"
+        name="deployment.replicas"
         label="Replicas"
         helpText="The number of instances of your image."
       />

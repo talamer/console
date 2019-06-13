@@ -9,7 +9,9 @@ import GitSection from './git/GitSection';
 import BuilderSection from './builder/BuilderSection';
 import AppSection from './app/AppSection';
 import RouteSection from './route/RouteSection';
-import ScalingSection from './scaling/ScalingSection';
+import ScalingSection from './advanced/ScalingSection';
+import BuildConfigSection from './advanced/BuildConfigSection';
+import DeploymentConfigSection from './advanced/DeploymentConfigSection';
 
 export interface GitImportFormProps {
   builderImages?: NormalizedBuilderImages;
@@ -33,6 +35,8 @@ const GitImportForm: React.FC<FormikProps<FormikValues> & GitImportFormProps> = 
       <ExpandCollapse>
         <RouteSection />
         <ScalingSection />
+        <BuildConfigSection namespace={values.project.name} />
+        <DeploymentConfigSection namespace={values.project.name} />
       </ExpandCollapse>
     </div>
     <br />

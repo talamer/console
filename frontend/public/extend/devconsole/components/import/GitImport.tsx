@@ -46,7 +46,22 @@ const GitImport: React.FC<GitImportProps> = ({ namespace, imageStreams }) => {
     route: {
       create: true,
     },
-    replicas: 1,
+    build: {
+      env: [],
+      triggers: {
+        webhook: true,
+        image: true,
+        config: true,
+      },
+    },
+    deployment: {
+      env: [],
+      triggers: {
+        image: true,
+        config: true,
+      },
+      replicas: 1,
+    },
   };
 
   const builderImages: NormalizedBuilderImages =

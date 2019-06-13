@@ -45,6 +45,7 @@ export const createBuildConfig = (
     application: { name: application },
     git: { url: repository, ref = 'master', dir: contextDir },
     image: { tag: selectedTag },
+    build: { env, triggers },
   } = formData;
 
   const labels = getAppLabels(name, application, imageStream.metadata.name);
@@ -74,6 +75,7 @@ export const createBuildConfig = (
       strategy: {
         type: 'Source',
         sourceStrategy: {
+          env,
           from: {
             kind: 'ImageStreamTag',
             name: `${imageStream.metadata.name}:${selectedTag}`,
@@ -82,13 +84,8 @@ export const createBuildConfig = (
         },
       },
       triggers: [
-        {
-          type: 'ImageChange',
-          imageChange: {},
-        },
-        {
-          type: 'ConfigChange',
-        },
+        ...(triggers.image ? [{ type: 'ImageChange', imageChange: {} }] : []),
+        ...(triggers.config ? [{ type: 'ConfigChange' }] : []),
       ],
     },
   };
@@ -105,11 +102,12 @@ export const createDeploymentConfig = (
     project: { name: namespace },
     application: { name: application },
     image: { ports },
-    replicas,
+    deployment: { env, replicas, triggers },
   } = formData;
 
   const labels = getAppLabels(name, application, imageStream.metadata.name);
   const podLabels = getPodLabels(name);
+
   const deploymentConfig = {
     apiVersion: 'apps.openshift.io/v1',
     kind: 'DeploymentConfig',
@@ -131,7 +129,7 @@ export const createDeploymentConfig = (
               name,
               image: `${name}:latest`,
               ports,
-              env: [],
+              env,
             },
           ],
         },
@@ -140,7 +138,7 @@ export const createDeploymentConfig = (
         {
           type: 'ImageChange',
           imageChangeParams: {
-            automatic: true,
+            automatic: triggers.image,
             containerNames: [name],
             from: {
               kind: 'ImageStreamTag',
@@ -148,9 +146,7 @@ export const createDeploymentConfig = (
             },
           },
         },
-        {
-          type: 'ConfigChange',
-        },
+        ...(triggers.config ? [{ type: 'ConfigChange' }] : []),
       ],
     },
   };

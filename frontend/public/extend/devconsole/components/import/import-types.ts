@@ -12,7 +12,8 @@ export interface GitImportFormData {
   git: GitData;
   image: ImageData;
   route: RouteData;
-  replicas: number;
+  build: BuildData;
+  deployment: DeploymentData;
 }
 
 export interface ApplicationData {
@@ -41,6 +42,47 @@ export interface GitData {
 
 export interface RouteData {
   create: boolean;
+}
+
+export interface BuildData {
+  triggers: {
+    webhook: Boolean;
+    image: Boolean;
+    config: Boolean;
+  };
+  env: Array<NameValuePair | NameValueFromPair>;
+}
+
+export interface DeploymentData {
+  triggers: {
+    image: Boolean;
+    config: Boolean;
+  };
+  replicas: number;
+  env: Array<NameValuePair | NameValueFromPair>;
+}
+
+export interface NameValuePair {
+  name: string;
+  value: string;
+}
+
+export interface NameValueFromPair {
+  name: string;
+  valueForm: ConfigMapKeyRef | SecretKeyRef;
+}
+export interface ConfigMapKeyRef {
+  configMapKeyRef: {
+    key: string;
+    name: string;
+  };
+}
+
+export interface SecretKeyRef {
+  secretKeyRef: {
+    key: string;
+    name: string;
+  };
 }
 
 export enum GitTypes {

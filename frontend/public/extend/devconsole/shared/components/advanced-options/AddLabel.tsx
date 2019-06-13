@@ -14,10 +14,16 @@ interface AddLabelProps {
   readOnly: boolean;
 }
 
-const NameValueEditorComponent = (props) => <AsyncComponent loader={() => import('../../../../../components/utils/name-value-editor').then(c => c.NameValueEditor)} {...props} />;
+const NameValueEditorComponent = (props) => (
+  <AsyncComponent
+    loader={() =>
+      import('../../../../../components/utils/name-value-editor').then((c) => c.NameValueEditor)
+    }
+    {...props}
+  />
+);
 
-const AddLabel: React.FC<AddLabelProps> = ({onLabelAdd, labels, readOnly}) => {
-
+const AddLabel: React.FC<AddLabelProps> = ({ onLabelAdd, labels, readOnly }) => {
   const _labels = _.isEmpty(labels) ? [['', '']] : _.toPairs(labels);
 
   return (
