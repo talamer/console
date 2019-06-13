@@ -28,8 +28,13 @@ export const validationSchema = yup.object().shape({
   }),
   replicas: yup
     .number()
-    .integer()
-    .min(0, 'Replicas must be greater than or equal to 0.'),
+    .integer('Replicas must be an Integer')
+    .min(0, 'Replicas must be greater than or equal to 0.')
+    .test({
+      name: 'isEmpty',
+      test: (value) => value !== undefined,
+      message: 'This field cannot be empty',
+    }),
 });
 
 export const detectGitType = (url: string): string => {

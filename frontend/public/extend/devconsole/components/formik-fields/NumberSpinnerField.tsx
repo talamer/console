@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
+import * as _ from 'lodash-es';
 import cx from 'classnames';
 import { useField, useFormikContext, FormikValues } from 'formik';
 import { FormGroup, ControlLabel, HelpBlock } from 'patternfly-react';
@@ -21,7 +22,7 @@ const NumberSpinnerField: React.FC<InputFieldProps> = ({ label, helpText, ...pro
         {...field}
         {...props}
         changeValueBy={(operation: number) => {
-          setFieldValue(props.name, Number(field.value) + operation);
+          setFieldValue(props.name, _.toInteger(field.value) + operation);
           setFieldTouched(props.name, true);
         }}
         aria-describedby={`${props.name}-help`}
