@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 import { CheckboxField } from '../../formik-fields';
-import { FormSection } from '../section/FormSection';
+import FormSection from '../section/FormSection';
 
 const RouteSection: React.FC = () => {
   return (

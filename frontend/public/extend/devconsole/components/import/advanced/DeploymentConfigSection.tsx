@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
-import { FormSection } from '../section/FormSection';
 import { CheckboxField, EnvironmentField } from '../../formik-fields';
+import FormSection from '../section/FormSection';
 
 export interface DeploymentConfigSectionProps {
   namespace: string;

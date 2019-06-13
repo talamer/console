@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { NormalizedBuilderImages } from '../../../utils/imagestream-utils';
 import { ImageData } from '../import-types';
-import { FormSection } from '../section/FormSection';
+import FormSection from '../section/FormSection';
 import BuilderImageSelector from './BuilderImageSelector';
 import BuilderImageTagSelector from './BuilderImageTagSelector';
 

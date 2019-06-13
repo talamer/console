@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
-import { FormSectionHeading } from './FormSectionHeading';
-import { FormSectionDivider } from './FormSectionDivider';
+import FormSectionHeading from './FormSectionHeading';
+import FormSectionDivider from './FormSectionDivider';
 import FormSectionSubHeading from './FormSectionSubHeading';
 
 export interface FormSectionProps {
@@ -11,7 +11,7 @@ export interface FormSectionProps {
   children: React.ReactNode;
 }
 
-export const FormSection: React.FC<FormSectionProps> = ({ title, subTitle, divider, children }) => (
+const FormSection: React.FC<FormSectionProps> = ({ title, subTitle, divider, children }) => (
   <React.Fragment>
     <FormSectionHeading title={title} />
     {subTitle && <FormSectionSubHeading subTitle={subTitle} />}
@@ -19,3 +19,5 @@ export const FormSection: React.FC<FormSectionProps> = ({ title, subTitle, divid
     {divider && <FormSectionDivider />}
   </React.Fragment>
 );
+
+export default FormSection;

@@ -14,6 +14,7 @@ export interface GitImportFormData {
   route: RouteData;
   build: BuildData;
   deployment: DeploymentData;
+  labels: { [name: string]: string };
 }
 
 export interface ApplicationData {

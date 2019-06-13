@@ -3,9 +3,9 @@ import * as React from 'react';
 import { useFormikContext, FormikValues } from 'formik';
 import { ExpandCollapse } from 'patternfly-react';
 import { InputField, DropdownField } from '../../formik-fields';
-import { FormSection } from '../section/FormSection';
 import { GitTypes } from '../import-types';
 import { detectGitType } from '../import-validation-utils';
+import FormSection from '../section/FormSection';
 
 const GitSection: React.FC = () => {
   const { values, setValues, setFieldTouched } = useFormikContext<FormikValues>();

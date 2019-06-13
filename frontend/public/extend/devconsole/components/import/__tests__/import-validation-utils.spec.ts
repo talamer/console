@@ -60,6 +60,7 @@ describe('ValidationUtils', () => {
         },
         replicas: 1,
       },
+      labels: {},
     };
 
     it('should validate the form data', async () => {

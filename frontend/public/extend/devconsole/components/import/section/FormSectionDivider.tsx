@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars, no-undef */
 import * as React from 'react';
 
-export const FormSectionDivider: React.FC = () => (
+const FormSectionDivider: React.FC = () => (
   <hr
     style={{
       marginTop: '30px',
@@ -11,3 +11,4 @@ export const FormSectionDivider: React.FC = () => (
   />
 );
 
+export default FormSectionDivider;

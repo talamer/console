@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { InputField, NSDropdownField } from '../../formik-fields';
 import { ProjectData } from '../import-types';
-import { FormSection } from '../section/FormSection';
+import FormSection from '../section/FormSection';
 import ApplicationSelector from './ApplicationSelector';
 
 export interface AppSectionProps {

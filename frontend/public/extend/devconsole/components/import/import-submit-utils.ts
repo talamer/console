@@ -20,15 +20,16 @@ export const createImageStream = (
     name,
     project: { name: namespace },
     application: { name: application },
+    labels: userLabels,
   } = formData;
-  const labels = getAppLabels(name, application, imageStreamName);
+  const defaultLabels = getAppLabels(name, application, imageStreamName);
   const imageStream = {
     apiVersion: 'image.openshift.io/v1',
     kind: 'ImageStream',
     metadata: {
       name,
       namespace,
-      labels,
+      labels: { ...defaultLabels, ...userLabels },
     },
   };
 
@@ -46,16 +47,17 @@ export const createBuildConfig = (
     git: { url: repository, ref = 'master', dir: contextDir },
     image: { tag: selectedTag },
     build: { env, triggers },
+    labels: userLabels,
   } = formData;
 
-  const labels = getAppLabels(name, application, imageStream.metadata.name);
+  const defaultLabels = getAppLabels(name, application, imageStream.metadata.name);
   const buildConfig = {
     apiVersion: 'build.openshift.io/v1',
     kind: 'BuildConfig',
     metadata: {
       name,
       namespace,
-      labels,
+      labels: { ...defaultLabels, ...userLabels },
     },
     spec: {
       output: {
@@ -103,9 +105,10 @@ export const createDeploymentConfig = (
     application: { name: application },
     image: { ports },
     deployment: { env, replicas, triggers },
+    labels: userLabels,
   } = formData;
 
-  const labels = getAppLabels(name, application, imageStream.metadata.name);
+  const defaultLabels = getAppLabels(name, application, imageStream.metadata.name);
   const podLabels = getPodLabels(name);
 
   const deploymentConfig = {
@@ -114,7 +117,7 @@ export const createDeploymentConfig = (
     metadata: {
       name,
       namespace,
-      labels,
+      labels: { ...defaultLabels, ...userLabels },
     },
     spec: {
       selector: podLabels,
@@ -163,10 +166,11 @@ export const createService = (
     project: { name: namespace },
     application: { name: application },
     image: { ports },
+    labels: userLabels,
   } = formData;
 
   const firstPort = _.head(ports);
-  const labels = getAppLabels(name, application, imageStream.metadata.name);
+  const defaultLabels = getAppLabels(name, application, imageStream.metadata.name);
   const podLabels = getPodLabels(name);
   const service = {
     kind: 'Service',
@@ -174,7 +178,7 @@ export const createService = (
     metadata: {
       name,
       namespace,
-      labels,
+      labels: { ...defaultLabels, ...userLabels },
     },
     spec: {
       selector: podLabels,
@@ -202,17 +206,18 @@ export const createRoute = (
     project: { name: namespace },
     application: { name: application },
     image: { ports },
+    labels: userLabels,
   } = formData;
 
   const firstPort = _.head(ports);
-  const labels = getAppLabels(name, application, imageStream.metadata.name);
+  const defaultLabels = getAppLabels(name, application, imageStream.metadata.name);
   const route = {
     kind: 'Route',
     apiVersion: 'route.openshift.io/v1',
     metadata: {
       name,
       namespace,
-      labels,
+      labels: { ...defaultLabels, ...userLabels },
     },
     spec: {
       to: {

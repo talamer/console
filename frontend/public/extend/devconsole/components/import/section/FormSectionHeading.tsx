@@ -6,7 +6,7 @@ export interface FormSectionHeadingProps {
   title: string;
 }
 
-export const FormSectionHeading: React.FC<FormSectionHeadingProps> = ({ title }) => (
+const FormSectionHeading: React.FC<FormSectionHeadingProps> = ({ title }) => (
   <SectionHeading
     text={title}
     style={{
@@ -15,3 +15,5 @@ export const FormSectionHeading: React.FC<FormSectionHeadingProps> = ({ title })
     }}
   />
 );
+
+export default FormSectionHeading;
