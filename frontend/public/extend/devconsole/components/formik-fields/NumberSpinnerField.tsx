@@ -21,7 +21,7 @@ const NumberSpinnerField: React.FC<InputFieldProps> = ({ label, helpText, ...pro
         {...field}
         {...props}
         changeValueBy={(operation: number) => {
-          setFieldValue(props.name, field.value + operation);
+          setFieldValue(props.name, Number(field.value) + operation);
           setFieldTouched(props.name, true);
         }}
         aria-describedby={`${props.name}-help`}
