@@ -20,7 +20,7 @@ export const podColor = {
   Succceeded: '#519149',
   Terminating: '#002F5D',
   Unknown: '#A18FFF',
-  'Scale To 0': '#FFFFFF',
+  'Scaled To 0': '#FFFFFF',
 };
 
 export const podStatus = Object.keys(podColor);
@@ -283,7 +283,7 @@ export class TransformTopologyData {
       return [
         {
           ..._.pick(replicationController, 'metadata', 'status', 'spec'),
-          status: { phase: 'Scale To 0' },
+          status: { phase: 'Scaled To 0' },
         },
       ];
     }

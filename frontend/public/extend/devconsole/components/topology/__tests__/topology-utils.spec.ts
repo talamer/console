@@ -114,7 +114,7 @@ describe('TopologyUtils ', () => {
     expect(topologyTransformedData[keys[0]].data['isKnativeResource']).toBeFalsy();
   });
 
-  it('should return a valid pod status for scale to 0', () => {
+  it('should return a valid pod status for scaled to 0', () => {
     const transformTopologyData = new TransformTopologyData(MockKnativeResources);
     transformTopologyData.transformDataBy('deploymentConfigs');
     transformTopologyData.transformDataBy('deployments');
@@ -123,7 +123,7 @@ describe('TopologyUtils ', () => {
     const keys = Object.keys(topologyTransformedData);
     const status = getPodStatus(topologyTransformedData[keys[0]].data['donutStatus'].pods[0]);
     expect(podStatus.includes(status)).toBe(true);
-    expect(status).toEqual('Scale To 0');
+    expect(status).toEqual('Scaled To 0');
   });
 
   it('should return true for knative resource', () => {
