@@ -5,6 +5,7 @@ export interface InputFieldProps {
   label: string;
   helpText?: string;
   required?: boolean;
+  placeholder?: string;
   onChange?: (event) => void;
   onBlur?: (event) => void;
 }

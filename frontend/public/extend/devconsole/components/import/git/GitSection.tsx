@@ -8,7 +8,7 @@ import { detectGitType } from '../import-validation-utils';
 import FormSection from '../section/FormSection';
 
 const GitSection: React.FC = () => {
-  const { values, setValues, setFieldTouched } = useFormikContext<FormikValues>();
+  const { values, setValues, setFieldTouched, validateForm } = useFormikContext<FormikValues>();
   const handleGitUrlBlur = () => {
     const gitType = detectGitType(values.git.url);
     const showGitType = gitType === '' ? true : false;
@@ -23,6 +23,7 @@ const GitSection: React.FC = () => {
     setValues(newValues);
     setFieldTouched('git.url', true);
     setFieldTouched('git.type', showGitType);
+    validateForm(newValues);
   };
 
   return (

@@ -43,6 +43,20 @@ export interface GitData {
 
 export interface RouteData {
   create: boolean;
+  targetPort: string;
+  path: string;
+  hostname: string;
+  secure: boolean;
+  tls: TLSData;
+}
+
+export interface TLSData {
+  termination: string;
+  insecureEdgeTerminationPolicy: string;
+  certificate: string;
+  privateKey: string;
+  caCertificate: string;
+  destinationCACertificate: string;
 }
 
 export interface BuildData {
@@ -91,4 +105,21 @@ export enum GitTypes {
   github = 'GitHub',
   gitlab = 'GitLab',
   bitbucket = 'Bitbucket',
+}
+
+export enum TerminationTypes {
+  edge = 'Edge',
+  passthrough = 'Passthrough',
+  reencrypt = 'Re-encrypt',
+}
+
+export enum InsecureTrafficTypes {
+  None = 'None',
+  Allow = 'Allow',
+  Redirect = 'Redirect',
+}
+
+export enum PassthroughInsecureTrafficTypes {
+  None = 'None',
+  Redirect = 'Redirect',
 }
