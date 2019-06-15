@@ -37,8 +37,9 @@ const GitImport: React.FC<GitImportProps> = ({ namespace, imageStreams }) => {
       dir: '/',
       showGitType: false,
       secret: {
+        isNewSecret: false,
         selectedKey: '',
-      }
+      },
     },
     image: {
       selected: '',

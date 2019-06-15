@@ -13,7 +13,8 @@ interface SourceSecretDropdownProps {
     actionKey: string;
   };
   selectedKey: string;
-  onChange?: (name: string, key: string) => void;
+  onChange?: (key: string) => void;
+  title?: React.ReactNode;
 }
 
 const SourceSecretDropdown: React.FC<SourceSecretDropdownProps> = (props) => {
@@ -32,7 +33,7 @@ const SourceSecretDropdown: React.FC<SourceSecretDropdownProps> = (props) => {
     <Firehose resources={resources}>
       <ResourceDropdown
         {...props}
-        placeholder="Select Secret Name"
+        placeholder={'Select Secret Name'}
         resourceFilter={filterData}
         dataSelector={['metadata', 'name']}
       />

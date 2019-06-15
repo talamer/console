@@ -40,6 +40,7 @@ export interface GitData {
   dir: string;
   showGitType: boolean;
   secret: {
+    isNewSecret: boolean;
     selectedKey: string;
   };
 }

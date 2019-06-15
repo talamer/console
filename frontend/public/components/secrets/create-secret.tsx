@@ -152,7 +152,12 @@ export const withSecretForm = (SubForm, renderinModal?:boolean) => class SecretF
       : k8sUpdate(SecretModel, newSecret, metadata.namespace, newSecret.metadata.name)
     ).then(secret => {
       this.setState({inProgress: false});
-      history.push(resourceObjPath(secret, referenceFor(secret)));
+      if (renderinModal){
+        this.props.onCancel();
+        this.props.onSave(secret.metadata.name);
+      } else {
+        history.push(resourceObjPath(secret, referenceFor(secret)));
+      }
     }, err => this.setState({error: err.message, inProgress: false}));
   }
   render() {
@@ -160,42 +165,8 @@ export const withSecretForm = (SubForm, renderinModal?:boolean) => class SecretF
     const { onCancel = history.goBack } = this.props;
     const title = `${this.props.titleVerb} ${secretDisplayType(secretTypeAbstraction)} Secret`;
     return (renderinModal) ? <form className="co-create-secret-form modal-content" onSubmit={this.save}>
-    <ModalTitle>{title}</ModalTitle>
+      <ModalTitle>{title}</ModalTitle>
       <ModalBody className="modal-content">
-      <fieldset disabled={!this.props.isCreate}>
-            <div className="form-group">
-              <label className="control-label co-required" htmlFor="secret-name">Secret Name</label>
-              <div>
-                <input className="form-control"
-                  type="text"
-                  onChange={this.onNameChanged}
-                  value={this.state.secret.metadata.name}
-                  aria-describedby="secret-name-help"
-                  id="secret-name"
-                  required />
-                <p className="help-block" id="secret-name-help">Unique name of the new secret.</p>
-              </div>
-            </div>
-        </fieldset>
-        <SubForm
-            onChange={this.onDataChanged}
-            onError={this.onError}
-            onFormDisable={this.onFormDisable}
-            stringData={this.state.stringData}
-            secretType={this.state.secret.type}
-            isCreate={this.props.isCreate}
-        />
-        <ModalSubmitFooter errorMessage={this.state.error || ''} inProgress={this.state.inProgress} submitText="Create" cancel={this.props.onCancel} />
-      </ModalBody>
-    </form> :
-    (<div className="co-m-pane__body">
-      <Helmet>
-        <title>{title}</title>
-      </Helmet>
-      <form className="co-m-pane__body-group co-create-secret-form co-m-pane__form" onSubmit={this.save}>
-        <h1 className="co-m-pane__heading">{title}</h1>
-        <p className="co-m-pane__explanation">{this.props.explanation}</p>
-
         <fieldset disabled={!this.props.isCreate}>
           <div className="form-group">
             <label className="control-label co-required" htmlFor="secret-name">Secret Name</label>
@@ -219,12 +190,45 @@ export const withSecretForm = (SubForm, renderinModal?:boolean) => class SecretF
           secretType={this.state.secret.type}
           isCreate={this.props.isCreate}
         />
-        <ButtonBar errorMessage={this.state.error} inProgress={this.state.inProgress}>
-          <button type="submit" disabled={this.state.disableForm} className="btn btn-primary" id="save-changes">{this.props.saveButtonText || 'Create'}</button>
-          <button type="button" className="btn btn-default" id="cancel" onClick={onCancel}>Cancel</button>
-        </ButtonBar>
-      </form>
-    </div>);
+        <ModalSubmitFooter errorMessage={this.state.error || ''} inProgress={this.state.inProgress} submitText="Create" cancel={this.props.onCancel} />
+      </ModalBody>
+    </form> :
+      (<div className="co-m-pane__body">
+        <Helmet>
+          <title>{title}</title>
+        </Helmet>
+        <form className="co-m-pane__body-group co-create-secret-form co-m-pane__form" onSubmit={this.save}>
+          <h1 className="co-m-pane__heading">{title}</h1>
+          <p className="co-m-pane__explanation">{this.props.explanation}</p>
+          <fieldset disabled={!this.props.isCreate}>
+            <div className="form-group">
+              <label className="control-label co-required" htmlFor="secret-name">Secret Name</label>
+              <div>
+                <input className="form-control"
+                  type="text"
+                  onChange={this.onNameChanged}
+                  value={this.state.secret.metadata.name}
+                  aria-describedby="secret-name-help"
+                  id="secret-name"
+                  required />
+                <p className="help-block" id="secret-name-help">Unique name of the new secret.</p>
+              </div>
+            </div>
+          </fieldset>
+          <SubForm
+            onChange={this.onDataChanged}
+            onError={this.onError}
+            onFormDisable={this.onFormDisable}
+            stringData={this.state.stringData}
+            secretType={this.state.secret.type}
+            isCreate={this.props.isCreate}
+          />
+          <ButtonBar errorMessage={this.state.error} inProgress={this.state.inProgress}>
+            <button type="submit" disabled={this.state.disableForm} className="btn btn-primary" id="save-changes">{this.props.saveButtonText || 'Create'}</button>
+            <button type="button" className="btn btn-default" id="cancel" onClick={onCancel}>Cancel</button>
+          </ButtonBar>
+        </form>
+      </div>);
   }
 };
 
@@ -994,6 +998,7 @@ export type BaseEditSecretProps_ = {
   saveButtonText?: string;
   explanation: string;
   onCancel?: () => null;
+  onSave?:(name: string) => void;
 };
 
 export type BasicAuthSubformProps = {
