@@ -69,7 +69,7 @@ spec:
         resource: mapit-image
   - name: deploy
     taskRef:
-      name: openshift-cli-deploy-mapit
+      name: openshift-cli
     runAfter:
       - build-image
 ---
