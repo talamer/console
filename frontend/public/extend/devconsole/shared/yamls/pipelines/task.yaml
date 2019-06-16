@@ -1,12 +1,67 @@
 apiVersion: tekton.dev/v1alpha1
 kind: Task
 metadata:
-  name: echo-hello-world
+  name: build-docker-image-from-git-source
+spec:
+  inputs:
+    resources:
+      - name: docker-source
+        type: git
+    params:
+      - name: pathToDockerFile
+        description: The path to the dockerfile to build
+        default: /workspace/docker-source/Dockerfile
+      - name: pathToContext
+        description:
+          The build context used by Kaniko
+          (https://github.com/GoogleContainerTools/kaniko#kaniko-build-contexts)
+        default: /workspace/docker-source
+  outputs:
+    resources:
+      - name: builtImage
+        type: image
+  steps:
+    - name: build-and-push
+      image: ubuntu
+      command:
+        - echo
+      args:
+        - "Build and push"
 ---
 apiVersion: tekton.dev/v1alpha1
 kind: Task
 metadata:
-  name: echo-hello-world-2
+  name: deploy-using-kubectl
+spec:
+  inputs:
+    resources:
+      - name: source
+        type: git
+      - name: image
+        type: image
+    params:
+      - name: path
+        description: Path to the manifest to apply
+      - name: yqArg
+        description:
+          Okay this is a hack, but I didn't feel right hard-coding `-d1` down
+          below
+      - name: yamlPathToImage
+        description:
+          The path to the image to replace in the yaml manifest (arg to yq)
+  steps:
+    - name: replace-image
+      image: ubuntu
+      command:
+        - echo
+      args:
+        - "replaced image"
+    - name: post-deploy
+      image: ubuntu
+      command:
+        - echo
+      args:
+        - "post-deploy"
 ---
 apiVersion: tekton.dev/v1alpha1
 kind: Task
@@ -26,9 +81,9 @@ spec:
   - name: build
     image: maven:3.6.0-jdk-8-slim
     command:
-    - /usr/bin/mvn
+      - echo
     args:
-    - verify
+      - "build"
 ---
 apiVersion: tekton.dev/v1alpha1
 kind: Task
@@ -55,34 +110,15 @@ spec:
   - name: build
     image: quay.io/openshift-pipeline/buildah:testing
     command:
-      - buildah
-    args: 
-      - bud
-      - --layers
-      - --tls-verify=${inputs.params.verifyTLS}
-      - -f
-      - ${inputs.params.dockerfile}
-      - -t
-      - ${outputs.resources.image.url}
-      - .
-    volumeMounts:
-    - name: libcontainers
-      mountPath: /var/lib/containers
-    securityContext:
-      privileged: true
+      - echo
+    args:
+      - "builadh"
   - name: push
     image: quay.io/openshift-pipeline/buildah:testing
     command:
-      - buildah
-    args: 
-      - push
-      - --tls-verify=${inputs.params.verifyTLS}
-      - ${outputs.resources.image.url}
-    volumeMounts:
-    - name: libcontainers
-      mountPath: /var/lib/containers
-    securityContext:
-      privileged: true
+      - echo
+    args:
+      - "push"
   volumes:
     - name: libcontainers
       emptyDir: {}
@@ -101,16 +137,15 @@ spec:
   - name: build
     image: maven:3.6.0-jdk-8-slim
     command:
-    - /usr/bin/mvn
+      - echo
     args:
-    - package
-    - -DskipTests
+      - "build"
   - name: test
     image: maven:3.6.0-jdk-8-slim
     command:
-    - /usr/bin/mvn
+      - echo
     args:
-    - verify
+      - "verify"
 ---
 
 apiVersion: tekton.dev/v1alpha1
@@ -118,16 +153,13 @@ kind: Task
 metadata:
   name: openshift-cli
 spec:
-  inputs:
-    params:
-    - name: command
-      description: The OpenShift CLI commands to run
   steps:
   - name: oc
     image: quay.io/openshift-pipeline/openshift-cli
-    command: ["/usr/local/bin/oc"]
+    command:
+      - echo
     args:
-    - "${inputs.params.command}"
+      - "oc"
 ---
 
 apiVersion: tekton.dev/v1alpha1
