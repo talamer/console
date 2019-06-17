@@ -20,7 +20,7 @@ const SecureRoute: React.FC = () => {
         helpText="Routes can be secured using several TLS termination types for serving certificates."
       />
       {secure && (
-        <div className="co-create-route__security">
+        <div>
           <DropdownField
             name="route.tls.termination"
             label="TLS Termination"

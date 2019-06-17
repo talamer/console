@@ -31,7 +31,7 @@ describe('ValidationUtils', () => {
       await validationSchema.isValid(mockData).then((valid) => expect(valid).toEqual(false));
       await validationSchema
         .validate(mockData)
-        .catch((err) => expect(err.message).toBe('Invalid Git URL'));
+        .catch((err) => expect(err.message).toBe('Invalid Git URL.'));
     });
 
     it('should throw an error if url is valid but git type is not valid', async() => {
@@ -60,7 +60,7 @@ describe('ValidationUtils', () => {
       mockData.route.path = 'path';
       await validationSchema.isValid(mockData).then((valid) => expect(valid).toEqual(false));
       await validationSchema.validate(mockData).catch((err) => {
-        expect(err.message).toBe('Path must start with /');
+        expect(err.message).toBe('Path must start with /.');
       });
     });
 

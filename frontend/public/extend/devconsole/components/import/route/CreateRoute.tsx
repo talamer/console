@@ -18,32 +18,30 @@ const CreateRoute: React.FC = () => {
   }, {});
 
   return (
-    <React.Fragment>
-      <FormGroup>
-        <InputField
-          type="text"
-          name="route.hostname"
-          label="Hostname"
-          helpText="Public hostname for the route. If not specified, a hostname is generated."
-        />
-        <InputField
-          type="text"
-          name="route.path"
-          label="Path"
-          placeholder="/"
-          helpText="Path that the router watches to route traffic to the service."
-        />
-        <DropdownField
-          name="route.targetPort"
-          label="Target Port"
-          items={portOptions}
-          selectedKey={targetPort}
-          title={portOptions[targetPort] || 'Select target port'}
-          helpText="Target port for traffic."
-          fullWidth
-        />
-      </FormGroup>
-    </React.Fragment>
+    <FormGroup>
+      <InputField
+        type="text"
+        name="route.hostname"
+        label="Hostname"
+        helpText="Public hostname for the route. If not specified, a hostname is generated."
+      />
+      <InputField
+        type="text"
+        name="route.path"
+        label="Path"
+        placeholder="/"
+        helpText="Path that the router watches to route traffic to the service."
+      />
+      <DropdownField
+        name="route.targetPort"
+        label="Target Port"
+        items={portOptions}
+        selectedKey={targetPort}
+        title={portOptions[targetPort] || 'Select target port'}
+        helpText="Target port for traffic."
+        fullWidth
+      />
+    </FormGroup>
   );
 };
 

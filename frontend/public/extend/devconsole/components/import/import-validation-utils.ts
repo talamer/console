@@ -20,7 +20,7 @@ export const validationSchema = yup.object().shape({
   git: yup.object().shape({
     url: yup
       .string()
-      .matches(urlRegex, 'Invalid Git URL')
+      .matches(urlRegex, 'Invalid Git URL.')
       .required('Required'),
     type: yup.string().when('showGitType', {
       is: true,
@@ -31,12 +31,12 @@ export const validationSchema = yup.object().shape({
   deployment: yup.object().shape({
     replicas: yup
       .number()
-      .integer('Replicas must be an Integer')
+      .integer('Replicas must be an Integer.')
       .min(0, 'Replicas must be greater than or equal to 0.')
       .test({
         name: 'isEmpty',
         test: (value) => value !== undefined,
-        message: 'This field cannot be empty',
+        message: 'This field cannot be empty.',
       }),
   }),
   route: yup.object().shape({
@@ -44,7 +44,7 @@ export const validationSchema = yup.object().shape({
     tls: yup.object().when('secure', {
       is: true,
       then: yup.object({
-        termination: yup.string().required('Please select a termination type'),
+        termination: yup.string().required('Please select a termination type.'),
       }),
     }),
     hostname: yup
@@ -54,10 +54,10 @@ export const validationSchema = yup.object().shape({
           'Hostname must consist of lower-case letters, numbers, periods, and hyphens. It must start and end with a letter or number.',
         excludeEmptyString: true,
       })
-      .max(253, 'Can\'t be longer than 253 characters.'),
+      .max(253, 'Cannot be longer than 253 characters.'),
     path: yup
       .string()
-      .matches(pathRegex, { message: 'Path must start with /', excludeEmptyString: true }),
+      .matches(pathRegex, { message: 'Path must start with /.', excludeEmptyString: true }),
   }),
 });
 
