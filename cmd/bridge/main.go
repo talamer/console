@@ -36,6 +36,10 @@ const (
 
 	// Well-known location of Alert Manager service for OpenShift. This is only accessible in-cluster.
 	openshiftAlertManagerHost = "alertmanager-main.openshift-monitoring.svc:9094"
+
+	// Well-known location of DevConsole App Service for OpenShift. This is only accessible in-cluster after
+	// the developer perspective is enabled using the operator.
+	openshiftDevConsoleAppServiceHost = "devconsole.openshift-operators.svc:8080" // TODO:use a different namespace?
 )
 
 func main() {
@@ -271,6 +275,14 @@ func main() {
 			}
 		}
 
+		srv.DevConsoleAppServiceProxyConfig = &proxy.Config{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: *fK8sModeOffClusterSkipVerifyTLS,
+			},
+			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
+			Endpoint:        &url.URL{Scheme: "http", Host: openshiftDevConsoleAppServiceHost, Path: ""},
+		}
+
 	case "off-cluster":
 		k8sEndpoint = validateFlagIsURL("k8s-mode-off-cluster-endpoint", *fK8sModeOffClusterEndpoint)
 
@@ -281,6 +293,7 @@ func main() {
 			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
 			Endpoint:        k8sEndpoint,
 		}
+
 	default:
 		flagFatalf("k8s-mode", "must be one of: in-cluster, off-cluster")
 	}

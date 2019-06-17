@@ -23,15 +23,16 @@ const (
 	indexPageTemplateName     = "index.html"
 	tokenizerPageTemplateName = "tokener.html"
 
-	authLoginEndpoint              = "/auth/login"
-	AuthLoginCallbackEndpoint      = "/auth/callback"
-	AuthLoginSuccessEndpoint       = "/"
-	AuthLoginErrorEndpoint         = "/error"
-	authLogoutEndpoint             = "/auth/logout"
-	k8sProxyEndpoint               = "/api/kubernetes/"
-	prometheusProxyEndpoint        = "/api/prometheus"
-	prometheusTenancyProxyEndpoint = "/api/prometheus-tenancy"
-	alertManagerProxyEndpoint      = "/api/alertmanager"
+	authLoginEndpoint                 = "/auth/login"
+	AuthLoginCallbackEndpoint         = "/auth/callback"
+	AuthLoginSuccessEndpoint          = "/"
+	AuthLoginErrorEndpoint            = "/error"
+	authLogoutEndpoint                = "/auth/logout"
+	k8sProxyEndpoint                  = "/api/kubernetes/"
+	prometheusProxyEndpoint           = "/api/prometheus"
+	prometheusTenancyProxyEndpoint    = "/api/prometheus-tenancy"
+	alertManagerProxyEndpoint         = "/api/alertmanager"
+	devConsoleAppServiceProxyEndpoint = "/api/devconsole/"
 )
 
 var (
@@ -39,24 +40,25 @@ var (
 )
 
 type jsGlobals struct {
-	ConsoleVersion           string `json:"consoleVersion"`
-	AuthDisabled             bool   `json:"authDisabled"`
-	KubectlClientID          string `json:"kubectlClientID"`
-	BasePath                 string `json:"basePath"`
-	LoginURL                 string `json:"loginURL"`
-	LoginSuccessURL          string `json:"loginSuccessURL"`
-	LoginErrorURL            string `json:"loginErrorURL"`
-	LogoutURL                string `json:"logoutURL"`
-	LogoutRedirect           string `json:"logoutRedirect"`
-	KubeAdminLogoutURL       string `json:"kubeAdminLogoutURL"`
-	KubeAPIServerURL         string `json:"kubeAPIServerURL"`
-	PrometheusBaseURL        string `json:"prometheusBaseURL"`
-	PrometheusTenancyBaseURL string `json:"prometheusTenancyBaseURL"`
-	AlertManagerBaseURL      string `json:"alertManagerBaseURL"`
-	Branding                 string `json:"branding"`
-	DocumentationBaseURL     string `json:"documentationBaseURL"`
-	GoogleTagManagerID       string `json:"googleTagManagerID"`
-	LoadTestFactor           int    `json:"loadTestFactor"`
+	ConsoleVersion              string `json:"consoleVersion"`
+	AuthDisabled                bool   `json:"authDisabled"`
+	KubectlClientID             string `json:"kubectlClientID"`
+	BasePath                    string `json:"basePath"`
+	LoginURL                    string `json:"loginURL"`
+	LoginSuccessURL             string `json:"loginSuccessURL"`
+	LoginErrorURL               string `json:"loginErrorURL"`
+	LogoutURL                   string `json:"logoutURL"`
+	LogoutRedirect              string `json:"logoutRedirect"`
+	KubeAdminLogoutURL          string `json:"kubeAdminLogoutURL"`
+	KubeAPIServerURL            string `json:"kubeAPIServerURL"`
+	PrometheusBaseURL           string `json:"prometheusBaseURL"`
+	PrometheusTenancyBaseURL    string `json:"prometheusTenancyBaseURL"`
+	AlertManagerBaseURL         string `json:"alertManagerBaseURL"`
+	Branding                    string `json:"branding"`
+	DocumentationBaseURL        string `json:"documentationBaseURL"`
+	GoogleTagManagerID          string `json:"googleTagManagerID"`
+	LoadTestFactor              int    `json:"loadTestFactor"`
+	DevConsoleAppServiceBaseURL string `json:"devConsoleAppService"`
 }
 
 type Server struct {
@@ -76,14 +78,19 @@ type Server struct {
 	LoadTestFactor       int
 	DexClient            api.DexClient
 	// A client with the correct TLS setup for communicating with the API server.
-	K8sClient                    *http.Client
-	PrometheusProxyConfig        *proxy.Config
-	PrometheusTenancyProxyConfig *proxy.Config
-	AlertManagerProxyConfig      *proxy.Config
+	K8sClient                       *http.Client
+	PrometheusProxyConfig           *proxy.Config
+	PrometheusTenancyProxyConfig    *proxy.Config
+	AlertManagerProxyConfig         *proxy.Config
+	DevConsoleAppServiceProxyConfig *proxy.Config
 }
 
 func (s *Server) authDisabled() bool {
 	return s.Auther == nil
+}
+
+func (s *Server) devConsoleAppServiceProxyEnabled() bool {
+	return s.DevConsoleAppServiceProxyConfig != nil
 }
 
 func (s *Server) prometheusProxyEnabled() bool {
@@ -214,6 +221,20 @@ func (s *Server) HTTPHandler() http.Handler {
 		)
 	}
 
+	if s.devConsoleAppServiceProxyEnabled() {
+		devConsoleAppServiceProxyAPIPath := devConsoleAppServiceProxyEndpoint
+		devConsoleAppServiceProxy := proxy.NewProxy(s.DevConsoleAppServiceProxyConfig)
+
+		handle(devConsoleAppServiceProxyAPIPath, http.StripPrefix(
+			proxy.SingleJoiningSlash(s.BaseURL.Path, devConsoleAppServiceProxyAPIPath),
+			authHandlerWithUser(func(user *auth.User, w http.ResponseWriter, r *http.Request) {
+				r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", user.Token))
+				devConsoleAppServiceProxy.ServeHTTP(w, r)
+			})),
+		)
+		fmt.Println("enabling proxy for " + proxy.SingleJoiningSlash(s.BaseURL.Path, devConsoleAppServiceProxyAPIPath))
+	}
+
 	handle("/api/tectonic/version", authHandler(s.versionHandler))
 	mux.HandleFunc(s.BaseURL.Path, s.indexHandler)
 
@@ -270,6 +291,10 @@ func (s *Server) indexHandler(w http.ResponseWriter, r *http.Request) {
 
 	if s.alertManagerProxyEnabled() {
 		jsg.AlertManagerBaseURL = proxy.SingleJoiningSlash(s.BaseURL.Path, alertManagerProxyEndpoint)
+	}
+
+	if s.devConsoleAppServiceProxyEnabled() {
+		jsg.DevConsoleAppServiceBaseURL = proxy.SingleJoiningSlash(s.BaseURL.Path, devConsoleAppServiceProxyEndpoint)
 	}
 
 	if !s.authDisabled() {
