@@ -10,6 +10,7 @@ import {
 } from '../../../../components/utils';
 import { Pipeline, triggerPipeline, rerunPipeline } from '../../utils/pipeline-actions';
 import { pipelineFilterReducer } from '../../utils/pipeline-filter-reducer';
+import { PipelineTaskStatus } from '../pipelineruns/PipelineTaskStatus';
 
 interface PipelineRowProps {
   obj: Pipeline;
@@ -50,7 +51,9 @@ const PipelineRow: React.FC<PipelineRowProps> = (props) => {
       <div className="col-lg-2 col-md-2 col-sm-3 hidden-xs">
         <StatusIcon status={status} />
       </div>
-      <div className="col-lg-2 col-md-2 hidden-sm hidden-xs">-</div>
+      <div className="col-lg-2 col-md-2 hidden-sm hidden-xs">
+        {(pipeline.latestRun && <PipelineTaskStatus pipelinerun={pipeline.latestRun} />) || '-'}
+      </div>
       <div className="col-lg-2 col-md-2 hidden-sm hidden-xs">
         <Timestamp
           timestamp={

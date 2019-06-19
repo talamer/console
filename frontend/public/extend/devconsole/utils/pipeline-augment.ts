@@ -1,4 +1,4 @@
-/*eslint-disable prefer-const, no-else-return, no-undef, no-unused-vars */
+/*eslint-disable prefer-const, no-else-return, no-undef, no-unused-vars, dot-notation*/
 import { pipelineRunFilterReducer } from './pipeline-filter-reducer';
 import { PipelineListProps } from '../components/pipelines/PipelineList';
 import { PipelineAugmentRunsProps } from '../components/pipelines/PipelineAugmentRuns';
@@ -38,6 +38,7 @@ export interface PipelineRun extends K8sResourceKind {
     conditions?: Condition[];
     startTime?: string;
     completionTime?: string;
+    taskRuns?: K8sResourceKind[];
   };
 }
 
@@ -131,4 +132,31 @@ export const augmentRunsToData = (p: PipelineAugmentRunsProps) => {
     (reference, i) => (newData[i].latestRun = getLatestRun(p[reference], 'creationTimestamp')),
   );
   return newData;
+};
+
+export const getTaskStatus = (pipelinerun: PipelineRun) => {
+  let bars = [];
+  let tooltip = {};
+  if (pipelinerun && pipelinerun.status && pipelinerun.status.taskRuns) {
+    Object.keys(pipelinerun.status.taskRuns).forEach((taskRun) => {
+      let status = pipelineRunFilterReducer(pipelinerun.status.taskRuns[taskRun]);
+      if (status === 'Succeeded' || status === 'Completed' || status === 'Complete') {
+        bars.push('Succeeded');
+        tooltip['Succeeded'] ? tooltip['Succeeded']++ : (tooltip['Succeeded'] = 1);
+      } else if (status === 'Running') {
+        bars.push('Running');
+        tooltip['Running'] ? tooltip['Running']++ : (tooltip['Running'] = 1);
+      } else {
+        bars.push('Failed');
+        tooltip['Failed'] ? tooltip['Failed']++ : (tooltip['Failed'] = 1);
+      }
+    });
+  } else if (pipelinerun && pipelinerun.status && pipelinerun.status.conditions) {
+    bars.push('FailedToStart');
+    tooltip['FailedToStart'] ? tooltip['FailedToStart']++ : (tooltip['FailedToStart'] = 1);
+  } else {
+    bars.push('Notstarted');
+    tooltip['Notstarted'] ? tooltip['Notstarted']++ : (tooltip['Notstarted'] = 1);
+  }
+  return { bars, tooltip };
 };

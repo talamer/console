@@ -11,6 +11,7 @@ import {
 import { pipelineRunFilterReducer } from '../../utils/pipeline-filter-reducer';
 import { reRunPipelineRun, stopPipelineRun } from '../../utils/pipeline-actions';
 import { PipelineRun } from '../../utils/pipeline-augment';
+import { PipelineTaskStatus } from './PipelineTaskStatus';
 
 interface PipelineRunRowProps {
   obj: PipelineRun;
@@ -48,7 +49,9 @@ const PipelineRunRow: React.FC<PipelineRunRowProps> = (props) => {
       <div className="col-lg-2 col-md-2 col-sm-2 col-xs-2">
         <StatusIcon status={pipelineRunFilterReducer(pipelinerun)} />
       </div>
-      <div className="col-lg-2 col-md-2 hidden-sm hidden-xs"> - </div>
+      <div className="col-lg-2 col-md-2 hidden-sm hidden-xs">
+        <PipelineTaskStatus pipelinerun={pipelinerun} />
+      </div>
       <div className="col-lg-2 col-md-2 hidden-sm hidden-xs"> - </div>
       <div className="col-lg-1 col-md-1 hidden-sm hidden-xs">
         {pipelinerun &&
