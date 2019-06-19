@@ -68,7 +68,7 @@ class BuildSource extends React.Component<
     const tags = getBuilderTagsSortedByVersion(props.obj.data);
     // Select the first tag if the current tag is missing or empty.
     const selectedTag =
-      previousTag && _.includes(tags, previousTag) ? previousTag : _.get(_.head(tags), 'name');
+      previousTag && _.find(tags, {name:previousTag}) ? previousTag : _.get(_.head(tags), 'name');
 
     return { tags, selectedTag };
   }
