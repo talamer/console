@@ -1,19 +1,13 @@
 /* eslint-disable no-unused-vars, no-undef, dot-notation */
 import * as React from 'react';
-import * as _ from 'lodash-es';
 import { Formik } from 'formik';
 import { GitImportFormData, FirehoseList } from './import-types';
 import { NormalizedBuilderImages, normalizeBuilderImages } from '../../utils/imagestream-utils';
-import {
-  createDeploymentConfig,
-  createImageStream,
-  createBuildConfig,
-  createService,
-  createRoute,
-} from './import-submit-utils';
+import { createResources } from './import-submit-utils';
 import { history } from '../../../../components/utils';
 import { validationSchema } from './import-validation-utils';
 import GitImportForm from './GitImportForm';
+import { K8sResourceKind } from '../../../../module/k8s';
 
 export interface GitImportProps {
   namespace: string;
@@ -71,28 +65,17 @@ const GitImport: React.FC<GitImportProps> = ({ namespace, imageStreams }) => {
   const handleSubmit = (values, actions) => {
     const imageStream = builderImages[values.image.selected].obj;
 
-    const {
-      project: { name: namespace },
-      route: { create: canCreateRoute },
-      image: { ports },
-    } = values;
+    const { project: { name: namespace } } = values;
 
-    const requests = [
-      createDeploymentConfig(values, imageStream),
-      createImageStream(values, imageStream),
-      createBuildConfig(values, imageStream),
-    ];
+    const dryRunRequests: Promise<K8sResourceKind>[] = createResources(values, imageStream, {
+      queryParams: { dryRun: 'All' },
+    });
 
-    // Only create a service or route if the builder image has ports.
-    if (!_.isEmpty(ports)) {
-      requests.push(createService(values, imageStream));
-      if (canCreateRoute) {
-        requests.push(createRoute(values, imageStream));
-      }
-    }
-
-    requests.forEach((r) => r.catch((err) => actions.setStatus({ submitError: err.message })));
-    Promise.all(requests)
+    Promise.all(dryRunRequests)
+      .then(() => {
+        const requests: Promise<K8sResourceKind>[] = createResources(values, imageStream);
+        return Promise.all(requests);
+      })
       .then(() => {
         actions.setSubmitting(false);
         history.push(`/dev/topology/ns/${namespace}`);

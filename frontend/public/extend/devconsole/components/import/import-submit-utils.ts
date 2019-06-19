@@ -15,6 +15,7 @@ import { GitImportFormData } from './import-types';
 export const createImageStream = (
   formData: GitImportFormData,
   { metadata: { name: imageStreamName } }: K8sResourceKind,
+  dryRunOpt: { queryParams?: { [key: string]: string } } = {},
 ): Promise<K8sResourceKind> => {
   const {
     name,
@@ -33,12 +34,13 @@ export const createImageStream = (
     },
   };
 
-  return k8sCreate(ImageStreamModel, imageStream);
+  return k8sCreate(ImageStreamModel, imageStream, dryRunOpt);
 };
 
 export const createBuildConfig = (
   formData: GitImportFormData,
   imageStream: K8sResourceKind,
+  dryRunOpt: { queryParams?: { [key: string]: string } } = {},
 ): Promise<K8sResourceKind> => {
   const {
     name,
@@ -92,12 +94,13 @@ export const createBuildConfig = (
     },
   };
 
-  return k8sCreate(BuildConfigModel, buildConfig);
+  return k8sCreate(BuildConfigModel, buildConfig, dryRunOpt);
 };
 
 export const createDeploymentConfig = (
   formData: GitImportFormData,
   imageStream: K8sResourceKind,
+  dryRunOpt: { queryParams?: { [key: string]: string } } = {},
 ): Promise<K8sResourceKind> => {
   const {
     name,
@@ -154,12 +157,13 @@ export const createDeploymentConfig = (
     },
   };
 
-  return k8sCreate(DeploymentConfigModel, deploymentConfig);
+  return k8sCreate(DeploymentConfigModel, deploymentConfig, dryRunOpt);
 };
 
 export const createService = (
   formData: GitImportFormData,
   imageStream: K8sResourceKind,
+  dryRunOpt: { queryParams?: { [key: string]: string } } = {},
 ): Promise<K8sResourceKind> => {
   const {
     name,
@@ -194,12 +198,13 @@ export const createService = (
     },
   };
 
-  return k8sCreate(ServiceModel, service);
+  return k8sCreate(ServiceModel, service, dryRunOpt);
 };
 
 export const createRoute = (
   formData: GitImportFormData,
   imageStream: K8sResourceKind,
+  dryRunOpt: { queryParams?: { [key: string]: string } } = {},
 ): Promise<K8sResourceKind> => {
   const {
     name,
@@ -236,5 +241,23 @@ export const createRoute = (
     },
   };
 
-  return k8sCreate(RouteModel, route);
+  return k8sCreate(RouteModel, route, dryRunOpt);
+};
+
+export const createResources = (
+  formData: GitImportFormData,
+  imageStream: K8sResourceKind,
+  dryRunOpt: { queryParams?: { [key: string]: string } } = {},
+): Promise<K8sResourceKind>[] => {
+  const { route: { create: canCreateRoute }, image: { ports } } = formData;
+
+  const requests: Promise<K8sResourceKind>[] = [
+    createDeploymentConfig(formData, imageStream, dryRunOpt),
+    createImageStream(formData, imageStream, dryRunOpt),
+    createBuildConfig(formData, imageStream, dryRunOpt),
+    ...(!_.isEmpty(ports) ? createService(formData, imageStream, dryRunOpt) : []),
+    ...(!_.isEmpty(ports) && canCreateRoute ? createRoute(formData, imageStream, dryRunOpt) : []),
+  ];
+
+  return requests;
 };
