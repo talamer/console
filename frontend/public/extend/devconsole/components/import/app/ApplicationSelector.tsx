@@ -15,7 +15,7 @@ interface ApplicationSelectorProps {
 const ApplicationSelector: React.FC<ApplicationSelectorProps> = ({ namespace }) => {
   const [selectedKey, { touched, error }] = useField('application.selectedKey');
   const { setFieldValue, setFieldTouched } = useFormikContext<FormikValues>();
-  const onDropdownChange = (application: string, key: string) => {
+  const onDropdownChange = (key: string, application: string ) => {
     setFieldTouched('application.selectedKey', true);
     if (key === CREATE_APPLICATION_KEY) {
       setFieldValue('application.name', '');

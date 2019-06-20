@@ -40,7 +40,7 @@ interface ResourceDropdownProps {
   resources?: FirehoseList[];
   selectedKey: string;
   resourceFilter?: (resource: any) => boolean;
-  onChange?: (name: string, key: string) => void;
+  onChange?: (key: string, name?: string) => void;
 }
 
 class ResourceDropdown extends React.Component<ResourceDropdownProps, ResourceDropdownState> {
@@ -65,12 +65,13 @@ class ResourceDropdown extends React.Component<ResourceDropdownProps, ResourceDr
   }
 
   componentWillReceiveProps(nextProps: ResourceDropdownProps) {
-    const { resources, loaded, loadError, placeholder, allSelectorItem } = nextProps;
+    const { resources, loaded, loadError, placeholder, allSelectorItem, selectedKey } = nextProps;
     if (!loaded) {
       this.setState({ title: <LoadingInline /> });
       return;
     }
-    if (!this.props.loaded) {
+
+    if (!this.props.loaded || !selectedKey) {
       this.setState({
         title: <span className="btn-dropdown__item--placeholder">{placeholder}</span>,
       });
@@ -122,13 +123,13 @@ class ResourceDropdown extends React.Component<ResourceDropdownProps, ResourceDr
   onChange = (key) => {
     const { name } = _.get(this.state, ['items', key], {});
     const { actionItem } = this.props;
-    let title;
+    let title: React.ReactNode;
     if (actionItem && key === actionItem.actionKey) {
       title = <span className="btn-dropdown__item--placeholder">{actionItem.actionTitle}</span>;
     } else {
       title = <span>{name}</span>;
     }
-    this.props.onChange(name, key);
+    this.props.onChange(key, name);
     this.setState({ title });
   };
 
@@ -139,7 +140,6 @@ class ResourceDropdown extends React.Component<ResourceDropdownProps, ResourceDr
       const item = this.state.items[key];
       items[key] = item.name;
     });
-
     return (
       <Dropdown
         className={this.props.className}

@@ -39,6 +39,10 @@ export interface GitData {
   ref: string;
   dir: string;
   showGitType: boolean;
+  secret: {
+    isNewSecret: boolean;
+    selectedKey: string;
+  };
 }
 
 export interface RouteData {

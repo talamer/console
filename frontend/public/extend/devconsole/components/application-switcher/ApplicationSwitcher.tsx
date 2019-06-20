@@ -19,7 +19,7 @@ const ApplicationSwitcher: React.FC<ApplicationSwitcherProps> = ({
   application,
   onChange,
 }) => {
-  const onApplicationChange = (newApplication, key) => {
+  const onApplicationChange = (key, newApplication) => {
     key === ALL_APPLICATIONS_KEY ? onChange(key) : onChange(newApplication);
   };
   const allApplicationsTitle = 'all applications';
