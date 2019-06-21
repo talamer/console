@@ -28,7 +28,6 @@ export enum Perspective {
 
 export let switchPerspective = async function(perspective: Perspective) {
   await browser.ready;
-  await browser.sleep(3000);
   await browser.wait(until.elementToBeClickable(switcher), 10000);
   await switcher.click();
   await browser.wait(until.visibilityOf(megaMenu));
