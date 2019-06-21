@@ -2,7 +2,6 @@ import { $, $$, browser, ExpectedConditions as until } from "protractor";
 
 export const switcher = $("#nav-toggle");
 export const megaMenu = $("div.odc-mega-menu");
-// export const part = $('#page-sidebar .pf-c-nav .pf-c-nav__list');
 
 export const devPerspective = $$("li.pf-c-nav__item.odc-mega-menu-item").filter(
   function(elem, index) {
